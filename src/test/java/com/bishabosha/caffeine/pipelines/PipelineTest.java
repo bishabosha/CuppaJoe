@@ -8,7 +8,6 @@ import com.bishabosha.caffeine.base.Iterables;
 import com.bishabosha.caffeine.base.MapEntry;
 import com.bishabosha.caffeine.functional.Case;
 import com.bishabosha.caffeine.functional.Option;
-import com.bishabosha.caffeine.pipelines.*;
 import com.bishabosha.caffeine.functional.Functions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

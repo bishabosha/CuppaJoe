@@ -4,8 +4,6 @@
 
 package com.bishabosha.caffeine.functional;
 
-import com.bishabosha.caffeine.functional.Option;
-import com.bishabosha.caffeine.functional.Pattern;
 import com.bishabosha.caffeine.trees.BinaryNode;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

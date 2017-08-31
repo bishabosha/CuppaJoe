@@ -5,7 +5,6 @@
 package com.bishabosha.caffeine.hashtables;
 
 import com.bishabosha.caffeine.base.Iterables;
-import com.bishabosha.caffeine.hashtables.HashTable;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

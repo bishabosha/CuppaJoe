@@ -4,7 +4,6 @@
 
 package com.bishabosha.caffeine.functional.tuples;
 
-import com.bishabosha.caffeine.functional.tuples.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

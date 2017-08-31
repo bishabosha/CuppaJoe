@@ -5,7 +5,6 @@
 package com.bishabosha.caffeine.tries;
 
 import com.bishabosha.caffeine.base.Iterables;
-import com.bishabosha.caffeine.tries.TrieSet;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

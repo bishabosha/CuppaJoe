@@ -5,11 +5,9 @@
 package com.bishabosha.caffeine.lists;
 
 import com.bishabosha.caffeine.base.Iterables;
-import com.bishabosha.caffeine.lists.LinkedList;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 

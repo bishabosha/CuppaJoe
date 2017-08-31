@@ -6,10 +6,6 @@ package com.bishabosha.caffeine.sequences;
 
 import com.bishabosha.caffeine.base.Iterables;
 import com.bishabosha.caffeine.functional.Option;
-import com.bishabosha.caffeine.sequences.NonRecursiveSequence;
-import com.bishabosha.caffeine.sequences.RecursiveSequence;
-import com.bishabosha.caffeine.sequences.SequenceOf;
-import com.bishabosha.caffeine.sequences.Sequence;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

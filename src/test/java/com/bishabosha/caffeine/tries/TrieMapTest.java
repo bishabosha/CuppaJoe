@@ -4,7 +4,6 @@
 
 package com.bishabosha.caffeine.tries;
 
-import com.bishabosha.caffeine.tries.TrieMap;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

@@ -4,7 +4,6 @@
 
 package com.bishabosha.caffeine.trees;
 
-import com.bishabosha.caffeine.trees.TreeMap;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
