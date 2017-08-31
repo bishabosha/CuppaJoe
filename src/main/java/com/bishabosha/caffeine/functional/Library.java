@@ -49,6 +49,7 @@ public class Library {
                         list.add(current);
                     }
                 }
+                return stack;
             });
     }
 

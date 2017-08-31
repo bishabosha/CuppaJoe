@@ -7,6 +7,7 @@ package com.bishabosha.caffeine.functional.immutable;
 import com.bishabosha.caffeine.base.AbstractBase;
 import com.bishabosha.caffeine.functional.*;
 import com.bishabosha.caffeine.functional.functions.Consume3;
+import com.bishabosha.caffeine.functional.functions.Func3;
 import com.bishabosha.caffeine.functional.tuples.Tuple2;
 
 import java.util.*;
@@ -218,14 +219,11 @@ public class Cons<E> extends AbstractBase<E> {
      * @param <O> the type of the accumulator.
      * @return The accumulator with whatever modifications have been applied.
      */
-    public <O> O loop(O accumulator, Consume3<O, E, Cons<E>> consumer) {
+    public <O> O loop(O accumulator, Func3<O, E, Cons<E>, Cons<E>> consumer) {
         Cons<E> cons = this;
         while (!cons.isEmpty()) {
             cons = cons.pop()
-                       .map(t -> t.map((elem, cons2) -> {
-                           consumer.accept(accumulator, elem, cons2);
-                           return cons2;
-                       }))
+                       .map(t -> t.map((elem, cons2) -> consumer.apply(accumulator, elem, cons2)))
                        .orElse(Cons.empty());
         }
         return accumulator;

@@ -7,6 +7,8 @@ package com.bishabosha.caffeine.functional.tuples;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 import static com.bishabosha.caffeine.functional.tuples.Tuple.EMPTY;
 import static com.bishabosha.caffeine.functional.tuples.Tuples.*;
 
@@ -15,7 +17,7 @@ public class TupleTest {
     @Test
     public void testFlatten() {
         Assert.assertEquals(
-            Tuple("Hi", "there", "World"),
+            Arrays.asList("Hi", "there", "World"),
             Tuple(Tuple(Tuple(Tuple("Hi"), Tuple("there", EMPTY), EMPTY), "World")).flatten()
         );
     }
