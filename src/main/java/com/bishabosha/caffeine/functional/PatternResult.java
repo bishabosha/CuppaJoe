@@ -4,17 +4,23 @@
 
 package com.bishabosha.caffeine.functional;
 
+import com.bishabosha.caffeine.base.AbstractBase;
+
 import java.util.*;
 
-public class PatternResult implements Iterable<Object> {
-    List list;
-
-    public PatternResult() {
-        list = new ArrayList();
-    }
+public class PatternResult extends AbstractBase<Object> {
+    private List<Object> list;
 
     private PatternResult(Object... objects) {
         list = Arrays.asList(objects);
+    }
+
+    private PatternResult() {
+        list = new ArrayList<>();
+    }
+
+    public static PatternResult create() {
+        return new PatternResult();
     }
 
     public static PatternResult of(Object... objects) {
@@ -29,6 +35,11 @@ public class PatternResult implements Iterable<Object> {
         return list.isEmpty();
     }
 
+    @Override
+    public boolean contains(Object o) {
+        return list.contains(o);
+    }
+
     public Object get(int index) {
         return list.get(index);
     }
@@ -40,6 +51,14 @@ public class PatternResult implements Iterable<Object> {
     @Override
     public Iterator<Object> iterator() {
         return list.iterator();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return Option.of(obj)
+                     .cast(PatternResult.class)
+                     .map(x -> Objects.equals(x.list, list))
+                     .orElse(false);
     }
 
     /**

@@ -5,8 +5,8 @@
 package com.bishabosha.caffeine.tries;
 
 import com.bishabosha.caffeine.base.Iterables;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class TrieSetTest {
 
@@ -27,44 +27,44 @@ public class TrieSetTest {
     }
 
     @Test
-    void testContains() {
+    public void testContains() {
         TrieSet trie = getTrieSet();
-        Assertions.assertTrue(trie.contains("row"));
-        Assertions.assertFalse(trie.contains("zoo"));
+        Assert.assertTrue(trie.contains("row"));
+        Assert.assertFalse(trie.contains("zoo"));
     }
 
     @Test
-    void testAdd() {
+    public void testAdd() {
         TrieSet trie = getTrieSet();
-        Assertions.assertFalse(trie.contains("mango"));
+        Assert.assertFalse(trie.contains("mango"));
         trie.add("mango");
-        Assertions.assertTrue(trie.contains("mango"));
+        Assert.assertTrue(trie.contains("mango"));
     }
 
     @Test
-    void testRemove() {
+    public void testRemove() {
         TrieSet trie = getTrieSet();
-        Assertions.assertTrue(trie.contains("release"));
+        Assert.assertTrue(trie.contains("release"));
         trie.remove("release");
-        Assertions.assertFalse(trie.contains("release"));
+        Assert.assertFalse(trie.contains("release"));
     }
 
     @Test
-    void testCompletions() {
+    public void testCompletions() {
         TrieSet trie = getTrieSet();
-        Assertions.assertTrue(Iterables.equalElements(trie.getCompletions("red"), "red", "reddit"));
-        Assertions.assertTrue(Iterables.equalElements(trie.getCompletions("ren"), "rent", "render"));
-        Assertions.assertTrue(Iterables.equalElements(trie.getCompletions("ro"), "road", "row"));
-        Assertions.assertTrue(Iterables.equalElements(trie.getCompletions("rea"), "real", "read"));
-        Assertions.assertTrue(Iterables.equalElements(trie.getCompletions("he")));
+        Assert.assertTrue(Iterables.equalElements(trie.getCompletions("red"), "red", "reddit"));
+        Assert.assertTrue(Iterables.equalElements(trie.getCompletions("ren"), "rent", "render"));
+        Assert.assertTrue(Iterables.equalElements(trie.getCompletions("ro"), "road", "row"));
+        Assert.assertTrue(Iterables.equalElements(trie.getCompletions("rea"), "real", "read"));
+        Assert.assertTrue(Iterables.equalElements(trie.getCompletions("he")));
     }
 
     @Test
-    void testNumCompletions() {
+    public void testNumCompletions() {
         TrieSet trie = getTrieSet();
-        Assertions.assertEquals(9, trie.numCompletions(""));
-        Assertions.assertEquals(0, trie.numCompletions("hel"));
-        Assertions.assertEquals(1, trie.numCompletions("read"));
-        Assertions.assertEquals(0, trie.numCompletions("zoo"));
+        Assert.assertEquals(9, trie.numCompletions(""));
+        Assert.assertEquals(0, trie.numCompletions("hel"));
+        Assert.assertEquals(1, trie.numCompletions("read"));
+        Assert.assertEquals(0, trie.numCompletions("zoo"));
     }
 }

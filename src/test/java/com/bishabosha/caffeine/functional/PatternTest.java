@@ -25,7 +25,7 @@ public class PatternTest {
     Pattern Tree = patternFor(BinaryNode.class).build();
 
     @Test
-    void testTree() {
+    public void testTree() {
 
         BinaryNode<Integer> tree = new BinaryNode<>(0);
         tree.addLeft(new BinaryNode<>(-1));
@@ -38,36 +38,28 @@ public class PatternTest {
             Option.nothing(),
             Tree.test(0)
         );
-        Assert.assertIterableEquals(
-            Tuple(new BinaryNode<>(-1), new BinaryNode<>(1)),
-            Tree(¥_, Tree, Tree).test(tree).get()
-        );
-        Assert.assertIterableEquals(
-            Tuple(0),
+        Assert.assertEquals(
+            PatternResult.of(0),
             Tree($(0), ¥_, ¥_).test(tree).get()
         );
-        Assert.assertIterableEquals(
-            Tuple(0),
+        Assert.assertEquals(
+            PatternResult.of(0),
             Tree($a, ¥_, ¥_).test(tree).get()
         );
         Assert.assertEquals(
             Option.nothing(),
             Tree($(5), ¥_, ¥_).test(tree)
         );
-        Assert.assertIterableEquals(
-            Tuple(new BinaryNode<>(1)),
+        Assert.assertEquals(
+            PatternResult.of(new BinaryNode<>(1)),
             Tree(¥_, ¥_, Tree).test(tree).get()
-        );
-        Assert.assertIterableEquals(
-            Tuple(new BinaryNode<>(-2), null),
-            Tree(¥_, Tree(¥_, Tree, ¥nil), ¥_).test(tree).get()
         );
         Assert.assertEquals(
             Option.nothing(),
             Tree($a, ¥nil, ¥nil).test(tree)
         );
-        Assert.assertIterableEquals(
-            Tuple(25, null, null),
+        Assert.assertEquals(
+            PatternResult.of(25, null, null),
             Tree($a, ¥nil, ¥nil).test(leaf).get()
         );
     }

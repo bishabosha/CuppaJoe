@@ -4,9 +4,9 @@
 
 package com.bishabosha.caffeine.lists;
 
-import com.bishabosha.caffeine.base.Iterables;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.hamcrest.CoreMatchers;
+import org.junit.Assert;
+import org.junit.Test;
 
 import java.util.Comparator;
 import java.util.List;
@@ -26,7 +26,7 @@ public class LinkedListTest {
     }
 
     @Test
-    void testAddFirst() {
+    public void testAddFirst() {
         LinkedList<String> list = new LinkedList<>();
 
         list.addFirst("kiwifruit");
@@ -34,51 +34,51 @@ public class LinkedListTest {
         list.addFirst("apple");
         list.addFirst("orange");
 
-        Assertions.assertIterableEquals(
-            Iterables.of("orange", "apple", "pear", "kiwifruit"),
-            list
+        Assert.assertThat(
+            list,
+            CoreMatchers.hasItems("orange", "apple", "pear", "kiwifruit")
         );
     }
 
     @Test
-    void testAddLast() {
-        Assertions.assertIterableEquals(
-            Iterables.of(1, 2, 3, 4, 5),
-            getList()
+    public void testAddLast() {
+        Assert.assertThat(
+            getList(),
+            CoreMatchers.hasItems(1, 2, 3, 4, 5)
         );
     }
 
     @Test
-    void testSubList() {
-        Assertions.assertIterableEquals(
-            Iterables.of(3, 4),
-            getList().subList(2, 4)
+    public void testSubList() {
+        Assert.assertThat(
+            getList().subList(2, 4),
+            CoreMatchers.hasItems(3, 4)
         );
     }
 
     @Test
-    void testSize() {
-        Assertions.assertEquals(
+    public void testSize() {
+        Assert.assertEquals(
             5,
             getList().size()
         );
     }
 
     @Test
-    void testToArray() {
-        Assertions.assertArrayEquals(
+    public void testToArray() {
+        Assert.assertArrayEquals(
             new Integer[] {1, 2, 3, 4, 5},
             getList().toArray(new Integer[0])
         );
     }
 
     @Test
-    void testSort() {
+    public void testSort() {
         List<Integer> list = getList();
         list.sort(Comparator.reverseOrder());
-        Assertions.assertIterableEquals(
-            Iterables.of(5,4,3,2,1),
-            list
+        Assert.assertThat(
+            list,
+            CoreMatchers.hasItems(5,4,3,2,1)
         );
     }
 }

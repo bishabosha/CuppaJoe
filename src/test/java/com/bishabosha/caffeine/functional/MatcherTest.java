@@ -23,7 +23,7 @@ import static com.bishabosha.caffeine.functional.immutable.Tree.*;
 public class MatcherTest {
 
     @Test
-    void testBasic() {
+    public void testBasic() {
         Assert.assertEquals(
             Option.of(6.28),
             match(3.14).option(
@@ -65,7 +65,7 @@ public class MatcherTest {
     }
 
     @Test
-    void testOnList() {
+    public void testOnList() {
         Case cases = Case.combine(
             with($any("-h", "--help"), () -> "View Help"),
             with($any("-v", "--version"), () -> "View Version")
@@ -127,7 +127,7 @@ public class MatcherTest {
     }
 
     @Test
-    void testPatterns() {
+    public void testPatterns() {
 
         Tree<Integer> tree = getTree();
         Tree<Integer> leaf = Tree(25, Leaf(), Leaf());
@@ -165,7 +165,7 @@ public class MatcherTest {
     }
 
     @Test
-    void testRecursion() {
+    public void testRecursion() {
         Assert.assertEquals(
             3,
             getTree().height()
@@ -199,7 +199,7 @@ public class MatcherTest {
     }
 
     @Test
-    void testGuards() {
+    public void testGuards() {
         int x = 3;
         Assert.assertEquals(
             "Three",
@@ -218,7 +218,7 @@ public class MatcherTest {
     }
 
     @Test
-    void testPredicates() {
+    public void testPredicates() {
         Option<Integer> option = Option.of(10);
         Assert.assertEquals(
             10,

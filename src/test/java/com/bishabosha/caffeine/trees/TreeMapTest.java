@@ -4,10 +4,10 @@
 
 package com.bishabosha.caffeine.trees;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.hamcrest.CoreMatchers;
+import org.junit.Assert;
+import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,30 +27,30 @@ public class TreeMapTest {
     }
 
     @Test
-    void testKeySet() {
+    public void testKeySet() {
         Set<Integer> keySet = new HashSet<>();
         keySet.add(1);
         keySet.add(2);
-        Assertions.assertEquals(keySet, getMap().keySet());
+        Assert.assertEquals(keySet, getMap().keySet());
     }
 
     @Test
-    void testValues() {
-        Assertions.assertIterableEquals(Arrays.asList("Hello", "World"), getMap().values());
+    public void testValues() {
+        Assert.assertThat(getMap().values(), CoreMatchers.hasItems("Hello", "World"));
     }
 
     @Test
-    void testGet() {
-        Assertions.assertEquals("Hello", getMap().get(1));
+    public void testGet() {
+        Assert.assertEquals("Hello", getMap().get(1));
     }
 
     @Test
-    void testContainsKey() {
-        Assertions.assertTrue(getMap().containsKey(2));
+    public void testContainsKey() {
+        Assert.assertTrue(getMap().containsKey(2));
     }
 
     @Test
-    void testContainsValue() {
-        Assertions.assertTrue(getMap().containsValue("World"));
+    public void testContainsValue() {
+        Assert.assertTrue(getMap().containsValue("World"));
     }
 }

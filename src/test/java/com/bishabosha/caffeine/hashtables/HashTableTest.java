@@ -5,8 +5,8 @@
 package com.bishabosha.caffeine.hashtables;
 
 import com.bishabosha.caffeine.base.Iterables;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class HashTableTest {
 
@@ -31,21 +31,21 @@ public class HashTableTest {
     }
 
     @Test
-    void testRetainAll() {
+    public void testRetainAll() {
         HashTable<String> intersection = getGreetings();
         intersection.retainAll(getTwoLetterWords());
-        Assertions.assertTrue(Iterables.equalElements(intersection, "Hi", "Yo"));
+        Assert.assertTrue(Iterables.equalElements(intersection, "Hi", "Yo"));
     }
 
     @Test
-    void testRemoveAll() {
+    public void testRemoveAll() {
         HashTable<String> difference = getGreetings();
         difference.removeAll(getTwoLetterWords());
-        Assertions.assertTrue(Iterables.equalElements(difference, "Hello", "Bonjour", "Ciao", "Waddup"));
+        Assert.assertTrue(Iterables.equalElements(difference, "Hello", "Bonjour", "Ciao", "Waddup"));
     }
 
     @Test
-    void testContainsAll() {
-        Assertions.assertTrue(getGreetings().containsAll(Iterables.setOf("Hi", "Hello")));
+    public void testContainsAll() {
+        Assert.assertTrue(getGreetings().containsAll(Iterables.setOf("Hi", "Hello")));
     }
 }

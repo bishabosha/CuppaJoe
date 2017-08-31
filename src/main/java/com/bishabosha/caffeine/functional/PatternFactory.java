@@ -181,7 +181,7 @@ public class PatternFactory<I> {
 
     private Option<PatternResult> getRecursion(I toTest) {
         try {
-            PatternResult result = new PatternResult();
+            PatternResult result = PatternResult.create();
             tests.forEach(x -> result.add(
                 checkedFail(x.$1().test(x.$2().apply(toTest)))
             ));

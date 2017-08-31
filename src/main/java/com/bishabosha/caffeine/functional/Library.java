@@ -33,12 +33,12 @@ public class Library {
         return Option.nothing();
     }
 
-    public static <O extends Iterable> List flatten(Class<O> flattenClass, O toFlatten) {
+    public static <T, O extends Iterable<T>> List<T> flatten(Class<O> flattenClass, O toFlatten) {
         return Cons(toFlatten.iterator(), Cons.empty()).loop(
-            new ArrayList(),
+            new ArrayList<>(),
             (list, it, stack) -> {
-                Object current;
-                Iterator<?> next;
+                T current;
+                Iterator<T> next;
                 while (it.hasNext()) {
                     current = it.next();
                     while (flattenClass.isInstance(current) && (next = flattenClass.cast(current).iterator()).hasNext()) {

@@ -4,17 +4,17 @@
 
 package com.bishabosha.caffeine.tries;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class TrieMapTest {
 
     @Test
-    void testPut() {
+    public void testPut() {
         TrieMap<String> map = new TrieMap<>();
-        Assertions.assertFalse(map.containsKey("Hello"));
+        Assert.assertFalse(map.containsKey("Hello"));
         map.put("Hello", "A greeting");
-        Assertions.assertTrue(map.containsKey("Hello"));
-        Assertions.assertEquals("A greeting", map.get("Hello"));
+        Assert.assertTrue(map.containsKey("Hello"));
+        Assert.assertEquals("A greeting", map.get("Hello"));
     }
 }

@@ -139,7 +139,7 @@ public class Pipeline<T> extends AbstractPipeline<T> {
         return new Pipeline<>(addFunction(ComputeNode.flatMap(mapper)));
     }
 
-    public <R> Pipeline match(Case<T, R> testCase) {
+    public <R> Pipeline<R> match(Case<T, R> testCase) {
         return flatMap(x -> of(testCase.match(x)));
     }
 

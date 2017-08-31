@@ -56,7 +56,7 @@ public class Tuple extends AbstractBase<Object> {
         return false;
     }
 
-    public List flatten() {
+    public List<Object> flatten() {
         return Library.flatten(Tuple.class, this);
     }
 
