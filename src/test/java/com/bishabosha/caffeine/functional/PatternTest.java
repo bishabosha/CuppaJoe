@@ -5,8 +5,8 @@
 package com.bishabosha.caffeine.functional;
 
 import com.bishabosha.caffeine.trees.BinaryNode;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.Assert;
+import org.junit.Test;
 
 import static com.bishabosha.caffeine.functional.Pattern.*;
 import static com.bishabosha.caffeine.functional.PatternFactory.patternFor;
@@ -34,39 +34,39 @@ public class PatternTest {
 
         BinaryNode<Integer> leaf = new BinaryNode<>(25);
 
-        Assertions.assertEquals(
+        Assert.assertEquals(
             Option.nothing(),
             Tree.test(0)
         );
-        Assertions.assertIterableEquals(
+        Assert.assertIterableEquals(
             Tuple(new BinaryNode<>(-1), new BinaryNode<>(1)),
             Tree(¥_, Tree, Tree).test(tree).get()
         );
-        Assertions.assertIterableEquals(
+        Assert.assertIterableEquals(
             Tuple(0),
             Tree($(0), ¥_, ¥_).test(tree).get()
         );
-        Assertions.assertIterableEquals(
+        Assert.assertIterableEquals(
             Tuple(0),
             Tree($a, ¥_, ¥_).test(tree).get()
         );
-        Assertions.assertEquals(
+        Assert.assertEquals(
             Option.nothing(),
             Tree($(5), ¥_, ¥_).test(tree)
         );
-        Assertions.assertIterableEquals(
+        Assert.assertIterableEquals(
             Tuple(new BinaryNode<>(1)),
             Tree(¥_, ¥_, Tree).test(tree).get()
         );
-        Assertions.assertIterableEquals(
+        Assert.assertIterableEquals(
             Tuple(new BinaryNode<>(-2), null),
             Tree(¥_, Tree(¥_, Tree, ¥nil), ¥_).test(tree).get()
         );
-        Assertions.assertEquals(
+        Assert.assertEquals(
             Option.nothing(),
             Tree($a, ¥nil, ¥nil).test(tree)
         );
-        Assertions.assertIterableEquals(
+        Assert.assertIterableEquals(
             Tuple(25, null, null),
             Tree($a, ¥nil, ¥nil).test(leaf).get()
         );

@@ -5,8 +5,8 @@
 package com.bishabosha.caffeine.functional;
 
 import com.bishabosha.caffeine.functional.immutable.Tree;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.Assert;
+import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -24,21 +24,21 @@ public class MatcherTest {
 
     @Test
     void testBasic() {
-        Assertions.assertEquals(
+        Assert.assertEquals(
             Option.of(6.28),
             match(3.14).option(
                 with($(3.14), (Double x) -> x * 2.0),
                 with($(2.72), (Double x) -> x / 2.0)
             )
         );
-        Assertions.assertEquals(
+        Assert.assertEquals(
             Option.of(3.25),
             match(6.5).option(
                 with($(3.14),   (Double x) -> x * 2.0),
                 with($x,        (Double $x) -> $x / 2.0)
             )
         );
-        Assertions.assertEquals(
+        Assert.assertEquals(
             Option.of(Math.PI),
             match(3.14).option(
                 with($(3.14), () -> Math.PI),
@@ -50,15 +50,15 @@ public class MatcherTest {
             with($("spicy"), x -> "Thats one " + x + " meme"),
             with($("hw"), x -> "Hello World")
         );
-        Assertions.assertEquals(
+        Assert.assertEquals(
             "Hello World",
             match("hw").of(cases)
         );
-        Assertions.assertEquals(
+        Assert.assertEquals(
             "Thats one spicy meme",
             match("spicy").of(cases)
         );
-        Assertions.assertEquals(
+        Assert.assertEquals(
             "Nothing Found",
             match("jsdkjfksj").option(cases).orElse("Nothing Found")
         );
@@ -75,35 +75,35 @@ public class MatcherTest {
             with($any(2, 2L, 2.0, "2", "2.0", BigInteger.valueOf(2), BigDecimal.valueOf(2)), () -> "Two"),
             with($any(3, 3L, 3.0, "3", "3.0", BigInteger.valueOf(3), BigDecimal.valueOf(3)), () -> "Three")
         );
-        Assertions.assertEquals(
+        Assert.assertEquals(
             "View Help",
             match("-h").of(cases)
         );
-        Assertions.assertEquals(
+        Assert.assertEquals(
             "View Help",
             match("--help").of(cases)
         );
-        Assertions.assertEquals(
+        Assert.assertEquals(
             "View Version",
             match("-v").of(cases)
         );
-        Assertions.assertEquals(
+        Assert.assertEquals(
             "View Version",
             match("--version").of(cases)
         );
-        Assertions.assertEquals(
+        Assert.assertEquals(
             "Malformatted Args",
             match("-u").option(cases).orElse("Malformatted Args")
         );
-        Assertions.assertEquals(
+        Assert.assertEquals(
             "One",
             match(BigInteger.ONE).of(numCases)
         );
-        Assertions.assertEquals(
+        Assert.assertEquals(
             "Two",
             match(BigDecimal.valueOf(2)).of(numCases)
         );
-        Assertions.assertEquals(
+        Assert.assertEquals(
             "Three",
             match("3.0").of(numCases)
         );
@@ -132,31 +132,31 @@ public class MatcherTest {
         Tree<Integer> tree = getTree();
         Tree<Integer> leaf = Tree(25, Leaf(), Leaf());
 
-        Assertions.assertEquals(
+        Assert.assertEquals(
             Option.of(1),
             match(tree).option(
                 with(Node($x, ¥_, ¥_), (Integer $x) -> $x + 1)
             )
         );
-        Assertions.assertEquals(
+        Assert.assertEquals(
             Tree(1, Leaf(), Leaf()),
             match(tree).option(
                 with(¥n_¥l_$r, $r -> $r)
             ).get()
         );
-        Assertions.assertEquals(
+        Assert.assertEquals(
             Option.of(0),
             match(tree).option(
                 with(Node(¥_, $x, $y), this::sumNodes)
             )
         );
-        Assertions.assertEquals(
+        Assert.assertEquals(
             tree,
             match(tree).of(
                 with(Node($x, $y, $z), this::makeTree)
             )
         );
-        Assertions.assertEquals(
+        Assert.assertEquals(
             Option.of(25),
             match(leaf).option(
                 with(Node($x, ¥leaf, ¥leaf), $x -> $x)
@@ -166,20 +166,20 @@ public class MatcherTest {
 
     @Test
     void testRecursion() {
-        Assertions.assertEquals(
+        Assert.assertEquals(
             3,
             getTree().height()
         );
-        Assertions.assertEquals(
+        Assert.assertEquals(
             Leaf(),
             ((Tree<Integer>)Leaf()).remove(78)
         );
-        Assertions.assertEquals(
+        Assert.assertEquals(
             getTree(),
             getTree()
         );
         Tree<String> hello = ((Tree<String>)Leaf()).add("Hello");
-        Assertions.assertEquals(
+        Assert.assertEquals(
             Tree("Hello", Leaf(), Leaf()),
             hello
         );
@@ -201,14 +201,14 @@ public class MatcherTest {
     @Test
     void testGuards() {
         int x = 3;
-        Assertions.assertEquals(
+        Assert.assertEquals(
             "Three",
             guardUnsafe(
                 when(() -> x == 3, () -> "Three"),
                 edge(() -> "?")
             )
         );
-        Assertions.assertEquals(
+        Assert.assertEquals(
             "?",
             guardUnsafe(
                 when(() -> 1 < 0, () -> "impossible"),
@@ -220,7 +220,7 @@ public class MatcherTest {
     @Test
     void testPredicates() {
         Option<Integer> option = Option.of(10);
-        Assertions.assertEquals(
+        Assert.assertEquals(
             10,
                 (int) match(option).of(
                 with(Some($x), (Integer $x) -> guardUnsafe(
