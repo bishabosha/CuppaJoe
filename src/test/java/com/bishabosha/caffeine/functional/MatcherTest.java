@@ -4,8 +4,6 @@
 
 package com.bishabosha.caffeine.functional;
 
-import com.bishabosha.caffeine.functional.Case;
-import com.bishabosha.caffeine.functional.Option;
 import com.bishabosha.caffeine.functional.immutable.Tree;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -13,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import static com.bishabosha.caffeine.functional.Matcher.guard;
 import static com.bishabosha.caffeine.functional.Matcher.guardUnsafe;
 import static com.bishabosha.caffeine.functional.Option.Some;
 import static com.bishabosha.caffeine.functional.Pattern.*;
