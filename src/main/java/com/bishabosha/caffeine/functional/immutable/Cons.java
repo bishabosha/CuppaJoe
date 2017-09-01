@@ -8,10 +8,12 @@ import com.bishabosha.caffeine.base.AbstractBase;
 import com.bishabosha.caffeine.functional.*;
 import com.bishabosha.caffeine.functional.functions.Consume3;
 import com.bishabosha.caffeine.functional.functions.Func3;
+import com.bishabosha.caffeine.functional.tuples.Tuple;
 import com.bishabosha.caffeine.functional.tuples.Tuple2;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static com.bishabosha.caffeine.functional.Case.*;
 import static com.bishabosha.caffeine.functional.Matcher.guardUnsafe;
@@ -214,19 +216,21 @@ public class Cons<E> extends AbstractBase<E> {
 
     /**
      * Iterates through the elements of the Cons, passing an accumulator, the next element and the tail.
-     * @param accumulator The accumulator that may be modified by the consumer.
+     * @param identity Supplies the accumulator that may be modified by the consumer.
      * @param consumer A function taking the accumulator, the head of the Cons, and the tail of the Cons
      * @param <O> the type of the accumulator.
      * @return The accumulator with whatever modifications have been applied.
      */
-    public <O> O loop(O accumulator, Func3<O, E, Cons<E>, Cons<E>> consumer) {
-        Cons<E> cons = this;
-        while (!cons.isEmpty()) {
-            cons = cons.pop()
-                       .map(t -> t.map((elem, cons2) -> consumer.apply(accumulator, elem, cons2)))
-                       .orElse(Cons.empty());
+    public <O> O loop(Supplier<O> identity, Func3<O, Cons<E>, E, Tuple2<O, Cons<E>>> consumer) {
+        Tuple2<O, Cons<E>> accStackPair = Tuple(identity.get(), this);
+        while (!accStackPair.$2().isEmpty()) {
+            final O acc = accStackPair.$1();
+            final Cons<E> stack = accStackPair.$2();
+            accStackPair = stack.pop()
+                                .map(t -> t.map((head, tail) -> consumer.apply(acc, tail, head)))
+                                .orElse(Tuple(null, Cons.empty()));
         }
-        return accumulator;
+        return Option.ofUnknown(accStackPair.$1()).orElseGet(identity);
     }
 
     /**
