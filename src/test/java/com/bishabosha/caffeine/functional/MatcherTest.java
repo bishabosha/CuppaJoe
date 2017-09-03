@@ -34,8 +34,8 @@ public class MatcherTest {
         Assert.assertEquals(
             Option.of(3.25),
             match(6.5).option(
-                with($(3.14),   (Double x) -> x * 2.0),
-                with($x,        (Double $x) -> $x / 2.0)
+                with($(3.14), (Double x) -> x * 2.0),
+                with($x,     (Double $x) -> $x / 2.0)
             )
         );
         Assert.assertEquals(
@@ -110,19 +110,19 @@ public class MatcherTest {
     }
 
     Tree<Integer> getTree() {
-        return Tree(
+        return Tree.Node(
             0,
-            Tree(
+            Tree.Node(
             -1,
-                Tree(
+                Tree.Node(
                 -2,
-                    Leaf(),
-                    Leaf()),
-                Leaf()),
-            Tree(
+                    leaf(),
+                    leaf()),
+                leaf()),
+            Tree.Node(
                 1,
-                Leaf(),
-                Leaf())
+                leaf(),
+                leaf())
         );
     }
 
@@ -130,7 +130,7 @@ public class MatcherTest {
     public void testPatterns() {
 
         Tree<Integer> tree = getTree();
-        Tree<Integer> leaf = Tree(25, Leaf(), Leaf());
+        Tree<Integer> leaf = Tree.Node(25, leaf(), leaf());
 
         Assert.assertEquals(
             Option.of(1),
@@ -139,9 +139,9 @@ public class MatcherTest {
             )
         );
         Assert.assertEquals(
-            Tree(1, Leaf(), Leaf()),
+            Tree.Node(1, leaf(), leaf()),
             match(tree).option(
-                with(¥n_¥l_$r, $r -> $r)
+                with(Node(¥_, ¥_, $r), $r -> $r)
             ).get()
         );
         Assert.assertEquals(
@@ -159,7 +159,7 @@ public class MatcherTest {
         Assert.assertEquals(
             Option.of(25),
             match(leaf).option(
-                with(Node($x, ¥leaf, ¥leaf), $x -> $x)
+                with(Node($x, Leaf(), Leaf()), $x -> $x)
             )
         );
     }
@@ -171,30 +171,30 @@ public class MatcherTest {
             getTree().height()
         );
         Assert.assertEquals(
-            Leaf(),
-            ((Tree<Integer>)Leaf()).remove(78)
+            leaf(),
+            ((Tree<Integer>) leaf()).remove(78)
         );
         Assert.assertEquals(
             getTree(),
             getTree()
         );
-        Tree<String> hello = ((Tree<String>)Leaf()).add("Hello");
+        Tree<String> hello = ((Tree<String>) leaf()).add("Hello");
         Assert.assertEquals(
-            Tree("Hello", Leaf(), Leaf()),
+            Tree.Node("Hello", leaf(), leaf()),
             hello
         );
     }
 
     Tree<Integer> makeTree(int x, Tree<Integer> left, Tree<Integer> right) {
-        return Tree(x, left, right);
+        return Tree.Node(x, left, right);
     }
 
     int sumNodes(Tree<Integer> x, Tree<Integer> y) {
         return match(Tuple(x, y)).of(
-            with(Tuple(¥leaf, ¥leaf),                               () -> 0),
-            with(Tuple($n_¥l_¥r, $n_¥l_¥r), (Integer $n1, Integer $n2) -> $n1 + $n2),
-            with(Tuple(¥leaf, $n_¥l_¥r),                  (Integer $n) -> $n),
-            with(Tuple($n_¥l_¥r, ¥leaf),                  (Integer $n) -> $n)
+            with(Tuple(Leaf(), Leaf()),                                             () -> 0),
+            with(Tuple(Node($n, ¥_, ¥_), Node($n, ¥_, ¥_)), (Integer $n1, Integer $n2) -> $n1 + $n2),
+            with(Tuple(Leaf(), Node($n, ¥_, ¥_)),                         (Integer $n) -> $n),
+            with(Tuple(Node($n, ¥_, ¥_), Leaf()),                         (Integer $n) -> $n)
         );
     }
 

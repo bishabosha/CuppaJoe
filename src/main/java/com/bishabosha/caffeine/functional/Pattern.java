@@ -15,7 +15,7 @@ public interface Pattern {
 
     Option<PatternResult> test(Object obj);
 
-    Option<PatternResult> PASS = Option.of(PatternResult.of());
+    Option<PatternResult> PASS = Option.of(PatternResult.create());
 
     Option<PatternResult> FAIL = Option.nothing();
 
@@ -37,15 +37,14 @@ public interface Pattern {
 
     Pattern ¥EQ = x -> x instanceof Integer && ((Integer)x) == 0 ? PASS : FAIL;
 
-    Pattern ¥true = x -> x.equals(true) ? PASS : FAIL;
+    Pattern ¥true = x -> Objects.equals(x, true) ? PASS : FAIL;
 
-    Pattern ¥false = x -> x.equals(false) ? PASS : FAIL;
+    Pattern ¥false = x -> Objects.equals(x, false) ? PASS : FAIL;
 
-    Pattern ¥nil = x -> x == null || Optional.empty().equals(x) || x == Tuple.EMPTY ? bind(x) : FAIL;
-
-    Pattern $null = x -> x == null ? bind(x) : FAIL;
+    Pattern ¥null = x -> x == null ? PASS : FAIL;
 
     Pattern ¥_ = x -> PASS;
+
     Pattern $a = x -> bind(x);
     Pattern $b = $a;
     Pattern $c = $a;
@@ -54,18 +53,15 @@ public interface Pattern {
     Pattern $f = $a;
     Pattern $g = $a;
     Pattern $h = $a;
-    Pattern $i = $a;
-    Pattern $j = $a;
-    Pattern $k = $a;
-    Pattern $l = $a;
+
     Pattern $n = $a;
+    Pattern $l = $a;
     Pattern $r = $a;
-    Pattern $s = $a;
-    Pattern $w = $a;
+
     Pattern $x = $a;
     Pattern $y = $a;
     Pattern $z = $a;
-    Pattern $ws = $a;
+
     Pattern $xs = $a;
     Pattern $ys = $a;
     Pattern $zs = $a;
@@ -89,23 +85,11 @@ public interface Pattern {
     }
 
     static Pattern $(Object toMatch) {
-        return x -> x != null && x.equals(toMatch) ? bind(x) : FAIL;
+        return x -> Objects.equals(x, toMatch) ? bind(x) : FAIL;
     }
 
     static Pattern $NOT(Object toMatch) {
-        return x -> x != null && !x.equals(toMatch) ? bind(x) : FAIL;
-    }
-
-    static Pattern $(Predicate toTest) {
-        return x -> toTest.test(x) ? bind(x) : FAIL;
-    }
-
-    static Pattern ¥(Predicate toTest) {
-        return x -> toTest.test(x) ? PASS : FAIL;
-    }
-
-    static Pattern ¥(BooleanSupplier toTest) {
-        return x -> toTest.getAsBoolean() ? PASS : FAIL;
+        return x -> !Objects.equals(x, toMatch) ? bind(x) : FAIL;
     }
 
     static <R> Pattern $any(R... values) {

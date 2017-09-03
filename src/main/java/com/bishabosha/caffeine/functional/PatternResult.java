@@ -40,8 +40,8 @@ public class PatternResult extends AbstractBase<Object> {
         return list.contains(o);
     }
 
-    public Object get(int index) {
-        return list.get(index);
+    public <T> T get(int index) {
+        return (T) list.get(index);
     }
 
     public boolean add(Object obj) {
