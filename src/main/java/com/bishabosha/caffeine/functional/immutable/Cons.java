@@ -382,6 +382,9 @@ public class Cons<E> extends AbstractBase<E> {
 
             @Override
             public E next() {
+                if (!update && !hasNext) {
+                    throw new NoSuchElementException();
+                }
                 update = true;
                 return current;
             }
