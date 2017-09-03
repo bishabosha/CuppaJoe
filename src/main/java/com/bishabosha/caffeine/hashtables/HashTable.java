@@ -9,6 +9,7 @@ import java.util.Iterator;
 
 import com.bishabosha.caffeine.base.AbstractSet;
 import com.bishabosha.caffeine.base.Equator;
+import com.bishabosha.caffeine.base.Iterables;
 import com.bishabosha.caffeine.lists.LinkedList;
 import com.bishabosha.caffeine.sequences.SequenceOf;
 import com.bishabosha.caffeine.sequences.Sequence;
@@ -189,20 +190,18 @@ public class HashTable<E> extends AbstractSet<E> {
 
 	@Override
 	public Iterator<E> iterator() {
-		return new Iterator<E>() {
+		return new Iterables.Lockable<E>() {
 
 			private int index = 0;
 			private Iterator<E> it = null;
 			private E current;
 
-			@Override
-			public boolean hasNext() {
+			public boolean hasNextSupplier() {
 				getNextIterator();
 				return null == it ? false : it.hasNext();
 			}
 
-			@Override
-			public E next() {
+			public E nextSupplier() {
 				return current = it.next();
 			}
 

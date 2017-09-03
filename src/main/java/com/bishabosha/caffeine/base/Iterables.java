@@ -21,6 +21,36 @@ import java.util.function.*;
 
 public class Iterables {
 
+    public static abstract class Lockable<E> implements Iterator<E> {
+        private boolean hasNext = false;
+        private boolean update = true;
+
+        @Override
+        public boolean hasNext() {
+            if (update) {
+                update = false;
+                hasNext = hasNextSupplier();
+            }
+            return hasNext;
+        }
+
+        @Override
+        public E next() {
+            if (update) {
+                hasNext();
+            }
+            if (!update && !hasNext) {
+                throw new NoSuchElementException();
+            }
+            update = true;
+            return nextSupplier();
+        }
+
+        public abstract boolean hasNextSupplier();
+
+        public abstract E nextSupplier();
+    }
+
     public static <R> R next(Iterator<R> it) {
         return it.hasNext() ? it.next() : null;
     }
@@ -32,16 +62,15 @@ public class Iterables {
     public static <R> Iterable<R> iterate(R identity,
                                           Predicate<R> terminatingCondition,
                                           UnaryOperator<R> accumulator) {
-        return () -> new Iterator<R>() {
-            R current = identity;
+        return () -> new Lockable<R>() {
+            private R current = identity;
 
             @Override
-            public boolean hasNext() {
+            public boolean hasNextSupplier() {
                 return !terminatingCondition.test(current);
             }
 
-            @Override
-            public R next() {
+            public R nextSupplier() {
                 R result = current;
                 current = accumulator.apply(current);
                 return result;
@@ -52,7 +81,7 @@ public class Iterables {
     public static <R> Iterable<R> fromOptional(Optional<R> optional) {
         return () -> new Iterator<R>() {
 
-            boolean unWrapped = false;
+            private boolean unWrapped = false;
 
             @Override
             public boolean hasNext() {
@@ -61,6 +90,9 @@ public class Iterables {
 
             @Override
             public R next() {
+                if (unWrapped) {
+                    throw new NoSuchElementException();
+                }
                 unWrapped = optional.isPresent();
                 return unWrapped ? optional.get() : null;
             }
@@ -103,23 +135,6 @@ public class Iterables {
         return wrap(values);
     }
 
-    public static <R> Iterable<R> ofSuppliers(Supplier<R>... values) {
-        return () -> new Iterator<R>() {
-
-            private int i = 0;
-
-            @Override
-            public boolean hasNext() {
-                return i < values.length;
-            }
-
-            @Override
-            public R next() {
-                return values[i++].get();
-            }
-        };
-    }
-
     public static Iterable empty = () -> new Iterator() {
         @Override
         public boolean hasNext() {
@@ -134,17 +149,17 @@ public class Iterables {
 
 
     public static <R> Iterable<R> wrap(R[] values) {
-        return () -> new Iterator<R>() {
+        return () -> new Lockable<R>() {
 
             private int i = 0;
 
             @Override
-            public boolean hasNext() {
+            public boolean hasNextSupplier() {
                 return i < values.length;
             }
 
             @Override
-            public R next() {
+            public R nextSupplier() {
                 return values[i++];
             }
         };
@@ -155,17 +170,17 @@ public class Iterables {
     }
 
     public static <R> Iterable<R> cycle(Iterable<R> source) {
-        return () -> new Iterator<R>() {
+        return () -> new Lockable<R>() {
 
             Iterator<R> it = getIt();
 
             @Override
-            public boolean hasNext() {
+            public boolean hasNextSupplier() {
                 return it.hasNext() || (it = getIt()).hasNext();
             }
 
             @Override
-            public R next() {
+            public R nextSupplier() {
                 return it.next();
             }
 
@@ -284,141 +299,5 @@ public class Iterables {
             collection.add(i);
         }
         return collection;
-    }
-
-    public static Iterable<Integer> wrap(int[] values) {
-        return () -> new Iterator<Integer>() {
-
-            private int i = 0;
-
-            @Override
-            public boolean hasNext() {
-                return i < values.length;
-            }
-
-            @Override
-            public Integer next() {
-                return values[i++];
-            }
-        };
-    }
-
-    public static Iterable<Long> wrap(long[] values) {
-        return () -> new Iterator<Long>() {
-
-            private int i = 0;
-
-            @Override
-            public boolean hasNext() {
-                return i < values.length;
-            }
-
-            @Override
-            public Long next() {
-                return values[i++];
-            }
-        };
-    }
-
-    public static Iterable<Float> wrap(float[] values) {
-        return () -> new Iterator<Float>() {
-
-            private int i = 0;
-
-            @Override
-            public boolean hasNext() {
-                return i < values.length;
-            }
-
-            @Override
-            public Float next() {
-                return values[i++];
-            }
-        };
-    }
-
-    public static Iterable<Character> wrap(char[] values) {
-        return () -> new Iterator<Character>() {
-
-            private int i = 0;
-
-            @Override
-            public boolean hasNext() {
-                return i < values.length;
-            }
-
-            @Override
-            public Character next() {
-                return values[i++];
-            }
-        };
-    }
-
-    public static Iterable<Double> wrap(double[] values) {
-        return () -> new Iterator<Double>() {
-
-            private int i = 0;
-
-            @Override
-            public boolean hasNext() {
-                return i < values.length;
-            }
-
-            @Override
-            public Double next() {
-                return values[i++];
-            }
-        };
-    }
-
-    public static Iterable<Short> wrap(short[] values) {
-        return () -> new Iterator<Short>() {
-
-            private int i = 0;
-
-            @Override
-            public boolean hasNext() {
-                return i < values.length;
-            }
-
-            @Override
-            public Short next() {
-                return values[i++];
-            }
-        };
-    }
-
-    public static Iterable<Boolean> wrap(boolean[] values) {
-        return () -> new Iterator<Boolean>() {
-
-            private int i = 0;
-
-            @Override
-            public boolean hasNext() {
-                return i < values.length;
-            }
-
-            @Override
-            public Boolean next() {
-                return values[i++];
-            }
-        };
-    }
-
-    public static Iterable<Byte> wrap(byte[] values) {
-        return () -> new Iterator<Byte>() {
-
-            private int i = 0;
-
-            @Override
-            public boolean hasNext() {
-                return i < values.length;
-            }
-
-            @Override
-            public Byte next() {
-                return values[i++];
-            }
-        };
     }
 }

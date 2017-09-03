@@ -5,6 +5,7 @@
 package com.bishabosha.caffeine.lists;
 
 import com.bishabosha.caffeine.base.AbstractCollection;
+import com.bishabosha.caffeine.base.Iterables;
 import com.bishabosha.caffeine.base.SequenceHelper;
 
 import java.util.*;
@@ -207,20 +208,23 @@ public abstract class AbstractIterableList<E> extends AbstractCollection<E> impl
 	@Override
 	public Iterator<E> iterator() {
 		resetCurrentTop();
-		return new Iterator<E>() {
+		return new Iterables.Lockable<E>() {
 			boolean returnHead = true;
+
 			@Override
-			public boolean hasNext() {
+			public boolean hasNextSupplier() {
 				return returnHead ? setCurrent() : setNext();
 			}
+
 			@Override
-			public E next() {
+			public E nextSupplier() {
 				if (returnHead) {
 					returnHead = false;
 					return currentValue();
 				}
 				return advanceForward();
 			}
+
 			@Override
 			public void remove() {
 				AbstractIterableList.this.removeCurrentValue();
@@ -231,14 +235,16 @@ public abstract class AbstractIterableList<E> extends AbstractCollection<E> impl
 	@Override
 	public Iterable<E> reversed() {
 		resetCurrentTail();
-		return () -> new Iterator<E>() {
+		return () -> new Iterables.Lockable<E>() {
             boolean returnTail = true;
+
             @Override
-            public boolean hasNext() {
+            public boolean hasNextSupplier() {
                 return returnTail ? setCurrent() : setPrevious();
             }
+
             @Override
-            public E next() {
+            public E nextSupplier() {
                 if (returnTail) {
                     returnTail = false;
                     return currentValue();

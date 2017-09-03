@@ -6,6 +6,7 @@ package com.bishabosha.caffeine.pipelines;
 
 import java.util.*;
 
+import com.bishabosha.caffeine.base.Iterables;
 import com.bishabosha.caffeine.functional.Option;
 import com.bishabosha.caffeine.lists.LinkedList;
 
@@ -25,13 +26,13 @@ class TerminalNode<I, O> extends AbstractNode<O, O> implements Iterable<O>{
     public Iterator<O> iterator() {
         return head == null ?
                 (Iterator<O>) sourceIterable.iterator() :
-                new Iterator<O>() {
+                new Iterables.Lockable<O>() {
             Iterator<I> source = sourceIterable.iterator();
             boolean sourceHasNext = false;
             O current;
 
             @Override
-            public boolean hasNext() {
+            public boolean hasNextSupplier() {
                 while (!willTerminate()) {
                     if (sourceHasNext = source.hasNext()) {
                         head.accept(Option.ofUnknown(source.next()));
@@ -47,7 +48,7 @@ class TerminalNode<I, O> extends AbstractNode<O, O> implements Iterable<O>{
             }
 
             @Override
-            public O next() {
+            public O nextSupplier() {
                 return current;
             }
         };
