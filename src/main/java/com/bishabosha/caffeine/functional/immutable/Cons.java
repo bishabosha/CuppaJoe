@@ -7,11 +7,11 @@ package com.bishabosha.caffeine.functional.immutable;
 import com.bishabosha.caffeine.base.AbstractBase;
 import com.bishabosha.caffeine.base.Iterables;
 import com.bishabosha.caffeine.functional.*;
+import com.bishabosha.caffeine.functional.functions.Func2;
 import com.bishabosha.caffeine.functional.functions.Func3;
 import com.bishabosha.caffeine.functional.tuples.Tuple2;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.bishabosha.caffeine.functional.Case.*;
@@ -23,7 +23,7 @@ import static com.bishabosha.caffeine.functional.tuples.Tuples.Tuple;
  * Immutable List
  * @param <E> the Type of the list
  */
-public class Cons<E> extends AbstractBase<Option<E>> {
+public class Cons<E> extends AbstractBase<Option<E>> implements Foldable<Option<E>> {
     private Option<E> head;
     private Cons<E> tail;
 
@@ -49,6 +49,10 @@ public class Cons<E> extends AbstractBase<Option<E>> {
      */
     public static <R> Cons<R> concat(R x, Cons<R> xs) {
         return new Cons<>(x, xs);
+    }
+
+    public static <R> Cons<R> of(R elem) {
+        return concat(elem, empty());
     }
 
     /**
@@ -96,14 +100,14 @@ public class Cons<E> extends AbstractBase<Option<E>> {
      * @return if this of is equivalent to the empty of tail.
      */
     public boolean isEmpty() {
-        return head == Option.nothing() && tail == null;
+        return head == null && tail == null;
     }
 
     /**
      * Private constructor for the empty instance
      */
     private Cons() {
-        head = Option.nothing();
+        head = null;
         tail = null;
     }
 
@@ -113,7 +117,11 @@ public class Cons<E> extends AbstractBase<Option<E>> {
      * @param tail The of that will act as the tail after the head.
      */
     private Cons(E head, Cons<E> tail) {
-        this.head = Option.ofUnknown(head);
+        this(Option.ofUnknown(head), tail);
+    }
+
+    private Cons(Option<E> headOpt, Cons<E> tail) {
+        this.head = headOpt;
         this.tail = Objects.requireNonNull(tail, "tail must be a non null Cons.");
     }
 
@@ -134,12 +142,27 @@ public class Cons<E> extends AbstractBase<Option<E>> {
         return concat(elem, this);
     }
 
+    private Cons<E> pushOpt(Option<E> optElem) {
+        return new Cons<>(optElem, this);
+    }
+
+    public Cons<E> append(E elem) {
+        return foldRight(of(elem), (x, xs) -> xs.pushOpt(x));
+    }
+
+    public List<E> toJavaList() {
+        return foldLeft(new ArrayList<>(), (x, xs) -> {
+            xs.add(x.orElse(null));
+            return xs;
+        });
+    }
+
     /**
      * Tries to split the of into a Tuple of its head and tail.
      * @return {@link Option#nothing()} if this is an empty of. Otherwise {@link Option} of a Tuple of the head and tail.
      */
     public Option<Tuple2<Option<E>, Cons<E>>> pop() {
-        return when(() -> !Objects.equals(tail, empty()), () -> Tuple(head, tail)).match();
+        return when(() -> !isEmpty(), () -> Tuple(head, tail)).match();
     }
 
     /**
@@ -148,16 +171,8 @@ public class Cons<E> extends AbstractBase<Option<E>> {
      * @return a new of instance with the element removed.
      */
     public Cons<E> remove(E elem) {
-        Option<E> toRemove = Option.ofUnknown(elem);
-        Cons<E> it = this;
-        Cons<E> buffer = empty();
-        while (!it.isEmpty()) {
-            if (!Objects.equals(it.head, toRemove)) {
-                buffer = buffer.push(it.head.orElse(null));
-            }
-            it = it.tail;
-        }
-        return buffer.reverse();
+        final Option<E> toRemove = Option.ofUnknown(elem);
+        return foldLeft(Cons.<E>empty(), (x, xs) -> Objects.equals(x, toRemove) ? xs : xs.pushOpt(x)).reverse();
     }
 
     /**
@@ -203,28 +218,33 @@ public class Cons<E> extends AbstractBase<Option<E>> {
     public int size() {
         Cons<E> cons = this;
         int size = 0;
-        while (Objects.nonNull(cons.tail)) {
+        while (!cons.isEmpty()) {
             size = size + 1;
             cons = cons.tail;
         }
         return size;
     }
 
+    @Override
     public Cons<E> reverse() {
         Cons<E> result = Cons.empty();
         Cons<E> buffer = this;
         while (!buffer.isEmpty()) {
-            result = result.push(buffer.head.orElse(null));
+            result = result.pushOpt(buffer.head);
             buffer = buffer.tail;
         }
         return result;
     }
 
     public Cons<E> take(int n) {
-        return takeInternal(n, "n");
+        return takeInternalResultBackwards(n, "n").reverse();
     }
 
-    private Cons<E> takeInternal(int n, String label) {
+    public Cons<E> takeRight(int n) {
+        return reverse().takeInternalResultBackwards(n, "n");
+    }
+
+    private Cons<E> takeInternalResultBackwards(int n, String label) {
         if (n < 0) {
             throw new IllegalArgumentException(label + " can't be less than zero.");
         }
@@ -235,10 +255,10 @@ public class Cons<E> extends AbstractBase<Option<E>> {
             if (it.isEmpty()) {
                 throw new IndexOutOfBoundsException(label + " exceeds size.");
             }
-            buffer = buffer.push(it.head.orElse(null));
+            buffer = buffer.pushOpt(it.head);
             it = it.tail;
         }
-        return buffer.reverse();
+        return buffer;
     }
 
     public Cons<E> subsequence(int from, int to) {
@@ -260,7 +280,7 @@ public class Cons<E> extends AbstractBase<Option<E>> {
             }
             it = it.tail;
         }
-        return it.takeInternal(to - from, "to");
+        return it.takeInternalResultBackwards(to - from, "to").reverse();
     }
 
     @Override
@@ -310,7 +330,7 @@ public class Cons<E> extends AbstractBase<Option<E>> {
 
             @Override
             public boolean hasNextSupplier() {
-                if (Objects.nonNull(cons.tail)) {
+                if (!cons.isEmpty()) {
                     current = cons.head;
                     cons = cons.tail;
                     return true;
@@ -325,31 +345,25 @@ public class Cons<E> extends AbstractBase<Option<E>> {
         };
     }
 
-    public Iterator<E> iteratorFlatten() {
-        return new Iterables.Lockable<E>() {
+    public Iterable<E> flatten() {
+        return () -> new Iterator<E>() {
 
-            E current = null;
-            Cons<E> cons = Cons.this;
+            Iterator<Option<E>> it = iterator();
 
             @Override
-            public boolean hasNextSupplier() {
-                if (Objects.nonNull(cons.tail)) {
-                    current = cons.head.orElse(null);
-                    cons = cons.tail;
-                    return true;
-                }
-                return false;
+            public boolean hasNext() {
+                return it.hasNext();
             }
 
             @Override
-            public E nextSupplier() {
-                return current;
+            public E next() {
+                return it.next().orElse(null);
             }
         };
     }
 
     @Override
     public String toString() {
-        return Iterables.toString('[', ']', iteratorFlatten());
+        return Iterables.toString('[', ']', flatten().iterator());
     }
 }

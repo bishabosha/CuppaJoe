@@ -34,25 +34,23 @@ public class Library {
 
     public static <T, O extends Iterable<T>> List<T> flatten(Class<O> flattenClass, O toFlatten) {
         return Cons.concat(toFlatten.iterator(), Cons.empty()).loop(
-            ArrayList::new,
-            (list, stack, optionIt) -> {
-                if (optionIt.isSome()) {
-                    T current;
-                    Iterator<T> next;
-                    final Iterator<T> it = optionIt.get();
-                    while (it.hasNext()) {
-                        current = it.next();
-                        while (flattenClass.isInstance(current) && (next = flattenClass.cast(current).iterator()).hasNext()) {
-                            current = next.next();
-                            stack = stack.push(next);
-                        }
-                        if (!flattenClass.isInstance(current)) {
-                            list.add(current);
+                ArrayList::new,
+                (list, stack, optionIt) -> {
+                    if (optionIt.isSome()) {
+                        final Iterator<T> it = optionIt.get();
+                        final T current;
+                        if (it.hasNext()) {
+                            current = it.next();
+                            stack = stack.push(it);
+                            if (!flattenClass.isInstance(current)) {
+                                list.add(current);
+                            } else {
+                                stack = stack.push(flattenClass.cast(current).iterator());
+                            }
                         }
                     }
-                }
-                return Tuple(list, stack);
-            });
+                    return Tuple(list, stack);
+                });
     }
 
     public static boolean anyEquals(Object obj, Object... others) {

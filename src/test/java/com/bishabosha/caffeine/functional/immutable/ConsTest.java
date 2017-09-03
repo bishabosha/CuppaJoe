@@ -41,6 +41,12 @@ public class ConsTest {
     }
 
     @Test
+    public void takeRightFiveFromCons10_noError() {
+        Cons<Integer> cons = Cons.of(1,2,3,4,5,6,7,8,9,10);
+        assertEquals(Cons.of(6,7,8,9,10), cons.takeRight(5));
+    }
+
+    @Test
     public void subsequence4To10OnCons10_noError() {
         Cons<Integer> cons = Cons.of(1,2,3,4,5,6,7,8,9,10);
         assertEquals(Cons.of(5,6,7,8,9,10), cons.subsequence(4,10));
@@ -75,10 +81,26 @@ public class ConsTest {
     }
 
     @Test
-    public void reverseWorks() {
+    public void reverse() {
         assertEquals(Cons.of(3,2,1), Cons.of(1,2,3).reverse());
         assertEquals(Cons.empty(), Cons.empty().reverse());
         assertEquals(Cons.of(1), Cons.of(1).reverse());
+    }
+
+    @Test
+    public void append() {
+        assertEquals(Cons.of(1), Cons.empty().append(1));
+        assertEquals(Cons.of(1,2,3), Cons.of(1).append(2).append(3));
+        assertEquals(Cons.of(1,2,3), Cons.concat(1, Cons.of(2)).append(3));
+        assertEquals(Cons.of(1,2,3), Cons.of(1,2).append(3));
+    }
+
+    @Test
+    public void remove() {
+        assertEquals(Cons.empty(), Cons.of(1).remove(1));
+        assertEquals(Cons.of(1), Cons.of(1,2).remove(2));
+        assertEquals(Cons.of(1,1,1), Cons.of(1,2,1,2,2,2,1).remove(2));
+        assertEquals(Cons.of(1), Cons.of(null, null, null, 1).remove(null));
     }
 
     @Test

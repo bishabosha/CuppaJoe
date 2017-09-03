@@ -102,8 +102,12 @@ public final class Option<O> extends AbstractArrayHelper<O> {
         return value != null ? Objects.requireNonNull(mapper.apply(value)) : nothing();
     }
 
-    public <T> Option<T> match(Case<O, T> toMatch) {
-        return value != null ? toMatch.match(value) : nothing();
+    public <T> Option<T> match(Pattern toMatch, Function<PatternResult, T> mapper) {
+        return value != null ? toMatch.test(value).map(mapper) : nothing();
+    }
+
+    public <T> Option<T> match(Case<O, T> matcher) {
+        return value != null ? matcher.match(value) : nothing();
     }
 
     public <T> Option<T> flatMatch(Case<O, Option<T>> toMatch) {

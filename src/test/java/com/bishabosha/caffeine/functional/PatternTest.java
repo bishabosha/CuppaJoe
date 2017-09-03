@@ -4,17 +4,23 @@
 
 package com.bishabosha.caffeine.functional;
 
+import com.bishabosha.caffeine.functional.immutable.Cons;
+import com.bishabosha.caffeine.functional.immutable.Tree;
+import com.bishabosha.caffeine.functional.tuples.Tuple2;
 import com.bishabosha.caffeine.trees.BinaryNode;
-import org.junit.Assert;
 import org.junit.Test;
 
+import static com.bishabosha.caffeine.functional.Option.Some;
 import static com.bishabosha.caffeine.functional.Pattern.*;
 import static com.bishabosha.caffeine.functional.PatternFactory.patternFor;
+import static com.bishabosha.caffeine.functional.immutable.Tree.Node;
+import static com.bishabosha.caffeine.functional.immutable.Tree.leaf;
 import static com.bishabosha.caffeine.functional.tuples.Tuples.Tuple;
+import static org.junit.Assert.*;
 
 public class PatternTest {
 
-    static Pattern Tree(Pattern node, Pattern left, Pattern right) {
+    static Pattern tree(Pattern node, Pattern left, Pattern right) {
         return patternFor(BinaryNode.class).testThree(
             Tuple(node, BinaryNode::getValue),
             Tuple(left, BinaryNode::getLeft),
@@ -22,7 +28,7 @@ public class PatternTest {
         );
     }
 
-    Pattern Tree = patternFor(BinaryNode.class).build();
+    Pattern tree = patternFor(BinaryNode.class).build();
 
     @Test
     public void testTree() {
@@ -34,33 +40,49 @@ public class PatternTest {
 
         BinaryNode<Integer> leaf = new BinaryNode<>(25);
 
-        Assert.assertEquals(
+        assertEquals(
             Option.nothing(),
-            Tree.test(0)
+            this.tree.test(0)
         );
-        Assert.assertEquals(
+        assertEquals(
             PatternResult.of(0),
-            Tree($(0), ¥_, ¥_).test(tree).get()
+            tree($(0), ¥_, ¥_).test(tree).get()
         );
-        Assert.assertEquals(
+        assertEquals(
             PatternResult.of(0),
-            Tree($a, ¥_, ¥_).test(tree).get()
+            tree($a, ¥_, ¥_).test(tree).get()
         );
-        Assert.assertEquals(
+        assertEquals(
             Option.nothing(),
-            Tree($(5), ¥_, ¥_).test(tree)
+            tree($(5), ¥_, ¥_).test(tree)
         );
-        Assert.assertEquals(
+        assertEquals(
             PatternResult.of(new BinaryNode<>(1)),
-            Tree(¥_, ¥_, Tree).test(tree).get()
+            tree(¥_, ¥_, this.tree).test(tree).get()
         );
-        Assert.assertEquals(
+        assertEquals(
             Option.nothing(),
-            Tree($a, ¥nil, ¥nil).test(tree)
+            tree($a, ¥nil, ¥nil).test(tree)
         );
-        Assert.assertEquals(
+        assertEquals(
             PatternResult.of(25, null, null),
-            Tree($a, ¥nil, ¥nil).test(leaf).get()
+            tree($a, ¥nil, ¥nil).test(leaf).get()
         );
+    }
+
+    @Test
+    public void flattenStress() {
+        final Pattern patt2Test;
+        final Tuple2<Option<Tree<Integer>>, Cons<Tree<Integer>>> underTest;
+
+        patt2Test = Tuple2.Tuple(Some(Node($x, ¥_, $y)), $xs);
+        underTest = Tuple(Option.of(Node(1, leaf(), leaf())), Cons.of(Tree.of(2)));
+
+        patt2Test.test(underTest).ifSome(results -> {
+            assertEquals(3, results.size());
+            assertEquals(1, (int) results.get(0));
+            assertEquals(leaf(), results.get(1));
+            assertEquals(Cons.of(Tree.of(2)), results.get(2));
+        });
     }
 }

@@ -57,42 +57,6 @@ public interface Case<I, O> {
         return () -> Option.of(valueSupplier.apply());
     }
 
-    /**
-     * Guard that will throw a {@link RuntimeException} of the supplied throwable if the test is positive.
-     * @param test Supply any test to check, for example an index out of bounds.
-     * @param toThrow A Throwable error that will be thrown if the test passes
-     * @param <O> The expected type for the guard block
-     * @return A Guard that will throw the throwable if the test passes,
-     * otherwise will supply {@link Option#nothing()}
-     * @throws RuntimeException if the test passes.
-     */
-    static <O> Guard<O> thro(BooleanSupplier test, Supplier<Throwable> toThrow) {
-        return () -> {
-            if (test.getAsBoolean()) {
-                throw new RuntimeException(toThrow.get());
-            }
-            return Option.nothing();
-        };
-    }
-
-    /**
-     * Case that will throw a {@link RuntimeException} of the supplied throwable if the pattern matches.
-     * @param matcher A Pattern to match on the input variable
-     * @param toThrow A Throwable error that will be thrown if the pattern matches
-     * @param <I> The input type of the Case
-     * @param <O> The expected output type of the case block
-     * @return {@link Option#nothing()} if the pattern does not match
-     * @throws RuntimeException if the pattern matches
-     */
-    static <I, O> Case<I, O> thro(Pattern matcher, Supplier<Throwable> toThrow) {
-        return x -> {
-            if (matcher.test(x).isSome()) {
-                throw new RuntimeException(toThrow.get());
-            }
-            return Option.nothing();
-        };
-    }
-
     static <I, O> Case<I, O>
     with(Pattern matcher, Func0<O> binder) {
         return base(matcher, t -> binder.apply());
@@ -100,55 +64,55 @@ public interface Case<I, O> {
 
     static <I, O, A> Case<I, O>
     with(Pattern matcher, Func1<A, O> binder) {
-        return base(matcher, l -> binder.apply((A) l.get(0)));
+        return base(matcher, l -> binder.apply(l.get(0)));
     }
 
     static <I, O, A, B> Case<I, O>
     with(Pattern matcher, Func2<A, B, O> binder) {
         return base(matcher, l ->
-            binder.apply((A) l.get(0), (B) l.get(1)));
+            binder.apply(l.get(0), l.get(1)));
     }
 
     static <I, O, A, B, C> Case<I, O>
     with(Pattern matcher, Func3<A, B, C, O> binder) {
         return base(matcher, l ->
-            binder.apply((A) l.get(0), (B) l.get(1), (C) l.get(2)));
+            binder.apply(l.get(0), l.get(1), l.get(2)));
     }
 
     static <I, O, A, B, C, D> Case<I, O>
     with(Pattern matcher, Func4<A, B, C, D, O> binder) {
         return base(matcher, l ->
-            binder.apply((A) l.get(0), (B) l.get(1), (C) l.get(2),
-                (D) l.get(3)));
+            binder.apply(l.get(0), l.get(1), l.get(2),
+                    l.get(3)));
     }
 
     static <I, O, A, B, C, D, E> Case<I, O>
     with(Pattern matcher, Func5<A, B, C, D, E, O> binder) {
         return base(matcher, l ->
-            binder.apply((A) l.get(0), (B) l.get(1), (C) l.get(2),
-                (D) l.get(3), (E) l.get(4)));
+            binder.apply(l.get(0), l.get(1), l.get(2),
+                    l.get(3), l.get(4)));
     }
 
     static <I, O, A, B, C, D, E, F> Case<I, O>
     with(Pattern matcher, Func6<A, B, C, D, E, F, O> binder) {
         return base(matcher, l ->
-            binder.apply((A) l.get(0), (B) l.get(1), (C) l.get(2),
-                (D) l.get(3), (E) l.get(4), (F) l.get(5)));
+            binder.apply(l.get(0), l.get(1), l.get(2),
+                    l.get(3), l.get(4), l.get(5)));
     }
 
     static <I, O, A, B, C, D, E, F, G> Case<I, O>
     with(Pattern matcher, Func7<A, B, C, D, E, F, G, O> binder) {
         return base(matcher, l ->
-            binder.apply((A) l.get(0), (B) l.get(1), (C) l.get(2),
-                (D) l.get(3), (E) l.get(4), (F) l.get(5), (G) l.get(6)));
+            binder.apply(l.get(0), l.get(1), l.get(2),
+                    l.get(3), l.get(4), l.get(5), l.get(6)));
     }
 
     static <I, O, A, B, C, D, E, F, G, H> Case<I, O>
     with(Pattern matcher, Func8<A, B, C, D, E, F, G, H, O> binder) {
         return base(matcher, l ->
-            binder.apply((A) l.get(0), (B) l.get(1), (C) l.get(2),
-                (D) l.get(3), (E) l.get(4), (F) l.get(5), (G) l.get(6),
-                (H) l.get(7)));
+            binder.apply(l.get(0), l.get(1), l.get(2),
+                    l.get(3), l.get(4), l.get(5), l.get(6),
+                    l.get(7)));
     }
 
     static <I, O> Case<I, O> base(Pattern matcher, Function<PatternResult, O> mapper) {

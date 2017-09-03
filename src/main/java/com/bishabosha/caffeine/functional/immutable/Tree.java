@@ -4,19 +4,23 @@
 
 package com.bishabosha.caffeine.functional.immutable;
 
-import com.bishabosha.caffeine.functional.Library;
-import com.bishabosha.caffeine.functional.Option;
-import com.bishabosha.caffeine.functional.Pattern;
-import com.bishabosha.caffeine.functional.PatternResult;
+import com.bishabosha.caffeine.base.Iterables;
+import com.bishabosha.caffeine.functional.*;
+import com.bishabosha.caffeine.functional.tuples.Tuples;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
-import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 import static com.bishabosha.caffeine.functional.Case.*;
 import static com.bishabosha.caffeine.functional.Matcher.guardUnsafe;
 import static com.bishabosha.caffeine.functional.Matcher.match;
+import static com.bishabosha.caffeine.functional.Option.Some;
 import static com.bishabosha.caffeine.functional.Pattern.*;
 import static com.bishabosha.caffeine.functional.PatternFactory.patternFor;
+import static com.bishabosha.caffeine.functional.tuples.Tuple2.Tuple;
 import static com.bishabosha.caffeine.functional.tuples.Tuples.Tuple;
 
 /**
@@ -30,56 +34,18 @@ public class Tree<E extends Comparable<E>> {
      */
     private static final Tree<?> TREE_LEAF = new Tree<>(null, null, null);
 
-    private static final Predicate<Tree> isLeaf =
-        t -> t == TREE_LEAF || Library.allEqual(null, t.node, t.left, t.right);
-
     /**
      * This will check {@link Tree#node} {@link Tree#left} and {@link Tree#right} for <b>null</b> without binding.
      */
-    public static final Pattern ¥leaf = x -> Option.of(x)
-                                                   .cast(Tree.class)
-                                                   .filter(isLeaf)
-                                                   .flatMap(t -> Pattern.PASS);
+    public static final Pattern Leaf() {
+        return x -> Option.of(x)
+                          .cast(Tree.class)
+                          .filter(Tree::isLeaf)
+                          .flatMap(t -> Pattern.PASS);
+    }
 
     /**
-     * For use after {@link Tree#¥leaf}. This will bind {@link Tree#node} without checks for null
-     */
-    public static final Pattern $n_¥l_¥r = x -> x instanceof Tree ? Pattern.bind(((Tree)x).node) : Pattern.FAIL;
-
-    /**
-     * For use after {@link Tree#¥leaf}. This will bind {@link Tree#left} without checks for null
-     */
-    public static final Pattern ¥n_$l_¥r = x -> x instanceof Tree ? Pattern.bind(((Tree)x).left) : Pattern.FAIL;
-
-    /**
-     * For use after {@link Tree#¥leaf}. This will bind {@link Tree#right} without checks for null
-     */
-    public static final Pattern ¥n_¥l_$r = x -> x instanceof Tree ? Pattern.bind(((Tree)x).right) : Pattern.FAIL;
-
-    /**
-     * For use after {@link Tree#¥leaf}. This will bind {@link Tree#node} {@link Tree#left} and {@link Tree#right} without checks for null
-     */
-    public static final Pattern $n_$l_$r = x -> {
-        if (x instanceof Tree) {
-            final Tree t = ((Tree)x);
-            return Option.of(PatternResult.of(t.node, t.left, t.right));
-        }
-        return Pattern.FAIL;
-    };
-
-    /**
-     * For use after {@link Tree#¥leaf}. This will bind {@link Tree#left} and {@link Tree#right} without checks for null
-     */
-    public static final Pattern ¥n_$l_$r = x -> {
-        if (x instanceof Tree) {
-            final Tree t = ((Tree)x);
-            return Option.of(PatternResult.of(t.left, t.right));
-        }
-        return Pattern.FAIL;
-    };
-
-    /**
-     * For use after {@link Tree#¥leaf}. This will apply patterns to {@link Tree#node} {@link Tree#left} and {@link Tree#right}
+     * For use after {@link Tree#Leaf()}. This will apply patterns to {@link Tree#node} {@link Tree#left} and {@link Tree#right}
      * @param node The pattern to check the node
      * @param left The pattern to check the left sub tree
      * @param right The pattern to check the right sub tree
@@ -87,9 +53,9 @@ public class Tree<E extends Comparable<E>> {
      */
     public static Pattern Node(Pattern node, Pattern left, Pattern right) {
         return patternFor(Tree.class).testThree(
-            Tuple(node, x -> x.node),
-            Tuple(left, x -> x.left),
-            Tuple(right, x -> x.right)
+            Tuples.Tuple(node, x -> x.node),
+            Tuples.Tuple(left, x -> x.left),
+            Tuples.Tuple(right, x -> x.right)
         );
     }
 
@@ -98,7 +64,7 @@ public class Tree<E extends Comparable<E>> {
     private Tree<E> right;
 
     public static <R extends Comparable<R>> Tree<R> of(R... elems) {
-        Tree<R> tree = Leaf();
+        Tree<R> tree = leaf();
         for (R elem: elems) {
             tree = tree.add(elem);
         }
@@ -109,7 +75,7 @@ public class Tree<E extends Comparable<E>> {
      * Returns the static {@link Tree#TREE_LEAF} instance.
      * @param <R> The type that the tree encapsulates.
      */
-    public static <R extends Comparable<R>> Tree<R> Leaf() {
+    public static <R extends Comparable<R>> Tree<R> leaf() {
         return (Tree<R>) TREE_LEAF;
     }
 
@@ -122,7 +88,7 @@ public class Tree<E extends Comparable<E>> {
      * @return the new {@link Tree} instance.
      * @throws NullPointerException if node, left or right are null.
      */
-    public static <R extends Comparable<R>> Tree<R> Tree(R node, Tree<R> left, Tree<R> right) {
+    public static <R extends Comparable<R>> Tree<R> Node(R node, Tree<R> left, Tree<R> right) {
         return new Tree<>(Objects.requireNonNull(node), Objects.requireNonNull(left), Objects.requireNonNull(right));
     }
 
@@ -142,9 +108,11 @@ public class Tree<E extends Comparable<E>> {
      * @throws NullPointerException if elem is null.
      */
     public boolean contains(E elem) {
-        Objects.requireNonNull(elem);
+        if (Objects.isNull(elem)) {
+            return false;
+        }
         return guardUnsafe(
-            when(() -> isLeaf.test(this), () -> false),
+            when(this::isLeaf, () -> false),
             edge(() -> match(elem.compareTo(node)).of(
                 with(¥EQ, () -> true),
                 with(¥LT, () -> left.contains(elem)),
@@ -157,8 +125,8 @@ public class Tree<E extends Comparable<E>> {
      * Checks if there are no nodes in this Tree.
      * @return true if it is a leaf node
      */
-    public boolean isEmpty() {
-        return TREE_LEAF.equals(this);
+    public boolean isLeaf() {
+        return this == TREE_LEAF || Library.allEqual(null, node, left, right);
     }
 
     /**
@@ -166,7 +134,7 @@ public class Tree<E extends Comparable<E>> {
      * @return {@link Option#nothing()} if this is a leaf, otherwise {@link Option} of the root value.
      */
     public Option<E> root() {
-        return TREE_LEAF.equals(this) ? Option.nothing() : Option.of(node);
+        return isLeaf() ? Option.nothing() : Option.of(node);
     }
 
     /**
@@ -175,8 +143,8 @@ public class Tree<E extends Comparable<E>> {
      */
     public int height() {
         return guardUnsafe(
-            when(() -> isLeaf.test(this), () -> 0),
-            edge(                            () -> 1 + Math.max(left.height(), right.height()))
+            when(this::isLeaf, () -> 0),
+            edge(              () -> 1 + Math.max(left.height(), right.height()))
         );
     }
 
@@ -186,9 +154,9 @@ public class Tree<E extends Comparable<E>> {
      */
     public Tree<E> deleteLargest() {
         return guardUnsafe(
-            when(() -> isLeaf.test(this), () -> Leaf()),
-            when(() -> isLeaf.test(right),   () -> left),
-            edge(                            () -> Tree(node, left, right.deleteLargest()))
+            when(this::isLeaf,  () -> leaf()),
+            when(right::isLeaf, () -> left),
+            edge(               () -> Node(node, left, right.deleteLargest()))
         );
     }
 
@@ -198,9 +166,9 @@ public class Tree<E extends Comparable<E>> {
      */
     public Option<E> largest() {
         return guardUnsafe(
-            when(() -> isLeaf.test(this), () -> Option.nothing()),
-            when(() -> isLeaf.test(right),   () -> Option.of(node)),
-            edge(                            () -> right.largest())
+            when(this::isLeaf,  () -> Option.nothing()),
+            when(right::isLeaf, () -> Option.of(node)),
+            edge(               () -> right.largest())
         );
     }
 
@@ -212,11 +180,11 @@ public class Tree<E extends Comparable<E>> {
     public Tree<E> add(E elem) {
         Objects.requireNonNull(elem);
         return guardUnsafe(
-            when(() -> isLeaf.test(this), () -> Tree(elem, Leaf(), Leaf())),
+            when(this::isLeaf, () -> Node(elem, leaf(), leaf())),
             edge(() -> match(elem.compareTo(node)).of(
-                with(¥LT, () -> Tree(node, left.add(elem), right)),
-                with(¥GT, () -> Tree(node, left, right.add(elem))),
-                with(¥EQ, () -> Tree(node, left, right))
+                with(¥LT, () -> Node(node, left.add(elem), right)),
+                with(¥GT, () -> Node(node, left, right.add(elem))),
+                with(¥EQ, () -> Node(node, left, right))
             ))
         );
     }
@@ -225,19 +193,18 @@ public class Tree<E extends Comparable<E>> {
      * Removes the element from the tree
      * @param elem The element to remove
      * @return A new Tree instance with the element removed.
-     * @throws NullPointerException if elem is null.
      */
     public Tree<E> remove(E elem) {
-        Objects.requireNonNull(elem);
-        return guardUnsafe(
-            when(() -> isLeaf.test(this), () -> Leaf()),
-            edge(() -> match(elem.compareTo(node)).option(
-                with(¥LT, () -> Tree(node, left.remove(elem), right)),
-                with(¥GT, () -> Tree(node, left, right.remove(elem)))
-            ).orElseGet(() -> guardUnsafe(
-                when(() -> left == Leaf(), () -> right),
-                edge(                      () -> Tree(left.largest().get(), left.deleteLargest(), right))
-            )))
+        return Objects.isNull(elem) ? this : guardUnsafe(
+            when(this::isLeaf, Tree::leaf),
+            edge(() -> match(elem.compareTo(node)).of(
+                with(¥LT, () -> Node(node, left.remove(elem), right)),
+                with(¥GT, () -> Node(node, left, right.remove(elem))),
+                with(¥EQ, () -> guardUnsafe(
+                    when(() -> left == leaf(), () -> right),
+                    edge(                      () -> Node(left.largest().get(), left.deleteLargest(), right))
+                ))
+            ))
         );
     }
 
@@ -261,9 +228,73 @@ public class Tree<E extends Comparable<E>> {
      */
     private boolean eq(Tree tree) {
         return guardUnsafe(
-            when(() -> isLeaf.test(tree), () -> isLeaf.test(this)),
-            edge(                         () -> node.equals(tree.node) && left.eq(tree.left) && right.eq(tree.right))
+            when(tree::isLeaf, this::isLeaf),
+            edge(() -> node.equals(tree.node) && left.eq(tree.left) && right.eq(tree.right))
         );
+    }
+
+    public Cons<E> toCons() {
+        return inOrder().foldRight(Cons.empty(), (x, xs) -> xs.push(x));
+    }
+
+    public List<E> toJavaList() {
+        return inOrder().foldLeft(new ArrayList<>(), (x, xs) -> {
+            xs.add(x);
+            return xs;
+        });
+    }
+
+    public Foldable<E> inOrder() {
+        return new Foldable<E>() {
+
+            @Override
+            public Iterator<E> iterator() {
+                return depthFirstOrdered(Tuple(Some(Node($x, ¥_, $y)), $xs), x -> x.left);
+            }
+
+            @Override
+            public Iterable<E> reverse() {
+                return () -> depthFirstOrdered(Tuple(Some(Node($x, $y, ¥_)), $xs), x -> x.right);
+            }
+
+            /**
+             * @param popped should yield: [toReturn, nextTree, stack]
+             * @param brancher the function to choose which branch to go depth first on.
+             * @return an Iterator that will do in order traversal
+             */
+            private Iterator<E> depthFirstOrdered(Pattern popped, UnaryOperator<Tree<E>> brancher) {
+                return new Iterables.Lockable<E>() {
+
+                    Cons<Tree<E>> stack = Cons.empty();
+                    Tree<E> current = Tree.this;
+                    boolean hasNext = false;
+                    E toReturn;
+
+                    @Override
+                    public boolean hasNextSupplier() {
+                        hasNext = false;
+                        while (!current.isLeaf()) {
+                            stack = stack.push(current);
+                            current = brancher.apply(current);
+                        }
+                        stack = stack.pop()
+                                     .match(popped, result -> {
+                                         hasNext = true;
+                                         toReturn = result.get(0);
+                                         current = result.get(1);
+                                         return (Cons<Tree<E>>) result.get(2);
+                                     })
+                                     .orElse(Cons.empty());
+                        return hasNext;
+                    }
+
+                    @Override
+                    public E nextSupplier() {
+                        return toReturn;
+                    }
+                };
+            }
+        };
     }
 
     @Override
@@ -273,7 +304,7 @@ public class Tree<E extends Comparable<E>> {
 
     private int hashCodeRec(int hashCode) {
         return guardUnsafe(
-            when(() -> isLeaf.test(this), () -> hashCode),
+            when(this::isLeaf, () -> hashCode),
             edge(() -> {
                 int hash = 17 * hashCode + node.hashCode();
                 return hash + left.hashCodeRec(hash) + right.hashCodeRec(hash);
@@ -284,8 +315,8 @@ public class Tree<E extends Comparable<E>> {
     @Override
     public String toString() {
         return guardUnsafe(
-            when(() -> isLeaf.test(this), () -> "Leaf"),
-            edge(                            () -> "Node("+node+", "+left+", "+right+")")
+            when(this::isLeaf, () -> "Leaf"),
+            edge(              () -> "Node("+node+", "+left+", "+right+")")
         );
     }
 }
