@@ -7,9 +7,7 @@ package com.bishabosha.caffeine.functional.immutable;
 import com.bishabosha.caffeine.base.AbstractBase;
 import com.bishabosha.caffeine.base.Iterables;
 import com.bishabosha.caffeine.functional.*;
-import com.bishabosha.caffeine.functional.functions.Consume3;
 import com.bishabosha.caffeine.functional.functions.Func3;
-import com.bishabosha.caffeine.functional.tuples.Tuple;
 import com.bishabosha.caffeine.functional.tuples.Tuple2;
 
 import java.util.*;
@@ -128,7 +126,7 @@ public class Cons<E> extends AbstractBase<E> {
     private static final Pattern splitBase(Function<Cons, Option<PatternResult>> func) {
         return x -> Option.of(x)
                           .cast(Cons.class)
-                          .filter(c -> !EMPTY_LIST.equals(c))
+                          .filter(c -> !EMPTY_LIST.equateCons(c))
                           .flatMap(func);
     }
 
@@ -309,24 +307,8 @@ public class Cons<E> extends AbstractBase<E> {
     public boolean equals(Object obj) {
         return obj == this ? true : Option.ofUnknown(obj)
                                           .cast(Cons.class)
-                                          .map(this::equalsIterative)
+                                          .map(this::equateCons)
                                           .orElse(false);
-    }
-
-    /**
-     * Recursively checks that two Cons are equal
-     * @param cons the Cons to check
-     * @return true, if they are the same length and all elements are equal and in the same order.
-     * @throws StackOverflowError when there are 487+ elements in both
-     */
-    private boolean equalsRec(Cons cons) {
-        return match(this).of(
-            with(¥empty, () -> cons.isEmpty()),
-            with($x_$xs, (E $x, Cons<E> $xs) -> guardUnsafe(
-                when(() -> $x.equals(cons.head), () -> cons.tail.equalsRec($xs)),
-                edge(                            () -> false)
-            ))
-        );
     }
 
     /**
@@ -334,14 +316,16 @@ public class Cons<E> extends AbstractBase<E> {
      * @param otherCons the Cons to check
      * @return true, if they are the same length and all elements are equal and in the same order.
      */
-    private boolean equalsIterative(Cons otherCons) {
+    private boolean equateCons(Cons otherCons) {
         Option<Tuple2<E, Cons<E>>> thisPopped = this.pop();
         Option<? extends Tuple2<?, ? extends Cons<?>>> otherPopped = otherCons.pop();
         while (true) {
-            if (otherPopped.isEmpty() ^ thisPopped.isEmpty()) {
+            final boolean thisEmpty = thisPopped.isEmpty();
+            final boolean otherEmpty = otherPopped.isEmpty();
+            if (otherEmpty ^ thisEmpty) {
                 return false; // if both different return false.
             }
-            if (otherPopped.isEmpty() && thisPopped.isEmpty()) {
+            if (otherEmpty && thisEmpty) {
                 return true;
             }
             final Tuple2<E, Cons<E>> thisTup = thisPopped.get();
