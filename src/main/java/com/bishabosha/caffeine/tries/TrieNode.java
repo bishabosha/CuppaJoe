@@ -52,7 +52,7 @@ public class TrieNode<T> {
 		if (result != null) {
 			return result;
 		}
-		result = new TrieNode<T>(toAdd);
+		result = new TrieNode<>(toAdd);
 		nextNodes.add(result);
 		return result;
 	}

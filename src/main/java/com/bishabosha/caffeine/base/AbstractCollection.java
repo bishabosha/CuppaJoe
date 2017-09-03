@@ -4,8 +4,6 @@
 
 package com.bishabosha.caffeine.base;
 
-import com.bishabosha.caffeine.pipelines.Pipeline;
-
 import java.util.Collection;
 import java.util.Objects;
 
@@ -60,9 +58,5 @@ public abstract class AbstractCollection<E> extends AbstractArrayHelper<E> imple
 		int before = size();
 		removeIf(x -> !c.contains(x));
 		return size() < before;
-	}
-
-	public Pipeline<E> pipeline() {
-		return Pipeline.of(this);
 	}
 }

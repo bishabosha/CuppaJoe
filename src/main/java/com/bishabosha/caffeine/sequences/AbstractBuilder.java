@@ -4,6 +4,8 @@
 
 package com.bishabosha.caffeine.sequences;
 
+import com.bishabosha.caffeine.base.Iterables;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -15,7 +17,7 @@ abstract class AbstractBuilder<E> implements Iterable<E> {
 
     @Override
     public Iterator<E> iterator() {
-        return new Iterator<E>() {
+        return new Iterables.Lockable<E>() {
             boolean generateNewTerm = true;
             boolean lastHasNext = false;
             {
@@ -23,7 +25,7 @@ abstract class AbstractBuilder<E> implements Iterable<E> {
             }
 
             @Override
-            public boolean hasNext() {
+            public boolean hasNextSupplier() {
                 if (generateNewTerm) { // prevent term calculation again until next() is called
                     generateNewTerm = false;
                     lastHasNext = getNextValue() != null;
@@ -32,7 +34,7 @@ abstract class AbstractBuilder<E> implements Iterable<E> {
             }
 
             @Override
-            public E next() {
+            public E nextSupplier() {
                 generateNewTerm = true;
                 return currentValue;
             }

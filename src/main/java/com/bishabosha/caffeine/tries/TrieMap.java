@@ -212,7 +212,7 @@ public class TrieMap<V> extends AbstractMap<String, V> {
 			
 			@Override
 			public Iterator<V> iterator() {
-				return new Iterator<V>() {
+				return new Iterables.Lockable<V>() {
 					private Deque<TrieNode<V>> nodeStack = new LinkedList<>();
 					private TrieNode<V> currentNode = root;
 					{
@@ -220,7 +220,7 @@ public class TrieMap<V> extends AbstractMap<String, V> {
 					}
 
 					@Override
-					public boolean hasNext() {
+					public boolean hasNextSupplier() {
 						while (!nodeStack.isEmpty()) {
 							currentNode = nodeStack.pop();
 							for (TrieNode<V> node: currentNode.nextNodes) {
@@ -234,7 +234,7 @@ public class TrieMap<V> extends AbstractMap<String, V> {
 					}
 
 					@Override
-					public V next() {
+					public V nextSupplier() {
 						return currentNode.value;
 					}
 				};
@@ -273,7 +273,7 @@ public class TrieMap<V> extends AbstractMap<String, V> {
 			
 			@Override
 			public Iterator<Entry<String, V>> iterator() {
-				return new Iterator<Entry<String, V>>() {
+				return new Iterables.Lockable<Entry<String,V>>() {
 
 					private Deque<TrieNode<V>> nodeStack = new LinkedList<>();
 					private Deque<String> stringStack = new LinkedList<>();
@@ -286,7 +286,7 @@ public class TrieMap<V> extends AbstractMap<String, V> {
 					}
 
 					@Override
-					public boolean hasNext() {
+					public boolean hasNextSupplier() {
 						while (!nodeStack.isEmpty()) {
 							currentNode = nodeStack.pop();
 							currentString = stringStack.pop();
@@ -303,7 +303,7 @@ public class TrieMap<V> extends AbstractMap<String, V> {
 					}
 
 					@Override
-					public Entry<String, V> next() {
+					public Entry<String, V> nextSupplier() {
 						return currentEntry;
 					}
 				};

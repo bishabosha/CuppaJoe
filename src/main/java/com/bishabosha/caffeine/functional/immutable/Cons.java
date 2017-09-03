@@ -5,6 +5,7 @@
 package com.bishabosha.caffeine.functional.immutable;
 
 import com.bishabosha.caffeine.base.AbstractBase;
+import com.bishabosha.caffeine.base.Iterables;
 import com.bishabosha.caffeine.functional.*;
 import com.bishabosha.caffeine.functional.functions.Consume3;
 import com.bishabosha.caffeine.functional.functions.Func3;
@@ -358,34 +359,24 @@ public class Cons<E> extends AbstractBase<E> {
      */
     @Override
     public Iterator<E> iterator() {
-        return new Iterator<E>() {
+        return new Iterables.Lockable<E>() {
 
-            boolean hasNext = false;
-            boolean update = true;
             E current = null;
             Cons<E> cons = Cons.this;
             Option<Tuple2<E, Cons<E>>> popped = Option.nothing();
 
             @Override
-            public boolean hasNext() {
-                if (update) {
-                    update = false;
-                    hasNext = false;
-                    if ((popped = cons.pop()).isSome()) {
-                        cons = popped.get().$2();
-                        current = popped.get().$1();
-                        return hasNext = true;
-                    }
+            public boolean hasNextSupplier() {
+                if ((popped = cons.pop()).isSome()) {
+                    cons = popped.get().$2();
+                    current = popped.get().$1();
+                    return true;
                 }
-                return hasNext;
+                return false;
             }
 
             @Override
-            public E next() {
-                if (!update && !hasNext) {
-                    throw new NoSuchElementException();
-                }
-                update = true;
+            public E nextSupplier() {
                 return current;
             }
         };

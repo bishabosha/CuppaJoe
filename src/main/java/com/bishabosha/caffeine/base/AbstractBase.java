@@ -8,6 +8,10 @@ public abstract class AbstractBase<E> implements Iterable<E>{
 
     protected int size = 0;
 
+    /**
+     * It is recommended that you override this
+     * @return the size of this Iterable
+     */
     public int size() {
         return size;
     }
