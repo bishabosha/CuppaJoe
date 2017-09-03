@@ -15,7 +15,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.bishabosha.caffeine.functional.Case.*;
-import static com.bishabosha.caffeine.functional.Matcher.guardUnsafe;
 import static com.bishabosha.caffeine.functional.Matcher.match;
 import static com.bishabosha.caffeine.functional.PatternFactory.patternFor;
 import static com.bishabosha.caffeine.functional.tuples.Tuples.Tuple;
@@ -24,8 +23,8 @@ import static com.bishabosha.caffeine.functional.tuples.Tuples.Tuple;
  * Immutable List
  * @param <E> the Type of the list
  */
-public class Cons<E> extends AbstractBase<E> {
-    private E head;
+public class Cons<E> extends AbstractBase<Option<E>> {
+    private Option<E> head;
     private Cons<E> tail;
 
     /**
@@ -35,28 +34,28 @@ public class Cons<E> extends AbstractBase<E> {
 
     /**
      * Returns the singleton instance of the empty list
-     * @param <R> the type encapsulated by the Cons
+     * @param <R> the type encapsulated by the of
      */
     public static <R> Cons<R> empty() {
         return (Cons<R>) EMPTY_LIST;
     }
 
     /**
-     * Creates a new Cons instance with a head and another Cons for a tail.
-     * @param x the head of the new Cons.
-     * @param xs the tail of the new Cons.
-     * @param <R> the type encapsulated by the Cons
-     * @return the new Cons instance
+     * Creates a new of instance with a head and another of for a tail.
+     * @param x the head of the new of.
+     * @param xs the tail of the new of.
+     * @param <R> the type encapsulated by the of
+     * @return the new of instance
      */
-    public static <R> Cons<R> Cons(R x, Cons<R> xs) {
+    public static <R> Cons<R> concat(R x, Cons<R> xs) {
         return new Cons<>(x, xs);
     }
 
     /**
-     * Creates a new Cons instance with all the elements passed.
+     * Creates a new of instance with all the elements passed.
      * @param elems the elements to add, in order of precedence from the head.
-     * @param <R> the type encapsulated by the Cons
-     * @return The new Cons instance.
+     * @param <R> the type encapsulated by the of
+     * @return The new of instance.
      */
     public static <R> Cons<R> of(R... elems) {
         return fromArray(elems);
@@ -64,6 +63,9 @@ public class Cons<E> extends AbstractBase<E> {
 
     public static <R> Cons<R> fromArray(R[] elems) {
         Cons<R> cons = empty();
+        if (Objects.isNull(elems)) {
+            return concat(null, cons);
+        }
         for (int x = elems.length - 1; x >= 0; x--) {
             cons = cons.push(elems[x]);
         }
@@ -71,12 +73,7 @@ public class Cons<E> extends AbstractBase<E> {
     }
 
     /**
-     * Pattern to test if any object is equivalent to an empty tail element.
-     */
-    public static final Pattern ¥empty = x -> x instanceof Cons<?> && ((Cons<?>)x).isEmpty() ? Pattern.PASS : Pattern.FAIL;
-
-    /**
-     * Composes patterns for the head and tail and checks that the element is a Cons.
+     * Composes patterns for the head and tail and checks that the element is a of.
      * @param $x The pattern for the head
      * @param $xs The pattern for the tail
      * @return The composed pattern
@@ -89,218 +86,181 @@ public class Cons<E> extends AbstractBase<E> {
     }
 
     /**
-     * @return if this Cons is equivalent to the empty Cons tail.
+     * Pattern to test if any object is equivalent to an empty tail element.
      */
-    public boolean isEmpty() {
-        return head == null && tail == null;
+    public static final Pattern Empty() {
+        return x -> x instanceof Cons<?> && ((Cons<?>)x).isEmpty() ? Pattern.PASS : Pattern.FAIL;
     }
 
     /**
-     * For use after {@link Cons#¥empty}, binds the head and tail without checks for null.
+     * @return if this of is equivalent to the empty of tail.
      */
-    public static final Pattern $x_$xs = splitBase(c -> Pattern.bind(c.head, c.tail));
-
-    /**
-     * For use after {@link Cons#¥empty}, binds the tail without checks for null.
-     */
-    public static final Pattern ¥x_$xs = splitBase(c -> Pattern.bind(c.tail));
-
-    /**
-     * For use after {@link Cons#¥empty}, binds the head without checks for null.
-     */
-    public static final Pattern $x_¥xs = splitBase(c -> Pattern.bind(c.head));
-
-    /**
-     * For use after {@link Cons#¥empty}, binds the first two elements and the tail without checks for null.
-     */
-    public static final Pattern $x_$y_$xs = x -> Option.of(x)
-                                                       .cast(Cons.class)
-                                                       .filter(c -> !c.isEmpty() && !c.tail.isEmpty())
-                                                       .flatMap(c -> Pattern.bind(c.head, c.tail.head, c.tail.tail));
-
-    /**
-     * Contains common code for casting to Cons and checking that the Cons isn't empty.
-     * @param func the binding function to bind the pattern.
-     * @return the composed pattern.
-     */
-    private static final Pattern splitBase(Function<Cons, Option<PatternResult>> func) {
-        return x -> Option.of(x)
-                          .cast(Cons.class)
-                          .filter(c -> !EMPTY_LIST.equateCons(c))
-                          .flatMap(func);
+    public boolean isEmpty() {
+        return head == Option.nothing() && tail == null;
     }
 
     /**
      * Private constructor for the empty instance
      */
     private Cons() {
-        head = null;
+        head = Option.nothing();
         tail = null;
     }
 
     /**
-     * Private constructor to compose a new Cons from head element and another Cons for a tail.
+     * Private constructor to compose a new of from head element and another of for a tail.
      * @param head The element to sit at the head.
-     * @param tail The Cons that will act as the tail after the head.
+     * @param tail The of that will act as the tail after the head.
      */
     private Cons(E head, Cons<E> tail) {
-        this.head = Objects.requireNonNull(head);
-        this.tail = Objects.requireNonNull(tail);
+        this.head = Option.ofUnknown(head);
+        this.tail = Objects.requireNonNull(tail, "tail must be a non null Cons.");
     }
 
-    /**
-     * Tries to get the head of this Cons
-     * @return {@link Option#nothing()} if this is an empty Cons. Otherwise {@link Option} of the head.
-     */
     public Option<E> head() {
-        return Option.ofUnknown(head);
+        return head;
+    }
+
+    public Cons<E> tail() {
+        return Objects.isNull(tail) ? empty() : tail;
     }
 
     /**
-     * Tries to get the tail of this Cons
-     * @return {@link Option#nothing()} if this is an empty Cons. Otherwise {@link Option} of the tail.
-     */
-    public Option<Cons<E>> tail() {
-        return Option.ofUnknown(tail);
-    }
-
-    /**
-     * Creates a new Cons instance with this as its tail and elem as its head.
+     * Creates a new of instance with this as its tail and elem as its head.
      * @param elem the new element to push to the head.
-     * @return A new Cons instance.
+     * @return A new of instance.
      */
     public Cons<E> push(E elem) {
-        return new Cons<>(elem, this);
+        return concat(elem, this);
     }
 
     /**
-     * Tries to split the Cons into a Tuple of its head and tail.
-     * @return {@link Option#nothing()} if this is an empty Cons. Otherwise {@link Option} of a Tuple of the head and tail.
+     * Tries to split the of into a Tuple of its head and tail.
+     * @return {@link Option#nothing()} if this is an empty of. Otherwise {@link Option} of a Tuple of the head and tail.
      */
-    public Option<Tuple2<E, Cons<E>>> pop() {
-        return when(() -> !this.isEmpty(), () -> Tuple(head, tail)).match();
+    public Option<Tuple2<Option<E>, Cons<E>>> pop() {
+        return when(() -> !Objects.equals(tail, empty()), () -> Tuple(head, tail)).match();
     }
 
     /**
-     * Removes all instances of the element from the Cons
+     * Removes all instances of the element from the of
      * @param elem the element to remove
-     * @return a new Cons instance with the element removed.
+     * @return a new of instance with the element removed.
      */
     public Cons<E> remove(E elem) {
-        Objects.requireNonNull(elem);
-        return match(this).of(
-            with(¥empty,                   () -> empty()),
-            with($x_$xs, (E $x, Cons<E> $xs) -> guardUnsafe(
-                when(() -> elem.equals($x), () -> $xs.remove(elem)),
-                edge(                       () -> Cons($x, $xs.remove(elem)))
-            ))
-        );
+        Option<E> toRemove = Option.ofUnknown(elem);
+        Cons<E> it = this;
+        Cons<E> buffer = empty();
+        while (!it.isEmpty()) {
+            if (!Objects.equals(it.head, toRemove)) {
+                buffer = buffer.push(it.head.orElse(null));
+            }
+            it = it.tail;
+        }
+        return buffer.reverse();
     }
 
     /**
-     * Checks if the Cons contains any instances of elem.
+     * Checks if the of contains any instances of elem.
      * @param elem the element to check for.
      * @return true if any instances were found. Otherwise false.
      */
     public boolean contains(Object elem) {
-        Objects.requireNonNull(elem);
-        return match(this).of(
-            with(¥empty,                    () -> false),
-            with($x_$xs,  (E $x, Cons<E> $xs) -> guardUnsafe(
-                when(() -> elem.equals($x), () -> true),
-                edge(                       () -> $xs.contains(elem))
-            ))
-        );
+        Option<Object> option = Option.ofUnknown(elem);
+        Cons<E> it = this;
+        while (Objects.nonNull(it.tail)) {
+            if (it.head.equals(option)) {
+                return true;
+            }
+            it = it.tail;
+        }
+        return false;
     }
 
     /**
-     * Iterates through the elements of the Cons, passing an accumulator, the next element and the tail.
+     * Iterates through the elements of the of, passing an accumulator, the next element and the tail.
      * @param identity Supplies the accumulator that may be modified by the consumer.
-     * @param consumer A function taking the accumulator, the head of the Cons, and the tail of the Cons
+     * @param consumer A function taking the accumulator, the head of the of, and the tail of the of
      * @param <O> the type of the accumulator.
      * @return The accumulator with whatever modifications have been applied.
      */
-    public <O> O loop(Supplier<O> identity, Func3<O, Cons<E>, E, Tuple2<O, Cons<E>>> consumer) {
+    public <O> O loop(Supplier<O> identity, Func3<O, Cons<E>, Option<E>, Tuple2<O, Cons<E>>> consumer) {
         Tuple2<O, Cons<E>> accStackPair = Tuple(identity.get(), this);
         while (!accStackPair.$2().isEmpty()) {
             final O acc = accStackPair.$1();
             final Cons<E> stack = accStackPair.$2();
             accStackPair = stack.pop()
                                 .map(t -> t.map((head, tail) -> consumer.apply(acc, tail, head)))
-                                .orElse(Tuple(null, Cons.empty()));
+                                .orElse(Tuple(null, empty()));
         }
         return Option.ofUnknown(accStackPair.$1()).orElseGet(identity);
     }
 
     /**
-     * @return the number of elements in the Cons
+     * @return the number of elements in the of
      */
     @Override
     public int size() {
-        return sizeRec(0);
+        Cons<E> cons = this;
+        int size = 0;
+        while (Objects.nonNull(cons.tail)) {
+            size = size + 1;
+            cons = cons.tail;
+        }
+        return size;
     }
 
-    /**
-     * Recurse through the cons, adding 1 to the size when another element is encountered.
-     * @param acc the accumulating size
-     * @return the total size of this Cons
-     * @throws StackOverflowError when there are 850+ elements
-     */
-    private int sizeRec(int acc) {
-        return match(this).of(
-            with(¥empty,             () -> acc),
-            with(¥x_$xs, (Cons<E> $xs) -> $xs.sizeRec(acc + 1))
-        );
+    public Cons<E> reverse() {
+        Cons<E> result = Cons.empty();
+        Cons<E> buffer = this;
+        while (!buffer.isEmpty()) {
+            result = result.push(buffer.head.orElse(null));
+            buffer = buffer.tail;
+        }
+        return result;
     }
 
-    /**
-     * Takes the first n elements of the Cons
-     * @param n the number of elements to take.
-     * @return A new Cons instance containing the first n elements.
-     * @throws StackOverflowError when n >= 408
-     */
     public Cons<E> take(int n) {
-        return Try.<Cons>of(() -> guardUnsafe(
-            when(() -> n == 0, () -> empty()),
-            thro(() -> n < 0,  () -> new IndexOutOfBoundsException("Index must be positive.")),
-            when(() -> n > 0,  () -> match(this).of(
-                with($x_$xs, (E $x, Cons<E> $xs) -> Cons($x, $xs.take(n - 1))),
-                thro(¥empty,                  () -> new IndexOutOfBoundsException("Index given is out of bounds."))))
-        ))
-        .getOrThrowMessage();
+        return takeInternal(n, "n");
     }
 
-    /**
-     * Returns any subsequence of elements in the Cons.
-     * @param from the start index
-     * @param to the end index
-     * @return A new Cons instance containing the elements in the range given.
-     * @throws RuntimeException if to is smaller than from,
-     * or either index is negative, or exceeds the length of the Cons.
-     * @throws StackOverflowError when sequence length >= 408
-     */
+    private Cons<E> takeInternal(int n, String label) {
+        if (n < 0) {
+            throw new IllegalArgumentException(label + " can't be less than zero.");
+        }
+        Cons<E> it = this;
+        Cons<E> buffer = empty();
+        while (n > 0) {
+            n = n - 1;
+            if (it.isEmpty()) {
+                throw new IndexOutOfBoundsException(label + " exceeds size.");
+            }
+            buffer = buffer.push(it.head.orElse(null));
+            it = it.tail;
+        }
+        return buffer.reverse();
+    }
+
     public Cons<E> subsequence(int from, int to) {
-        return Try.of(() -> guardUnsafe(
-            thro(() -> to < from, () -> new IllegalArgumentException("to must be larger than from")),
-            thro(() -> from < 0 || to < 0, () -> new IndexOutOfBoundsException("Indexes must be positive.")),
-            edge(() -> subsequenceRec(from, to-from+1))
-        ))
-        .getOrThrowMessage();
-    }
-
-    /**
-     * Recursive implementation of subsequence.
-     * @param from will reduce until the first index is found.
-     * @param n the number of elements to take once the first index is found.
-     * @return the new Cons instance.
-     */
-    private Cons<E> subsequenceRec(int from, int n) {
-        return guardUnsafe(
-            when(() -> from == 0, () -> take(n)),
-            when(() -> from > 0,  () -> match(this).of(
-                with(¥x_$xs, (Cons<E> $xs) -> $xs.subsequenceRec(from-1, n)),
-                thro(¥empty, () -> new IndexOutOfBoundsException("Index given is out of bounds."))))
-        );
+        if (from < 0) {
+            throw new IllegalArgumentException("from can't be less than zero.");
+        }
+        if (to < 0) {
+            throw new IllegalArgumentException("to can't be less than zero.");
+        }
+        if (to < from) {
+            throw new IllegalArgumentException("to must be greater than or equal to from.");
+        }
+        Cons<E> it = this;
+        int count = 0;
+        while (count < from) {
+            count = count + 1;
+            if (it.isEmpty()) {
+                throw new IndexOutOfBoundsException("from is larger than size");
+            }
+            it = it.tail;
+        }
+        return it.takeInternal(to - from, "to");
     }
 
     @Override
@@ -312,13 +272,13 @@ public class Cons<E> extends AbstractBase<E> {
     }
 
     /**
-     * Iteratively checks that two Cons are equal, without Stack Overflow
-     * @param otherCons the Cons to check
+     * Iteratively checks that two of are equal, without Stack Overflow
+     * @param otherCons the of to check
      * @return true, if they are the same length and all elements are equal and in the same order.
      */
     private boolean equateCons(Cons otherCons) {
-        Option<Tuple2<E, Cons<E>>> thisPopped = this.pop();
-        Option<? extends Tuple2<?, ? extends Cons<?>>> otherPopped = otherCons.pop();
+        Option<Tuple2<Option<E>, Cons<E>>> thisPopped = this.pop();
+        Option<Tuple2<Option, Cons>> otherPopped = otherCons.pop();
         while (true) {
             final boolean thisEmpty = thisPopped.isEmpty();
             final boolean otherEmpty = otherPopped.isEmpty();
@@ -328,8 +288,8 @@ public class Cons<E> extends AbstractBase<E> {
             if (otherEmpty && thisEmpty) {
                 return true;
             }
-            final Tuple2<E, Cons<E>> thisTup = thisPopped.get();
-            final Tuple2<?, ? extends Cons<?>> otherTup = otherPopped.get();
+            final Tuple2<Option<E>, Cons<E>> thisTup = thisPopped.get();
+            final Tuple2<Option, Cons> otherTup = otherPopped.get();
             if (!Objects.equals(thisTup.$1(), otherTup.$1())) {
                 return false;
             }
@@ -339,21 +299,43 @@ public class Cons<E> extends AbstractBase<E> {
     }
 
     /**
-     * @return an Iterator through each element of the Cons. The calling Cons is immutable.
+     * @return an Iterator through each element of the of. The calling of is immutable.
      */
     @Override
-    public Iterator<E> iterator() {
+    public Iterator<Option<E>> iterator() {
+        return new Iterables.Lockable<Option<E>>() {
+
+            Option<E> current = null;
+            Cons<E> cons = Cons.this;
+
+            @Override
+            public boolean hasNextSupplier() {
+                if (Objects.nonNull(cons.tail)) {
+                    current = cons.head;
+                    cons = cons.tail;
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public Option<E> nextSupplier() {
+                return current;
+            }
+        };
+    }
+
+    public Iterator<E> iteratorFlatten() {
         return new Iterables.Lockable<E>() {
 
             E current = null;
             Cons<E> cons = Cons.this;
-            Option<Tuple2<E, Cons<E>>> popped = Option.nothing();
 
             @Override
             public boolean hasNextSupplier() {
-                if ((popped = cons.pop()).isSome()) {
-                    cons = popped.get().$2();
-                    current = popped.get().$1();
+                if (Objects.nonNull(cons.tail)) {
+                    current = cons.head.orElse(null);
+                    cons = cons.tail;
                     return true;
                 }
                 return false;
@@ -364,5 +346,10 @@ public class Cons<E> extends AbstractBase<E> {
                 return current;
             }
         };
+    }
+
+    @Override
+    public String toString() {
+        return Iterables.toString('[', ']', iteratorFlatten());
     }
 }
