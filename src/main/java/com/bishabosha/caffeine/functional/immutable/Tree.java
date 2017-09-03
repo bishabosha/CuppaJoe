@@ -249,12 +249,12 @@ public class Tree<E extends Comparable<E>> {
 
             @Override
             public Iterator<E> iterator() {
-                return depthFirstOrdered(Tuple(Some(Node($x, ¥_, $y)), $xs), x -> x.left);
+                return depthFirstOrdered(Tuple(Some(Node($n, ¥_, $r)), $xs), x -> x.left);
             }
 
             @Override
             public Iterable<E> reverse() {
-                return () -> depthFirstOrdered(Tuple(Some(Node($x, $y, ¥_)), $xs), x -> x.right);
+                return () -> depthFirstOrdered(Tuple(Some(Node($n, $l, ¥_)), $xs), x -> x.right);
             }
 
             /**

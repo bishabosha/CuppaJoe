@@ -62,11 +62,11 @@ public class PatternTest {
         );
         assertEquals(
             Option.nothing(),
-            tree($a, ¥nil, ¥nil).test(tree)
+            tree($a, ¥null, ¥null).test(tree)
         );
         assertEquals(
             PatternResult.of(25, null, null),
-            tree($a, ¥nil, ¥nil).test(leaf).get()
+            tree($a, ¥null, ¥null).test(leaf).get()
         );
     }
 
