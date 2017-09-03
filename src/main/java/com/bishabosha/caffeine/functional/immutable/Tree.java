@@ -148,6 +148,10 @@ public class Tree<E extends Comparable<E>> {
         );
     }
 
+    public int size() {
+        return inOrder().foldLeft(0, (x, y) -> y + 1);
+    }
+
     /**
      * Removes the largest element of this Tree.
      * @return a new Tree instance with the largest element removed
@@ -314,9 +318,6 @@ public class Tree<E extends Comparable<E>> {
 
     @Override
     public String toString() {
-        return guardUnsafe(
-            when(this::isLeaf, () -> "Leaf"),
-            edge(              () -> "Node("+node+", "+left+", "+right+")")
-        );
+        return Iterables.toString('[', ']', inOrder().iterator());
     }
 }
