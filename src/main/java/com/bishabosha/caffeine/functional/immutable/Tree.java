@@ -266,6 +266,7 @@ public class Tree<E extends Comparable<E>> {
              * @param brancher the function to choose which branch to go depth first on.
              * @return an Iterator that will do in order traversal
              */
+            @SuppressWarnings("unchecked")
             private Iterator<E> depthFirstOrdered(Pattern popped, UnaryOperator<Tree<E>> brancher) {
                 return new Iterables.Lockable<E>() {
 
