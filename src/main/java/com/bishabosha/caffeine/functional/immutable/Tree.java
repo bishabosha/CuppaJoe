@@ -34,6 +34,14 @@ public class Tree<E extends Comparable<E>> {
      */
     private static final Tree<?> TREE_LEAF = new Tree<>(null, null, null);
 
+    private final UnaryOperator<Tree<E>> goRight = x -> x.right;
+    private final UnaryOperator<Tree<E>> goLeft = x -> x.left;
+
+    private static final Pattern LEFT_TAIL = Tuple(Some(Node($n, $l, ¥_)), $xs);
+    private static final Pattern RIGHT_TAIL = Tuple(Some(Node($n, ¥_, $r)), $xs);
+    private static final Pattern LEFT_RIGHT_TAIL = Tuple(Some(Node($n, $l, $r)), $xs);
+
+
     /**
      * This will check {@link Tree#node} {@link Tree#left} and {@link Tree#right} for <b>null</b> without binding.
      */
@@ -253,12 +261,12 @@ public class Tree<E extends Comparable<E>> {
 
             @Override
             public Iterator<E> iterator() {
-                return depthFirstOrdered(Tuple(Some(Node($n, ¥_, $r)), $xs), x -> x.left);
+                return inOrderTraversal(RIGHT_TAIL, goLeft);
             }
 
             @Override
             public Iterable<E> reverse() {
-                return () -> depthFirstOrdered(Tuple(Some(Node($n, $l, ¥_)), $xs), x -> x.right);
+                return () -> inOrderTraversal(LEFT_TAIL, goRight);
             }
 
             /**
@@ -267,13 +275,13 @@ public class Tree<E extends Comparable<E>> {
              * @return an Iterator that will do in order traversal
              */
             @SuppressWarnings("unchecked")
-            private Iterator<E> depthFirstOrdered(Pattern popped, UnaryOperator<Tree<E>> brancher) {
+            private Iterator<E> inOrderTraversal(Pattern popped, UnaryOperator<Tree<E>> brancher) {
                 return new Iterables.Lockable<E>() {
 
-                    Cons<Tree<E>> stack = Cons.empty();
-                    Tree<E> current = Tree.this;
-                    boolean hasNext = false;
-                    E toReturn;
+                    private Cons<Tree<E>> stack = Cons.empty();
+                    private Tree<E> current = Tree.this;
+                    private boolean hasNext = false;
+                    private E toReturn;
 
                     @Override
                     public boolean hasNextSupplier() {
@@ -283,12 +291,7 @@ public class Tree<E extends Comparable<E>> {
                             current = brancher.apply(current);
                         }
                         stack = stack.pop()
-                                     .match(popped, result -> {
-                                         hasNext = true;
-                                         toReturn = result.get(0);
-                                         current = result.get(1);
-                                         return (Cons<Tree<E>>) result.get(2);
-                                     })
+                                     .match(with(popped, this::processPopped))
                                      .orElse(Cons.empty());
                         return hasNext;
                     }
@@ -297,7 +300,48 @@ public class Tree<E extends Comparable<E>> {
                     public E nextSupplier() {
                         return toReturn;
                     }
+
+                    private Cons<Tree<E>> processPopped(E head, Tree<E> nextTree, Cons<Tree<E>> tail) {
+                        hasNext = true;
+                        toReturn = head;
+                        current = nextTree;
+                        return tail;
+                    }
                 };
+            }
+        };
+    }
+
+    public Iterable<E> preOrder() {
+        return () -> new Iterables.Lockable<E>() {
+            private Cons<Tree<E>> stack = Cons.of(Tree.this);
+            private boolean hasNext = false;
+            private E toReturn;
+
+            @Override
+            public boolean hasNextSupplier() {
+                hasNext = false;
+                stack = stack.pop()
+                        .match(with(LEFT_RIGHT_TAIL, this::processPopped))
+                        .orElse(Cons.empty());
+                return hasNext;
+            }
+
+            @Override
+            public E nextSupplier() {
+                return toReturn;
+            }
+
+            private Cons<Tree<E>> processPopped(E head, Tree<E> left, Tree<E> right, Cons<Tree<E>> tail) {
+                hasNext = true;
+                toReturn = head;
+                if (!right.isLeaf()) {
+                    tail = tail.push(right);
+                }
+                if (!left.isLeaf()) {
+                    tail = tail.push(left);
+                }
+                return tail;
             }
         };
     }

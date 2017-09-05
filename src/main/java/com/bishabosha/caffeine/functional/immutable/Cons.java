@@ -12,6 +12,7 @@ import com.bishabosha.caffeine.functional.functions.Func3;
 import com.bishabosha.caffeine.functional.tuples.Tuple2;
 
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import static com.bishabosha.caffeine.functional.Case.*;
