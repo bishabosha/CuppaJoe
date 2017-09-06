@@ -10,7 +10,7 @@ import java.util.*;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
-import static com.bishabosha.caffeine.functional.tuples.Tuples.Tuple;
+import static com.bishabosha.caffeine.functional.API.Tuple;
 
 /**
  * Created by Jamie on 08/06/2017.

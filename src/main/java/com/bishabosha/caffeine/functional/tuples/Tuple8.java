@@ -27,6 +27,12 @@ public class Tuple8<A, B, C, D, E, F, G, H> extends Tuple7<A, B, C, D, E, F, G> 
                 .build();
     }
 
+    public static <A, B, C, D, E, F, G, H>
+    Tuple8<A, B, C, D, E, F, G, H>
+    of(A $1, B $2, C $3, D $4, E $5, F $6, G $7, H $8) {
+        return new Tuple8<>($1, $2, $3, $4, $5, $6, $7, $8);
+    }
+
     protected Tuple8(A $1, B $2, C $3, D $4, E $5, F $6, G $7, H $8) {
         super($1, $2, $3, $4, $5, $6, $7);
         this.$8 = $8;

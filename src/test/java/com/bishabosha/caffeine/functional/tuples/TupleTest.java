@@ -10,7 +10,7 @@ import org.junit.Test;
 import java.util.Arrays;
 
 import static com.bishabosha.caffeine.functional.tuples.Tuple.EMPTY;
-import static com.bishabosha.caffeine.functional.tuples.Tuples.*;
+import static com.bishabosha.caffeine.functional.API.Tuple;
 
 public class TupleTest {
 

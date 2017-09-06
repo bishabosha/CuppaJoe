@@ -16,7 +16,7 @@ import static com.bishabosha.caffeine.functional.Option.Some;
 import static com.bishabosha.caffeine.functional.Pattern.*;
 import static com.bishabosha.caffeine.functional.Case.*;
 import static com.bishabosha.caffeine.functional.Matcher.match;
-import static com.bishabosha.caffeine.functional.tuples.Tuples.Tuple;
+import static com.bishabosha.caffeine.functional.API.Tuple;
 import static com.bishabosha.caffeine.functional.tuples.Tuple2.Tuple;
 import static com.bishabosha.caffeine.functional.immutable.Tree.*;
 

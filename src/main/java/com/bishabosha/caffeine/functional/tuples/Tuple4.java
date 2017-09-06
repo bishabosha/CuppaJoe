@@ -21,6 +21,10 @@ public class Tuple4<A, B, C, D> extends Tuple3<A, B, C> {
                 .build();
     }
 
+    public static <A, B, C, D> Tuple4<A, B, C, D> of(A $1, B $2, C $3, D $4) {
+        return new Tuple4<>($1, $2, $3, $4);
+    }
+
     protected Tuple4(A $1, B $2, C $3, D $4) {
         super($1, $2, $3);
         this.$4 = $4;

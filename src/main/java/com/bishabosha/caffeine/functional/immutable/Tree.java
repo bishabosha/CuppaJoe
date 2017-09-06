@@ -6,7 +6,7 @@ package com.bishabosha.caffeine.functional.immutable;
 
 import com.bishabosha.caffeine.base.Iterables;
 import com.bishabosha.caffeine.functional.*;
-import com.bishabosha.caffeine.functional.tuples.Tuples;
+import com.bishabosha.caffeine.functional.tuples.Tuple2;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.UnaryOperator;
 
+import static com.bishabosha.caffeine.functional.API.*;
+import static com.bishabosha.caffeine.functional.API.Tuple;
 import static com.bishabosha.caffeine.functional.Case.*;
 import static com.bishabosha.caffeine.functional.Matcher.guardUnsafe;
 import static com.bishabosha.caffeine.functional.Matcher.match;
@@ -21,7 +23,6 @@ import static com.bishabosha.caffeine.functional.Option.Some;
 import static com.bishabosha.caffeine.functional.Pattern.*;
 import static com.bishabosha.caffeine.functional.PatternFactory.patternFor;
 import static com.bishabosha.caffeine.functional.tuples.Tuple2.Tuple;
-import static com.bishabosha.caffeine.functional.tuples.Tuples.Tuple;
 
 /**
  * Immutable tree
@@ -33,13 +34,6 @@ public class Tree<E extends Comparable<E>> {
      * Singleton instance of the leaf node
      */
     private static final Tree<?> TREE_LEAF = new Tree<>(null, null, null);
-
-    private final UnaryOperator<Tree<E>> goRight = x -> x.right;
-    private final UnaryOperator<Tree<E>> goLeft = x -> x.left;
-
-    private static final Pattern LEFT_TAIL = Tuple(Some(Node($n, $l, ¥_)), $xs);
-    private static final Pattern RIGHT_TAIL = Tuple(Some(Node($n, ¥_, $r)), $xs);
-    private static final Pattern LEFT_RIGHT_TAIL = Tuple(Some(Node($n, $l, $r)), $xs);
 
 
     /**
@@ -61,9 +55,9 @@ public class Tree<E extends Comparable<E>> {
      */
     public static Pattern Node(Pattern node, Pattern left, Pattern right) {
         return patternFor(Tree.class).testThree(
-            Tuples.Tuple(node, x -> x.node),
-            Tuples.Tuple(left, x -> x.left),
-            Tuples.Tuple(right, x -> x.right)
+            Tuple2.of(node, x -> x.node),
+            Tuple2.of(left, x -> x.left),
+            Tuple2.of(right, x -> x.right)
         );
     }
 
@@ -98,6 +92,18 @@ public class Tree<E extends Comparable<E>> {
      */
     public static <R extends Comparable<R>> Tree<R> Node(R node, Tree<R> left, Tree<R> right) {
         return new Tree<>(Objects.requireNonNull(node), Objects.requireNonNull(left), Objects.requireNonNull(right));
+    }
+
+    public Tree<E> left() {
+        return left;
+    }
+
+    public Tree<E> right() {
+        return right;
+    }
+
+    public E node() {
+        return node;
     }
 
     /**
@@ -240,7 +246,7 @@ public class Tree<E extends Comparable<E>> {
      */
     private boolean eq(Tree tree) {
         return guardUnsafe(
-            when(tree::isLeaf, this::isLeaf),
+            when(this::isLeaf, tree::isLeaf),
             edge(() -> node.equals(tree.node) && left.eq(tree.left) && right.eq(tree.right))
         );
     }
@@ -261,51 +267,47 @@ public class Tree<E extends Comparable<E>> {
 
             @Override
             public Iterator<E> iterator() {
-                return inOrderTraversal(RIGHT_TAIL, goLeft);
+                return inOrderTraversal(Tuple(Some(Node($n, ¥_, $r)), $xs), Tree::left);
             }
 
             @Override
             public Iterable<E> reverse() {
-                return () -> inOrderTraversal(LEFT_TAIL, goRight);
+                return () -> inOrderTraversal(Tuple(Some(Node($n, $l, ¥_)), $xs), Tree::right);
             }
 
             /**
-             * @param popped should yield: [toReturn, nextTree, stack]
+             * @param extractor should yield: [toReturn, nextTree, tail]
              * @param brancher the function to choose which branch to go depth first on.
              * @return an Iterator that will do in order traversal
              */
             @SuppressWarnings("unchecked")
-            private Iterator<E> inOrderTraversal(Pattern popped, UnaryOperator<Tree<E>> brancher) {
+            private Iterator<E> inOrderTraversal(Pattern extractor, UnaryOperator<Tree<E>> brancher) {
                 return new Iterables.Lockable<E>() {
 
                     private Cons<Tree<E>> stack = Cons.empty();
                     private Tree<E> current = Tree.this;
-                    private boolean hasNext = false;
                     private E toReturn;
 
                     @Override
                     public boolean hasNextSupplier() {
-                        hasNext = false;
                         while (!current.isLeaf()) {
                             stack = stack.push(current);
                             current = brancher.apply(current);
                         }
-                        stack = stack.pop()
-                                     .match(with(popped, this::processPopped))
-                                     .orElse(Cons.empty());
-                        return hasNext;
+                        return stack.pop(with(extractor, this::processPopped))
+                                    .orElse(false);
+                    }
+
+                    private boolean processPopped(E head, Tree<E> nextTree, Cons<Tree<E>> tail) {
+                        toReturn = head;
+                        current = nextTree;
+                        stack = tail;
+                        return true;
                     }
 
                     @Override
                     public E nextSupplier() {
                         return toReturn;
-                    }
-
-                    private Cons<Tree<E>> processPopped(E head, Tree<E> nextTree, Cons<Tree<E>> tail) {
-                        hasNext = true;
-                        toReturn = head;
-                        current = nextTree;
-                        return tail;
                     }
                 };
             }
@@ -314,34 +316,68 @@ public class Tree<E extends Comparable<E>> {
 
     public Iterable<E> preOrder() {
         return () -> new Iterables.Lockable<E>() {
+
             private Cons<Tree<E>> stack = Cons.of(Tree.this);
-            private boolean hasNext = false;
             private E toReturn;
 
             @Override
             public boolean hasNextSupplier() {
-                hasNext = false;
-                stack = stack.pop()
-                        .match(with(LEFT_RIGHT_TAIL, this::processPopped))
-                        .orElse(Cons.empty());
-                return hasNext;
+                return stack.pop(with(Tuple(Some(Node($n, $l, $r)), $xs), this::processPopped))
+                            .orElse(false);
             }
 
-            @Override
-            public E nextSupplier() {
-                return toReturn;
-            }
-
-            private Cons<Tree<E>> processPopped(E head, Tree<E> left, Tree<E> right, Cons<Tree<E>> tail) {
-                hasNext = true;
-                toReturn = head;
+            private boolean processPopped(E node, Tree<E> left, Tree<E> right, Cons<Tree<E>> tail) {
+                toReturn = node;
                 if (!right.isLeaf()) {
                     tail = tail.push(right);
                 }
                 if (!left.isLeaf()) {
                     tail = tail.push(left);
                 }
-                return tail;
+                stack = tail;
+                return true;
+            }
+
+            @Override
+            public E nextSupplier() {
+                return toReturn;
+            }
+        };
+    }
+
+    @SuppressWarnings("unchecked")
+    public Iterable<E> postOrder() {
+        return () -> new Iterables.Lockable<E>() {
+
+            private Cons<Object> stack = Cons.of(Tree.this);
+            private E toReturn;
+
+            @Override
+            public boolean hasNextSupplier() {
+                final Tuple2<Option<E>, Cons<Object>> nextItem;
+                nextItem = stack.nextItem((x, xs) -> match(x).of(
+                    with(Some(Leaf()), () -> Tuple(Left(false), xs)),
+                    with(Some(Node($n, $l, $r)), (E $n, Tree<E> $l, Tree<E> $r) -> {
+                        Cons<Object> zs = xs;
+                        zs = zs.push($n);
+                        if (!$r.isLeaf()) {
+                            zs = zs.push($r);
+                        }
+                        if (!$l.isLeaf()) {
+                            zs = zs.push($l);
+                        }
+                        return Tuple(Left(true), zs);
+                    }),
+                    with(Some($x), (E $x) -> Tuple(Right($x), xs))
+                ));
+                stack = nextItem.$2();
+                toReturn = nextItem.$1().orElse(null);
+                return nextItem.$1().isSome();
+            }
+
+            @Override
+            public E nextSupplier() {
+                return toReturn;
             }
         };
     }

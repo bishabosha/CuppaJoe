@@ -13,7 +13,7 @@ public class Tuple6<A, B, C, D, E, F> extends Tuple5<A, B, C, D, E> {
 
     F $6;
 
-    public static Pattern Tuple(Pattern $1, Pattern $2, Pattern $3, Pattern $4,
+    public static Pattern Tuple6(Pattern $1, Pattern $2, Pattern $3, Pattern $4,
                                 Pattern $5, Pattern $6) {
         return patternFor(Tuple6.class)
                 .addTest($1, x -> x.$1())
@@ -23,6 +23,12 @@ public class Tuple6<A, B, C, D, E, F> extends Tuple5<A, B, C, D, E> {
                 .addTest($5, x -> x.$5())
                 .addTest($6, x -> x.$6())
                 .build();
+    }
+
+    public static <A, B, C, D, E, F>
+    Tuple6<A, B, C, D, E, F>
+    of(A $1, B $2, C $3, D $4, E $5, F $6) {
+        return new Tuple6<>($1, $2, $3, $4, $5, $6);
     }
 
     protected Tuple6(A $1, B $2, C $3, D $4, E $5, F $6) {
