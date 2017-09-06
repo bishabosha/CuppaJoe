@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static com.bishabosha.caffeine.functional.tuples.Tuples.*;
+import static com.bishabosha.caffeine.functional.API.Tuple;
 
 public class PatternFactory<I> {
     private Class<I> inputClass;

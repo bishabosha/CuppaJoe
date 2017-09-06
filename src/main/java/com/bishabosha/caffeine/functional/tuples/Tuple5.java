@@ -23,6 +23,12 @@ public class Tuple5<A, B, C, D, E> extends Tuple4<A, B, C, D> {
                 .build();
     }
 
+    public static <A, B, C, D, E>
+    Tuple5<A, B, C, D, E>
+    of(A $1, B $2, C $3, D $4, E $5) {
+        return new Tuple5<>($1, $2, $3, $4, $5);
+    }
+
     protected Tuple5(A $1, B $2, C $3, D $4, E $5) {
         super($1, $2, $3, $4);
         this.$5 = $5;

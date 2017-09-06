@@ -13,8 +13,12 @@ public class Tuple1<A> extends Tuple {
 
     private A $1;
 
-    public static Pattern Tuple(Pattern $1) {
+    public static Pattern Tuple1(Pattern $1) {
         return patternFor(Tuple1.class).atomic($1, x -> x.$1());
+    }
+
+    public static <A> Tuple1<A> of(A $1) {
+        return new Tuple1<>($1);
     }
 
     protected Tuple1(A $1) {

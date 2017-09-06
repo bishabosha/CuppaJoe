@@ -120,12 +120,7 @@ public interface Case<I, O> {
             Option<PatternResult> option = matcher.test(i);
             if (option.isSome()) {
                 PatternResult result = option.get();
-                try {
-                    return Option.ofUnknown(mapper.apply(result));
-                } catch (IndexOutOfBoundsException e) {
-                    e.printStackTrace();
-                    throw new IllegalArgumentException("Not enough variables yielded to bind the given function.");
-                }
+                return Option.ofUnknown(mapper.apply(result));
             }
             return Option.nothing();
         };

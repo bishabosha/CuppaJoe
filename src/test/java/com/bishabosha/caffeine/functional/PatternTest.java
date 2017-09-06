@@ -15,7 +15,7 @@ import static com.bishabosha.caffeine.functional.Pattern.*;
 import static com.bishabosha.caffeine.functional.PatternFactory.patternFor;
 import static com.bishabosha.caffeine.functional.immutable.Tree.Node;
 import static com.bishabosha.caffeine.functional.immutable.Tree.leaf;
-import static com.bishabosha.caffeine.functional.tuples.Tuples.Tuple;
+import static com.bishabosha.caffeine.functional.API.Tuple;
 import static org.junit.Assert.*;
 
 public class PatternTest {

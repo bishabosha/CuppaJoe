@@ -14,9 +14,13 @@ public class Tuple2<A, B> extends Tuple1<A> {
 
     public static Pattern Tuple(Pattern $1, Pattern $2) {
         return patternFor(Tuple2.class).testTwo(
-            Tuples.Tuple($1, x -> x.$1()),
-            Tuples.Tuple($2, x -> x.$2())
+            of($1, x -> x.$1()),
+            of($2, x -> x.$2())
         );
+    }
+
+    public static <A, B> Tuple2<A, B> of(A $1, B $2) {
+        return new Tuple2<>($1, $2);
     }
 
     protected Tuple2(A $1, B $2) {

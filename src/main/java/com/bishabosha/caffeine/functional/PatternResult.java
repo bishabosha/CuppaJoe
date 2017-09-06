@@ -41,7 +41,13 @@ public class PatternResult extends AbstractBase<Object> {
     }
 
     public <T> T get(int index) {
-        return (T) list.get(index);
+        try {
+            return (T) list.get(index);
+        } catch (ClassCastException cce) {
+            throw new ClassCastException("PatternResult.get(" + index + ") is not of the type requested.");
+        } catch (IndexOutOfBoundsException ioobe) {
+            throw new IllegalArgumentException("Not enough values contained in PatternResult.");
+        }
     }
 
     public boolean add(Object obj) {

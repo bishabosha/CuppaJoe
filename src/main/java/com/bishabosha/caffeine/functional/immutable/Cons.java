@@ -15,9 +15,8 @@ import java.util.*;
 import java.util.function.Supplier;
 
 import static com.bishabosha.caffeine.functional.Case.*;
-import static com.bishabosha.caffeine.functional.Matcher.match;
 import static com.bishabosha.caffeine.functional.PatternFactory.patternFor;
-import static com.bishabosha.caffeine.functional.tuples.Tuples.Tuple;
+import static com.bishabosha.caffeine.functional.API.Tuple;
 
 /**
  * Immutable List
@@ -165,6 +164,10 @@ public class Cons<E> extends AbstractBase<Option<E>> implements Foldable<Option<
         return when(() -> !isEmpty(), () -> Tuple(head, tail)).match();
     }
 
+    public <U> Option<U> pop(Case<Tuple2<Option<E>, Cons<E>>, U> matcher) {
+        return pop().match(matcher);
+    }
+
     /**
      * Removes all instances of the element from the of
      * @param elem the element to remove
@@ -209,6 +212,16 @@ public class Cons<E> extends AbstractBase<Option<E>> implements Foldable<Option<
                                 .orElse(Tuple(null, empty()));
         }
         return Option.ofUnknown(accStackPair.$1()).orElseGet(identity);
+    }
+
+    public <O> Tuple2<Option<O>, Cons<E>> nextItem(Func2<Option<E>, Cons<E>, Tuple2<Either<Boolean, O>, Cons<E>>> mapper) {
+        Tuple2<Either<Boolean, O>, Cons<E>> loopCond = Tuple(Either.left(true), this);
+        while (loopCond.$1().getLeftOrElse(() -> false)) {
+            loopCond = loopCond.$2().pop()
+                    .map(t -> t.map(mapper))
+                    .orElseGet(() -> Tuple(Either.left(false), Cons.empty()));
+        }
+        return loopCond.flatMap((either, cons) -> Tuple(either.getRight(), cons));
     }
 
     /**

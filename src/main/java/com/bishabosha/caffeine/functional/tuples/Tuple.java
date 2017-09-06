@@ -6,6 +6,7 @@ package com.bishabosha.caffeine.functional.tuples;
 
 import com.bishabosha.caffeine.base.AbstractBase;
 import com.bishabosha.caffeine.functional.Library;
+import com.bishabosha.caffeine.functional.Pattern;
 import com.bishabosha.caffeine.functional.Try;
 
 import java.util.*;
@@ -14,6 +15,14 @@ import java.util.function.Supplier;
 public class Tuple extends AbstractBase<Object> {
 
     public final static Tuple EMPTY = new Tuple();
+
+    public static Pattern Tuple() {
+        return x -> x == EMPTY ? Pattern.PASS : Pattern.FAIL;
+    }
+
+    public static Tuple of() {
+        return EMPTY;
+    }
 
     protected Tuple() {
         size = 0;
