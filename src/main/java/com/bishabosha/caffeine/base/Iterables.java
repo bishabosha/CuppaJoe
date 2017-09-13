@@ -13,6 +13,8 @@ import com.bishabosha.caffeine.functional.tuples.Tuple2;
 import com.bishabosha.caffeine.hashtables.HashMap;
 import com.bishabosha.caffeine.hashtables.HashTable;
 import com.bishabosha.caffeine.lists.LinkedList;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.function.*;
@@ -49,6 +51,8 @@ public class Iterables {
         public abstract E nextSupplier();
     }
 
+    @NotNull
+    @Contract(pure = true)
     @SafeVarargs
     public static <E> Iterable<E> ofSuppliers(Supplier<E>... suppliers) {
         return () -> new Lockable<E>() {
@@ -67,6 +71,9 @@ public class Iterables {
         };
     }
 
+    @NotNull
+    @Contract(pure = true)
+    @SafeVarargs
     public static <E> Iterable<E> concat(Iterable<E>... iterables) {
         return () -> new Lockable<E>() {
             Iterator<E> current;
@@ -94,14 +101,14 @@ public class Iterables {
         };
     }
 
-    public static <R> R next(Iterator<R> it) {
-        return it.hasNext() ? it.next() : null;
-    }
-
+    @NotNull
+    @Contract(pure = true)
     public static <R> Iterable<R> iterate(R identity, UnaryOperator<R> accumulator) {
         return iterate(identity, x -> false, accumulator);
     }
 
+    @NotNull
+    @Contract(pure = true)
     public static <R> Iterable<R> iterate(R identity,
                                           Predicate<R> terminatingCondition,
                                           UnaryOperator<R> accumulator) {
