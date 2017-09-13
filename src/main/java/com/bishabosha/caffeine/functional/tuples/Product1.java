@@ -22,10 +22,10 @@ public interface Product1<A> extends Product {
     }
 
     @Override
-    default Option<Object> $(int index) {
+    default Object $(int index) {
         switch (index) {
-            case 1: return Some($1());
-            default: return Nothing();
+            case 1: return $1();
+            default: throw new IndexOutOfBoundsException();
         }
     }
 

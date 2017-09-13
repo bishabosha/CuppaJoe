@@ -1,0 +1,4 @@
+@ParametersAreNonnullByDefault
+package com.bishabosha.caffeine.functional;
+
+import javax.annotation.ParametersAreNonnullByDefault;

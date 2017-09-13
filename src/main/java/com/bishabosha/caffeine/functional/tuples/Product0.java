@@ -20,8 +20,8 @@ public interface Product0 extends Product {
     }
 
     @Override
-    default Option<Object> $(int index) {
-        return Nothing();
+    default Object $(int index) {
+        throw new IndexOutOfBoundsException();
     }
 
     @Override

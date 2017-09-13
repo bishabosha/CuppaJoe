@@ -24,11 +24,11 @@ public interface Product2<A, B> extends Product {
     }
 
     @Override
-    default Option<Object> $(int index) {
+    default Object $(int index) {
         switch (index) {
-            case 1: return Some($1());
-            case 2: return Some($2());
-            default: return Nothing();
+            case 1: return $1();
+            case 2: return $2();
+            default: throw new IndexOutOfBoundsException();
         }
     }
 

@@ -4,6 +4,7 @@
 
 package com.bishabosha.caffeine.functional.functions;
 
+import com.bishabosha.caffeine.functional.Option;
 import com.bishabosha.caffeine.functional.tuples.Tuple5;
 
 public interface Func5<A, B, C, D, E, R> {
@@ -11,6 +12,16 @@ public interface Func5<A, B, C, D, E, R> {
 
     static <V,W,X,Y,Z,R> Func5<V,W,X,Y,Z,R> of(Func5<V,W,X,Y,Z,R> func) {
         return func;
+    }
+
+    default Func5<A, B, C, D, E, Option<R>> lifted() {
+        return (v, w, x, y, z) -> {
+            try {
+                return Option.ofUnknown(apply(v, w, x, y, z));
+            } catch (Throwable e) {
+                return Option.nothing();
+            }
+        };
     }
 
     default Func1<A, Func1<B, Func1<C, Func1<D, Func1<E, R>>>>> curried() {

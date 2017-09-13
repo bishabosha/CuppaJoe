@@ -4,6 +4,7 @@
 
 package com.bishabosha.caffeine.functional.functions;
 
+import com.bishabosha.caffeine.functional.Option;
 import com.bishabosha.caffeine.functional.tuples.Tuple8;
 
 public interface Func8<A, B, C, D, E, F, G, H, R> {
@@ -11,6 +12,16 @@ public interface Func8<A, B, C, D, E, F, G, H, R> {
 
     static <S,T,U,V,W,X,Y,Z,R> Func8<S,T,U,V,W,X,Y,Z,R> of(Func8<S,T,U,V,W,X,Y,Z,R> func) {
         return func;
+    }
+
+    default Func8<A, B, C, D, E, F, G, H, Option<R>> lifted() {
+        return (s, t, u, v, w, x, y, z) -> {
+            try {
+                return Option.ofUnknown(apply(s, t, u, v, w, x, y, z));
+            } catch (Throwable e) {
+                return Option.nothing();
+            }
+        };
     }
 
     default Func1<A, Func1<B, Func1<C, Func1<D, Func1<E, Func1<F, Func1<G, Func1<H, R>>>>>>>> curried() {

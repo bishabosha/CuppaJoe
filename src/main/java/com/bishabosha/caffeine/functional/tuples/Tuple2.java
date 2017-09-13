@@ -7,6 +7,8 @@ package com.bishabosha.caffeine.functional.tuples;
 import com.bishabosha.caffeine.functional.Option;
 import com.bishabosha.caffeine.functional.Pattern;
 import com.bishabosha.caffeine.functional.functions.Func2;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
@@ -37,11 +39,13 @@ public final class Tuple2<A, B> implements Product2<A, B> {
         return mapper.apply($1(), $2());
     }
 
+    @Contract(pure = true)
     @Override
     public A $1() {
         return $1;
     }
 
+    @Contract(pure = true)
     @Override
     public B $2() {
         return $2;

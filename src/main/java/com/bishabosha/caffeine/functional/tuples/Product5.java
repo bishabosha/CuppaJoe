@@ -27,14 +27,14 @@ public interface Product5<A, B, C, D, E> extends Product {
     }
 
     @Override
-    default Option<Object> $(int index) {
+    default Object $(int index) {
         switch (index) {
-            case 1: return Some($1());
-            case 2: return Some($2());
-            case 3: return Some($3());
-            case 4: return Some($4());
-            case 5: return Some($5());
-            default: return Nothing();
+            case 1: return $1();
+            case 2: return $2();
+            case 3: return $3();
+            case 4: return $4();
+            case 5: return $5();
+            default: throw new IndexOutOfBoundsException();
         }
     }
 
