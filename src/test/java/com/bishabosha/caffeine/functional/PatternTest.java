@@ -75,7 +75,7 @@ public class PatternTest {
         final Pattern patt2Test;
         final Tuple2<Option<Tree<Integer>>, Cons<Tree<Integer>>> underTest;
 
-        patt2Test = Tuple2.Tuple(Some(Node($x, ¥_, $y)), $xs);
+        patt2Test = Tuple2.Tuple2(Some(Node($x, ¥_, $y)), $xs);
         underTest = Tuple(Option.of(Node(1, leaf(), leaf())), Cons.of(Tree.of(2)));
 
         patt2Test.test(underTest).ifSome(results -> {

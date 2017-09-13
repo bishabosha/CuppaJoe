@@ -4,12 +4,7 @@
 
 package com.bishabosha.caffeine.functional;
 
-import com.bishabosha.caffeine.functional.tuples.Tuple;
-
 import java.util.Objects;
-import java.util.Optional;
-import java.util.function.BooleanSupplier;
-import java.util.function.Predicate;
 
 public interface Pattern {
 

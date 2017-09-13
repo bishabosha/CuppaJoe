@@ -4,25 +4,33 @@
 
 package com.bishabosha.caffeine.functional.tuples;
 
+import com.bishabosha.caffeine.functional.Option;
 import com.bishabosha.caffeine.functional.Pattern;
 import com.bishabosha.caffeine.functional.functions.Func6;
 
+import java.util.Objects;
+
 import static com.bishabosha.caffeine.functional.PatternFactory.patternFor;
 
-public class Tuple6<A, B, C, D, E, F> extends Tuple5<A, B, C, D, E> {
+public final class Tuple6<A, B, C, D, E, F> implements Product6<A, B, C, D, E, F> {
 
-    F $6;
+    private final A $1;
+    private final B $2;
+    private final C $3;
+    private final D $4;
+    private final E $5;
+    private final F $6;
 
     public static Pattern Tuple6(Pattern $1, Pattern $2, Pattern $3, Pattern $4,
-                                Pattern $5, Pattern $6) {
+                                 Pattern $5, Pattern $6) {
         return patternFor(Tuple6.class)
-                .addTest($1, x -> x.$1())
-                .addTest($2, x -> x.$2())
-                .addTest($3, x -> x.$3())
-                .addTest($4, x -> x.$4())
-                .addTest($5, x -> x.$5())
-                .addTest($6, x -> x.$6())
-                .build();
+            .addTest($1, Product6::$1)
+            .addTest($2, Product6::$2)
+            .addTest($3, Product6::$3)
+            .addTest($4, Product6::$4)
+            .addTest($5, Product6::$5)
+            .addTest($6, Product6::$6)
+            .build();
     }
 
     public static <A, B, C, D, E, F>
@@ -32,29 +40,63 @@ public class Tuple6<A, B, C, D, E, F> extends Tuple5<A, B, C, D, E> {
     }
 
     protected Tuple6(A $1, B $2, C $3, D $4, E $5, F $6) {
-        super($1, $2, $3, $4, $5);
+        this.$1 = $1;
+        this.$2 = $2;
+        this.$3 = $3;
+        this.$4 = $4;
+        this.$5 = $5;
         this.$6 = $6;
-    }
-
-    {
-        supplierIterable.add(this::$6);
     }
 
     public <AA, BB, CC, DD, EE, FF> Tuple6<AA, BB, CC, DD, EE, FF> flatMap(Func6<A, B, C, D, E, F, Tuple6<AA, BB, CC, DD, EE, FF>> mapper) {
         return mapper.apply($1(), $2(), $3(), $4(), $5(), $6());
     }
 
-    public <O> O map(Func6<A, B, C, D, E, F, O> mapper) {
-        return mapper.apply($1(), $2(), $3(), $4(), $5(), $6());
+    @Override
+    public A $1() {
+        return $1;
     }
 
     @Override
-    public int size() {
-        return 6;
+    public B $2() {
+        return $2;
     }
 
+    @Override
+    public C $3() {
+        return $3;
+    }
+
+    @Override
+    public D $4() {
+        return $4;
+    }
+
+    @Override
+    public E $5() {
+        return $5;
+    }
+
+    @Override
     public F $6() {
         return $6;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash($1(), $2(), $3(), $4(), $5(), $6());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        return Option.ofUnknown(obj)
+                .cast(Tuple6.class)
+                .map(o -> Objects.equals($1(), o.$1()) && Objects.equals($2(), o.$2()) && Objects.equals($3(), o.$3())
+                        && Objects.equals($4(), o.$4()) && Objects.equals($5(), o.$5()) && Objects.equals($6(), o.$6()))
+                .orElse(false);
     }
 
     @Override

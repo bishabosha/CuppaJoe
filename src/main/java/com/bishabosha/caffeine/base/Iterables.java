@@ -51,6 +51,50 @@ public class Iterables {
         public abstract E nextSupplier();
     }
 
+    public static <E> Iterable<E> ofSuppliers(Supplier<E>... suppliers) {
+        return () -> new Lockable<E>() {
+
+            private int i = 0;
+
+            @Override
+            public boolean hasNextSupplier() {
+                return i < suppliers.length;
+            }
+
+            @Override
+            public E nextSupplier() {
+                return suppliers[i++].get();
+            }
+        };
+    }
+
+    public static <E> Iterable<E> concat(Iterable<E>... iterables) {
+        return () -> new Lockable<E>() {
+            Iterator<E> current;
+            int i = 0;
+
+            @Override
+            public boolean hasNextSupplier() {
+                return (current != null && current.hasNext())
+                        || getNext();
+            }
+
+            public boolean getNext() {
+                while (i < iterables.length) {
+                    if ((current = iterables[i++].iterator()).hasNext()) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            @Override
+            public E nextSupplier() {
+                return current.next();
+            }
+        };
+    }
+
     public static <R> R next(Iterator<R> it) {
         return it.hasNext() ? it.next() : null;
     }

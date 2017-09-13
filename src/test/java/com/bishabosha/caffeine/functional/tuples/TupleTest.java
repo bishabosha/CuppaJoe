@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import java.util.Arrays;
 
-import static com.bishabosha.caffeine.functional.tuples.Tuple.EMPTY;
+import static com.bishabosha.caffeine.functional.tuples.Tuple0.EMPTY;
 import static com.bishabosha.caffeine.functional.API.Tuple;
 
 public class TupleTest {
@@ -25,7 +25,7 @@ public class TupleTest {
     @Test
     public void testLimits() {
         Assert.assertEquals(
-            Tuple.EMPTY,
+            Tuple0.EMPTY,
             Tuple()
         );
     }

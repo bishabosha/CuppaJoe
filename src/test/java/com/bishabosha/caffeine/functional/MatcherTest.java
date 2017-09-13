@@ -17,7 +17,7 @@ import static com.bishabosha.caffeine.functional.Pattern.*;
 import static com.bishabosha.caffeine.functional.Case.*;
 import static com.bishabosha.caffeine.functional.Matcher.match;
 import static com.bishabosha.caffeine.functional.API.Tuple;
-import static com.bishabosha.caffeine.functional.tuples.Tuple2.Tuple;
+import static com.bishabosha.caffeine.functional.tuples.Tuple2.Tuple2;
 import static com.bishabosha.caffeine.functional.immutable.Tree.*;
 
 public class MatcherTest {
@@ -191,10 +191,10 @@ public class MatcherTest {
 
     int sumNodes(Tree<Integer> x, Tree<Integer> y) {
         return match(Tuple(x, y)).of(
-            with(Tuple(Leaf(), Leaf()),                                             () -> 0),
-            with(Tuple(Node($n, ¥_, ¥_), Node($n, ¥_, ¥_)), (Integer $n1, Integer $n2) -> $n1 + $n2),
-            with(Tuple(Leaf(), Node($n, ¥_, ¥_)),                         (Integer $n) -> $n),
-            with(Tuple(Node($n, ¥_, ¥_), Leaf()),                         (Integer $n) -> $n)
+            with(Tuple2(Leaf(), Leaf()),                                             () -> 0),
+            with(Tuple2(Node($n, ¥_, ¥_), Node($n, ¥_, ¥_)), (Integer $n1, Integer $n2) -> $n1 + $n2),
+            with(Tuple2(Leaf(), Node($n, ¥_, ¥_)),                         (Integer $n) -> $n),
+            with(Tuple2(Node($n, ¥_, ¥_), Leaf()),                         (Integer $n) -> $n)
         );
     }
 

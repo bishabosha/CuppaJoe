@@ -4,18 +4,23 @@
 
 package com.bishabosha.caffeine.functional.tuples;
 
+import com.bishabosha.caffeine.functional.Option;
 import com.bishabosha.caffeine.functional.Pattern;
 import com.bishabosha.caffeine.functional.functions.Func2;
 
+import java.util.Objects;
+
 import static com.bishabosha.caffeine.functional.PatternFactory.patternFor;
 
-public class Tuple2<A, B> extends Tuple1<A> {
-    private B $2;
+public final class Tuple2<A, B> implements Product2<A, B> {
 
-    public static Pattern Tuple(Pattern $1, Pattern $2) {
+    private final A $1;
+    private final B $2;
+
+    public static Pattern Tuple2(Pattern $1, Pattern $2) {
         return patternFor(Tuple2.class).testTwo(
-            of($1, x -> x.$1()),
-            of($2, x -> x.$2())
+            of($1, Product2::$1),
+            of($2, Product2::$2)
         );
     }
 
@@ -24,29 +29,38 @@ public class Tuple2<A, B> extends Tuple1<A> {
     }
 
     protected Tuple2(A $1, B $2) {
-        super($1);
+        this.$1 = $1;
         this.$2 = $2;
-    }
-
-    {
-        supplierIterable.add(this::$2);
     }
 
     public <AA, BB> Tuple2<AA, BB> flatMap(Func2<A, B, Tuple2<AA, BB>> mapper) {
         return mapper.apply($1(), $2());
     }
 
-    public <O> O map(Func2<A, B, O> mapper) {
-        return mapper.apply($1(), $2());
+    @Override
+    public A $1() {
+        return $1;
     }
 
     @Override
-    public int size() {
-        return 2;
-    }
-
     public B $2() {
         return $2;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash($1(), $2());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        return Option.ofUnknown(obj)
+            .cast(Tuple2.class)
+            .map(o -> Objects.equals($1(), o.$1()) && Objects.equals($2(), o.$2()))
+            .orElse(false);
     }
 
     public String toString() {

@@ -4,23 +4,30 @@
 
 package com.bishabosha.caffeine.functional.tuples;
 
+import com.bishabosha.caffeine.functional.Option;
 import com.bishabosha.caffeine.functional.Pattern;
 import com.bishabosha.caffeine.functional.functions.Func5;
 
+import java.util.Objects;
+
 import static com.bishabosha.caffeine.functional.PatternFactory.patternFor;
 
-public class Tuple5<A, B, C, D, E> extends Tuple4<A, B, C, D> {
+public final class Tuple5<A, B, C, D, E> implements Product5<A, B, C, D, E> {
 
-    E $5;
+    private final A $1;
+    private final B $2;
+    private final C $3;
+    private final D $4;
+    private final E $5;
 
-    public static Pattern Tuple(Pattern $1, Pattern $2, Pattern $3, Pattern $4, Pattern $5) {
+    public static Pattern Tuple5(Pattern $1, Pattern $2, Pattern $3, Pattern $4, Pattern $5) {
         return patternFor(Tuple5.class)
-                .addTest($1, x -> x.$1())
-                .addTest($2, x -> x.$2())
-                .addTest($3, x -> x.$3())
-                .addTest($4, x -> x.$4())
-                .addTest($5, x -> x.$5())
-                .build();
+            .addTest($1, Product5::$1)
+            .addTest($2, Product5::$2)
+            .addTest($3, Product5::$3)
+            .addTest($4, Product5::$4)
+            .addTest($5, Product5::$5)
+            .build();
     }
 
     public static <A, B, C, D, E>
@@ -30,29 +37,57 @@ public class Tuple5<A, B, C, D, E> extends Tuple4<A, B, C, D> {
     }
 
     protected Tuple5(A $1, B $2, C $3, D $4, E $5) {
-        super($1, $2, $3, $4);
+        this.$1 = $1;
+        this.$2 = $2;
+        this.$3 = $3;
+        this.$4 = $4;
         this.$5 = $5;
-    }
-
-    {
-        supplierIterable.add(this::$5);
     }
 
     public <AA, BB, CC, DD, EE> Tuple5<AA, BB, CC, DD, EE> flatMap(Func5<A, B, C, D, E, Tuple5<AA, BB, CC, DD, EE>> mapper) {
         return mapper.apply($1(), $2(), $3(), $4(), $5());
     }
 
-    public <O> O map(Func5<A, B, C, D, E, O> mapper) {
-        return mapper.apply($1(), $2(), $3(), $4(), $5());
+    @Override
+    public A $1() {
+        return $1;
     }
 
     @Override
-    public int size() {
-        return 5;
+    public B $2() {
+        return $2;
     }
 
+    @Override
+    public C $3() {
+        return $3;
+    }
+
+    @Override
+    public D $4() {
+        return $4;
+    }
+
+    @Override
     public E $5() {
         return $5;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash($1(), $2(), $3(), $4(), $5());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        return Option.ofUnknown(obj)
+            .cast(Tuple5.class)
+            .map(o -> Objects.equals($1(), o.$1()) && Objects.equals($2(), o.$2()) && Objects.equals($3(), o.$3())
+                    && Objects.equals($4(), o.$4()) && Objects.equals($5(), o.$5()))
+            .orElse(false);
     }
 
     @Override

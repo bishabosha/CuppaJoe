@@ -1,12 +1,16 @@
 package com.bishabosha.caffeine.functional;
 
+import com.bishabosha.caffeine.functional.functions.CheckedFunc0;
+import com.bishabosha.caffeine.functional.functions.Func0;
 import com.bishabosha.caffeine.functional.tuples.*;
+
+import java.util.function.Supplier;
 
 public class API {
 
-    public static Tuple
+    public static Tuple0
     Tuple() {
-        return Tuple.of();
+        return Tuple0.getInstance();
     }
 
     public static <A>
@@ -57,10 +61,26 @@ public class API {
     }
 
     public static <L, R> Either<L, R> Left(L left) {
-        return Either.left(left);
+        return Either.Left.of(left);
     }
 
     public static <L, R> Either<L, R> Right(R right) {
-        return Either.right(right);
+        return Either.Right.of(right);
+    }
+
+    public static <O> Option<O> Some(O elem) {
+        return Option.of(elem);
+    }
+
+    public static <O> Option<O> Nothing() {
+        return Option.nothing();
+    }
+
+    public static <O> Supplier<Try<O>> Try(Func0<O> getter) {
+        return Try.of(getter);
+    }
+
+    public static <O> Supplier<Try<O>> Try(CheckedFunc0<O> getter) {
+        return Try.of(getter);
     }
 }

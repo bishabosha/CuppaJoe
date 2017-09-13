@@ -69,7 +69,7 @@ public class PatternResult extends AbstractBase<Object> {
 
     /**
      * Standard Iterative, In-order, Depth First Search
-     * @return A Tuple fromList unknown type that contains only singleton values
+     * @return A Tuple4 fromList unknown type that contains only singleton values
      */
     public PatternResult flatten() {
         list = Library.flatten(PatternResult.class, this);

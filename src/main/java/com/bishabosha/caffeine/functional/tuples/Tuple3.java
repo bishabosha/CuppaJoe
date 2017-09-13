@@ -4,19 +4,25 @@
 
 package com.bishabosha.caffeine.functional.tuples;
 
+import com.bishabosha.caffeine.functional.Option;
 import com.bishabosha.caffeine.functional.Pattern;
 import com.bishabosha.caffeine.functional.functions.Func3;
 
+import java.util.Objects;
+
 import static com.bishabosha.caffeine.functional.PatternFactory.patternFor;
 
-public class Tuple3<A, B, C> extends Tuple2<A, B> {
-    private C $3;
+public final class Tuple3<A, B, C> implements Product3<A, B, C> {
 
-    public static Pattern Tuple(Pattern $1, Pattern $2, Pattern $3) {
+    private final A $1;
+    private final B $2;
+    private final C $3;
+
+    public static Pattern Tuple3(Pattern $1, Pattern $2, Pattern $3) {
         return patternFor(Tuple3.class).testThree(
-            Tuple2.of($1, x -> x.$1()),
-            Tuple2.of($2, x -> x.$2()),
-            Tuple2.of($3, x -> x.$3())
+            Tuple2.of($1, Product3::$1),
+            Tuple2.of($2, Product3::$2),
+            Tuple2.of($3, Product3::$3)
         );
     }
 
@@ -25,29 +31,44 @@ public class Tuple3<A, B, C> extends Tuple2<A, B> {
     }
 
     protected Tuple3(A $1, B $2, C $3) {
-        super($1, $2);
+        this.$1 = $1;
+        this.$2 = $2;
         this.$3 = $3;
-    }
-
-    {
-        supplierIterable.add(this::$3);
     }
 
     public <AA, BB, CC> Tuple3<AA, BB, CC> flatMap(Func3<A, B, C, Tuple3<AA, BB, CC>> mapper) {
         return mapper.apply($1(), $2(), $3());
     }
 
-    public <O> O map(Func3<A, B, C, O> mapper) {
-        return mapper.apply($1(), $2(), $3());
+    @Override
+    public A $1() {
+        return $1;
     }
 
     @Override
-    public int size() {
-        return 3;
+    public B $2() {
+        return $2;
     }
 
+    @Override
     public C $3() {
         return $3;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash($1(), $2(), $3());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        return Option.ofUnknown(obj)
+            .cast(Tuple3.class)
+            .map(o -> Objects.equals($1(), o.$1()) && Objects.equals($2(), o.$2()) && Objects.equals($3(), o.$3()))
+            .orElse(false);
     }
 
     @Override

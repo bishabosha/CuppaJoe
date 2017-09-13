@@ -20,14 +20,6 @@ public abstract class Either<L, R> {
         return x -> x instanceof Right ? pattern.test(((Right) x).value) : Pattern.FAIL;
     }
 
-    public static <L, R> Either<L, R> left(L left) {
-        return new Left<>(Objects.requireNonNull(left, "Either Types are Non-Null"));
-    }
-
-    public static <L, R> Either<L, R> right(R right) {
-        return new Right<>(Objects.requireNonNull(right, "Either Types are Non-Null"));
-    }
-
     public Option<L> getLeft() {
         return when(() -> !isRight(), () -> ((Left<L, R>) this).value).match();
     }
@@ -47,7 +39,7 @@ public abstract class Either<L, R> {
     public abstract boolean isRight();
 
     public <A, B> Either<A, B> map(Function<L, A> ifLeft, Function<R, B> ifRight) {
-        return isRight() ? right(ifRight.apply(((Right<L, R>)this).value)) : left(ifLeft.apply(((Left<L, R>)this).value));
+        return isRight() ? Right.of(ifRight.apply(((Right<L, R>)this).value)) : Left.of(ifLeft.apply(((Left<L, R>)this).value));
     }
 
     @SuppressWarnings("unchecked")
@@ -62,6 +54,10 @@ public abstract class Either<L, R> {
 
         private Left(L value) {
             this.value = value;
+        }
+
+        public static <L, R> Left<L, R> of(L left) {
+            return new Left<>(Objects.requireNonNull(left, "Either Types are Non-Null"));
         }
 
         @Override
@@ -96,6 +92,10 @@ public abstract class Either<L, R> {
 
         private Right(R value) {
             this.value = value;
+        }
+
+        public static <L, R> Either<L, R> of(R right) {
+            return new Right<>(Objects.requireNonNull(right, "Either Types are Non-Null"));
         }
 
         @Override

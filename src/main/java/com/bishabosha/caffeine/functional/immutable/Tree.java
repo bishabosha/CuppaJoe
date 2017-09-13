@@ -22,7 +22,7 @@ import static com.bishabosha.caffeine.functional.Matcher.match;
 import static com.bishabosha.caffeine.functional.Option.Some;
 import static com.bishabosha.caffeine.functional.Pattern.*;
 import static com.bishabosha.caffeine.functional.PatternFactory.patternFor;
-import static com.bishabosha.caffeine.functional.tuples.Tuple2.Tuple;
+import static com.bishabosha.caffeine.functional.tuples.Tuple2.Tuple2;
 
 /**
  * Immutable tree
@@ -267,12 +267,12 @@ public class Tree<E extends Comparable<E>> {
 
             @Override
             public Iterator<E> iterator() {
-                return inOrderTraversal(Tuple(Some(Node($n, ¥_, $r)), $xs), Tree::left);
+                return inOrderTraversal(Tuple2(Some(Node($n, ¥_, $r)), $xs), Tree::left);
             }
 
             @Override
             public Iterable<E> reverse() {
-                return () -> inOrderTraversal(Tuple(Some(Node($n, $l, ¥_)), $xs), Tree::right);
+                return () -> inOrderTraversal(Tuple2(Some(Node($n, $l, ¥_)), $xs), Tree::right);
             }
 
             /**
@@ -322,7 +322,7 @@ public class Tree<E extends Comparable<E>> {
 
             @Override
             public boolean hasNextSupplier() {
-                return stack.pop(with(Tuple(Some(Node($n, $l, $r)), $xs), this::processPopped))
+                return stack.pop(with(Tuple2(Some(Node($n, $l, $r)), $xs), this::processPopped))
                             .orElse(false);
             }
 
@@ -341,6 +341,52 @@ public class Tree<E extends Comparable<E>> {
             @Override
             public E nextSupplier() {
                 return toReturn;
+            }
+        };
+    }
+
+    public Foldable<E> levelOrder() {
+        return new Foldable<E>() {
+
+            @Override
+            public Iterable<E> reverse() {
+                return foldLeft(Cons.empty(), (E x, Cons<E> xs) -> xs.push(x)).flatten();
+            }
+
+            @Override
+            public Iterator<E> iterator() {
+                return levelOrderTraversal();
+            }
+
+            private Iterator<E> levelOrderTraversal() {
+                return new Iterables.Lockable<E>() {
+
+                    private Queue<Tree<E>> queue = Queue.of(Tree.this);
+                    private E toReturn;
+
+                    @Override
+                    public boolean hasNextSupplier() {
+                        return queue.dequeue(with(Tuple2(Some(Node($n, $l, $r)), $xs), this::processPopped))
+                                    .orElse(false);
+                    }
+
+                    private boolean processPopped(E node, Tree<E> left, Tree<E> right, Queue<Tree<E>> remaining) {
+                        toReturn = node;
+                        if (!left.isLeaf()) {
+                            remaining = remaining.enqueue(left);
+                        }
+                        if (!right.isLeaf()) {
+                            remaining = remaining.enqueue(right);
+                        }
+                        queue = remaining;
+                        return true;
+                    }
+
+                    @Override
+                    public E nextSupplier() {
+                        return toReturn;
+                    }
+                };
             }
         };
     }

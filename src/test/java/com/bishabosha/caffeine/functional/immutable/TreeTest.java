@@ -53,4 +53,16 @@ public class TreeTest {
             contains(1, 3, 2, 5, 6, 4)
         );
     }
+
+    @Test
+    public void levelOrder() {
+        assertThat(
+            Tree.of(4, 2, 1, 3, 6, 5).levelOrder(),
+            contains(4, 2, 6, 1, 3, 5)
+        );
+        assertThat(
+            Tree.of(4, 2, 1, 3, 6, 5).levelOrder().reverse(),
+            contains(5, 3, 1, 6, 2, 4)
+        );
+    }
 }

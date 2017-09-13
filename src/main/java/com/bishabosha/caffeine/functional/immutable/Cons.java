@@ -14,6 +14,7 @@ import com.bishabosha.caffeine.functional.tuples.Tuple2;
 import java.util.*;
 import java.util.function.Supplier;
 
+import static com.bishabosha.caffeine.functional.API.Left;
 import static com.bishabosha.caffeine.functional.Case.*;
 import static com.bishabosha.caffeine.functional.PatternFactory.patternFor;
 import static com.bishabosha.caffeine.functional.API.Tuple;
@@ -157,8 +158,8 @@ public class Cons<E> extends AbstractBase<Option<E>> implements Foldable<Option<
     }
 
     /**
-     * Tries to split the of into a Tuple of its head and tail.
-     * @return {@link Option#nothing()} if this is an empty of. Otherwise {@link Option} of a Tuple of the head and tail.
+     * Tries to split the of into a Tuple4 of its head and tail.
+     * @return {@link Option#nothing()} if this is an empty of. Otherwise {@link Option} of a Tuple4 of the head and tail.
      */
     public Option<Tuple2<Option<E>, Cons<E>>> pop() {
         return when(() -> !isEmpty(), () -> Tuple(head, tail)).match();
@@ -215,11 +216,11 @@ public class Cons<E> extends AbstractBase<Option<E>> implements Foldable<Option<
     }
 
     public <O> Tuple2<Option<O>, Cons<E>> nextItem(Func2<Option<E>, Cons<E>, Tuple2<Either<Boolean, O>, Cons<E>>> mapper) {
-        Tuple2<Either<Boolean, O>, Cons<E>> loopCond = Tuple(Either.left(true), this);
+        Tuple2<Either<Boolean, O>, Cons<E>> loopCond = Tuple(Left(true), this);
         while (loopCond.$1().getLeftOrElse(() -> false)) {
             loopCond = loopCond.$2().pop()
                     .map(t -> t.map(mapper))
-                    .orElseGet(() -> Tuple(Either.left(false), Cons.empty()));
+                    .orElseGet(() -> Tuple(Left(false), Cons.empty()));
         }
         return loopCond.flatMap((either, cons) -> Tuple(either.getRight(), cons));
     }
