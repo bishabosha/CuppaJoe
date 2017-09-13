@@ -2,8 +2,9 @@
  * Copyright (c) 2017. Jamie Thompson <bishbashboshjt@gmail.com>
  */
 
-package com.bishabosha.caffeine.functional;
+package com.bishabosha.caffeine.functional.patterns;
 
+import com.bishabosha.caffeine.functional.control.Option;
 import com.bishabosha.caffeine.functional.functions.*;
 
 import java.util.function.*;
@@ -12,14 +13,14 @@ import java.util.function.*;
  * Represents a Case of a Matcher block,
  * Typically represents a pattern that a variable is matched on, and a mapping function for any variables bound
  * @param <I> the input class being matched
- * @param <O> the output class for if a match is made.
+ * @param <O> the output class for if a of is made.
  */
 public interface Case<I, O> {
 
     /**
-     * Attempts to match the Object and Map it
+     * Attempts to of the Object and Map it
      * @param input the Object being matched
-     * @return {@link Option#nothing()} if no match is made. Otherwise {@link Option} of the matched variable
+     * @return {@link Option#nothing()} if no of is made. Otherwise {@link Option} of the matched variable
      */
     Option<O> match(I input);
 

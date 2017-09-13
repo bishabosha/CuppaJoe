@@ -1,7 +1,7 @@
 package com.bishabosha.caffeine.functional.tuples;
 
 import com.bishabosha.caffeine.base.Iterables;
-import com.bishabosha.caffeine.functional.Option;
+import com.bishabosha.caffeine.functional.control.Option;
 import com.bishabosha.caffeine.functional.functions.Func1;
 import org.jetbrains.annotations.NotNull;
 

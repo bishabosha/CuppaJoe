@@ -2,7 +2,9 @@
  * Copyright (c) 2017. Jamie Thompson <bishbashboshjt@gmail.com>
  */
 
-package com.bishabosha.caffeine.functional;
+package com.bishabosha.caffeine.functional.patterns;
+
+import com.bishabosha.caffeine.functional.control.Option;
 
 import java.util.Objects;
 

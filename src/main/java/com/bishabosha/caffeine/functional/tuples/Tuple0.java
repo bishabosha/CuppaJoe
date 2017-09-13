@@ -4,14 +4,14 @@
 
 package com.bishabosha.caffeine.functional.tuples;
 
-import com.bishabosha.caffeine.functional.Pattern;
+import com.bishabosha.caffeine.functional.patterns.Pattern;
 
 public class Tuple0 implements Product0 {
 
     public final static Tuple0 EMPTY = new Tuple0();
 
     public static Pattern Tuple0() {
-        return x -> x instanceof Product0 ? Pattern.PASS : Pattern.FAIL;
+        return x -> x == EMPTY ? Pattern.PASS : Pattern.FAIL;
     }
 
     public static Tuple0 getInstance() {
@@ -20,7 +20,7 @@ public class Tuple0 implements Product0 {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof Product0;
+        return obj instanceof Tuple0 && obj == EMPTY;
     }
 
     @Override

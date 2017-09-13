@@ -8,14 +8,12 @@
 
 package com.bishabosha.caffeine.base;
 
-import com.bishabosha.caffeine.functional.Option;
+import com.bishabosha.caffeine.functional.control.Option;
 import com.bishabosha.caffeine.functional.tuples.Tuple2;
 import com.bishabosha.caffeine.hashtables.HashMap;
 import com.bishabosha.caffeine.hashtables.HashTable;
-import com.bishabosha.caffeine.lists.*;
 import com.bishabosha.caffeine.lists.LinkedList;
 
-import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.*;
 

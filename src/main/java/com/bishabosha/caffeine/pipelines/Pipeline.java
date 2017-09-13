@@ -5,8 +5,8 @@
 package com.bishabosha.caffeine.pipelines;
 
 import com.bishabosha.caffeine.base.Iterables;
-import com.bishabosha.caffeine.functional.Case;
-import com.bishabosha.caffeine.functional.Option;
+import com.bishabosha.caffeine.functional.patterns.Case;
+import com.bishabosha.caffeine.functional.control.Option;
 import com.bishabosha.caffeine.hashtables.HashTable;
 
 import java.util.*;
@@ -54,7 +54,7 @@ public class Pipeline<T> extends AbstractPipeline<T> {
     }
 
     public static <R> Pipeline<R> empty() {
-        return of(Iterables.empty);
+        return of(Iterables.empty());
     }
 
     public static <R> Pipeline<R> copy(AbstractPipeline pipeline) {

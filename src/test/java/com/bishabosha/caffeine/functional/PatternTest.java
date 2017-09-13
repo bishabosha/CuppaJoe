@@ -4,15 +4,18 @@
 
 package com.bishabosha.caffeine.functional;
 
+import com.bishabosha.caffeine.functional.control.Option;
 import com.bishabosha.caffeine.functional.immutable.Cons;
 import com.bishabosha.caffeine.functional.immutable.Tree;
+import com.bishabosha.caffeine.functional.patterns.Pattern;
+import com.bishabosha.caffeine.functional.patterns.PatternResult;
 import com.bishabosha.caffeine.functional.tuples.Tuple2;
 import com.bishabosha.caffeine.trees.BinaryNode;
 import org.junit.Test;
 
-import static com.bishabosha.caffeine.functional.Option.Some;
-import static com.bishabosha.caffeine.functional.Pattern.*;
-import static com.bishabosha.caffeine.functional.PatternFactory.patternFor;
+import static com.bishabosha.caffeine.functional.control.Option.Some;
+import static com.bishabosha.caffeine.functional.patterns.Pattern.*;
+import static com.bishabosha.caffeine.functional.patterns.PatternFactory.patternFor;
 import static com.bishabosha.caffeine.functional.immutable.Tree.Node;
 import static com.bishabosha.caffeine.functional.immutable.Tree.leaf;
 import static com.bishabosha.caffeine.functional.API.Tuple;

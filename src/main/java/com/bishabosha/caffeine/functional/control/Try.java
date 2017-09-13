@@ -2,28 +2,24 @@
  * Copyright (c) 2017. Jamie Thompson <bishbashboshjt@gmail.com>
  */
 
-package com.bishabosha.caffeine.functional;
+package com.bishabosha.caffeine.functional.control;
 
 import com.bishabosha.caffeine.functional.functions.CheckedFunc0;
 import com.bishabosha.caffeine.functional.functions.Func0;
 
-import java.util.function.*;
-
 public interface Try<E> {
 
-    static <T> Supplier<Try<T>> of(Func0<T> getter) {
+    static <T> Try<T> of(Func0<T> getter) {
         return of(CheckedFunc0.of(getter::apply));
     }
 
-    static <T> Supplier<Try<T>> of(CheckedFunc0<T> getter) {
-        return () -> {
-            try {
-                final T value = getter.apply();
-                return Success.of(value);
-            } catch (Throwable e) {
-                return Failure.getFail(e);
-            }
-        };
+    static <T> Try<T> of(CheckedFunc0<T> getter) {
+        try {
+            final T value = getter.apply();
+            return Success.of(value);
+        } catch (Throwable e) {
+            return Failure.of(e);
+        }
     }
 
     @SuppressWarnings("unchecked")

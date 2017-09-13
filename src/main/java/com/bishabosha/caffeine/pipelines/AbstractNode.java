@@ -4,7 +4,7 @@
 
 package com.bishabosha.caffeine.pipelines;
 
-import com.bishabosha.caffeine.functional.Option;
+import com.bishabosha.caffeine.functional.control.Option;
 
 import java.util.Objects;
 import java.util.function.Consumer;

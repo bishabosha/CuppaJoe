@@ -4,13 +4,13 @@
 
 package com.bishabosha.caffeine.functional.tuples;
 
-import com.bishabosha.caffeine.functional.Option;
-import com.bishabosha.caffeine.functional.Pattern;
+import com.bishabosha.caffeine.functional.control.Option;
+import com.bishabosha.caffeine.functional.patterns.Pattern;
 import com.bishabosha.caffeine.functional.functions.Func5;
 
 import java.util.Objects;
 
-import static com.bishabosha.caffeine.functional.PatternFactory.patternFor;
+import static com.bishabosha.caffeine.functional.patterns.PatternFactory.patternFor;
 
 public final class Tuple5<A, B, C, D, E> implements Product5<A, B, C, D, E> {
 

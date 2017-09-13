@@ -1,8 +1,11 @@
-package com.bishabosha.caffeine.functional;
+package com.bishabosha.caffeine.functional.control;
+
+import com.bishabosha.caffeine.functional.patterns.Pattern;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-import static com.bishabosha.caffeine.functional.PatternFactory.patternFor;
+import static com.bishabosha.caffeine.functional.patterns.PatternFactory.patternFor;
 
 public class Success<E> implements Try<E> {
 
@@ -12,6 +15,7 @@ public class Success<E> implements Try<E> {
         return patternFor(Success.class).atomic(pattern, x -> x.value);
     }
 
+    @NotNull
     static <T> Success<T> of(T value) {
         return new Success<>(value);
     }

@@ -2,13 +2,15 @@
  * Copyright (c) 2017. Jamie Thompson <bishbashboshjt@gmail.com>
  */
 
-package com.bishabosha.caffeine.functional;
+package com.bishabosha.caffeine.functional.control;
+
+import com.bishabosha.caffeine.functional.patterns.Pattern;
 
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.bishabosha.caffeine.functional.Case.when;
+import static com.bishabosha.caffeine.functional.patterns.Case.when;
 
 public abstract class Either<L, R> {
 

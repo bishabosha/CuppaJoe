@@ -7,7 +7,7 @@ package com.bishabosha.caffeine.pipelines;
 import java.util.*;
 
 import com.bishabosha.caffeine.base.Iterables;
-import com.bishabosha.caffeine.functional.Option;
+import com.bishabosha.caffeine.functional.control.Option;
 import com.bishabosha.caffeine.lists.LinkedList;
 
 class TerminalNode<I, O> extends AbstractNode<O, O> implements Iterable<O>{

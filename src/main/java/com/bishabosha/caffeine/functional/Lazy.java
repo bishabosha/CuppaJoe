@@ -4,11 +4,13 @@
 
 package com.bishabosha.caffeine.functional;
 
+import com.bishabosha.caffeine.functional.control.Option;
+import com.bishabosha.caffeine.functional.patterns.Pattern;
+
 import java.util.Objects;
 import java.util.function.Supplier;
 
-import static com.bishabosha.caffeine.functional.Pattern.$x;
-import static com.bishabosha.caffeine.functional.PatternFactory.patternFor;
+import static com.bishabosha.caffeine.functional.patterns.PatternFactory.patternFor;
 
 public class Lazy<E> implements Supplier<E> {
 

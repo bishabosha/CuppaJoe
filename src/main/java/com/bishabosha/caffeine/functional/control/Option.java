@@ -2,9 +2,12 @@
  * Copyright (c) 2017. Jamie Thompson <bishbashboshjt@gmail.com>
  */
 
-package com.bishabosha.caffeine.functional;
+package com.bishabosha.caffeine.functional.control;
 
 import com.bishabosha.caffeine.base.AbstractArrayHelper;
+import com.bishabosha.caffeine.functional.patterns.Case;
+import com.bishabosha.caffeine.functional.patterns.Pattern;
+import com.bishabosha.caffeine.functional.patterns.PatternResult;
 
 import java.util.Iterator;
 import java.util.Objects;
@@ -14,7 +17,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static com.bishabosha.caffeine.functional.PatternFactory.patternFor;
+import static com.bishabosha.caffeine.functional.patterns.PatternFactory.patternFor;
 
 public final class Option<O> extends AbstractArrayHelper<O> {
 

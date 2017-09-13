@@ -1,4 +1,6 @@
-package com.bishabosha.caffeine.functional;
+package com.bishabosha.caffeine.functional.control;
+
+import com.bishabosha.caffeine.functional.patterns.Pattern;
 
 import java.util.Objects;
 
@@ -12,7 +14,7 @@ public class Failure<E> implements Try<E> {
         return x -> x instanceof Failure ? Pattern.PASS : Pattern.FAIL;
     }
 
-    static <T> Failure<T> getFail(Throwable error) {
+    static <T> Failure<T> of(Throwable error) {
         return new Failure<>(error);
     }
 

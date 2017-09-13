@@ -4,14 +4,14 @@
 
 package com.bishabosha.caffeine.sequences;
 
-import com.bishabosha.caffeine.functional.PredicateFor;
+import com.bishabosha.caffeine.functional.math.PredicateFor;
 
 import java.util.function.Supplier;
 
 public class SequenceOf {
 	public static Sequence<Integer> randomPalindromes(int minValue) {
 		  return new NonRecursiveSequence<>(x -> (int)(minValue / Math.random()))
-			  .filter(PredicateFor.isPalindromeInteger);
+			  .filter(PredicateFor.isPalindromeInteger());
 	}
 	
 	public static Sequence<Long> fibonacci() {

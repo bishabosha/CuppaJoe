@@ -1,10 +1,13 @@
 package com.bishabosha.caffeine.functional;
 
+import com.bishabosha.caffeine.functional.control.Either;
+import com.bishabosha.caffeine.functional.control.Option;
+import com.bishabosha.caffeine.functional.control.Try;
 import com.bishabosha.caffeine.functional.functions.CheckedFunc0;
 import com.bishabosha.caffeine.functional.functions.Func0;
+import com.bishabosha.caffeine.functional.patterns.Case;
+import com.bishabosha.caffeine.functional.patterns.Matcher;
 import com.bishabosha.caffeine.functional.tuples.*;
-
-import java.util.function.Supplier;
 
 public class API {
 
@@ -76,11 +79,19 @@ public class API {
         return Option.nothing();
     }
 
-    public static <O> Supplier<Try<O>> Try(Func0<O> getter) {
+    public static <O> Try<O> Try(Func0<O> getter) {
         return Try.of(getter);
     }
 
-    public static <O> Supplier<Try<O>> Try(CheckedFunc0<O> getter) {
+    public static <O> Try<O> Try(CheckedFunc0<O> getter) {
         return Try.of(getter);
+    }
+
+    public static <I> Matcher<I> Match(I toMatch) {
+        return Matcher.create(toMatch);
+    }
+
+    public static <I, O> Option<O> Match(Option<I> toMatch, Case<I, O> options) {
+        return toMatch.isSome() ? options.match(toMatch.get()) : Option.nothing();
     }
 }

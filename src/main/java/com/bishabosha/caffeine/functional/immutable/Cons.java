@@ -7,16 +7,22 @@ package com.bishabosha.caffeine.functional.immutable;
 import com.bishabosha.caffeine.base.AbstractBase;
 import com.bishabosha.caffeine.base.Iterables;
 import com.bishabosha.caffeine.functional.*;
+import com.bishabosha.caffeine.functional.control.Either;
+import com.bishabosha.caffeine.functional.control.Option;
 import com.bishabosha.caffeine.functional.functions.Func2;
 import com.bishabosha.caffeine.functional.functions.Func3;
+import com.bishabosha.caffeine.functional.patterns.Case;
+import com.bishabosha.caffeine.functional.patterns.Pattern;
 import com.bishabosha.caffeine.functional.tuples.Tuple2;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.function.Supplier;
 
 import static com.bishabosha.caffeine.functional.API.Left;
-import static com.bishabosha.caffeine.functional.Case.*;
-import static com.bishabosha.caffeine.functional.PatternFactory.patternFor;
+import static com.bishabosha.caffeine.functional.patterns.Case.*;
+import static com.bishabosha.caffeine.functional.patterns.PatternFactory.patternFor;
 import static com.bishabosha.caffeine.functional.API.Tuple;
 
 /**
@@ -36,6 +42,8 @@ public class Cons<E> extends AbstractBase<Option<E>> implements Foldable<Option<
      * Returns the singleton instance of the empty list
      * @param <R> the type encapsulated by the of
      */
+    @Contract(pure = true)
+    @SuppressWarnings("unchecked")
     public static <R> Cons<R> empty() {
         return (Cons<R>) EMPTY_LIST;
     }
@@ -47,10 +55,14 @@ public class Cons<E> extends AbstractBase<Option<E>> implements Foldable<Option<
      * @param <R> the type encapsulated by the of
      * @return the new of instance
      */
+    @NotNull
+    @Contract(pure = true)
     public static <R> Cons<R> concat(R x, Cons<R> xs) {
         return new Cons<>(x, xs);
     }
 
+    @NotNull
+    @Contract(pure = true)
     public static <R> Cons<R> of(R elem) {
         return concat(elem, empty());
     }
@@ -61,6 +73,7 @@ public class Cons<E> extends AbstractBase<Option<E>> implements Foldable<Option<
      * @param <R> the type encapsulated by the of
      * @return The new of instance.
      */
+    @SafeVarargs
     public static <R> Cons<R> of(R... elems) {
         return fromArray(elems);
     }

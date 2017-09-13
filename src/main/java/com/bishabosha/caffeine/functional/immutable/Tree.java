@@ -6,6 +6,8 @@ package com.bishabosha.caffeine.functional.immutable;
 
 import com.bishabosha.caffeine.base.Iterables;
 import com.bishabosha.caffeine.functional.*;
+import com.bishabosha.caffeine.functional.control.Option;
+import com.bishabosha.caffeine.functional.patterns.Pattern;
 import com.bishabosha.caffeine.functional.tuples.Tuple2;
 
 import java.util.ArrayList;
@@ -16,12 +18,11 @@ import java.util.function.UnaryOperator;
 
 import static com.bishabosha.caffeine.functional.API.*;
 import static com.bishabosha.caffeine.functional.API.Tuple;
-import static com.bishabosha.caffeine.functional.Case.*;
-import static com.bishabosha.caffeine.functional.Matcher.guardUnsafe;
-import static com.bishabosha.caffeine.functional.Matcher.match;
-import static com.bishabosha.caffeine.functional.Option.Some;
-import static com.bishabosha.caffeine.functional.Pattern.*;
-import static com.bishabosha.caffeine.functional.PatternFactory.patternFor;
+import static com.bishabosha.caffeine.functional.patterns.Case.*;
+import static com.bishabosha.caffeine.functional.patterns.Matcher.guardUnsafe;
+import static com.bishabosha.caffeine.functional.control.Option.Some;
+import static com.bishabosha.caffeine.functional.patterns.Pattern.*;
+import static com.bishabosha.caffeine.functional.patterns.PatternFactory.patternFor;
 import static com.bishabosha.caffeine.functional.tuples.Tuple2.Tuple2;
 
 /**
@@ -55,9 +56,9 @@ public class Tree<E extends Comparable<E>> {
      */
     public static Pattern Node(Pattern node, Pattern left, Pattern right) {
         return patternFor(Tree.class).testThree(
-            Tuple2.of(node, x -> x.node),
-            Tuple2.of(left, x -> x.left),
-            Tuple2.of(right, x -> x.right)
+            Tuple(node, x -> x.node),
+            Tuple(left, x -> x.left),
+            Tuple(right, x -> x.right)
         );
     }
 
@@ -65,6 +66,7 @@ public class Tree<E extends Comparable<E>> {
     private Tree<E> left;
     private Tree<E> right;
 
+    @SafeVarargs
     public static <R extends Comparable<R>> Tree<R> of(R... elems) {
         Tree<R> tree = leaf();
         for (R elem: elems) {
@@ -127,7 +129,7 @@ public class Tree<E extends Comparable<E>> {
         }
         return guardUnsafe(
             when(this::isLeaf, () -> false),
-            edge(() -> match(elem.compareTo(node)).of(
+            edge(() -> Match(elem.compareTo(node)).of(
                 with(¥EQ, () -> true),
                 with(¥LT, () -> left.contains(elem)),
                 with(¥GT, () -> right.contains(elem))
@@ -199,7 +201,7 @@ public class Tree<E extends Comparable<E>> {
         Objects.requireNonNull(elem);
         return guardUnsafe(
             when(this::isLeaf, () -> Node(elem, leaf(), leaf())),
-            edge(() -> match(elem.compareTo(node)).of(
+            edge(() -> Match(elem.compareTo(node)).of(
                 with(¥LT, () -> Node(node, left.add(elem), right)),
                 with(¥GT, () -> Node(node, left, right.add(elem))),
                 with(¥EQ, () -> Node(node, left, right))
@@ -215,7 +217,7 @@ public class Tree<E extends Comparable<E>> {
     public Tree<E> remove(E elem) {
         return Objects.isNull(elem) ? this : guardUnsafe(
             when(this::isLeaf, Tree::leaf),
-            edge(() -> match(elem.compareTo(node)).of(
+            edge(() -> Match(elem.compareTo(node)).of(
                 with(¥LT, () -> Node(node, left.remove(elem), right)),
                 with(¥GT, () -> Node(node, left, right.remove(elem))),
                 with(¥EQ, () -> guardUnsafe(
@@ -242,7 +244,7 @@ public class Tree<E extends Comparable<E>> {
     /**
      * Recursively analyses if the other tree is the same
      * @param tree The tree to check for equality
-     * @return true if the trees match.
+     * @return true if the trees of.
      */
     private boolean eq(Tree tree) {
         return guardUnsafe(
@@ -401,7 +403,7 @@ public class Tree<E extends Comparable<E>> {
             @Override
             public boolean hasNextSupplier() {
                 final Tuple2<Option<E>, Cons<Object>> nextItem;
-                nextItem = stack.nextItem((x, xs) -> match(x).of(
+                nextItem = stack.nextItem((x, xs) -> Match(x).of(
                     with(Some(Leaf()), () -> Tuple(Left(false), xs)),
                     with(Some(Node($n, $l, $r)), (E $n, Tree<E> $l, Tree<E> $r) -> {
                         Cons<Object> zs = xs;

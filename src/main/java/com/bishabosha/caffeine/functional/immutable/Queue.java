@@ -1,8 +1,11 @@
-package com.bishabosha.caffeine.functional;
+package com.bishabosha.caffeine.functional.immutable;
 
 import com.bishabosha.caffeine.base.Iterables;
-import com.bishabosha.caffeine.functional.immutable.Cons;
+import com.bishabosha.caffeine.functional.patterns.Case;
+import com.bishabosha.caffeine.functional.Foldable;
+import com.bishabosha.caffeine.functional.control.Option;
 import com.bishabosha.caffeine.functional.tuples.Tuple2;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.Objects;
@@ -20,31 +23,38 @@ public class Queue<E> implements Foldable<Option<E>> {
         this.tail = tail;
     }
 
+    @NotNull
     public static <T> Queue<T> empty() {
         return new Queue<>(Cons.empty(), Cons.empty());
     }
 
+    @NotNull
     public static <T> Queue<T> of(T elem) {
         return new Queue<>(Cons.of(elem), Cons.empty());
     }
 
+    @NotNull
+    @SafeVarargs
     public static <T> Queue<T> of(T... elems) {
         return new Queue<>(Cons.of(elems), Cons.empty());
     }
 
-    public boolean isEmpty() {
+    public final boolean isEmpty() {
         return head.isEmpty() && tail.isEmpty();
     }
 
-    public int size() {
+    public final int size() {
         return head.size() + tail.size();
     }
 
-    public Queue<E> enqueue(E element) {
+    @NotNull
+    public final Queue<E> enqueue(E element) {
         return new Queue<>(head, tail.push(element));
     }
 
-    public Queue<E> enqueueAll(E... elements) {
+    @NotNull
+    @SafeVarargs
+    public final Queue<E> enqueueAll(E... elements) {
         Cons<E> newTail = tail;
         for (E elem: elements) {
             newTail = newTail.push(elem);

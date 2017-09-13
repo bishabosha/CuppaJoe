@@ -6,9 +6,9 @@
  * Copyright (c) 2017. Jamie Thompson <bishbashboshjt@gmail.com>
  */
 
-package com.bishabosha.caffeine.functional;
+package com.bishabosha.caffeine.functional.math;
 
-public class Functions {
+public class Arithmetic {
 
     public static byte multiply(byte x, byte y) {
         return (byte)(x * y);

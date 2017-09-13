@@ -3,16 +3,19 @@
  */
 package com.bishabosha.caffeine.functional.functions;
 
-import com.bishabosha.caffeine.functional.Option;
+import com.bishabosha.caffeine.functional.control.Option;
 import com.bishabosha.caffeine.functional.tuples.Tuple4;
+import org.jetbrains.annotations.Contract;
 
 public interface CheckedFunc4<A, B, C, D, R> {
     R apply(A a, B b, C c, D d) throws Throwable;
 
+    @Contract(pure = true)
     static <W,X,Y,Z,R> CheckedFunc4<W,X,Y,Z,R> of(CheckedFunc4<W, X, Y, Z, R> func) {
         return func;
     }
 
+    @Contract(pure = true)
     default Func4<A, B, C, D, Option<R>> lifted() {
         return (w, x, y, z) -> {
             try {
@@ -23,10 +26,12 @@ public interface CheckedFunc4<A, B, C, D, R> {
         };
     }
 
+    @Contract(pure = true)
     default CheckedFunc1<A, CheckedFunc1<B, CheckedFunc1<C, CheckedFunc1<D, R>>>> curried() {
         return w -> x -> y -> z -> apply(w, x, y, z);
     }
 
+    @Contract(pure = true)
     default CheckedFunc1<Tuple4<A, B, C, D>, R> tupled() {
         return x -> apply(x.$1(), x.$2(), x.$3(), x.$4());
     }

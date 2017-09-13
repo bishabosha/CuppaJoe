@@ -1,7 +1,7 @@
 package com.bishabosha.caffeine.functional.tuples;
 
 import com.bishabosha.caffeine.functional.Library;
-import com.bishabosha.caffeine.functional.Option;
+import com.bishabosha.caffeine.functional.control.Option;
 import com.bishabosha.caffeine.functional.functions.Func1;
 
 import java.util.List;

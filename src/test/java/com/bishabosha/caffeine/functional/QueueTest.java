@@ -1,5 +1,6 @@
 package com.bishabosha.caffeine.functional;
 
+import com.bishabosha.caffeine.functional.immutable.Queue;
 import org.junit.Test;
 
 import static com.bishabosha.caffeine.functional.API.Some;

@@ -4,6 +4,7 @@
 
 package com.bishabosha.caffeine.functional;
 
+import com.bishabosha.caffeine.functional.control.Option;
 import com.bishabosha.caffeine.functional.immutable.Cons;
 
 import java.util.*;

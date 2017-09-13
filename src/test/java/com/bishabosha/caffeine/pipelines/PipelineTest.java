@@ -5,9 +5,9 @@
 package com.bishabosha.caffeine.pipelines;
 
 import com.bishabosha.caffeine.base.MapEntry;
-import com.bishabosha.caffeine.functional.Case;
-import com.bishabosha.caffeine.functional.Option;
-import com.bishabosha.caffeine.functional.Functions;
+import com.bishabosha.caffeine.functional.patterns.Case;
+import com.bishabosha.caffeine.functional.control.Option;
+import com.bishabosha.caffeine.functional.math.Arithmetic;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
@@ -17,8 +17,8 @@ import java.math.BigInteger;
 import java.util.*;
 import java.util.stream.*;
 
-import static com.bishabosha.caffeine.functional.Case.with;
-import static com.bishabosha.caffeine.functional.Pattern.$any;
+import static com.bishabosha.caffeine.functional.patterns.Case.with;
+import static com.bishabosha.caffeine.functional.patterns.Pattern.$any;
 
 public class PipelineTest {
 
@@ -243,7 +243,7 @@ public class PipelineTest {
     @Test
     public void testCartesianProduct() {
         Assert.assertThat(
-            Pipeline.of(1, 2, 3).product(Arrays.asList(1, 2), Functions::multiply),
+            Pipeline.of(1, 2, 3).product(Arrays.asList(1, 2), Arithmetic::multiply),
             CoreMatchers.hasItems(1, 2, 2, 4, 3, 6)
         );
     }

@@ -6,7 +6,7 @@ package com.bishabosha.caffeine.sequences;
 
 import com.bishabosha.caffeine.base.AbstractArrayHelper;
 import com.bishabosha.caffeine.base.SequenceHelper;
-import com.bishabosha.caffeine.functional.Option;
+import com.bishabosha.caffeine.functional.control.Option;
 import com.bishabosha.caffeine.pipelines.Pipeline;
 
 import java.util.Iterator;
