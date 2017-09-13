@@ -15,13 +15,7 @@ public interface Func8<A, B, C, D, E, F, G, H, R> {
     }
 
     default Func8<A, B, C, D, E, F, G, H, Option<R>> lifted() {
-        return (s, t, u, v, w, x, y, z) -> {
-            try {
-                return Option.ofUnknown(apply(s, t, u, v, w, x, y, z));
-            } catch (Throwable e) {
-                return Option.nothing();
-            }
-        };
+        return CheckedFunc8.of(this::apply).lifted();
     }
 
     default Func1<A, Func1<B, Func1<C, Func1<D, Func1<E, Func1<F, Func1<G, Func1<H, R>>>>>>>> curried() {

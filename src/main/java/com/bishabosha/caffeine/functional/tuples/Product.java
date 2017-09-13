@@ -6,7 +6,7 @@ import com.bishabosha.caffeine.functional.functions.Func1;
 
 import java.util.List;
 
-public interface Product extends Iterable {
+public interface Product extends Iterable<Object> {
 
     int arity();
 

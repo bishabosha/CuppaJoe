@@ -51,6 +51,7 @@ public class Iterables {
         public abstract E nextSupplier();
     }
 
+    @SafeVarargs
     public static <E> Iterable<E> ofSuppliers(Supplier<E>... suppliers) {
         return () -> new Lockable<E>() {
 
@@ -179,7 +180,12 @@ public class Iterables {
         return wrap(values);
     }
 
-    public static Iterable empty = () -> new Iterator() {
+    @SuppressWarnings("unchecked")
+    public static <O> Iterable<O> empty() {
+        return (Iterable<O>) empty;
+    }
+
+    public static Iterable<Object> empty = () -> new Iterator<Object>() {
         @Override
         public boolean hasNext() {
             return false;

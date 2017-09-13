@@ -15,13 +15,7 @@ public interface Func3<A, B, C, R> {
     }
 
     default Func3<A, B, C, Option<R>> lifted() {
-        return (x, y, z) -> {
-            try {
-                return Option.ofUnknown(apply(x, y, z));
-            } catch (Throwable e) {
-                return Option.nothing();
-            }
-        };
+        return CheckedFunc3.of(this::apply).lifted();
     }
 
     default Func1<A, Func1<B, Func1<C, R>>> curried() {

@@ -15,13 +15,7 @@ public interface Func5<A, B, C, D, E, R> {
     }
 
     default Func5<A, B, C, D, E, Option<R>> lifted() {
-        return (v, w, x, y, z) -> {
-            try {
-                return Option.ofUnknown(apply(v, w, x, y, z));
-            } catch (Throwable e) {
-                return Option.nothing();
-            }
-        };
+        return CheckedFunc5.of(this::apply).lifted();
     }
 
     default Func1<A, Func1<B, Func1<C, Func1<D, Func1<E, R>>>>> curried() {

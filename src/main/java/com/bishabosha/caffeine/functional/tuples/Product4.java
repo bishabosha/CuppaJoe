@@ -3,6 +3,7 @@ package com.bishabosha.caffeine.functional.tuples;
 import com.bishabosha.caffeine.base.Iterables;
 import com.bishabosha.caffeine.functional.Option;
 import com.bishabosha.caffeine.functional.functions.Func4;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 
@@ -40,8 +41,9 @@ public interface Product4<A, B, C, D> extends Product {
         return mapper.apply($1(), $2(), $3(), $4());
     }
 
+    @NotNull
     @Override
-    default Iterator iterator() {
+    default Iterator<Object> iterator() {
         return Iterables.ofSuppliers(this::$1, this::$2, this::$3, this::$4).iterator();
     }
 }

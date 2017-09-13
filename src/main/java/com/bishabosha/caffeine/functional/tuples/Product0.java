@@ -2,6 +2,7 @@ package com.bishabosha.caffeine.functional.tuples;
 
 import com.bishabosha.caffeine.base.Iterables;
 import com.bishabosha.caffeine.functional.Option;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 
@@ -25,7 +26,8 @@ public interface Product0 extends Product {
     }
 
     @Override
-    default Iterator iterator() {
-        return Iterables.empty.iterator();
+    @NotNull
+    default Iterator<Object> iterator() {
+        return Iterables.empty().iterator();
     }
 }
