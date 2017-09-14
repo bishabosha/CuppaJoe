@@ -4,12 +4,13 @@
 
 package com.bishabosha.caffeine.trees;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import static org.hamcrest.Matchers.contains;
 
 /**
  * Created by Jamie on 26/02/2017.
@@ -36,7 +37,7 @@ public class TreeMapTest {
 
     @Test
     public void testValues() {
-        Assert.assertThat(getMap().values(), CoreMatchers.hasItems("Hello", "World"));
+        Assert.assertThat(getMap().values(), contains("Hello", "World"));
     }
 
     @Test

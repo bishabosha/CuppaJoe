@@ -54,11 +54,11 @@ public class MatcherTest {
         );
         Assert.assertEquals(
             "Hello World",
-            Match("hw").create(cases)
+            Match("hw").of(cases)
         );
         Assert.assertEquals(
             "Thats one spicy meme",
-            Match("spicy").create(cases)
+            Match("spicy").of(cases)
         );
         Assert.assertEquals(
             "Nothing Found",
@@ -79,19 +79,19 @@ public class MatcherTest {
         );
         Assert.assertEquals(
             "View Help",
-            Match("-h").create(cases)
+            Match("-h").of(cases)
         );
         Assert.assertEquals(
             "View Help",
-            Match("--help").create(cases)
+            Match("--help").of(cases)
         );
         Assert.assertEquals(
             "View Version",
-            Match("-v").create(cases)
+            Match("-v").of(cases)
         );
         Assert.assertEquals(
             "View Version",
-            Match("--version").create(cases)
+            Match("--version").of(cases)
         );
         Assert.assertEquals(
             "Malformatted Args",
@@ -99,15 +99,15 @@ public class MatcherTest {
         );
         Assert.assertEquals(
             "One",
-            Match(BigInteger.ONE).create(numCases)
+            Match(BigInteger.ONE).of(numCases)
         );
         Assert.assertEquals(
             "Two",
-            Match(BigDecimal.valueOf(2)).create(numCases)
+            Match(BigDecimal.valueOf(2)).of(numCases)
         );
         Assert.assertEquals(
             "Three",
-            Match("3.0").create(numCases)
+            Match("3.0").of(numCases)
         );
     }
 
@@ -154,7 +154,7 @@ public class MatcherTest {
         );
         Assert.assertEquals(
             tree,
-            Match(tree).create(
+            Match(tree).of(
                 with(Node($x, $y, $z), this::makeTree)
             )
         );

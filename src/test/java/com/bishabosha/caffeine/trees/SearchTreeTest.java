@@ -8,6 +8,8 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static org.hamcrest.Matchers.contains;
+
 public class SearchTreeTest {
 
     SearchTree<Integer> getTree() {
@@ -45,6 +47,6 @@ public class SearchTreeTest {
 
     @Test
     public void testInOrder() {
-        Assert.assertThat(getTree().inOrder(), CoreMatchers.hasItems(-6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5));
+        Assert.assertThat(getTree().inOrder(), contains(-6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5));
     }
 }

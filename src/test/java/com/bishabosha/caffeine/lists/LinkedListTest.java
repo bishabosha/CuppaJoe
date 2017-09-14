@@ -11,6 +11,8 @@ import org.junit.Test;
 import java.util.Comparator;
 import java.util.List;
 
+import static org.hamcrest.Matchers.contains;
+
 public class LinkedListTest {
 
     public static LinkedList<Integer> getList() {
@@ -36,7 +38,7 @@ public class LinkedListTest {
 
         Assert.assertThat(
             list,
-            CoreMatchers.hasItems("orange", "apple", "pear", "kiwifruit")
+            contains("orange", "apple", "pear", "kiwifruit")
         );
     }
 
@@ -44,7 +46,7 @@ public class LinkedListTest {
     public void testAddLast() {
         Assert.assertThat(
             getList(),
-            CoreMatchers.hasItems(1, 2, 3, 4, 5)
+            contains(1, 2, 3, 4, 5)
         );
     }
 
@@ -52,7 +54,7 @@ public class LinkedListTest {
     public void testSubList() {
         Assert.assertThat(
             getList().subList(2, 4),
-            CoreMatchers.hasItems(3, 4)
+            contains(3, 4)
         );
     }
 
@@ -78,7 +80,7 @@ public class LinkedListTest {
         list.sort(Comparator.reverseOrder());
         Assert.assertThat(
             list,
-            CoreMatchers.hasItems(5,4,3,2,1)
+            contains(5,4,3,2,1)
         );
     }
 }

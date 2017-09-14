@@ -1,6 +1,5 @@
-package com.bishabosha.caffeine.functional;
+package com.bishabosha.caffeine.functional.immutable;
 
-import com.bishabosha.caffeine.functional.immutable.Queue;
 import org.junit.Test;
 
 import static com.bishabosha.caffeine.functional.API.Some;
@@ -45,6 +44,6 @@ public class QueueTest {
     @Test
     public void print() {
         assertEquals("[1, 2, 3, 4, 5]", Queue.of(1,2,3,4,5).toString());
-        assertEquals("[1, 2, 3, 4, 5]", Queue.empty().enqueueAll(1, 2, 3, 4, 5));
+        assertEquals("[1, 2, 3, 4, 5]", Queue.empty().enqueueAll(1, 2, 3, 4, 5).toString());
     }
 }

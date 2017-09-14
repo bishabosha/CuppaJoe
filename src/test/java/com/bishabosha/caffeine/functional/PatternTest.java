@@ -68,7 +68,7 @@ public class PatternTest {
             tree($a, ¥null, ¥null).test(tree)
         );
         assertEquals(
-            PatternResult.of(25, null, null),
+            PatternResult.of(25),
             tree($a, ¥null, ¥null).test(leaf).get()
         );
     }

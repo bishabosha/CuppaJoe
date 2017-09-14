@@ -19,6 +19,7 @@ import java.util.stream.*;
 
 import static com.bishabosha.caffeine.functional.patterns.Case.with;
 import static com.bishabosha.caffeine.functional.patterns.Pattern.$any;
+import static org.hamcrest.Matchers.contains;
 
 public class PipelineTest {
 
@@ -26,7 +27,7 @@ public class PipelineTest {
     public void testOf() {
         Assert.assertThat(
             Pipeline.of(1, 2, 3, 4, 5),
-            CoreMatchers.hasItems(1,2,3,4,5)
+            contains(1,2,3,4,5)
         );
     }
 
@@ -35,7 +36,7 @@ public class PipelineTest {
         Assert.assertThat(
             Pipeline.of(1,2,3,4,5,6,7,8,9,10)
                     .filter(x -> x <= 5),
-            CoreMatchers.hasItems(1,2,3,4,5)
+            contains(1,2,3,4,5)
         );
     }
 
@@ -44,7 +45,7 @@ public class PipelineTest {
         Assert.assertThat(
             Pipeline.of(1,2,3,4,5)
                     .map(x -> x.toString()),
-            CoreMatchers.hasItems("1", "2", "3", "4", "5")
+            contains("1", "2", "3", "4", "5")
         );
     }
 
@@ -53,7 +54,7 @@ public class PipelineTest {
         Assert.assertThat(
             Pipeline.of(1,2,3)
                     .flatMap(x -> Pipeline.of(x*1, x*2, x*3)),
-            CoreMatchers.hasItems(1, 2, 3, 2, 4, 6, 3, 6, 9)
+            contains(1, 2, 3, 2, 4, 6, 3, 6, 9)
         );
     }
 
@@ -63,7 +64,7 @@ public class PipelineTest {
             Pipeline.of(1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5)
                     .distinct()
                     .collect(Collectors.toList()),
-            CoreMatchers.hasItems(1,2,3,4,5)
+            contains(1,2,3,4,5)
         );
     }
 
@@ -72,12 +73,12 @@ public class PipelineTest {
         Assert.assertThat(
             Pipeline.of(1, 5, 2, 4, 3)
                     .sorted(),
-            CoreMatchers.hasItems(1,2,3,4,5)
+            contains(1,2,3,4,5)
         );
         Assert.assertThat(
             Pipeline.of(1, 5, 2, 4, 3)
                     .sorted(Comparator.reverseOrder()),
-            CoreMatchers.hasItems(5,4,3,2,1)
+            contains(5,4,3,2,1)
         );
     }
 
@@ -86,7 +87,7 @@ public class PipelineTest {
         Assert.assertThat(
             Pipeline.of("a", "b", "c", "", "", "e", "f")
                     .takeWhile(x -> x.length() > 0),
-            CoreMatchers.hasItems("a", "b", "c")
+            contains("a", "b", "c")
         );
     }
 
@@ -95,7 +96,7 @@ public class PipelineTest {
         Assert.assertThat(
             Pipeline.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
                     .dropWhile(x -> x < 5),
-            CoreMatchers.hasItems(5, 6, 7, 8, 9, 10)
+            contains(5, 6, 7, 8, 9, 10)
         );
     }
 
@@ -129,7 +130,7 @@ public class PipelineTest {
         Assert.assertThat(
             Pipeline.of(1, 2, 3, 4, 5)
                     .collect(ArrayList::new, ArrayList::add),
-            CoreMatchers.hasItems(1, 2, 3, 4, 5)
+            contains(1, 2, 3, 4, 5)
         );
     }
 
@@ -138,7 +139,7 @@ public class PipelineTest {
         Assert.assertThat(
             Pipeline.of(1, 2, 3, 4, 5)
                     .collect(Collectors.toList()),
-            CoreMatchers.hasItems(1, 2, 3, 4, 5)
+            contains(1, 2, 3, 4, 5)
         );
     }
 
@@ -198,7 +199,7 @@ public class PipelineTest {
             Pipeline.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
                     .limit(5)
                     .collect(Collectors.toList()),
-            CoreMatchers.hasItems(1, 2, 3, 4, 5)
+            contains(1, 2, 3, 4, 5)
         );
     }
 
@@ -208,7 +209,7 @@ public class PipelineTest {
             Pipeline.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
                     .skip(5)
                     .collect(Collectors.toList()),
-            CoreMatchers.hasItems(6, 7, 8, 9, 10)
+            contains(6, 7, 8, 9, 10)
         );
     }
 
@@ -218,7 +219,7 @@ public class PipelineTest {
             Pipeline.iterate(1, x -> x+1)
                     .limit(5)
                     .collect(Collectors.toList()),
-            CoreMatchers.hasItems(1, 2, 3, 4, 5)
+            contains(1, 2, 3, 4, 5)
         );
     }
 
@@ -236,7 +237,7 @@ public class PipelineTest {
     public void testCycle() {
         Assert.assertThat(
             Pipeline.cycle("Hi", "Hello").limit(6).collect(Collectors.toList()),
-            CoreMatchers.hasItems("Hi", "Hello", "Hi", "Hello", "Hi", "Hello")
+            contains("Hi", "Hello", "Hi", "Hello", "Hi", "Hello")
         );
     }
 
@@ -244,7 +245,7 @@ public class PipelineTest {
     public void testCartesianProduct() {
         Assert.assertThat(
             Pipeline.of(1, 2, 3).product(Arrays.asList(1, 2), Arithmetic::multiply),
-            CoreMatchers.hasItems(1, 2, 2, 4, 3, 6)
+            contains(1, 2, 2, 4, 3, 6)
         );
     }
 
@@ -252,7 +253,7 @@ public class PipelineTest {
     public void testTerminatingIterate() {
         Assert.assertThat(
             Pipeline.iterate(1, x -> x > 5, x -> x+1),
-            CoreMatchers.hasItems(1, 2, 3, 4, 5)
+            contains(1, 2, 3, 4, 5)
         );
     }
 
@@ -261,7 +262,7 @@ public class PipelineTest {
         Assert.assertThat(
             Pipeline.of(Optional.of(1), Optional.empty(), Optional.of(3))
                     .flatMap(Pipeline::fromOptional),
-            CoreMatchers.hasItems(1,3)
+            contains(1,3)
         );
     }
 
@@ -276,7 +277,7 @@ public class PipelineTest {
                 with($any(2, 2L, 2.0, "2", "2.0", BigInteger.valueOf(2), BigDecimal.valueOf(2)), () -> "Two"),
                 with($any(3, 3L, 3.0, "3", "3.0", BigInteger.valueOf(3), BigDecimal.valueOf(3)), () -> "Three")
             )),
-            CoreMatchers.hasItems("One", "Two", "Three", "One", "Two", "Three", "One", "Two")
+            contains("One", "Two", "Three", "One", "Two", "Three", "One", "Two")
         );
     }
 
@@ -289,7 +290,7 @@ public class PipelineTest {
                 Pipeline.empty(),
                 Pipeline.of(4, 5)
             ),
-            CoreMatchers.hasItems(1, 2, 3, 4, 5)
+            contains(1, 2, 3, 4, 5)
         );
     }
 }

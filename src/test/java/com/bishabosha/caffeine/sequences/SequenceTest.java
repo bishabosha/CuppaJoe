@@ -6,11 +6,15 @@ package com.bishabosha.caffeine.sequences;
 
 import com.bishabosha.caffeine.functional.control.Option;
 import org.hamcrest.CoreMatchers;
+import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.List;
 import java.util.function.Function;
+
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.emptyIterable;
 
 public class SequenceTest {
 
@@ -19,21 +23,21 @@ public class SequenceTest {
         Sequence<Integer> naturals = new NonRecursiveSequence<>(Function.identity());
         Assert.assertThat(
             naturals.terms(5),
-            CoreMatchers.hasItems(1, 2, 3, 4, 5)
+            contains(1, 2, 3, 4, 5)
         );
         Assert.assertThat(
             naturals.terms(6, 10),
-            CoreMatchers.hasItems(6, 7, 8, 9, 10)
+            contains(6, 7, 8, 9, 10)
         );
         Assert.assertThat(
             new RecursiveSequence<>(List::size)
                 .terms(5),
-            CoreMatchers.hasItems(0, 1, 2, 3, 4)
+            contains(0, 1, 2, 3, 4)
         );
         Assert.assertThat(
             new RecursiveSequence<>(List::size)
                 .terms(6, 10),
-            CoreMatchers.hasItems(5, 6, 7, 8, 9)
+            contains(5, 6, 7, 8, 9)
         );
     }
 
@@ -42,19 +46,19 @@ public class SequenceTest {
         Sequence<Integer> naturals = new NonRecursiveSequence<>(Function.identity());
         Assert.assertThat(
             naturals.filter(x -> x > 3).terms(5),
-            CoreMatchers.hasItems(4, 5)
+            contains(4, 5)
         );
         Assert.assertThat(
             naturals.removeRearNode(),
-            CoreMatchers.hasItems(1, 2, 3, 4, 5)
+            contains(1, 2, 3, 4, 5)
         );
         Assert.assertThat(
             naturals.filter(x -> x > 5).takeWhile(x -> x <= 5).terms(10),
-            CoreMatchers.hasItems()
+            emptyIterable()
         );
         Assert.assertThat(
             naturals.removeFrontNode(),
-            CoreMatchers.hasItems(1, 2, 3, 4, 5)
+            contains(1, 2, 3, 4, 5)
         );
     }
 
@@ -62,7 +66,7 @@ public class SequenceTest {
     public void testFibonnacci() {
         Assert.assertThat(
             SequenceOf.fibonacci().terms(5),
-            CoreMatchers.hasItems(1L, 1L, 2L, 3L, 5L)
+            contains(1L, 1L, 2L, 3L, 5L)
         );
     }
 
@@ -70,7 +74,7 @@ public class SequenceTest {
     public void testCubes() {
         Assert.assertThat(
             SequenceOf.cubes().terms(5),
-            CoreMatchers.hasItems(1L, 8L, 27L, 64L, 125L)
+            contains(1L, 8L, 27L, 64L, 125L)
         );
     }
 
@@ -78,7 +82,7 @@ public class SequenceTest {
     public void testExponentials() {
         Assert.assertThat(
             SequenceOf.exponentials(2).terms(5),
-            CoreMatchers.hasItems(2L, 4L, 8L, 16L, 32L)
+            contains(2L, 4L, 8L, 16L, 32L)
         );
     }
 
@@ -86,7 +90,7 @@ public class SequenceTest {
     public void testPrimes() {
         Assert.assertThat(
             SequenceOf.primes().terms(5),
-            CoreMatchers.hasItems(2L, 3L, 5L, 7L, 11L)
+            contains(2L, 3L, 5L, 7L, 11L)
         );
     }
 
@@ -94,19 +98,19 @@ public class SequenceTest {
     public void testRange() {
         Assert.assertThat(
             SequenceOf.range(10L, 5L),
-            CoreMatchers.hasItems(10L, 9L, 8L, 7L, 6L, 5L)
+            contains(10L, 9L, 8L, 7L, 6L, 5L)
         );
         Assert.assertThat(
             SequenceOf.range(1000L, -500L, -1000L),
-            CoreMatchers.hasItems(1000L, 500L, 0L, -500L, -1000L)
+            contains(1000L, 500L, 0L, -500L, -1000L)
         );
         Assert.assertThat(
             SequenceOf.range(6L, 10L),
-            CoreMatchers.hasItems(6L, 7L, 8L, 9L, 10L)
+            contains(6L, 7L, 8L, 9L, 10L)
         );
         Assert.assertThat(
             SequenceOf.range(0L, 2L, 10L),
-            CoreMatchers.hasItems(0L, 2L, 4L, 6L, 8L, 10L)
+            contains(0L, 2L, 4L, 6L, 8L, 10L)
         );
     }
 
