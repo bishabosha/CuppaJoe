@@ -10,6 +10,7 @@ import com.bishabosha.caffeine.functional.patterns.Pattern;
 import java.util.Objects;
 import java.util.function.Supplier;
 
+import static com.bishabosha.caffeine.functional.API.Option;
 import static com.bishabosha.caffeine.functional.patterns.PatternFactory.patternFor;
 
 public class Lazy<E> implements Supplier<E> {
@@ -51,7 +52,7 @@ public class Lazy<E> implements Supplier<E> {
 
     @Override
     public boolean equals(Object obj) {
-        return this == obj ? true : Option.ofUnknown(obj)
+        return this == obj ? true : Option(obj)
                                           .cast(Lazy.class)
                                           .map(l -> Objects.equals(l.get(), get()))
                                           .orElse(false);

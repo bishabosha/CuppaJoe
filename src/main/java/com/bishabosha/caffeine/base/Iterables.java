@@ -8,6 +8,7 @@
 
 package com.bishabosha.caffeine.base;
 
+import com.bishabosha.caffeine.functional.API;
 import com.bishabosha.caffeine.functional.control.Option;
 import com.bishabosha.caffeine.functional.tuples.Tuple2;
 import com.bishabosha.caffeine.hashtables.HashMap;
@@ -18,6 +19,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.function.*;
+
+import static com.bishabosha.caffeine.functional.API.Option;
+import static com.bishabosha.caffeine.functional.API.Some;
 
 public class Iterables {
 
@@ -185,12 +189,13 @@ public class Iterables {
         return wrap(values);
     }
 
+    @Contract(pure = true)
     @SuppressWarnings("unchecked")
     public static <O> Iterable<O> empty() {
-        return (Iterable<O>) empty;
+        return (Iterable<O>) EMPTY_ITERABLE;
     }
 
-    public static Iterable<Object> empty = () -> new Iterator<Object>() {
+    private static Iterable<Object> EMPTY_ITERABLE = () -> new Iterator<Object>() {
         @Override
         public boolean hasNext() {
             return false;
@@ -198,7 +203,7 @@ public class Iterables {
 
         @Override
         public Object next() {
-            return null;
+            throw new NoSuchElementException();
         }
     };
 
@@ -251,16 +256,16 @@ public class Iterables {
         List<Map.Entry<K, V>> sorted = new ArrayList<>();
         Set<K> found = new HashTable<>();
         for(K key: keys) {
-            Option.ofUnknown(key)
-                  .filter(map.keySet()::contains)
-                  .ifSome(found::add)
-                  .map(k -> new MapEntry<>(k, map.get(k)))
-                  .ifSome(sorted::add);
+            Option(key)
+              .filter(map.keySet()::contains)
+              .ifSome(found::add)
+              .map(k -> new MapEntry<>(k, map.get(k)))
+              .ifSome(sorted::add);
         }
         for(Map.Entry<K, V> entry: map.entrySet()) {
-            Option.of(entry)
-                  .filter(e -> !found.contains(e.getKey()))
-                  .ifSome(sorted::add);
+            Some(entry)
+              .filter(e -> !found.contains(e.getKey()))
+              .ifSome(sorted::add);
         }
         return sorted;
     }

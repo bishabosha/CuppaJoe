@@ -4,6 +4,7 @@
 
 package com.bishabosha.caffeine.functional.tuples;
 
+import com.bishabosha.caffeine.functional.API;
 import com.bishabosha.caffeine.functional.control.Option;
 import com.bishabosha.caffeine.functional.patterns.Pattern;
 import com.bishabosha.caffeine.functional.functions.Func2;
@@ -11,6 +12,7 @@ import org.jetbrains.annotations.Contract;
 
 import java.util.Objects;
 
+import static com.bishabosha.caffeine.functional.API.Option;
 import static com.bishabosha.caffeine.functional.patterns.PatternFactory.patternFor;
 
 public final class Tuple2<A, B> implements Product2<A, B> {
@@ -60,7 +62,7 @@ public final class Tuple2<A, B> implements Product2<A, B> {
         if (obj == this) {
             return true;
         }
-        return Option.ofUnknown(obj)
+        return Option(obj)
             .cast(Tuple2.class)
             .map(o -> Objects.equals($1(), o.$1()) && Objects.equals($2(), o.$2()))
             .orElse(false);

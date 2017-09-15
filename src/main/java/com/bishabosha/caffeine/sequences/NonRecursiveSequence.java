@@ -4,10 +4,13 @@
 
 package com.bishabosha.caffeine.sequences;
 
+import com.bishabosha.caffeine.functional.API;
 import com.bishabosha.caffeine.functional.control.Option;
 import com.bishabosha.caffeine.pipelines.Pipeline;
 
 import java.util.function.Function;
+
+import static com.bishabosha.caffeine.functional.API.Option;
 
 public class NonRecursiveSequence<T> extends AbstractSequence<T> {
 
@@ -68,7 +71,7 @@ public class NonRecursiveSequence<T> extends AbstractSequence<T> {
     public Option<T> term(int n) {
         removeOffset(n);
         return getPipeline().isEmpty() ?
-            Option.ofUnknown(((NonRecursiveBuilder)builder).calculate(n)) :
+            Option(((NonRecursiveBuilder)builder).calculate(n)) :
             super.term(n);
     }
 

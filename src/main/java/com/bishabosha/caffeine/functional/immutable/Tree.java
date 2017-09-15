@@ -7,6 +7,7 @@ package com.bishabosha.caffeine.functional.immutable;
 import com.bishabosha.caffeine.base.Iterables;
 import com.bishabosha.caffeine.functional.*;
 import com.bishabosha.caffeine.functional.control.Option;
+import com.bishabosha.caffeine.functional.control.Some;
 import com.bishabosha.caffeine.functional.patterns.Pattern;
 import com.bishabosha.caffeine.functional.tuples.Tuple2;
 
@@ -18,9 +19,9 @@ import java.util.function.UnaryOperator;
 
 import static com.bishabosha.caffeine.functional.API.*;
 import static com.bishabosha.caffeine.functional.API.Tuple;
+import static com.bishabosha.caffeine.functional.control.Some.Some;
 import static com.bishabosha.caffeine.functional.patterns.Case.*;
 import static com.bishabosha.caffeine.functional.patterns.Matcher.guardUnsafe;
-import static com.bishabosha.caffeine.functional.control.Option.Some;
 import static com.bishabosha.caffeine.functional.patterns.Pattern.*;
 import static com.bishabosha.caffeine.functional.patterns.PatternFactory.patternFor;
 import static com.bishabosha.caffeine.functional.tuples.Tuple2.Tuple2;
@@ -52,7 +53,7 @@ public class Tree<E extends Comparable<E>> {
      * @param node The pattern to check the node
      * @param left The pattern to check the left sub tree
      * @param right The pattern to check the right sub tree
-     * @return <b>Option&lt;PatternResult&gt;</b> if all patterns pass, otherwise {@link Option#nothing()}
+     * @return <b>Option&lt;PatternResult&gt;</b> if all patterns pass, otherwise {@link API#Nothing()}
      */
     public static Pattern Node(Pattern node, Pattern left, Pattern right) {
         return patternFor(Tree.class).testThree(
@@ -147,10 +148,10 @@ public class Tree<E extends Comparable<E>> {
 
     /**
      * Gets the root of this tree
-     * @return {@link Option#nothing()} if this is a leaf, otherwise {@link Option} of the root value.
+     * @return {@link API#Nothing()} if this is a leaf, otherwise {@link Option} of the root value.
      */
     public Option<E> root() {
-        return isLeaf() ? Option.nothing() : Option.of(node);
+        return isLeaf() ? Nothing() : API.Some(node);
     }
 
     /**
@@ -182,12 +183,12 @@ public class Tree<E extends Comparable<E>> {
 
     /**
      * Finds the largest value of this Tree.
-     * @return {@link Option#nothing()} if this is a leaf, otherwise {@link Option} of the largest value.
+     * @return {@link API#Nothing()} if this is a leaf, otherwise {@link Option} of the largest value.
      */
     public Option<E> largest() {
         return guardUnsafe(
-            when(this::isLeaf,  () -> Option.nothing()),
-            when(right::isLeaf, () -> Option.of(node)),
+            when(this::isLeaf,  () -> Nothing()),
+            when(right::isLeaf, () -> API.Some(node)),
             edge(               () -> right.largest())
         );
     }
@@ -235,10 +236,10 @@ public class Tree<E extends Comparable<E>> {
      */
     @Override
     public boolean equals(Object obj) {
-        return obj == this ? true : Option.ofUnknown(obj)
-                                          .cast(Tree.class)
-                                          .map(this::eq)
-                                          .orElse(false);
+        return obj == this ? true : Option(obj)
+                                      .cast(Tree.class)
+                                      .map(this::eq)
+                                      .orElse(false);
     }
 
     /**

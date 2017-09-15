@@ -4,12 +4,14 @@
 
 package com.bishabosha.caffeine.functional.tuples;
 
+import com.bishabosha.caffeine.functional.API;
 import com.bishabosha.caffeine.functional.control.Option;
 import com.bishabosha.caffeine.functional.patterns.Pattern;
 import com.bishabosha.caffeine.functional.functions.Func1;
 
 import java.util.Objects;
 
+import static com.bishabosha.caffeine.functional.API.Option;
 import static com.bishabosha.caffeine.functional.patterns.PatternFactory.patternFor;
 
 public final class Tuple1<A> implements Product1<A> {
@@ -46,7 +48,7 @@ public final class Tuple1<A> implements Product1<A> {
         if (obj == this) {
             return true;
         }
-        return Option.ofUnknown(obj)
+        return Option(obj)
              .cast(Product1.class)
              .map(o -> Objects.equals($1(), o.$1()))
              .orElse(false);

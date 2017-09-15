@@ -9,6 +9,7 @@ import com.bishabosha.caffeine.functional.tuples.Tuple1;
 import org.jetbrains.annotations.Contract;
 
 public interface Func1<A, R> {
+
     R apply(A a);
 
     @Contract(pure = true)

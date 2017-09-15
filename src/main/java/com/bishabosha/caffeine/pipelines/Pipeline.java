@@ -5,6 +5,8 @@
 package com.bishabosha.caffeine.pipelines;
 
 import com.bishabosha.caffeine.base.Iterables;
+import com.bishabosha.caffeine.functional.API;
+import com.bishabosha.caffeine.functional.functions.Func1;
 import com.bishabosha.caffeine.functional.patterns.Case;
 import com.bishabosha.caffeine.functional.control.Option;
 import com.bishabosha.caffeine.hashtables.HashTable;
@@ -12,6 +14,9 @@ import com.bishabosha.caffeine.hashtables.HashTable;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
+
+import static com.bishabosha.caffeine.functional.API.Nothing;
+import static com.bishabosha.caffeine.functional.API.Option;
 
 /**
  * Pipeline diverges from the Stream interface with new methods
@@ -120,7 +125,7 @@ public class Pipeline<T> extends AbstractPipeline<T> {
         return (Pipeline<T>) addFunction(ComputeNode.filter((Predicate<T>)predicate, false));
     }
 
-    public <R> Pipeline<R> map(Function<? super T, ? extends R> mapper) {
+    public <R> Pipeline<R> map(Func1<? super T, ? extends R> mapper) {
         return new Pipeline<>(addFunction(ComputeNode.map(mapper)));
     }
 
@@ -135,7 +140,7 @@ public class Pipeline<T> extends AbstractPipeline<T> {
                                     .map(y -> function.apply(x, y)));
     }
 
-    public <R> Pipeline<R> flatMap(Function<? super T, ? extends Pipeline> mapper) {
+    public <R> Pipeline<R> flatMap(Func1<? super T, ? extends Pipeline> mapper) {
         return new Pipeline<>(addFunction(ComputeNode.flatMap(mapper)));
     }
 
@@ -200,7 +205,7 @@ public class Pipeline<T> extends AbstractPipeline<T> {
 
     public Option<T> findFirst() {
         Iterator<T> it = iterator();
-        return it.hasNext() ? Option.ofUnknown(it.next()) : Option.nothing();
+        return Option(() -> it.hasNext(), () -> it.next());
     }
 
     /**
@@ -228,7 +233,9 @@ public class Pipeline<T> extends AbstractPipeline<T> {
                 result = accumulator.apply(result, element);
             }
         }
-        return foundAny ? Option.ofUnknown(result) : Option.nothing();
+        final boolean didFindAny = foundAny;
+        final T finalResult = result;
+        return Option(() -> didFindAny, () -> finalResult);
     }
 
     /**

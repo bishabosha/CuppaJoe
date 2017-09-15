@@ -11,6 +11,8 @@ import java.util.*;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
+import static com.bishabosha.caffeine.functional.API.Nothing;
+import static com.bishabosha.caffeine.functional.API.Some;
 import static com.bishabosha.caffeine.functional.API.Tuple;
 
 /**
@@ -24,13 +26,13 @@ public class Library {
             breaker = Objects.requireNonNull(breakCondition.apply(acc));
             if (breaker.isSome()) {
                 if (breaker.get()) {
-                    return Option.of(acc);
+                    return Some(acc);
                 }
             } else {
-                return Option.nothing();
+                return Nothing();
             }
         }
-        return Option.nothing();
+        return Nothing();
     }
 
     public static <T, O extends Iterable<T>> List<T> flatten(Class<O> flattenClass, O toFlatten) {

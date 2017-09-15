@@ -4,7 +4,9 @@
 
 package com.bishabosha.caffeine.pipelines;
 
+import com.bishabosha.caffeine.functional.API;
 import com.bishabosha.caffeine.functional.control.Option;
+import com.bishabosha.caffeine.functional.functions.Func1;
 
 import java.util.Iterator;
 import java.util.function.BiConsumer;
@@ -12,19 +14,21 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import static com.bishabosha.caffeine.functional.API.Option;
+
 class ComputeNode<I, O> extends AbstractNode<I, O> {
 
     private BiConsumer<ComputeNode, Option<I>> compute;
 
-    public static <T, R> ComputeNode<T, R> map(Function<T, R> mapper) {
+    public static <T, R> ComputeNode<T, R> map(Func1<T, R> mapper) {
         return new ComputeNode<>(
             (cn, op) -> cn.send(op.map(mapper)));
     }
 
-    public static <T, R> ComputeNode<T, R> flatMap(Function<? super T, ? extends AbstractPipeline> mapper){
+    public static <T, R> ComputeNode<T, R> flatMap(Func1<? super T, ? extends AbstractPipeline> mapper){
         return new ComputeNode<>(
             (cn, op) -> cn.sendFlattened(
-                op.flatMap(x -> Option.ofUnknown(mapper.apply(x)))));
+                op.flatMap(x -> Option(mapper.apply(x)))));
     }
 
     public static <T> ComputeNode<T, T> peek(Consumer<? super T> action) {
@@ -55,7 +59,7 @@ class ComputeNode<I, O> extends AbstractNode<I, O> {
         option.ifSome(p -> {
             Iterator<O> iterator = p.iterator();
             while (!downstreamWillTerminate() && iterator.hasNext()) {
-                send(Option.ofUnknown(iterator.next()));
+                send(Option(iterator.next()));
             }
         });
     }

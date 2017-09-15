@@ -5,8 +5,10 @@
 package com.bishabosha.caffeine.functional.functions;
 
 import com.bishabosha.caffeine.functional.control.Option;
-import com.bishabosha.caffeine.functional.tuples.Tuple0;
+import com.bishabosha.caffeine.functional.tuples.Unit;
 import org.jetbrains.annotations.Contract;
+
+import static com.bishabosha.caffeine.functional.API.*;
 
 public interface CheckedFunc0<R> {
     R apply() throws Throwable;
@@ -20,15 +22,15 @@ public interface CheckedFunc0<R> {
     default Func0<Option<R>> lifted() {
         return () -> {
             try {
-                return Option.ofUnknown(apply());
+                return Option(apply());
             } catch (Throwable e) {
-                return Option.nothing();
+                return Nothing();
             }
         };
     }
 
     @Contract(pure = true)
-    default CheckedFunc1<Tuple0, R> tupled() {
+    default CheckedFunc1<Unit, R> tupled() {
         return t -> apply();
     }
 }

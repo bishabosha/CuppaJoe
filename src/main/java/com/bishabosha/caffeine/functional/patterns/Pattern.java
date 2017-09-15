@@ -8,13 +8,16 @@ import com.bishabosha.caffeine.functional.control.Option;
 
 import java.util.Objects;
 
+import static com.bishabosha.caffeine.functional.API.Nothing;
+import static com.bishabosha.caffeine.functional.API.Some;
+
 public interface Pattern {
 
     Option<PatternResult> test(Object obj);
 
-    Option<PatternResult> PASS = Option.of(PatternResult.create());
+    Option<PatternResult> PASS = Some(PatternResult.create());
 
-    Option<PatternResult> FAIL = Option.nothing();
+    Option<PatternResult> FAIL = Nothing();
 
     static Option<PatternResult> bind(Object x) {
         return Option.of(PatternResult.of(x));

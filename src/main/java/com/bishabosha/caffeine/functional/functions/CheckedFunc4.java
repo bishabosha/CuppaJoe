@@ -3,9 +3,13 @@
  */
 package com.bishabosha.caffeine.functional.functions;
 
+import com.bishabosha.caffeine.functional.API;
 import com.bishabosha.caffeine.functional.control.Option;
 import com.bishabosha.caffeine.functional.tuples.Tuple4;
 import org.jetbrains.annotations.Contract;
+
+import static com.bishabosha.caffeine.functional.API.Nothing;
+import static com.bishabosha.caffeine.functional.API.Option;
 
 public interface CheckedFunc4<A, B, C, D, R> {
     R apply(A a, B b, C c, D d) throws Throwable;
@@ -19,9 +23,9 @@ public interface CheckedFunc4<A, B, C, D, R> {
     default Func4<A, B, C, D, Option<R>> lifted() {
         return (w, x, y, z) -> {
             try {
-                return Option.ofUnknown(apply(w, x, y, z));
+                return Option(apply(w, x, y, z));
             } catch (Throwable e) {
-                return Option.nothing();
+                return Nothing();
             }
         };
     }

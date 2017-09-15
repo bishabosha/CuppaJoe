@@ -7,8 +7,11 @@ package com.bishabosha.caffeine.pipelines;
 import java.util.*;
 
 import com.bishabosha.caffeine.base.Iterables;
+import com.bishabosha.caffeine.functional.API;
 import com.bishabosha.caffeine.functional.control.Option;
 import com.bishabosha.caffeine.lists.LinkedList;
+
+import static com.bishabosha.caffeine.functional.API.Option;
 
 class TerminalNode<I, O> extends AbstractNode<O, O> implements Iterable<O>{
 
@@ -24,34 +27,34 @@ class TerminalNode<I, O> extends AbstractNode<O, O> implements Iterable<O>{
 
     @Override
     public Iterator<O> iterator() {
-        return head == null ?
+        return (head == null) ?
                 (Iterator<O>) sourceIterable.iterator() :
                 new Iterables.Lockable<O>() {
-            Iterator<I> source = sourceIterable.iterator();
-            boolean sourceHasNext = false;
-            O current;
+                    Iterator<I> source = sourceIterable.iterator();
+                    boolean sourceHasNext = false;
+                    O current;
 
-            @Override
-            public boolean hasNextSupplier() {
-                while (!willTerminate()) {
-                    if (sourceHasNext = source.hasNext()) {
-                        head.accept(Option.ofUnknown(source.next()));
+                    @Override
+                    public boolean hasNextSupplier() {
+                        while (!willTerminate()) {
+                            if (sourceHasNext = source.hasNext()) {
+                                head.accept(Option(source.next()));
+                            }
+                            if (!buffer.isEmpty()) {
+                                current = buffer.remove();
+                                break;
+                            } else if (!sourceHasNext) {
+                                terminate();
+                            }
+                        }
+                        return !willTerminate();
                     }
-                    if (!buffer.isEmpty()) {
-                        current = buffer.remove();
-                        break;
-                    } else if (!sourceHasNext) {
-                        terminate();
-                    }
-                }
-                return !willTerminate();
-            }
 
-            @Override
-            public O nextSupplier() {
-                return current;
-            }
-        };
+                    @Override
+                    public O nextSupplier() {
+                        return current;
+                    }
+                };
     }
 
     private TerminalNode(Iterable<I> source,

@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import java.util.Arrays;
 
-import static com.bishabosha.caffeine.functional.tuples.Tuple0.EMPTY;
+import static com.bishabosha.caffeine.functional.tuples.Unit.UNIT;
 import static com.bishabosha.caffeine.functional.API.Tuple;
 
 public class TupleTest {
@@ -18,14 +18,14 @@ public class TupleTest {
     public void testFlatten() {
         Assert.assertEquals(
             Arrays.asList("Hi", "there", "World"),
-            Tuple(Tuple(Tuple(Tuple("Hi"), Tuple("there", EMPTY), EMPTY), "World")).flatten()
+            Tuple(Tuple(Tuple(Tuple("Hi"), Tuple("there", UNIT), UNIT), "World")).flatten()
         );
     }
 
     @Test
     public void testLimits() {
         Assert.assertEquals(
-            Tuple0.EMPTY,
+            Unit.UNIT,
             Tuple()
         );
     }

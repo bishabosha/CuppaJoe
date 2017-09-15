@@ -4,9 +4,13 @@
 
 package com.bishabosha.caffeine.functional.functions;
 
+import com.bishabosha.caffeine.functional.API;
 import com.bishabosha.caffeine.functional.control.Option;
 import com.bishabosha.caffeine.functional.tuples.Tuple5;
 import org.jetbrains.annotations.Contract;
+
+import static com.bishabosha.caffeine.functional.API.Nothing;
+import static com.bishabosha.caffeine.functional.API.Option;
 
 public interface CheckedFunc5<A, B, C, D, E, R> {
     R apply(A a, B b, C c, D d, E e) throws Throwable;
@@ -20,9 +24,9 @@ public interface CheckedFunc5<A, B, C, D, E, R> {
     default Func5<A, B, C, D, E, Option<R>> lifted() {
         return (v, w, x, y, z) -> {
             try {
-                return Option.ofUnknown(apply(v, w, x, y, z));
+                return Option(apply(v, w, x, y, z));
             } catch (Throwable e) {
-                return Option.nothing();
+                return Nothing();
             }
         };
     }

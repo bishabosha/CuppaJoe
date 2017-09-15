@@ -1,19 +1,21 @@
 package com.bishabosha.caffeine.functional;
 
-import com.bishabosha.caffeine.functional.control.Either;
-import com.bishabosha.caffeine.functional.control.Option;
-import com.bishabosha.caffeine.functional.control.Try;
+import com.bishabosha.caffeine.functional.control.*;
 import com.bishabosha.caffeine.functional.functions.CheckedFunc0;
 import com.bishabosha.caffeine.functional.functions.Func0;
 import com.bishabosha.caffeine.functional.patterns.Case;
 import com.bishabosha.caffeine.functional.patterns.Matcher;
 import com.bishabosha.caffeine.functional.tuples.*;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.function.BooleanSupplier;
 
 public class API {
 
-    public static Tuple0
+    public static Unit
     Tuple() {
-        return Tuple0.getInstance();
+        return Unit.getInstance();
     }
 
     public static <A>
@@ -71,27 +73,44 @@ public class API {
         return Either.Right.of(right);
     }
 
-    public static <O> Option<O> Some(O elem) {
+    @Contract(pure = true)
+    @NotNull
+    public static <O> Option<O> Option(O elem) {
         return Option.of(elem);
     }
 
-    public static <O> Option<O> Nothing() {
-        return Option.nothing();
+    public static <O> Option<O> Option(BooleanSupplier condition, Func0<O> elem) {
+        return condition.getAsBoolean() ? Option(elem.apply()) : Nothing();
     }
 
+    @NotNull
+    @Contract(pure = true)
+    public static <O> Option<O> Some(O elem) {
+        return Some.of(elem);
+    }
+
+    @NotNull
+    @Contract(pure = true)
+    public static <O> Option<O> Nothing() {
+        return Nothing.getInstance();
+    }
+
+    @NotNull
     public static <O> Try<O> Try(Func0<O> getter) {
         return Try.of(getter);
     }
 
+    @NotNull
     public static <O> Try<O> Try(CheckedFunc0<O> getter) {
         return Try.of(getter);
     }
 
+    @NotNull
     public static <I> Matcher<I> Match(I toMatch) {
         return Matcher.create(toMatch);
     }
 
     public static <I, O> Option<O> Match(Option<I> toMatch, Case<I, O> options) {
-        return toMatch.isSome() ? options.match(toMatch.get()) : Option.nothing();
+        return toMatch.isSome() ? options.match(toMatch.get()) : Nothing();
     }
 }

@@ -13,12 +13,14 @@ import com.bishabosha.caffeine.functional.tuples.Tuple2;
 import com.bishabosha.caffeine.trees.BinaryNode;
 import org.junit.Test;
 
-import static com.bishabosha.caffeine.functional.control.Option.Some;
+import static com.bishabosha.caffeine.functional.API.Nothing;
+import static com.bishabosha.caffeine.functional.control.Some.Some;
 import static com.bishabosha.caffeine.functional.patterns.Pattern.*;
 import static com.bishabosha.caffeine.functional.patterns.PatternFactory.patternFor;
 import static com.bishabosha.caffeine.functional.immutable.Tree.Node;
 import static com.bishabosha.caffeine.functional.immutable.Tree.leaf;
 import static com.bishabosha.caffeine.functional.API.Tuple;
+import static com.bishabosha.caffeine.functional.tuples.Tuple2.Tuple2;
 import static org.junit.Assert.*;
 
 public class PatternTest {
@@ -44,7 +46,7 @@ public class PatternTest {
         BinaryNode<Integer> leaf = new BinaryNode<>(25);
 
         assertEquals(
-            Option.nothing(),
+            Nothing(),
             this.tree.test(0)
         );
         assertEquals(
@@ -56,7 +58,7 @@ public class PatternTest {
             tree($a, ¥_, ¥_).test(tree).get()
         );
         assertEquals(
-            Option.nothing(),
+            Nothing(),
             tree($(5), ¥_, ¥_).test(tree)
         );
         assertEquals(
@@ -64,7 +66,7 @@ public class PatternTest {
             tree(¥_, ¥_, this.tree).test(tree).get()
         );
         assertEquals(
-            Option.nothing(),
+            Nothing(),
             tree($a, ¥null, ¥null).test(tree)
         );
         assertEquals(
@@ -78,7 +80,7 @@ public class PatternTest {
         final Pattern patt2Test;
         final Tuple2<Option<Tree<Integer>>, Cons<Tree<Integer>>> underTest;
 
-        patt2Test = Tuple2.Tuple2(Some(Node($x, ¥_, $y)), $xs);
+        patt2Test = Tuple2(Some(Node($x, ¥_, $y)), $xs);
         underTest = Tuple(Option.of(Node(1, leaf(), leaf())), Cons.of(Tree.of(2)));
 
         patt2Test.test(underTest).ifSome(results -> {

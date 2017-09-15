@@ -4,12 +4,14 @@
 
 package com.bishabosha.caffeine.functional.tuples;
 
+import com.bishabosha.caffeine.functional.API;
 import com.bishabosha.caffeine.functional.control.Option;
 import com.bishabosha.caffeine.functional.patterns.Pattern;
 import com.bishabosha.caffeine.functional.functions.Func6;
 
 import java.util.Objects;
 
+import static com.bishabosha.caffeine.functional.API.Option;
 import static com.bishabosha.caffeine.functional.patterns.PatternFactory.patternFor;
 
 public final class Tuple6<A, B, C, D, E, F> implements Product6<A, B, C, D, E, F> {
@@ -92,7 +94,7 @@ public final class Tuple6<A, B, C, D, E, F> implements Product6<A, B, C, D, E, F
         if (obj == this) {
             return true;
         }
-        return Option.ofUnknown(obj)
+        return Option(obj)
                 .cast(Tuple6.class)
                 .map(o -> Objects.equals($1(), o.$1()) && Objects.equals($2(), o.$2()) && Objects.equals($3(), o.$3())
                         && Objects.equals($4(), o.$4()) && Objects.equals($5(), o.$5()) && Objects.equals($6(), o.$6()))
