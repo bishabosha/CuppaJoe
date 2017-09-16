@@ -8,10 +8,10 @@ import java.util.Iterator;
 
 import static com.bishabosha.caffeine.functional.API.Some;
 
-public interface Product0 extends Product {
+public interface Product0 extends Product, Unapply0 {
 
-    default Option<Product0> unapply() {
-        return Some(this);
+    default Product0 unapply() {
+        return this;
     }
 
     @Override

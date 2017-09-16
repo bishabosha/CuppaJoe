@@ -10,12 +10,12 @@ import java.util.function.Supplier;
 
 import static com.bishabosha.caffeine.functional.API.*;
 
-public interface Product1<A> extends Product {
+public interface Product1<A> extends Product, Unapply1<A> {
 
     A $1();
 
-    default Option<Product1<A>> unapply() {
-        return Some(this);
+    default Product1<A> unapply() {
+        return this;
     }
 
     @Override

@@ -7,7 +7,6 @@ package com.bishabosha.caffeine.functional.immutable;
 import com.bishabosha.caffeine.base.Iterables;
 import com.bishabosha.caffeine.functional.*;
 import com.bishabosha.caffeine.functional.control.Option;
-import com.bishabosha.caffeine.functional.control.Some;
 import com.bishabosha.caffeine.functional.patterns.Pattern;
 import com.bishabosha.caffeine.functional.tuples.Tuple2;
 

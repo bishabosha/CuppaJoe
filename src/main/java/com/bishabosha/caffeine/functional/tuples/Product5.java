@@ -9,7 +9,7 @@ import java.util.Iterator;
 
 import static com.bishabosha.caffeine.functional.API.Some;
 
-public interface Product5<A, B, C, D, E> extends Product {
+public interface Product5<A, B, C, D, E> extends Product, Unapply5<A, B, C, D, E> {
 
     A $1();
     B $2();
@@ -17,8 +17,8 @@ public interface Product5<A, B, C, D, E> extends Product {
     D $4();
     E $5();
 
-    default Option<Product5<A, B, C, D, E>> unapply() {
-        return Some(this);
+    default Product5<A, B, C, D, E> unapply() {
+        return this;
     }
 
     @Override

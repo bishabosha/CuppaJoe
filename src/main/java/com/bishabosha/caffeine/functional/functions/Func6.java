@@ -5,20 +5,26 @@
 package com.bishabosha.caffeine.functional.functions;
 
 import com.bishabosha.caffeine.functional.control.Option;
-import com.bishabosha.caffeine.functional.tuples.Tuple6;
+import com.bishabosha.caffeine.functional.control.Try;
+import com.bishabosha.caffeine.functional.tuples.Apply6;
+import com.bishabosha.caffeine.functional.tuples.Product6;
 import org.jetbrains.annotations.Contract;
 
 public interface Func6<A, B, C, D, E, F, R> {
-    R apply(A a, B b, C c, D d, E e, F f);
 
     @Contract(pure = true)
-    static <U,V,W,X,Y,Z,R> Func6<U,V,W,X,Y,Z,R> of(Func6<U,V,W,X,Y,Z,R> func) {
-        return func;
+    static <U,V,W,X,Y,Z,R> Func6<U,V,W,X,Y,Z,R> of(Func6<U, V, W, X, Y, Z, R> reference) {
+        return reference;
     }
 
     @Contract(pure = true)
-    default Func6<A, B, C, D, E, F, Option<R>> lifted() {
-        return CheckedFunc6.of(this::apply).lifted();
+    static <U,V,W,X,Y,Z,R> Func6<U,V,W,X,Y,Z,R> narrow(Func6<? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z, ? extends R> func) {
+        return func::apply;
+    }
+
+    @Contract(pure = true)
+    static <U, V, W, X, Y, Z, R> Func6<U, V, W, X, Y, Z, Option<R>> lift(Func6<? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z, ? extends R> func) {
+        return (u, v, w, x, y, z) -> Try.<R>narrow(Try.of(() -> func.apply(u, v, w, x, y, z))).get();
     }
 
     @Contract(pure = true)
@@ -27,7 +33,34 @@ public interface Func6<A, B, C, D, E, F, R> {
     }
 
     @Contract(pure = true)
-    default Func1<Tuple6<A, B, C, D, E, F>, R> tupled() {
+    default Func1<Product6<A, B, C, D, E, F>, R> tupled() {
         return x -> apply(x.$1(), x.$2(), x.$3(), x.$4(), x.$5(), x.$6());
+    }
+
+    @Contract(pure = true)
+    default Apply6<A, B, C, D, E, F, R> applied() {
+        return x -> tupled().apply(x.unapply());
+    }
+
+    R apply(A a, B b, C c, D d, E e, F f);
+
+    default Func5<B, C, D, E, F, R> apply(A a) {
+        return (b, c, d, e, f) -> apply(a, b, c, d, e, f);
+    }
+
+    default Func4<C, D, E, F, R> apply(A a, B b) {
+        return (c, d, e, f) -> apply(a, b, c, d, e, f);
+    }
+
+    default Func3<D, E, F, R> apply(A a, B b, C c) {
+        return (d, e, f) -> apply(a, b, c, d, e, f);
+    }
+
+    default Func2<E, F, R> apply(A a, B b, C c, D d) {
+        return (e, f) -> apply(a, b, c, d, e, f);
+    }
+
+    default Func1<F, R> apply(A a, B b, C c, D d, E e) {
+        return f -> apply(a, b, c, d, e, f);
     }
 }

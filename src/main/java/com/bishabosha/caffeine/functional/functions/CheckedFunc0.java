@@ -5,32 +5,31 @@
 package com.bishabosha.caffeine.functional.functions;
 
 import com.bishabosha.caffeine.functional.control.Option;
-import com.bishabosha.caffeine.functional.tuples.Unit;
+import com.bishabosha.caffeine.functional.control.Try;
+import com.bishabosha.caffeine.functional.tuples.Product0;
 import org.jetbrains.annotations.Contract;
 
-import static com.bishabosha.caffeine.functional.API.*;
-
 public interface CheckedFunc0<R> {
-    R apply() throws Throwable;
 
     @Contract(pure = true)
-    static <R> CheckedFunc0<R> of(CheckedFunc0<R> func) {
-        return func;
+    static <R> CheckedFunc0<R> of(CheckedFunc0<R> reference) {
+        return reference;
     }
 
     @Contract(pure = true)
-    default Func0<Option<R>> lifted() {
-        return () -> {
-            try {
-                return Option(apply());
-            } catch (Throwable e) {
-                return Nothing();
-            }
-        };
+    static <R> CheckedFunc0<R> narrow(CheckedFunc0<? extends R> func) {
+        return func::apply;
     }
 
     @Contract(pure = true)
-    default CheckedFunc1<Unit, R> tupled() {
+    static <R> Func0<Option<R>> lift(CheckedFunc0<? extends R> func) {
+        return Try.<R>narrow(Try.of(func::apply))::get;
+    }
+
+    @Contract(pure = true)
+    default CheckedFunc1<Product0, R> tupled() {
         return t -> apply();
     }
+
+    R apply() throws Throwable;
 }

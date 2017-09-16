@@ -1,5 +1,7 @@
 package com.bishabosha.caffeine.functional.control;
 
+import com.bishabosha.caffeine.functional.functions.CheckedFunc0;
+import com.bishabosha.caffeine.functional.functions.Func0;
 import com.bishabosha.caffeine.functional.patterns.Pattern;
 
 import java.util.Objects;
@@ -24,6 +26,8 @@ public class Failure<E> implements Try<E> {
 
     @Override
     public E getOrThrow() throws Throwable {
+        CheckedFunc0<String> func = () -> "";
+        CheckedFunc0<Object> func0 = CheckedFunc0.narrow(func);
         throw error;
     }
 

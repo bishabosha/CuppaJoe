@@ -16,6 +16,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public interface Option<O> extends Iterable<O> {
 
@@ -41,19 +42,19 @@ public interface Option<O> extends Iterable<O> {
         return isSome() ? get() : alternative;
     }
 
-    default O orElseGet(Func0<O> alternative) {
-        return isSome() ? get() : alternative.apply();
+    default O orElseGet(Supplier<O> alternative) {
+        return isSome() ? get() : alternative.get();
     }
 
-    default <X extends Throwable> O orElseThrow(Func0<? extends X> exceptionGet) throws X {
+    default <X extends Throwable> O orElseThrow(Supplier<? extends X> exceptionGet) throws X {
         if (isSome()) {
             return get();
         }
-        throw exceptionGet.apply();
+        throw exceptionGet.get();
     }
 
-    default Option<O> join(Func0<Option<O>> alternative) {
-        return isSome() ? this : alternative.apply();
+    default Option<O> join(Supplier<Option<O>> alternative) {
+        return isSome() ? this : alternative.get();
     }
 
     default Option<O> filter(Predicate<O> filter) {
@@ -91,8 +92,8 @@ public interface Option<O> extends Iterable<O> {
         return Nothing.getInstance();
     }
 
-    default <T> Option<T> flatMapOrElse(Func1<O, Option<T>> mapper, Func0<Option<T>> orElse) {
-        return isSome() ? mapper.apply(get()) : orElse.apply();
+    default <T> Option<T> flatMapOrElse(Func1<O, Option<T>> mapper, Supplier<Option<T>> orElse) {
+        return isSome() ? mapper.apply(get()) : orElse.get();
     }
 
     default Option<O> ifNothing(Runnable toDo) {

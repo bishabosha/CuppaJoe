@@ -9,13 +9,13 @@ import java.util.Iterator;
 
 import static com.bishabosha.caffeine.functional.API.Some;
 
-public interface Product2<A, B> extends Product {
+public interface Product2<A, B> extends Product, Unapply2<A, B> {
 
     A $1();
     B $2();
 
-    default Option<Product2<A, B>> unapply() {
-        return Some(this);
+    default Product2<A, B> unapply() {
+        return this;
     }
 
     @Override

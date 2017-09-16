@@ -80,7 +80,7 @@ public class API {
     }
 
     public static <O> Option<O> Option(BooleanSupplier condition, Func0<O> elem) {
-        return condition.getAsBoolean() ? Option(elem.apply()) : Nothing();
+        return condition.getAsBoolean() ? Option(elem.get()) : Nothing();
     }
 
     @NotNull
@@ -93,11 +93,6 @@ public class API {
     @Contract(pure = true)
     public static <O> Option<O> Nothing() {
         return Nothing.getInstance();
-    }
-
-    @NotNull
-    public static <O> Try<O> Try(Func0<O> getter) {
-        return Try.of(getter);
     }
 
     @NotNull

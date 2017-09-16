@@ -12,8 +12,8 @@ public interface Product extends Iterable<Object> {
 
     Object $(int index);
 
-    default Option<Object> $lifted(int index) {
-        return Func1.of(this::$).lifted().apply(index);
+    default Option<Object> _$(int index) {
+        return Func1.lift(this::$).apply(index);
     }
 
     default List<Object> flatten() {

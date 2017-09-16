@@ -1,6 +1,5 @@
 package com.bishabosha.caffeine.functional.control;
 
-import com.bishabosha.caffeine.functional.API;
 import com.bishabosha.caffeine.functional.patterns.Pattern;
 import org.jetbrains.annotations.NotNull;
 

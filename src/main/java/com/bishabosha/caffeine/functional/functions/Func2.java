@@ -5,20 +5,31 @@
 package com.bishabosha.caffeine.functional.functions;
 
 import com.bishabosha.caffeine.functional.control.Option;
-import com.bishabosha.caffeine.functional.tuples.Tuple2;
+import com.bishabosha.caffeine.functional.control.Try;
+import com.bishabosha.caffeine.functional.tuples.Apply2;
+import com.bishabosha.caffeine.functional.tuples.Product2;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
-public interface Func2<A, B, R> {
-    R apply(A a, B b);
+import java.util.function.BiFunction;
 
+public interface Func2<A, B, R> extends BiFunction<A, B, R> {
+
+    @NotNull
     @Contract(pure = true)
-    static <X,Y,R> Func2<X,Y,R> of(Func2<X,Y,R> func) {
-        return func;
+    static <X,Y,R> Func2<X,Y,R> of(BiFunction<X, Y, R> reference) {
+        return reference::apply;
+    }
+
+    @NotNull
+    @Contract(pure = true)
+    static <X,Y,R> Func2<X,Y,R> narrow(BiFunction<? super X, ? super Y, ? extends R> func) {
+        return func::apply;
     }
 
     @Contract(pure = true)
-    default Func2<A, B, Option<R>> lifted() {
-        return CheckedFunc2.of(this::apply).lifted();
+    static <X, Y, R> Func2<X, Y, Option<R>> lift(BiFunction<? super X, ? super Y, ? extends R> func) {
+        return (x, y) -> Try.<R>narrow(Try.of(() -> func.apply(x, y))).get();
     }
 
     @Contract(pure = true)
@@ -27,7 +38,16 @@ public interface Func2<A, B, R> {
     }
 
     @Contract(pure = true)
-    default Func1<Tuple2<A, B>, R> tupled() {
+    default Func1<Product2<A, B>, R> tupled() {
         return x -> apply(x.$1(), x.$2());
+    }
+
+    @Contract(pure = true)
+    default Apply2<A, B, R> applied() {
+        return x -> tupled().apply(x.unapply());
+    }
+
+    default Func1<B, R> apply(A a) {
+        return b -> apply(a, b);
     }
 }

@@ -4,6 +4,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import static com.bishabosha.caffeine.functional.API.Tuple;
 import static org.junit.Assert.*;
 
 public class ConsTest {
@@ -109,5 +110,21 @@ public class ConsTest {
         assertEquals("[1, 2, null]", Cons.of(1,2,null).toString());
         assertEquals("[null]", Cons.concat(null, Cons.empty()).toString());
         assertEquals("[1]", Cons.concat(1, Cons.empty()).toString());
+    }
+
+    @Test
+    public void unapply() {
+        assertEquals(
+            Tuple(1,Cons.of(2)),
+            Cons.of(1,2).unapply()
+        );
+    }
+
+    @Test
+    public void apply() {
+        assertEquals(
+            Cons.of(1,2),
+            Cons.<Integer>empty().apply(Cons.of(1,2).unapply())
+        );
     }
 }

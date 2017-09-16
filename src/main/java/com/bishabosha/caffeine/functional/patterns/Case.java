@@ -59,13 +59,13 @@ public interface Case<I, O> {
      * @param <O> The type of the output variable
      * @return a Guard that will supply {@link Option} of the supplied value.
      */
-    static <O> Guard<O> edge(Func0<O> valueSupplier) {
-        return () -> Option.of(valueSupplier.apply());
+    static <O> Guard<O> edge(Supplier<O> valueSupplier) {
+        return () -> Option.of(valueSupplier.get());
     }
 
     static <I, O> Case<I, O>
-    with(Pattern matcher, Func0<O> binder) {
-        return base(matcher, t -> binder.apply());
+    with(Pattern matcher, Supplier<O> binder) {
+        return base(matcher, t -> binder.get());
     }
 
     static <I, O, A> Case<I, O>

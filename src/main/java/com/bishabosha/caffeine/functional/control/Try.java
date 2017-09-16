@@ -6,22 +6,21 @@ package com.bishabosha.caffeine.functional.control;
 
 import com.bishabosha.caffeine.functional.functions.CheckedFunc0;
 import com.bishabosha.caffeine.functional.functions.Func0;
+import org.jetbrains.annotations.Contract;
+
+import java.util.function.Supplier;
 
 public interface Try<E> {
 
-    static <T> Try<T> of(Func0<T> getter) {
-        return of(CheckedFunc0.of(getter::apply));
-    }
-
-    static <T> Try<T> of(CheckedFunc0<T> getter) {
+    static <T> Try<T> of(CheckedFunc0<? extends T> getter) {
         try {
-            final T value = getter.apply();
-            return Success.of(value);
+            return Success.of(getter.apply());
         } catch (Throwable e) {
             return Failure.of(e);
         }
     }
 
+    @Contract(pure = true)
     @SuppressWarnings("unchecked")
     static  <O> Try<O> narrow(Try<? extends O> toNarrow) {
         return (Try<O>) toNarrow;

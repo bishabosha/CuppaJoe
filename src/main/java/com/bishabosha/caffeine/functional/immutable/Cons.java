@@ -7,14 +7,14 @@ package com.bishabosha.caffeine.functional.immutable;
 import com.bishabosha.caffeine.base.AbstractBase;
 import com.bishabosha.caffeine.base.Iterables;
 import com.bishabosha.caffeine.functional.*;
+import com.bishabosha.caffeine.functional.tuples.*;
 import com.bishabosha.caffeine.functional.control.Either;
 import com.bishabosha.caffeine.functional.control.Option;
-import com.bishabosha.caffeine.functional.functions.Func0;
+import com.bishabosha.caffeine.functional.control.Nothing;
 import com.bishabosha.caffeine.functional.functions.Func2;
 import com.bishabosha.caffeine.functional.functions.Func3;
 import com.bishabosha.caffeine.functional.patterns.Case;
 import com.bishabosha.caffeine.functional.patterns.Pattern;
-import com.bishabosha.caffeine.functional.tuples.Tuple2;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,7 +31,7 @@ import static com.bishabosha.caffeine.functional.API.Tuple;
  * Immutable List
  * @param <E> the Type of the list
  */
-public class Cons<E> extends AbstractBase<Option<E>> implements Foldable<Option<E>> {
+public class Cons<E> extends AbstractBase<Option<E>> implements Foldable<Option<E>>, Applied2<E, Cons<E>, Cons<E>> {
     private Option<E> head;
     private Cons<E> tail;
 
@@ -174,7 +174,7 @@ public class Cons<E> extends AbstractBase<Option<E>> implements Foldable<Option<
 
     /**
      * Tries to split the of into a Tuple4 of its head and tail.
-     * @return {@link Option#nothing()} if this is an empty of. Otherwise {@link Option} of a Tuple4 of the head and tail.
+     * @return {@link Nothing} if this is an empty of. Otherwise {@link Option} of a Tuple4 of the head and tail.
      */
     public Option<Tuple2<Option<E>, Cons<E>>> pop() {
         return when(() -> !isEmpty(), () -> Tuple(head, tail)).match();
@@ -218,8 +218,8 @@ public class Cons<E> extends AbstractBase<Option<E>> implements Foldable<Option<
      * @param <O> the type of the accumulator.
      * @return The accumulator with whatever modifications have been applied.
      */
-    public <O> O loop(Func0<O> identity, Func3<O, Cons<E>, Option<E>, Tuple2<O, Cons<E>>> consumer) {
-        Tuple2<O, Cons<E>> accStackPair = Tuple(identity.apply(), this);
+    public <O> O loop(Supplier<O> identity, Func3<O, Cons<E>, Option<E>, Tuple2<O, Cons<E>>> consumer) {
+        Tuple2<O, Cons<E>> accStackPair = Tuple(identity.get(), this);
         while (!accStackPair.$2().isEmpty()) {
             final O acc = accStackPair.$1();
             final Cons<E> stack = accStackPair.$2();
@@ -392,7 +392,22 @@ public class Cons<E> extends AbstractBase<Option<E>> implements Foldable<Option<
     }
 
     @Override
+    @NotNull
+    @Contract(pure = true)
+    public Cons<E> apply(Product2<E, Cons<E>> tuple) {
+        return concat(tuple.$1(), tuple.$2());
+    }
+
+    @Override
+    @NotNull
+    @Contract(pure = true)
+    public Product2<E, Cons<E>> unapply() {
+        return Tuple(head.orElse(null), tail);
+    }
+
+    @Override
     public String toString() {
         return Iterables.toString('[', ']', flatten().iterator());
     }
+
 }
