@@ -1,10 +1,11 @@
 package com.bishabosha.caffeine.functional.tuples;
 
 import com.bishabosha.caffeine.functional.Library;
-import com.bishabosha.caffeine.functional.control.Option;
-import com.bishabosha.caffeine.functional.functions.Func1;
+import com.bishabosha.caffeine.functional.control.Try;
 
 import java.util.List;
+
+import static com.bishabosha.caffeine.functional.API.Try;
 
 public interface Product extends Iterable<Object> {
 
@@ -12,8 +13,8 @@ public interface Product extends Iterable<Object> {
 
     Object $(int index);
 
-    default Option<Object> _$(int index) {
-        return Func1.lift(this::$).apply(index);
+    default Try<Object> try$(int index) {
+        return Try(() -> $(index));
     }
 
     default List<Object> flatten() {

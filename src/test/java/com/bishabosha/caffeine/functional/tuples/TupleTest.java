@@ -9,8 +9,6 @@ import org.junit.Test;
 
 import java.util.Arrays;
 
-import static com.bishabosha.caffeine.functional.API.Nothing;
-import static com.bishabosha.caffeine.functional.API.Some;
 import static com.bishabosha.caffeine.functional.tuples.Unit.UNIT;
 import static com.bishabosha.caffeine.functional.API.Tuple;
 
@@ -35,13 +33,11 @@ public class TupleTest {
     @Test
     public void lifted() {
         Tuple2<Integer, Boolean> tuple = Tuple(1, false);
-        Assert.assertEquals(
-            Some(1),
-            tuple._$(1)
+        Assert.assertTrue(
+            tuple.try$(1).isPresent()
         );
-        Assert.assertEquals(
-            Nothing(),
-            tuple._$(4)
+        Assert.assertFalse(
+            tuple.try$(4).isPresent()
         );
     }
 }
