@@ -4,12 +4,12 @@
 
 package com.bishabosha.caffeine.functional.tuples;
 
-import com.bishabosha.caffeine.functional.control.Option;
 import com.bishabosha.caffeine.functional.patterns.Pattern;
 import com.bishabosha.caffeine.functional.functions.Func4;
 
 import java.util.Objects;
 
+import static com.bishabosha.caffeine.functional.API.Option;
 import static com.bishabosha.caffeine.functional.patterns.PatternFactory.patternFor;
 
 public final class Tuple4<A, B, C, D> implements Product4<A, B, C, D> {
@@ -73,7 +73,7 @@ public final class Tuple4<A, B, C, D> implements Product4<A, B, C, D> {
         if (obj == this) {
             return true;
         }
-        return Option.ofUnknown(obj)
+        return Option(obj)
             .cast(Tuple4.class)
             .map(o -> Objects.equals($1(), o.$1()) && Objects.equals($2(), o.$2()) && Objects.equals($3(), o.$3())
                     && Objects.equals($4(), o.$4()))

@@ -5,6 +5,7 @@
 package com.bishabosha.caffeine.functional.patterns;
 
 import com.bishabosha.caffeine.functional.control.Option;
+import com.bishabosha.caffeine.functional.functions.Func1;
 import com.bishabosha.caffeine.functional.tuples.Tuple2;
 import com.bishabosha.caffeine.lists.LinkedList;
 
@@ -24,7 +25,7 @@ public class PatternFactory<I> {
     }
     
     public <O> Pattern conditionalAtomic(Predicate<I> condition,
-                                         Function<I, O> mapper, Pattern pattern) {
+                                         Func1<I, O> mapper, Pattern pattern) {
         return x -> Option.of(x)
                           .cast(inputClass)
                           .filter(condition)
@@ -32,7 +33,7 @@ public class PatternFactory<I> {
                           .flatMap(pattern::test);
     }
     
-    public <O> Pattern atomic(Pattern pattern, Function<I, O> mapper) {
+    public <O> Pattern atomic(Pattern pattern, Func1<I, O> mapper) {
         return x -> Option.of(x)
                           .cast(inputClass)
                           .map(mapper)

@@ -14,8 +14,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import static com.bishabosha.caffeine.functional.API.Match;
+import static com.bishabosha.caffeine.functional.control.Some.Some;
 import static com.bishabosha.caffeine.functional.patterns.Matcher.guardUnsafe;
-import static com.bishabosha.caffeine.functional.control.Option.Some;
 import static com.bishabosha.caffeine.functional.patterns.Pattern.*;
 import static com.bishabosha.caffeine.functional.patterns.Case.*;
 import static com.bishabosha.caffeine.functional.API.Tuple;

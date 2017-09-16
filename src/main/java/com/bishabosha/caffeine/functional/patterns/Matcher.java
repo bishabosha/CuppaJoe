@@ -7,6 +7,8 @@ package com.bishabosha.caffeine.functional.patterns;
 import com.bishabosha.caffeine.functional.patterns.Case.Guard;
 import com.bishabosha.caffeine.functional.control.Option;
 
+import static com.bishabosha.caffeine.functional.API.Nothing;
+
 public class Matcher<I> {
 
     private I toMatch;
@@ -16,7 +18,7 @@ public class Matcher<I> {
     }
 
     public static <I, O> Option<O> create(Option<I> toMatch, Case<I, O> options) {
-        return toMatch.isSome() ? options.match(toMatch.get()) : Option.nothing();
+        return toMatch.isSome() ? options.match(toMatch.get()) : Nothing();
     }
 
     @SafeVarargs
@@ -47,9 +49,9 @@ public class Matcher<I> {
         Option<Option<O>> result;
         if ((result = option(cases)).isSome()) {
             Option<O> temp = result.get();
-            return temp.isSome() ? result : Option.nothing();
+            return temp.isSome() ? result : Nothing();
         }
-        return Option.nothing();
+        return Nothing();
     }
 
     @SafeVarargs

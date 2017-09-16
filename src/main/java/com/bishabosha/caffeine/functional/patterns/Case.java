@@ -4,10 +4,15 @@
 
 package com.bishabosha.caffeine.functional.patterns;
 
+import com.bishabosha.caffeine.functional.API;
 import com.bishabosha.caffeine.functional.control.Option;
 import com.bishabosha.caffeine.functional.functions.*;
 
 import java.util.function.*;
+
+import static com.bishabosha.caffeine.functional.API.Nothing;
+import static com.bishabosha.caffeine.functional.API.Option;
+import static com.bishabosha.caffeine.functional.API.Some;
 
 /**
  * Represents a Case of a Matcher block,
@@ -20,7 +25,7 @@ public interface Case<I, O> {
     /**
      * Attempts to of the Object and Map it
      * @param input the Object being matched
-     * @return {@link Option#nothing()} if no of is made. Otherwise {@link Option} of the matched variable
+     * @return {@link API#Nothing()} if no of is made. Otherwise {@link Option} of the matched variable
      */
     Option<O> match(I input);
 
@@ -41,10 +46,10 @@ public interface Case<I, O> {
      * @param test Supply any test to check, for example comparing for equality
      * @param valueSupplier The value to supply if the test is a success.
      * @param <O> The type of the output variable
-     * @return A Guard that will supply {@link Option#nothing()} if the test fails. Otherwise {@link Option} of the supplied variable
+     * @return A Guard that will supply {@link API#Nothing()} if the test fails. Otherwise {@link Option} of the supplied variable
      */
     static <O> Guard<O> when(BooleanSupplier test, Func0<O> valueSupplier) {
-        return () -> test.getAsBoolean() ? Option.of(valueSupplier.apply()) : Option.nothing();
+        return () -> Option(test, valueSupplier);
     }
 
     /**
@@ -121,15 +126,15 @@ public interface Case<I, O> {
             Option<PatternResult> option = matcher.test(i);
             if (option.isSome()) {
                 PatternResult result = option.get();
-                return Option.ofUnknown(mapper.apply(result));
+                return Option(mapper.apply(result));
             }
-            return Option.nothing();
+            return Nothing();
         };
     }
 
     static <O> Guard<O> combine(Guard<O>... guards) {
         return () -> {
-            Option<O> result = Option.nothing();
+            Option<O> result = Nothing();
             for (Guard<O> guard: guards) {
                 result = guard.match();
                 if (result.isSome()) {
@@ -142,7 +147,7 @@ public interface Case<I, O> {
 
     static <I, O> Case<I, O> combine(Case<I, O>... cases) {
         return i -> {
-            Option<O> result = Option.nothing();
+            Option<O> result = Nothing();
             for (Case<I, O> c: cases) {
                 result = c.match(i);
                 if (result.isSome()) {

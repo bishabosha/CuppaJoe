@@ -6,12 +6,16 @@ package com.bishabosha.caffeine.sequences;
 
 import com.bishabosha.caffeine.base.AbstractArrayHelper;
 import com.bishabosha.caffeine.base.SequenceHelper;
+import com.bishabosha.caffeine.functional.API;
 import com.bishabosha.caffeine.functional.control.Option;
 import com.bishabosha.caffeine.pipelines.Pipeline;
 
 import java.util.Iterator;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+
+import static com.bishabosha.caffeine.functional.API.Nothing;
+import static com.bishabosha.caffeine.functional.API.Option;
 
 public abstract class AbstractSequence<T> extends AbstractArrayHelper<T> implements Sequence<T> {
     int initialTerm = 0;
@@ -48,10 +52,10 @@ public abstract class AbstractSequence<T> extends AbstractArrayHelper<T> impleme
         while (i < num && it.hasNext()) {
             val = it.next();
             if ((++i) == num) {
-                return Option.ofUnknown(val);
+                return Option(val);
             }
         }
-        return Option.nothing();
+        return Nothing();
     }
 
     @Override

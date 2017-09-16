@@ -9,6 +9,7 @@ import com.bishabosha.caffeine.base.Iterables;
 import com.bishabosha.caffeine.functional.*;
 import com.bishabosha.caffeine.functional.control.Either;
 import com.bishabosha.caffeine.functional.control.Option;
+import com.bishabosha.caffeine.functional.functions.Func0;
 import com.bishabosha.caffeine.functional.functions.Func2;
 import com.bishabosha.caffeine.functional.functions.Func3;
 import com.bishabosha.caffeine.functional.patterns.Case;
@@ -21,6 +22,7 @@ import java.util.*;
 import java.util.function.Supplier;
 
 import static com.bishabosha.caffeine.functional.API.Left;
+import static com.bishabosha.caffeine.functional.API.Option;
 import static com.bishabosha.caffeine.functional.patterns.Case.*;
 import static com.bishabosha.caffeine.functional.patterns.PatternFactory.patternFor;
 import static com.bishabosha.caffeine.functional.API.Tuple;
@@ -130,7 +132,7 @@ public class Cons<E> extends AbstractBase<Option<E>> implements Foldable<Option<
      * @param tail The of that will act as the tail after the head.
      */
     private Cons(E head, Cons<E> tail) {
-        this(Option.ofUnknown(head), tail);
+        this(Option(head), tail);
     }
 
     private Cons(Option<E> headOpt, Cons<E> tail) {
@@ -188,7 +190,7 @@ public class Cons<E> extends AbstractBase<Option<E>> implements Foldable<Option<
      * @return a new of instance with the element removed.
      */
     public Cons<E> remove(E elem) {
-        final Option<E> toRemove = Option.ofUnknown(elem);
+        final Option<E> toRemove = Option(elem);
         return foldLeft(Cons.<E>empty(), (x, xs) -> Objects.equals(x, toRemove) ? xs : xs.pushOpt(x)).reverse();
     }
 
@@ -198,7 +200,7 @@ public class Cons<E> extends AbstractBase<Option<E>> implements Foldable<Option<
      * @return true if any instances were found. Otherwise false.
      */
     public boolean contains(Object elem) {
-        Option<Object> option = Option.ofUnknown(elem);
+        Option<Object> option = Option(elem);
         Cons<E> it = this;
         while (Objects.nonNull(it.tail)) {
             if (it.head.equals(option)) {
@@ -216,8 +218,8 @@ public class Cons<E> extends AbstractBase<Option<E>> implements Foldable<Option<
      * @param <O> the type of the accumulator.
      * @return The accumulator with whatever modifications have been applied.
      */
-    public <O> O loop(Supplier<O> identity, Func3<O, Cons<E>, Option<E>, Tuple2<O, Cons<E>>> consumer) {
-        Tuple2<O, Cons<E>> accStackPair = Tuple(identity.get(), this);
+    public <O> O loop(Func0<O> identity, Func3<O, Cons<E>, Option<E>, Tuple2<O, Cons<E>>> consumer) {
+        Tuple2<O, Cons<E>> accStackPair = Tuple(identity.apply(), this);
         while (!accStackPair.$2().isEmpty()) {
             final O acc = accStackPair.$1();
             final Cons<E> stack = accStackPair.$2();
@@ -225,7 +227,7 @@ public class Cons<E> extends AbstractBase<Option<E>> implements Foldable<Option<
                                 .map(t -> t.map((head, tail) -> consumer.apply(acc, tail, head)))
                                 .orElse(Tuple(null, empty()));
         }
-        return Option.ofUnknown(accStackPair.$1()).orElseGet(identity);
+        return Option(accStackPair.$1()).orElseGet(identity);
     }
 
     public <O> Tuple2<Option<O>, Cons<E>> nextItem(Func2<Option<E>, Cons<E>, Tuple2<Either<Boolean, O>, Cons<E>>> mapper) {
@@ -312,7 +314,7 @@ public class Cons<E> extends AbstractBase<Option<E>> implements Foldable<Option<
 
     @Override
     public boolean equals(Object obj) {
-        return obj == this ? true : Option.ofUnknown(obj)
+        return obj == this ? true : Option(obj)
                                           .cast(Cons.class)
                                           .map(this::equateCons)
                                           .orElse(false);
@@ -327,8 +329,8 @@ public class Cons<E> extends AbstractBase<Option<E>> implements Foldable<Option<
         Option<Tuple2<Option<E>, Cons<E>>> thisPopped = this.pop();
         Option<Tuple2<Option, Cons>> otherPopped = otherCons.pop();
         while (true) {
-            final boolean thisEmpty = thisPopped.isEmpty();
-            final boolean otherEmpty = otherPopped.isEmpty();
+            final boolean thisEmpty = !thisPopped.isSome();
+            final boolean otherEmpty = !otherPopped.isSome();
             if (otherEmpty ^ thisEmpty) {
                 return false; // if both different return false.
             }

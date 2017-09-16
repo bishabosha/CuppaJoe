@@ -6,21 +6,21 @@ package com.bishabosha.caffeine.functional.tuples;
 
 import com.bishabosha.caffeine.functional.patterns.Pattern;
 
-public class Tuple0 implements Product0 {
+public class Unit implements Product0 {
 
-    public final static Tuple0 EMPTY = new Tuple0();
+    public final static Unit UNIT = new Unit();
 
-    public static Pattern Tuple0() {
-        return x -> x == EMPTY ? Pattern.PASS : Pattern.FAIL;
+    public static Pattern Unit() {
+        return x -> x == UNIT ? Pattern.PASS : Pattern.FAIL;
     }
 
-    public static Tuple0 getInstance() {
-        return EMPTY;
+    public static Unit getInstance() {
+        return UNIT;
     }
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof Tuple0 && obj == EMPTY;
+        return obj instanceof Unit && obj == UNIT;
     }
 
     @Override

@@ -4,9 +4,13 @@
 
 package com.bishabosha.caffeine.functional.functions;
 
+import com.bishabosha.caffeine.functional.API;
 import com.bishabosha.caffeine.functional.control.Option;
 import com.bishabosha.caffeine.functional.tuples.Tuple8;
 import org.jetbrains.annotations.Contract;
+
+import static com.bishabosha.caffeine.functional.API.Nothing;
+import static com.bishabosha.caffeine.functional.API.Option;
 
 public interface CheckedFunc8<A, B, C, D, E, F, G, H, R> {
     R apply(A a, B b, C c, D d, E e, F f, G g, H h) throws Throwable;
@@ -20,9 +24,9 @@ public interface CheckedFunc8<A, B, C, D, E, F, G, H, R> {
     default Func8<A, B, C, D, E, F, G, H, Option<R>> lifted() {
         return (s, t, u, v, w, x, y, z) -> {
             try {
-                return Option.ofUnknown(apply(s, t, u, v, w, x, y, z));
+                return Option(apply(s, t, u, v, w, x, y, z));
             } catch (Throwable e) {
-                return Option.nothing();
+                return Nothing();
             }
         };
     }

@@ -4,214 +4,142 @@
 
 package com.bishabosha.caffeine.functional.control;
 
-import com.bishabosha.caffeine.base.AbstractArrayHelper;
+import com.bishabosha.caffeine.functional.functions.Func0;
+import com.bishabosha.caffeine.functional.functions.Func1;
 import com.bishabosha.caffeine.functional.patterns.Case;
 import com.bishabosha.caffeine.functional.patterns.Pattern;
 import com.bishabosha.caffeine.functional.patterns.PatternResult;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
-import static com.bishabosha.caffeine.functional.patterns.PatternFactory.patternFor;
+public interface Option<O> extends Iterable<O> {
 
-public final class Option<O> extends AbstractArrayHelper<O> {
-
-    private static final Option<?> EMPTY = new Option<>(null);
-
-    public static Pattern Some(Pattern pattern) {
-        return patternFor(Option.class).conditionalAtomic(Option::isSome, Option::get, pattern);
+    static <O> Option<Option<O>> wrappedNothing() {
+        return of(Nothing.getInstance());
     }
 
-    public static final Pattern Nothing() {
-        return x -> EMPTY.equals(x) ? Pattern.PASS : Pattern.FAIL;
+    static <O> Option<O> from(Optional<O> optional) {
+        return optional.isPresent() ? of(optional.get()) : Nothing.getInstance();
     }
 
-    private O value;
-
-    private Option(O value) {
-        this.value = value;
+    @NotNull
+    @Contract(pure = true)
+    static <O> Option<O> of(O value) {
+        return Objects.nonNull(value) ? Some.of(value) : Nothing.getInstance();
     }
 
-    @SuppressWarnings("unchecked")
-    public static <O> Option<O> nothing() {
-        return (Option<O>) EMPTY;
+    boolean isSome();
+
+    O get();
+
+    default O orElse(O alternative) {
+        return isSome() ? get() : alternative;
     }
 
-    public static <O> Option<Option<O>> wrappedNothing() {
-        return of(nothing());
+    default O orElseGet(Func0<O> alternative) {
+        return isSome() ? get() : alternative.apply();
     }
 
-    public static <O> Option<O> from(Optional<O> optional) {
-        return optional.isPresent() ? of(optional.get()) : nothing();
-    }
-
-    public static <O> Option<O> of(O value) {
-        return new Option<>(Objects.requireNonNull(value, "Choose Option.ofUnknown() to pass null pointers"));
-    }
-
-    public static <O> Option<O> ofUnknown(O value) {
-        return Objects.isNull(value) ? nothing() : new Option<>(value);
-    }
-
-    public boolean isSome() {
-        return value != null;
-    }
-
-    public O get() {
-        if (value == null) {
-            throw new IllegalStateException("There is nothing present.");
+    default <X extends Throwable> O orElseThrow(Func0<? extends X> exceptionGet) throws X {
+        if (isSome()) {
+            return get();
         }
-        return value;
+        throw exceptionGet.apply();
     }
 
-    public O orElse(O alternative) {
-        return value != null ? value : alternative;
+    default Option<O> join(Func0<Option<O>> alternative) {
+        return isSome() ? this : alternative.apply();
     }
 
-    public O orElseGet(Supplier<O> alternative) {
-        return value != null ? value : alternative.get();
+    default Option<O> filter(Predicate<O> filter) {
+        return isSome() && filter.test(get()) ? this : Nothing.getInstance();
     }
 
-    public <X extends Throwable> O orElseThrow(Supplier<? extends X> exceptionSupplier) throws X {
-        if (value != null) {
-            return value;
-        } else {
-            throw exceptionSupplier.get();
+    default <T> Option<T> map(Func1<O, T> mapper) {
+        return isSome() ? Some.of(mapper.apply(get())) : Nothing.getInstance();
+    }
+
+    default <T> Option<T> flatMap(Func1<O, Option<T>> mapper) {
+        final Option<T> result;
+        if (isSome() && (result = mapper.apply(get())) instanceof Some) {
+            return result;
         }
+        return Nothing.getInstance();
     }
 
-    public Option<O> join(Supplier<Option<O>> alternative) {
-        return value != null ? this : Objects.requireNonNull(alternative.get());
+    default <T> Option<T> match(Pattern toMatch, Func1<PatternResult, T> mapper) {
+        return isSome() ? toMatch.test(get()).map(mapper) : Nothing.getInstance();
     }
 
-    public static <R, T extends R, O extends R> Option<R> joinAny(Option<O> option, Supplier<Option<T>> alternative) {
-        return option.isSome() ? (Option<R>) option : Objects.requireNonNull((Option<R>) alternative.get());
+    default <T> Option<T> match(Case<O, T> matcher) {
+        return isSome() ? matcher.match(get()) : Nothing.getInstance();
     }
 
-    public Option<O> filter(Predicate<O> filter) {
-        return (value != null && filter.test(value)) ? this : nothing();
+    default <T> Option<T> flatMatch(Case<O, Option<T>> toMatch) {
+        return isSome() ? toMatch.match(get()).orElse(Nothing.getInstance()) : Nothing.getInstance();
     }
 
-    public <T> Option<T> map(Function<O, T> mapper) {
-        return value != null ? Option.ofUnknown(mapper.apply(value)) : nothing();
+    default Option<?> unwrap() {
+        if (isSome() && get() instanceof Option<?>) {
+            return (Option<?>) get();
+        }
+        return Nothing.getInstance();
     }
 
-    public <T> Option<T> flatMap(Function<O, Option<T>> mapper) {
-        return value != null ? Objects.requireNonNull(mapper.apply(value)) : nothing();
+    default <T> Option<T> flatMapOrElse(Func1<O, Option<T>> mapper, Func0<Option<T>> orElse) {
+        return isSome() ? mapper.apply(get()) : orElse.apply();
     }
 
-    public <T> Option<T> match(Pattern toMatch, Function<PatternResult, T> mapper) {
-        return value != null ? toMatch.test(value).map(mapper) : nothing();
-    }
-
-    public <T> Option<T> match(Case<O, T> matcher) {
-        return value != null ? matcher.match(value) : nothing();
-    }
-
-    public <T> Option<T> flatMatch(Case<O, Option<T>> toMatch) {
-        return value != null ? toMatch.match(value).orElse(nothing()) : nothing();
-    }
-
-    public Option<?> unwrap() {
-        return value instanceof Option ? (Option<?>) value : nothing();
-    }
-
-    public O flatten() {
-        return orElse(null);
-    }
-
-    public <T> Option<T> flatMapOrElse(Function<O, Option<T>> mapper, Supplier<Option<T>> orElse) {
-        return value != null ? Objects.requireNonNull(mapper.apply(value)) : Objects.requireNonNull(orElse.get());
-    }
-
-    public <T> Option<T> ifNothing(Runnable toDo) {
-        if (value == null) {
+    default Option<O> ifNothing(Runnable toDo) {
+        if (!isSome()) {
             toDo.run();
-        }
-        return (Option<T>) this;
-    }
-
-    public Option<O> ifSome(Consumer<O> toDo) {
-        if (value != null) {
-            toDo.accept(value);
         }
         return this;
     }
 
-    public Option<O> ifSomeOrElse(Consumer<O> toDo, Runnable alternative) {
-        if (value != null) {
-            toDo.accept(value);
+    default Option<O> ifSome(Consumer<O> toDo) {
+        if (isSome()) {
+            toDo.accept(get());
+        }
+        return this;
+    }
+
+    default Option<O> ifSomeOrElse(Consumer<O> toDo, Runnable alternative) {
+        if (isSome()) {
+            toDo.accept(get());
         } else {
             alternative.run();
         }
         return this;
     }
 
-    public Option<Option<O>> wrap() {
-        return value == null ? of(nothing()) : of(this);
+    default Option<Option<O>> wrap() {
+        return isSome() ? of(this) : of(Nothing.getInstance());
     }
 
-    public Option<Option<O>> wrapifPresent() {
-        return value == null ? nothing() : of(this);
+    default Option<Option<O>> wrapifPresent() {
+        return isSome() ? of(this) : Nothing.getInstance();
     }
 
-    public <R> Option<R> cast(Class<R> clazz) {
-        return value != null && clazz.isInstance(value) ? of(clazz.cast(value)) : nothing();
+    default <R> Option<R> cast(Class<R> clazz) {
+        return isSome() && clazz.isInstance(get()) ? Some.of(clazz.cast(get())) : Nothing.getInstance();
     }
 
-    @Override
-    public String toString() {
-        return value == null ? "Nothing" : String.format("Some(%s)", value);
+    default boolean contains(Object o) {
+        return isSome() && Objects.equals(get(), o);
     }
 
-    @Override
-    public boolean contains(Object o) {
-        return Objects.equals(value, o);
+    default int size() {
+        return isSome() ? 1 : 0;
     }
 
-    @Override
-    public int size() {
-        return value == null ? 0 : 1;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(value);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return this == obj ? true : Option.ofUnknown(obj)
-                                          .cast(Option.class)
-                                          .map(o -> Objects.equals(o.value, value))
-                                          .orElse(false);
-    }
-
-    @Override
-    public Iterator<O> iterator() {
-        return new Iterator<O>() {
-            boolean unwrapped = false;
-
-            @Override
-            public boolean hasNext() {
-                return !unwrapped && value != null;
-            }
-
-            @Override
-            public O next() {
-                unwrapped = true;
-                return value;
-            }
-        };
-    }
-
-    public Optional<O> asOptional() {
-        return Optional.ofNullable(value);
+    default Optional<O> toJavaOptional() {
+        return isSome() ? Optional.ofNullable(get()) : Optional.empty();
     }
 }
 

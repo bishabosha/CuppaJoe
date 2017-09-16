@@ -5,7 +5,7 @@
 package com.bishabosha.caffeine.functional.functions;
 
 import com.bishabosha.caffeine.functional.control.Option;
-import com.bishabosha.caffeine.functional.tuples.Tuple0;
+import com.bishabosha.caffeine.functional.tuples.Unit;
 import org.jetbrains.annotations.Contract;
 
 public interface Func0<R> {
@@ -22,7 +22,7 @@ public interface Func0<R> {
     }
 
     @Contract(pure = true)
-    default Func1<Tuple0, R> tupled() {
+    default Func1<Unit, R> tupled() {
         return x -> apply();
     }
 }
