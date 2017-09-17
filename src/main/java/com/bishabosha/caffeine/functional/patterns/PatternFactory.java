@@ -194,7 +194,7 @@ public class PatternFactory<I> {
     }
 
     private Object checkedFail(Option<?> toTest) throws IllegalArgumentException {
-        if (!toTest.isSome()) {
+        if (toTest.isEmpty()) {
             throw new IllegalArgumentException();
         }
         return toTest.get();

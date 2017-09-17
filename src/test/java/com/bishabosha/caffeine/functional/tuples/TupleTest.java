@@ -4,11 +4,14 @@
 
 package com.bishabosha.caffeine.functional.tuples;
 
+import com.bishabosha.caffeine.functional.API;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Arrays;
 
+import static com.bishabosha.caffeine.functional.API.Nothing;
+import static com.bishabosha.caffeine.functional.API.Some;
 import static com.bishabosha.caffeine.functional.tuples.Unit.UNIT;
 import static com.bishabosha.caffeine.functional.API.Tuple;
 

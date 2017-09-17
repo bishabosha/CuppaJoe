@@ -66,11 +66,11 @@ public class API {
     }
 
     public static <L, R> Either<L, R> Left(L left) {
-        return Either.Left.of(left);
+        return Left.of(left);
     }
 
     public static <L, R> Either<L, R> Right(R right) {
-        return Either.Right.of(right);
+        return Right.of(right);
     }
 
     @Contract(pure = true)
@@ -106,6 +106,6 @@ public class API {
     }
 
     public static <I, O> Option<O> Match(Option<I> toMatch, Case<I, O> options) {
-        return toMatch.isSome() ? options.match(toMatch.get()) : Nothing();
+        return toMatch.isEmpty() ? Nothing() : options.match(toMatch.get());
     }
 }

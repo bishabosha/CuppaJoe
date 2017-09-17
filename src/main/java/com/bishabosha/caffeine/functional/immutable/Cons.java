@@ -237,7 +237,7 @@ public class Cons<E> extends AbstractBase<Option<E>> implements Foldable<Option<
                     .map(t -> t.map(mapper))
                     .orElseGet(() -> Tuple(Left(false), Cons.empty()));
         }
-        return loopCond.flatMap((either, cons) -> Tuple(either.getRight(), cons));
+        return loopCond.flatMap((either, cons) -> Tuple(either.maybeRight(), cons));
     }
 
     /**
@@ -329,8 +329,8 @@ public class Cons<E> extends AbstractBase<Option<E>> implements Foldable<Option<
         Option<Tuple2<Option<E>, Cons<E>>> thisPopped = this.pop();
         Option<Tuple2<Option, Cons>> otherPopped = otherCons.pop();
         while (true) {
-            final boolean thisEmpty = !thisPopped.isSome();
-            final boolean otherEmpty = !otherPopped.isSome();
+            final boolean thisEmpty = thisPopped.isEmpty();
+            final boolean otherEmpty = otherPopped.isEmpty();
             if (otherEmpty ^ thisEmpty) {
                 return false; // if both different return false.
             }

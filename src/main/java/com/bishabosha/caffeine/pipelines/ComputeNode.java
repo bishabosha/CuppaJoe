@@ -49,7 +49,7 @@ class ComputeNode<I, O> extends AbstractNode<I, O> {
     }
 
     private void sendAfterAction(Option<O> value, Consumer<? super O> action) {
-        if (value.isSome()) {
+        if (!value.isEmpty()) {
             action.accept(value.get());
             send(value);
         }
@@ -65,7 +65,7 @@ class ComputeNode<I, O> extends AbstractNode<I, O> {
     }
 
     public void sendOrTerminate(Option<O> t, boolean terminateIfNotPresent) {
-        if (t.isSome()) {
+        if (!t.isEmpty()) {
             send(t);
         } else if (terminateIfNotPresent) {
             terminate();

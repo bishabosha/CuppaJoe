@@ -8,8 +8,6 @@
 
 package com.bishabosha.caffeine.base;
 
-import com.bishabosha.caffeine.functional.API;
-import com.bishabosha.caffeine.functional.control.Option;
 import com.bishabosha.caffeine.functional.tuples.Tuple2;
 import com.bishabosha.caffeine.hashtables.HashMap;
 import com.bishabosha.caffeine.hashtables.HashTable;
@@ -18,7 +16,10 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-import java.util.function.*;
+import java.util.function.BiConsumer;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 
 import static com.bishabosha.caffeine.functional.API.Option;
 import static com.bishabosha.caffeine.functional.API.Some;
@@ -32,8 +33,7 @@ public class Iterables {
         @Override
         public boolean hasNext() {
             if (update) {
-                update = false;
-                hasNext = hasNextSupplier();
+                getUpdate();
             }
             return hasNext;
         }
@@ -41,7 +41,7 @@ public class Iterables {
         @Override
         public E next() {
             if (update) {
-                hasNext();
+                getUpdate();
             }
             if (!update && !hasNext) {
                 throw new NoSuchElementException();
@@ -50,9 +50,38 @@ public class Iterables {
             return nextSupplier();
         }
 
+        private void getUpdate() {
+            update = false;
+            hasNext = hasNextSupplier();
+        }
+
         public abstract boolean hasNextSupplier();
 
         public abstract E nextSupplier();
+    }
+
+    public static <E> Iterable<E> singleton(Supplier<? extends E> supplier) {
+        return () -> singletonIt(supplier);
+    }
+
+    public static <E> Iterator<E> singletonIt(Supplier<? extends E> supplier) {
+        return new Iterator<E>() {
+            boolean unwrapped = false;
+
+            @Override
+            public boolean hasNext() {
+                return !unwrapped;
+            }
+
+            @Override
+            public E next() {
+                if (unwrapped) {
+                    throw new NoSuchElementException();
+                }
+                unwrapped = true;
+                return supplier.get();
+            }
+        };
     }
 
     @NotNull
@@ -258,8 +287,10 @@ public class Iterables {
         for(K key: keys) {
             Option(key)
               .filter(map.keySet()::contains)
-              .ifSome(found::add)
-              .map(k -> new MapEntry<>(k, map.get(k)))
+              .map(k -> {
+                  found.add(k);
+                  return new MapEntry<>(k, map.get(k));
+              })
               .ifSome(sorted::add);
         }
         for(Map.Entry<K, V> entry: map.entrySet()) {

@@ -18,7 +18,7 @@ public class QueueTest {
 
     @Test
     public void elements_dequeued_when_added_to_empty() {
-        assertTrue(Queue.empty().enqueue(1).dequeue().map(t -> t.$1().isSome()).orElse(false));
+        assertTrue(!Queue.empty().enqueue(1).dequeue().map(t -> t.$1().isEmpty()).orElse(false));
     }
 
     @Test

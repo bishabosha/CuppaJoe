@@ -24,10 +24,8 @@ public class Library {
         Option<Boolean> breaker;
         while (condition.getAsBoolean()) {
             breaker = Objects.requireNonNull(breakCondition.apply(acc));
-            if (breaker.isSome()) {
-                if (breaker.get()) {
-                    return Some(acc);
-                }
+            if (!breaker.isEmpty() && breaker.get()) {
+                return Some(acc);
             } else {
                 return Nothing();
             }
@@ -39,7 +37,7 @@ public class Library {
         return Cons.concat(toFlatten.iterator(), Cons.empty()).loop(
                 ArrayList::new,
                 (list, stack, optionIt) -> {
-                    if (optionIt.isSome()) {
+                    if (!optionIt.isEmpty()) {
                         final Iterator<T> it = optionIt.get();
                         final T current;
                         if (it.hasNext()) {

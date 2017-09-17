@@ -1,6 +1,9 @@
 package com.bishabosha.caffeine.functional.control;
 
+import com.bishabosha.caffeine.base.Iterables;
 import com.bishabosha.caffeine.functional.patterns.Pattern;
+import com.bishabosha.caffeine.functional.tuples.Applied1;
+import com.bishabosha.caffeine.functional.tuples.Product1;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -8,9 +11,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Iterator;
 import java.util.Objects;
 
+import static com.bishabosha.caffeine.functional.API.Tuple;
 import static com.bishabosha.caffeine.functional.patterns.PatternFactory.patternFor;
 
-public final class Some<O> implements Option<O> {
+public final class Some<O> implements Option<O>, Applied1<O, Option<O>>{
 
     private O value;
 
@@ -30,8 +34,8 @@ public final class Some<O> implements Option<O> {
     }
 
     @Override
-    public boolean isSome() {
-        return true;
+    public boolean isEmpty() {
+        return false;
     }
 
     @Contract(pure = true)
@@ -60,19 +64,16 @@ public final class Some<O> implements Option<O> {
 
     @Override
     public Iterator<O> iterator() {
-        return new Iterator<O>() {
-            boolean unwrapped = false;
+        return Iterables.singletonIt(this::get);
+    }
 
-            @Override
-            public boolean hasNext() {
-                return !unwrapped;
-            }
+    @Override
+    public Option<O> apply(Product1<O> tuple) {
+        return of(tuple.$1());
+    }
 
-            @Override
-            public O next() {
-                unwrapped = true;
-                return get();
-            }
-        };
+    @Override
+    public Product1<O> unapply() {
+        return Tuple(get());
     }
 }

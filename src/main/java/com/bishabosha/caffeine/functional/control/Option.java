@@ -4,7 +4,7 @@
 
 package com.bishabosha.caffeine.functional.control;
 
-import com.bishabosha.caffeine.functional.functions.Func0;
+import com.bishabosha.caffeine.functional.Value;
 import com.bishabosha.caffeine.functional.functions.Func1;
 import com.bishabosha.caffeine.functional.patterns.Case;
 import com.bishabosha.caffeine.functional.patterns.Pattern;
@@ -14,11 +14,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public interface Option<O> extends Iterable<O> {
+public interface Option<O> extends Value<O> {
 
     static <O> Option<Option<O>> wrappedNothing() {
         return of(Nothing.getInstance());
@@ -34,113 +34,76 @@ public interface Option<O> extends Iterable<O> {
         return Objects.nonNull(value) ? Some.of(value) : Nothing.getInstance();
     }
 
-    boolean isSome();
-
-    O get();
-
-    default O orElse(O alternative) {
-        return isSome() ? get() : alternative;
+    @SuppressWarnings("unchecked")
+    default Option<O> join(Supplier<? extends Option<? extends O>> supplier) {
+        return isEmpty() ? (Option<O>) supplier.get() : this;
     }
 
-    default O orElseGet(Supplier<O> alternative) {
-        return isSome() ? get() : alternative.get();
+    default Option<O> filter(Predicate<? super O> filter) {
+        return !isEmpty() && filter.test(get()) ? this : Nothing.getInstance();
     }
 
-    default <X extends Throwable> O orElseThrow(Supplier<? extends X> exceptionGet) throws X {
-        if (isSome()) {
-            return get();
-        }
-        throw exceptionGet.get();
+    @Override
+    default <R> Option<R> map(Function<? super O, ? extends R> mapper) {
+        return isEmpty() ? Nothing.getInstance() : Some.of(mapper.apply(get()));
     }
 
-    default Option<O> join(Supplier<Option<O>> alternative) {
-        return isSome() ? this : alternative.get();
-    }
-
-    default Option<O> filter(Predicate<O> filter) {
-        return isSome() && filter.test(get()) ? this : Nothing.getInstance();
-    }
-
-    default <T> Option<T> map(Func1<O, T> mapper) {
-        return isSome() ? Some.of(mapper.apply(get())) : Nothing.getInstance();
-    }
-
-    default <T> Option<T> flatMap(Func1<O, Option<T>> mapper) {
-        final Option<T> result;
-        if (isSome() && (result = mapper.apply(get())) instanceof Some) {
-            return result;
+    @SuppressWarnings("unchecked")
+    default <T> Option<T> flatMap(Func1<? super O, ? extends Option<? extends T>> mapper) {
+        final Option<? extends T> result;
+        if (!isEmpty() && (result = mapper.apply(get())) instanceof Some) {
+            return (Option<T>) result;
         }
         return Nothing.getInstance();
     }
 
     default <T> Option<T> match(Pattern toMatch, Func1<PatternResult, T> mapper) {
-        return isSome() ? toMatch.test(get()).map(mapper) : Nothing.getInstance();
+        return isEmpty() ? Nothing.getInstance() : toMatch.test(get()).map(mapper);
     }
 
     default <T> Option<T> match(Case<O, T> matcher) {
-        return isSome() ? matcher.match(get()) : Nothing.getInstance();
+        return isEmpty() ? Nothing.getInstance() : matcher.match(get());
     }
 
     default <T> Option<T> flatMatch(Case<O, Option<T>> toMatch) {
-        return isSome() ? toMatch.match(get()).orElse(Nothing.getInstance()) : Nothing.getInstance();
+        return isEmpty() ? Nothing.getInstance() : toMatch.match(get()).orElse(Nothing.getInstance());
     }
 
     default Option<?> unwrap() {
-        if (isSome() && get() instanceof Option<?>) {
+        if (!isEmpty() && get() instanceof Option<?>) {
             return (Option<?>) get();
         }
         return Nothing.getInstance();
     }
 
     default <T> Option<T> flatMapOrElse(Func1<O, Option<T>> mapper, Supplier<Option<T>> orElse) {
-        return isSome() ? mapper.apply(get()) : orElse.get();
-    }
-
-    default Option<O> ifNothing(Runnable toDo) {
-        if (!isSome()) {
-            toDo.run();
-        }
-        return this;
-    }
-
-    default Option<O> ifSome(Consumer<O> toDo) {
-        if (isSome()) {
-            toDo.accept(get());
-        }
-        return this;
-    }
-
-    default Option<O> ifSomeOrElse(Consumer<O> toDo, Runnable alternative) {
-        if (isSome()) {
-            toDo.accept(get());
-        } else {
-            alternative.run();
-        }
-        return this;
+        return isEmpty() ? orElse.get() : mapper.apply(get());
     }
 
     default Option<Option<O>> wrap() {
-        return isSome() ? of(this) : of(Nothing.getInstance());
+        return isEmpty() ? of(Nothing.getInstance()) : of(this);
     }
 
     default Option<Option<O>> wrapifPresent() {
-        return isSome() ? of(this) : Nothing.getInstance();
+        return isEmpty() ? Nothing.getInstance() : of(this);
     }
 
     default <R> Option<R> cast(Class<R> clazz) {
-        return isSome() && clazz.isInstance(get()) ? Some.of(clazz.cast(get())) : Nothing.getInstance();
+        return !isEmpty() && clazz.isInstance(get()) ? Some.of(clazz.cast(get())) : Nothing.getInstance();
     }
 
-    default boolean contains(Object o) {
-        return isSome() && Objects.equals(get(), o);
+    default boolean contains(O o) {
+        return !isEmpty() && Objects.equals(get(), o);
     }
 
-    default int size() {
-        return isSome() ? 1 : 0;
+    @Override
+    default boolean isAtMaxSingleElement() {
+        return true;
     }
 
-    default Optional<O> toJavaOptional() {
-        return isSome() ? Optional.ofNullable(get()) : Optional.empty();
+    @Override
+    default Option<O> toOption() {
+        return this;
     }
 }
 

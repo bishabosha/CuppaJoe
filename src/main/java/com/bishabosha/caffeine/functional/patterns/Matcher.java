@@ -18,7 +18,7 @@ public class Matcher<I> {
     }
 
     public static <I, O> Option<O> create(Option<I> toMatch, Case<I, O> options) {
-        return toMatch.isSome() ? options.match(toMatch.get()) : Nothing();
+        return toMatch.isEmpty() ? Nothing() : options.match(toMatch.get());
     }
 
     @SafeVarargs
@@ -29,10 +29,10 @@ public class Matcher<I> {
     @SafeVarargs
     public static <O> O guardUnsafe(Guard<O>... guards) {
         Option<O> result = guard(guards);
-        if (result.isSome()) {
-            return result.get();
+        if (result.isEmpty()) {
+            throw new RuntimeException("No Match Made");
         }
-        throw new RuntimeException("No Match Made");
+        return result.get();
     }
 
     private Matcher(I toMatch) {
@@ -47,20 +47,20 @@ public class Matcher<I> {
     @SafeVarargs
     public final <O> Option<Option<O>> wrap(Case<I, Option<O>>... cases) {
         Option<Option<O>> result;
-        if ((result = option(cases)).isSome()) {
-            Option<O> temp = result.get();
-            return temp.isSome() ? result : Nothing();
+        if ((result = option(cases)).isEmpty()) {
+            return Nothing();
         }
-        return Nothing();
+        Option<O> temp = result.get();
+        return temp.isEmpty() ? Nothing() : result;
     }
 
     @SafeVarargs
     public final <O> O of(Case<I, O>... cases) {
         Option<O> result;
-        if ((result = option(cases)).isSome()) {
-            return result.get();
+        if ((result = option(cases)).isEmpty()) {
+            throw new RuntimeException("No Match Made");
         }
-        throw new RuntimeException("No Match Made");
+        return result.get();
     }
 }
 

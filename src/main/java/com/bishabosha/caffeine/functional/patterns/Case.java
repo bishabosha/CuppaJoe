@@ -124,11 +124,11 @@ public interface Case<I, O> {
     static <I, O> Case<I, O> base(Pattern matcher, Function<PatternResult, O> mapper) {
         return i -> {
             Option<PatternResult> option = matcher.test(i);
-            if (option.isSome()) {
-                PatternResult result = option.get();
-                return Option(mapper.apply(result));
+            if (option.isEmpty()) {
+                return Nothing();
             }
-            return Nothing();
+            PatternResult result = option.get();
+            return Option(mapper.apply(result));
         };
     }
 
@@ -137,7 +137,7 @@ public interface Case<I, O> {
             Option<O> result = Nothing();
             for (Guard<O> guard: guards) {
                 result = guard.match();
-                if (result.isSome()) {
+                if (!result.isEmpty()) {
                     break;
                 }
             }
@@ -150,7 +150,7 @@ public interface Case<I, O> {
             Option<O> result = Nothing();
             for (Case<I, O> c: cases) {
                 result = c.match(i);
-                if (result.isSome()) {
+                if (!result.isEmpty()) {
                     break;
                 }
             }

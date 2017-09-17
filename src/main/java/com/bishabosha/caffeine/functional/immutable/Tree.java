@@ -420,7 +420,7 @@ public class Tree<E extends Comparable<E>> {
                 ));
                 stack = nextItem.$2();
                 toReturn = nextItem.$1().orElse(null);
-                return nextItem.$1().isSome();
+                return !nextItem.$1().isEmpty();
             }
 
             @Override
