@@ -14,6 +14,11 @@ import static com.bishabosha.cuppajoe.patterns.Case.when;
 
 public interface Either<L, R> extends Value<R> {
 
+    @Override
+    default int size() {
+        return isRight() ? 1 : 0;
+    }
+
     default Option<L> maybeLeft() {
         return when(this::isLeft, this::getLeft).match();
     }

@@ -4,13 +4,11 @@
 
 package com.bishabosha.cuppajoe.collections.immutable;
 
-import com.bishabosha.cuppajoe.collections.mutable.base.AbstractBase;
 import com.bishabosha.cuppajoe.Iterables;
 import com.bishabosha.cuppajoe.control.Either;
 import com.bishabosha.cuppajoe.control.Option;
 import com.bishabosha.cuppajoe.control.Nothing;
 import com.bishabosha.cuppajoe.functions.Func2;
-import com.bishabosha.cuppajoe.functions.Func3;
 import com.bishabosha.cuppajoe.patterns.Case;
 import com.bishabosha.cuppajoe.patterns.Pattern;
 import com.bishabosha.cuppajoe.Foldable;
@@ -21,7 +19,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-import java.util.function.Supplier;
 
 import static com.bishabosha.cuppajoe.API.Left;
 import static com.bishabosha.cuppajoe.API.Option;
@@ -33,209 +30,9 @@ import static com.bishabosha.cuppajoe.API.Tuple;
  * Immutable List
  * @param <E> the Type of the list
  */
-public class Cons<E> extends AbstractBase<Option<E>> implements Foldable<Option<E>>, Applied2<E, Cons<E>, Cons<E>> {
-    private Option<E> head;
-    private Cons<E> tail;
+public class Cons<E> implements List<E>, Foldable<Option<E>>, Applied2<E, Cons<E>, Cons<E>> {
 
-    /**
-     * Singleton instance of the empty list
-     */
-    private static final Cons<?> EMPTY_LIST = new Cons<>();
 
-    /**
-     * Returns the singleton instance of the empty list
-     * @param <R> the type encapsulated by the of
-     */
-    @Contract(pure = true)
-    @SuppressWarnings("unchecked")
-    public static <R> Cons<R> empty() {
-        return (Cons<R>) EMPTY_LIST;
-    }
-
-    /**
-     * Creates a new of instance with a head and another of for a tail.
-     * @param x the head of the new of.
-     * @param xs the tail of the new of.
-     * @param <R> the type encapsulated by the of
-     * @return the new of instance
-     */
-    @NotNull
-    @Contract(pure = true)
-    public static <R> Cons<R> concat(R x, Cons<R> xs) {
-        return new Cons<>(x, xs);
-    }
-
-    @NotNull
-    @Contract(pure = true)
-    public static <R> Cons<R> of(R elem) {
-        return concat(elem, empty());
-    }
-
-    /**
-     * Creates a new of instance with all the elements passed.
-     * @param elems the elements to add, in order of precedence from the head.
-     * @param <R> the type encapsulated by the of
-     * @return The new of instance.
-     */
-    @SafeVarargs
-    public static <R> Cons<R> of(R... elems) {
-        return fromArray(elems);
-    }
-
-    public static <R> Cons<R> fromArray(R[] elems) {
-        Cons<R> cons = empty();
-        if (Objects.isNull(elems)) {
-            return concat(null, cons);
-        }
-        for (int x = elems.length - 1; x >= 0; x--) {
-            cons = cons.push(elems[x]);
-        }
-        return cons;
-    }
-
-    /**
-     * Composes patterns for the head and tail and checks that the element is a of.
-     * @param $x The pattern for the head
-     * @param $xs The pattern for the tail
-     * @return The composed pattern
-     */
-    public static Pattern Cons(Pattern $x, Pattern $xs) {
-        return patternFor(Cons.class).testTwo(
-            Tuple($x, x -> x.head),
-            Tuple($xs, xs -> xs.tail)
-        );
-    }
-
-    /**
-     * Pattern to test if any object is equivalent to an empty tail element.
-     */
-    public static final Pattern Empty() {
-        return x -> x instanceof Cons<?> && ((Cons<?>)x).isEmpty() ? Pattern.PASS : Pattern.FAIL;
-    }
-
-    /**
-     * @return if this of is equivalent to the empty of tail.
-     */
-    public boolean isEmpty() {
-        return head == null && tail == null;
-    }
-
-    /**
-     * Private constructor for the empty instance
-     */
-    private Cons() {
-        head = null;
-        tail = null;
-    }
-
-    /**
-     * Private constructor to compose a new of from head element and another of for a tail.
-     * @param head The element to sit at the head.
-     * @param tail The of that will act as the tail after the head.
-     */
-    private Cons(E head, Cons<E> tail) {
-        this(Option(head), tail);
-    }
-
-    private Cons(Option<E> headOpt, Cons<E> tail) {
-        this.head = headOpt;
-        this.tail = Objects.requireNonNull(tail, "tail must be a non null Cons.");
-    }
-
-    public Option<E> head() {
-        return head;
-    }
-
-    public Cons<E> tail() {
-        return Objects.isNull(tail) ? empty() : tail;
-    }
-
-    /**
-     * Creates a new of instance with this as its tail and elem as its head.
-     * @param elem the new element to push to the head.
-     * @return A new of instance.
-     */
-    public Cons<E> push(E elem) {
-        return concat(elem, this);
-    }
-
-    private Cons<E> pushOpt(Option<E> optElem) {
-        return new Cons<>(optElem, this);
-    }
-
-    public Cons<E> append(E elem) {
-        return foldRight(of(elem), (x, xs) -> xs.pushOpt(x));
-    }
-
-    public List<E> toJavaList() {
-        return fold(new ArrayList<>(), (x, xs) -> {
-            xs.add(x.orElse(null));
-            return xs;
-        });
-    }
-
-    @Override
-    public <A> A foldRight(A accumulator, Func2<Option<E>, A, A> mapper) {
-        return reverse().fold(accumulator, mapper);
-    }
-
-    /**
-     * Tries to split the of into a Tuple4 of its head and tail.
-     * @return {@link Nothing} if this is an empty of. Otherwise {@link Option} of a Tuple4 of the head and tail.
-     */
-    public Option<Tuple2<Option<E>, Cons<E>>> pop() {
-        return when(() -> !isEmpty(), () -> Tuple(head, tail)).match();
-    }
-
-    public <U> Option<U> pop(Case<Tuple2<Option<E>, Cons<E>>, U> matcher) {
-        return pop().match(matcher);
-    }
-
-    /**
-     * Removes all instances of the element from the of
-     * @param elem the element to remove
-     * @return a new of instance with the element removed.
-     */
-    public Cons<E> remove(E elem) {
-        final Option<E> toRemove = Option(elem);
-        return fold(Cons.<E>empty(), (x, xs) -> Objects.equals(x, toRemove) ? xs : xs.pushOpt(x)).reverse();
-    }
-
-    /**
-     * Checks if the of contains any instances of elem.
-     * @param elem the element to check for.
-     * @return true if any instances were found. Otherwise false.
-     */
-    public boolean contains(Object elem) {
-        Option<Object> option = Option(elem);
-        Cons<E> it = this;
-        while (Objects.nonNull(it.tail)) {
-            if (it.head.equals(option)) {
-                return true;
-            }
-            it = it.tail;
-        }
-        return false;
-    }
-
-    /**
-     * Iterates through the elements of the of, passing an accumulator, the next element and the tail.
-     * @param identity Supplies the accumulator that may be modified by the consumer.
-     * @param consumer A function taking the accumulator, the head of the of, and the tail of the of
-     * @param <O> the type of the accumulator.
-     * @return The accumulator with whatever modifications have been applied.
-     */
-    public <O> O loop(Supplier<O> identity, Func3<O, Cons<E>, Option<E>, Tuple2<O, Cons<E>>> consumer) {
-        Tuple2<O, Cons<E>> accStackPair = Tuple(identity.get(), this);
-        while (!accStackPair.$2().isEmpty()) {
-            final O acc = accStackPair.$1();
-            final Cons<E> stack = accStackPair.$2();
-            accStackPair = stack.pop()
-                                .map(t -> t.map((head, tail) -> consumer.apply(acc, tail, head)))
-                                .orElse(Tuple(null, empty()));
-        }
-        return Option(accStackPair.$1()).orElseGet(identity);
-    }
 
     public <O> Tuple2<Option<O>, Cons<E>> nextItem(Func2<Option<E>, Cons<E>, Tuple2<Either<Boolean, O>, Cons<E>>> mapper) {
         Tuple2<Either<Boolean, O>, Cons<E>> loopCond = Tuple(Left(true), this);
@@ -250,7 +47,6 @@ public class Cons<E> extends AbstractBase<Option<E>> implements Foldable<Option<
     /**
      * @return the number of elements in the of
      */
-    @Override
     public int size() {
         Cons<E> cons = this;
         int size = 0;
@@ -259,6 +55,10 @@ public class Cons<E> extends AbstractBase<Option<E>> implements Foldable<Option<
             cons = cons.tail;
         }
         return size;
+    }
+
+    public Option<E> get() {
+        return head();
     }
 
     public Cons<E> reverse() {
@@ -320,7 +120,7 @@ public class Cons<E> extends AbstractBase<Option<E>> implements Foldable<Option<
 
     @Override
     public boolean equals(Object obj) {
-        return obj == this ? true : Option(obj)
+        return obj == this ? true : Option.of(obj)
                                           .cast(Cons.class)
                                           .map(this::equateCons)
                                           .orElse(false);
