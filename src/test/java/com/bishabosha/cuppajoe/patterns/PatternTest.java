@@ -4,7 +4,6 @@
 
 package com.bishabosha.cuppajoe.patterns;
 
-import com.bishabosha.cuppajoe.collections.immutable.Cons;
 import com.bishabosha.cuppajoe.collections.immutable.Tree;
 import com.bishabosha.cuppajoe.collections.mutable.trees.BinaryNode;
 import com.bishabosha.cuppajoe.control.Option;

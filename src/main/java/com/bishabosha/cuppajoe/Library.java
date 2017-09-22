@@ -5,7 +5,6 @@
 package com.bishabosha.cuppajoe;
 
 import com.bishabosha.cuppajoe.control.Option;
-import com.bishabosha.cuppajoe.collections.immutable.Cons;
 
 import java.util.*;
 import java.util.function.BooleanSupplier;

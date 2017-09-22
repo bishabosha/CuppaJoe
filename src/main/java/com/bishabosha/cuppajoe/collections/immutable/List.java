@@ -1,7 +1,8 @@
 package com.bishabosha.cuppajoe.collections.immutable;
 
-import com.bishabosha.cuppajoe.API;
 import com.bishabosha.cuppajoe.Foldable;
+import com.bishabosha.cuppajoe.Iterables;
+import com.bishabosha.cuppajoe.control.Either;
 import com.bishabosha.cuppajoe.control.Option;
 import com.bishabosha.cuppajoe.functions.Func2;
 import com.bishabosha.cuppajoe.functions.Func3;
@@ -14,14 +15,14 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.bishabosha.cuppajoe.API.Nothing;
-import static com.bishabosha.cuppajoe.API.Some;
-import static com.bishabosha.cuppajoe.API.Tuple;
+import static com.bishabosha.cuppajoe.API.*;
+import static com.bishabosha.cuppajoe.API.Left;
 import static com.bishabosha.cuppajoe.patterns.PatternFactory.patternFor;
 
 public interface List<E> extends Bunch<E>, Foldable<E> {
@@ -65,11 +66,20 @@ public interface List<E> extends Bunch<E>, Foldable<E> {
         return Cons.of(elem, this);
     }
 
-    Option<? extends Product2<E, List<E>>> pop();
+    Option<Product2<E, List<E>>> pop();
 
     E head();
 
     List<E> tail();
+
+    @Override
+    default E get() {
+        return head();
+    }
+
+    List<E> take(int n);
+
+    List<E> takeRight(int n);
 
     default List<E> append(E elem) {
         return foldRight(of(elem), (x, xs) -> xs.push(x));
@@ -86,7 +96,7 @@ public interface List<E> extends Bunch<E>, Foldable<E> {
      */
     default List<E> remove(E elem) {
         final Option<E> toRemove = Option.of(elem);
-        return fold(empty(), (x, xs) -> Objects.equals(x, toRemove) ? xs : xs.push(x)).reverse();
+        return fold(List.<E>empty(), (x, xs) -> Objects.equals(x, toRemove) ? xs : xs.push(x)).reverse();
     }
 
     @Override
@@ -113,11 +123,80 @@ public interface List<E> extends Bunch<E>, Foldable<E> {
         return option.map(Tuple2::$1).orElseGet(identity);
     }
 
+    default <O> Tuple2<Option<O>, List<E>> nextItem(Func2<E, List<E>, Tuple2<Either<Boolean, O>, List<E>>> mapper) {
+        Tuple2<Either<Boolean, O>, List<E>> loopCond = Tuple(Left(true), this);
+        while (loopCond.$1().getLeftOrElse(() -> false)) {
+            loopCond = loopCond.$2().pop()
+                .map(t -> t.map(mapper))
+                .orElseGet(() -> Tuple(Left(false), empty()));
+        }
+        return loopCond.flatMap((either, cons) -> Tuple(either.maybeRight(), cons));
+    }
+
     default java.util.List<E> toJavaList() {
         return fold(new ArrayList<>(), (x, xs) -> {
             xs.add(x);
             return xs;
         });
+    }
+
+    default int size() {
+        List<E> list = this;
+        int size = 0;
+        while (!list.isEmpty()) {
+            size = size + 1;
+            list = list.tail();
+        }
+        return size;
+    }
+
+    default List<E> reverse() {
+        List<E> result = empty();
+        List<E> buffer = this;
+        while (!buffer.isEmpty()) {
+            result = result.push(buffer.head());
+            buffer = buffer.tail();
+        }
+        return result;
+    }
+
+    default List<E> bufferElementsReversed(int limit) {
+        if (limit < 0) {
+            throw new IllegalArgumentException("limit can't be less than zero.");
+        }
+        List<E> it = this;
+        List<E> buffer = empty();
+        while (limit > 0) {
+            limit = limit - 1;
+            if (it.isEmpty()) {
+                throw new IndexOutOfBoundsException("limit exceeds size.");
+            }
+            buffer = buffer.push(it.head());
+            it = it.tail();
+        }
+        return buffer;
+    }
+
+    default List<E> subsequence(int from, int limit) {
+        if (from < 0) {
+            throw new IllegalArgumentException("from can't be less than zero.");
+        }
+        if (limit < 0) {
+            throw new IllegalArgumentException("limit can't be less than zero.");
+        }
+        if (limit < from) {
+            throw new IllegalArgumentException("limit must be greater than or equal to from.");
+        }
+        List<E> it = this;
+        int count = 0;
+        while (count < from) {
+            count = count + 1;
+            if (it.isEmpty()) {
+                throw new IndexOutOfBoundsException("from is larger than size");
+            }
+            it = it.tail();
+        }
+        return it.bufferElementsReversed(limit - from).reverse();
     }
 
     class Empty<E> implements List<E> {
@@ -126,7 +205,7 @@ public interface List<E> extends Bunch<E>, Foldable<E> {
          * Pattern to test if any object is equivalent to an empty tail element.
          */
         public static Pattern Empty() {
-            return x -> x instanceof Cons<?> && ((Cons<?>)x).isEmpty() ? Pattern.PASS : Pattern.FAIL;
+            return x -> x instanceof Empty<?> ? Pattern.PASS : Pattern.FAIL;
         }
 
         private static final Empty<?> EMPTY_LIST = new Empty<>();
@@ -150,7 +229,17 @@ public interface List<E> extends Bunch<E>, Foldable<E> {
         }
 
         @Override
-        public Option<? extends Product2<E, List<E>>> pop() {
+        public List<E> take(int n) {
+            throw new IndexOutOfBoundsException("limit exceeds size.");
+        }
+
+        @Override
+        public List<E> takeRight(int n) {
+            throw new IndexOutOfBoundsException("limit exceeds size.");
+        }
+
+        @Override
+        public Option<Product2<E, List<E>>> pop() {
             return Nothing();
         }
 
@@ -162,6 +251,22 @@ public interface List<E> extends Bunch<E>, Foldable<E> {
         @Override
         public boolean contains(E obj) {
             return false;
+        }
+
+        @Override
+        public <R> List<R> map(@NotNull Function<? super E, ? extends R> mapper) {
+            return empty();
+        }
+
+        @NotNull
+        @Override
+        public Iterator<E> iterator() {
+            return Iterables.emptyIterator();
+        }
+
+        @Override
+        public String toString() {
+            return "[]";
         }
     }
 
@@ -216,8 +321,16 @@ public interface List<E> extends Bunch<E>, Foldable<E> {
             return tail;
         }
 
+        public List<E> take(int limit) {
+            return bufferElementsReversed(limit).reverse();
+        }
+
+        public List<E> takeRight(int limit) {
+            return reverse().bufferElementsReversed(limit);
+        }
+
         @Override
-        public Option<? extends Product2<E, List<E>>> pop() {
+        public Option<Product2<E, List<E>>> pop() {
             return Some(unapply());
         }
 
@@ -250,6 +363,74 @@ public interface List<E> extends Bunch<E>, Foldable<E> {
         @Override
         public Product2<E, List<E>> unapply() {
             return Tuple(head(), tail());
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return obj == this ? true : Option.of(obj)
+                    .cast(Cons.class)
+                    .map(this::equateCons)
+                    .orElse(false);
+        }
+
+        /**
+         * Iteratively checks that two of are equal, without Stack Overflow
+         * @param otherCons the of to check
+         * @return true, if they are the same length and all elements are equal and in the same order.
+         */
+        private boolean equateCons(Cons<?> otherCons) {
+            Option<Product2<E, List<E>>> thisPopped = this.pop();
+            Option<? extends Product2<?, ? extends List<?>>> otherPopped = otherCons.pop();
+            while (true) {
+                final boolean thisEmpty = thisPopped.isEmpty();
+                final boolean otherEmpty = otherPopped.isEmpty();
+                if (otherEmpty ^ thisEmpty) {
+                    return false; // if both different return false.
+                }
+                if (otherEmpty) {
+                    return true; // both must be the same
+                }
+                final Product2<E, List<E>> thisTup = thisPopped.get();
+                final Product2<?, ? extends List<?>> otherTup = otherPopped.get();
+                if (!Objects.equals(thisTup.$1(), otherTup.$1())) {
+                    return false;
+                }
+                thisPopped = thisTup.$2().pop();
+                otherPopped = otherTup.$2().pop();
+            }
+        }
+
+        /**
+         * @return an Iterator through each element of the of. The calling of is immutable.
+         */
+        @Override
+        @NotNull
+        public Iterator<E> iterator() {
+            return new Iterables.Lockable<E>() {
+
+                E current = null;
+                List<E> cons = Cons.this;
+
+                @Override
+                public boolean hasNextSupplier() {
+                    if (!cons.isEmpty()) {
+                        current = cons.head();
+                        cons = cons.tail();
+                        return true;
+                    }
+                    return false;
+                }
+
+                @Override
+                public E nextSupplier() {
+                    return current;
+                }
+            };
+        }
+
+        @Override
+        public String toString() {
+            return Iterables.toString('[', ']', iterator());
         }
     }
 }
