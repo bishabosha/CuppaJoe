@@ -44,7 +44,7 @@ public interface Func2<A, B, R> extends BiFunction<A, B, R> {
 
     @Contract(pure = true)
     default Apply2<A, B, R> applied() {
-        return x -> tupled().apply(x.unapply());
+        return x -> tupled().apply(x);
     }
 
     default Func1<B, R> apply(A a) {

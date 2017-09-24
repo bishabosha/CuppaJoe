@@ -2,15 +2,14 @@ package com.bishabosha.cuppajoe.collections.immutable;
 
 import com.bishabosha.cuppajoe.Foldable;
 import com.bishabosha.cuppajoe.Iterables;
+import com.bishabosha.cuppajoe.Value;
 import com.bishabosha.cuppajoe.control.Either;
 import com.bishabosha.cuppajoe.control.Option;
 import com.bishabosha.cuppajoe.functions.Func2;
 import com.bishabosha.cuppajoe.functions.Func3;
 import com.bishabosha.cuppajoe.patterns.Case;
 import com.bishabosha.cuppajoe.patterns.Pattern;
-import com.bishabosha.cuppajoe.tuples.Applied2;
-import com.bishabosha.cuppajoe.tuples.Product2;
-import com.bishabosha.cuppajoe.tuples.Tuple2;
+import com.bishabosha.cuppajoe.tuples.*;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,21 +24,34 @@ import static com.bishabosha.cuppajoe.API.*;
 import static com.bishabosha.cuppajoe.API.Left;
 import static com.bishabosha.cuppajoe.patterns.PatternFactory.patternFor;
 
-public interface List<E> extends Bunch<E>, Foldable<E> {
+public interface List<E> extends Bunch<E>, Foldable<E>, Unapply2<E, List<E>> {
+
+    /**
+     * Creates a new of instance with a head and another of for a tail.
+     * @param x the head of the new of.
+     * @param xs the tail of the new of.
+     * @param <R> the type encapsulated by the of
+     * @return the new of instance
+     */
+    @NotNull
+    @Contract(pure = true)
+    static <R> List<R> concat(R x, List<R> xs) {
+        return new Cons<>(x, xs);
+    }
 
     /**
      * Returns the singleton instance of the empty list
      * @param <R> the type encapsulated by the of
      */
     @Contract(pure = true)
-    static <R> List<R> empty() {
+    static <R> Empty<R> empty() {
         return Empty.getInstance();
     }
 
     @NotNull
     @Contract(pure = true)
     static <R> List<R> of(R elem) {
-        return Cons.of(elem, empty());
+        return concat(elem, empty());
     }
 
     /**
@@ -50,6 +62,9 @@ public interface List<E> extends Bunch<E>, Foldable<E> {
      */
     @SafeVarargs
     static <R> List<R> of(R... elems) {
+        if (Objects.isNull(elems)) {
+            return concat(null, empty());
+        }
         List<R> cons = empty();
         for (int x = elems.length - 1; x >= 0; x--) {
             cons = cons.push(elems[x]);
@@ -63,10 +78,12 @@ public interface List<E> extends Bunch<E>, Foldable<E> {
      * @return A new of instance.
      */
     default List<E> push(E elem) {
-        return Cons.of(elem, this);
+        return concat(elem, this);
     }
 
-    Option<Product2<E, List<E>>> pop();
+    default Option<Product2<E, List<E>>> pop() {
+        return unapply();
+    }
 
     E head();
 
@@ -82,7 +99,7 @@ public interface List<E> extends Bunch<E>, Foldable<E> {
     List<E> takeRight(int n);
 
     default List<E> append(E elem) {
-        return foldRight(of(elem), (x, xs) -> xs.push(x));
+        return foldRight(of(elem), (E x, List<E> xs) -> xs.push(x));
     }
 
     default <U> Option<U> pop(Case<Product2<E, List<E>>, U> matcher) {
@@ -95,8 +112,7 @@ public interface List<E> extends Bunch<E>, Foldable<E> {
      * @return a new of instance with the element removed.
      */
     default List<E> remove(E elem) {
-        final Option<E> toRemove = Option.of(elem);
-        return fold(List.<E>empty(), (x, xs) -> Objects.equals(x, toRemove) ? xs : xs.push(x)).reverse();
+        return fold(empty(), (E x, List<E> xs) -> Objects.equals(x, elem) ? xs : xs.push(x)).reverse();
     }
 
     @Override
@@ -199,7 +215,16 @@ public interface List<E> extends Bunch<E>, Foldable<E> {
         return it.bufferElementsReversed(limit - from).reverse();
     }
 
-    class Empty<E> implements List<E> {
+    @Override
+    default Option<Product2<E, List<E>>> unapply() {
+        return isEmpty() ? Nothing() : Some(Tuple(head(), tail()));
+    }
+
+    static <O> Apply2<O, List<O>, Cons<O>> Applied() {
+        return t -> new Cons<>(t.$1(), t.$2());
+    }
+
+    class Empty<E> implements List<E>, Apply0<Empty<E>> {
 
         /**
          * Pattern to test if any object is equivalent to an empty tail element.
@@ -230,17 +255,18 @@ public interface List<E> extends Bunch<E>, Foldable<E> {
 
         @Override
         public List<E> take(int n) {
-            throw new IndexOutOfBoundsException("limit exceeds size.");
+            if (n > 0) {
+                throw new IndexOutOfBoundsException("limit exceeds size.");
+            }
+            if (n < 0) {
+                throw new IllegalArgumentException("index must be positive");
+            }
+            return empty();
         }
 
         @Override
         public List<E> takeRight(int n) {
             throw new IndexOutOfBoundsException("limit exceeds size.");
-        }
-
-        @Override
-        public Option<Product2<E, List<E>>> pop() {
-            return Nothing();
         }
 
         @Override
@@ -268,9 +294,14 @@ public interface List<E> extends Bunch<E>, Foldable<E> {
         public String toString() {
             return "[]";
         }
+
+        @Override
+        public Empty<E> apply(Product0 tuple) {
+            return getInstance();
+        }
     }
 
-    class Cons<E> implements List<E>, Applied2<E, List<E>, List<E>> {
+    class Cons<E> implements List<E> {
         private E head;
         private List<E> tail;
 
@@ -285,19 +316,6 @@ public interface List<E> extends Bunch<E>, Foldable<E> {
                 Tuple($x, Cons::head),
                 Tuple($xs, Cons::tail)
             );
-        }
-
-        /**
-         * Creates a new of instance with a head and another of for a tail.
-         * @param x the head of the new of.
-         * @param xs the tail of the new of.
-         * @param <R> the type encapsulated by the of
-         * @return the new of instance
-         */
-        @NotNull
-        @Contract(pure = true)
-        public static <R> Cons<R> of(R x, List<R> xs) {
-            return new Cons<>(x, xs);
         }
 
         /**
@@ -330,13 +348,13 @@ public interface List<E> extends Bunch<E>, Foldable<E> {
         }
 
         @Override
-        public Option<Product2<E, List<E>>> pop() {
-            return Some(unapply());
+        public boolean isEmpty() {
+            return false;
         }
 
         @Override
-        public boolean isEmpty() {
-            return false;
+        public <R> Value<R> map(Function<? super E, ? extends R> mapper) {
+            return foldRight(empty(), (E x, List<R> xs) -> xs.push(mapper.apply(x))).reverse();
         }
 
         /**
@@ -353,16 +371,6 @@ public interface List<E> extends Bunch<E>, Foldable<E> {
                 list = list.tail();
             }
             return false;
-        }
-
-        @Override
-        public List<E> apply(Product2<E, List<E>> tuple) {
-            return of(tuple.$1(), tuple.$2());
-        }
-
-        @Override
-        public Product2<E, List<E>> unapply() {
-            return Tuple(head(), tail());
         }
 
         @Override

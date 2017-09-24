@@ -37,6 +37,6 @@ public interface Func1<A, R> extends Function<A, R> {
     }
 
     default Apply1<A, R> applied() {
-        return x -> tupled().apply(x.unapply());
+        return x -> tupled().apply(x);
     }
 }

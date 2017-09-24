@@ -8,16 +8,13 @@ import com.bishabosha.cuppajoe.Iterables;
 import com.bishabosha.cuppajoe.control.Option;
 import com.bishabosha.cuppajoe.functions.Func2;
 import com.bishabosha.cuppajoe.patterns.Pattern;
-import com.bishabosha.cuppajoe.tuples.Tuple2;
 import com.bishabosha.cuppajoe.API;
 import com.bishabosha.cuppajoe.Foldable;
 import com.bishabosha.cuppajoe.Library;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
+import com.bishabosha.cuppajoe.tuples.Product2;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Objects;
 import java.util.function.UnaryOperator;
 
@@ -258,11 +255,11 @@ public class Tree<E extends Comparable<E>> {
         );
     }
 
-    public Cons<E> toCons() {
-        return inOrder().foldRight(Cons.empty(), (x, xs) -> xs.push(x));
+    public List<E> toList() {
+        return inOrder().foldRight(List(), (x, xs) -> xs.push(x));
     }
 
-    public List<E> toJavaList() {
+    public java.util.List<E> toJavaList() {
         return inOrder().fold(new ArrayList<>(), (x, xs) -> {
             xs.add(x);
             return xs;
@@ -295,7 +292,7 @@ public class Tree<E extends Comparable<E>> {
             private Iterator<E> inOrderTraversal(Pattern extractor, UnaryOperator<Tree<E>> brancher) {
                 return new Iterables.Lockable<E>() {
 
-                    private Cons<Tree<E>> stack = Cons.empty();
+                    private List<Tree<E>> stack = List.empty();
                     private Tree<E> current = Tree.this;
                     private E toReturn;
 
@@ -309,7 +306,7 @@ public class Tree<E extends Comparable<E>> {
                                     .orElse(false);
                     }
 
-                    private boolean processPopped(E head, Tree<E> nextTree, Cons<Tree<E>> tail) {
+                    private boolean processPopped(E head, Tree<E> nextTree, List<Tree<E>> tail) {
                         toReturn = head;
                         current = nextTree;
                         stack = tail;
@@ -328,7 +325,7 @@ public class Tree<E extends Comparable<E>> {
     public Iterable<E> preOrder() {
         return () -> new Iterables.Lockable<E>() {
 
-            private Cons<Tree<E>> stack = Cons.of(Tree.this);
+            private List<Tree<E>> stack = List.of(Tree.this);
             private E toReturn;
 
             @Override
@@ -337,7 +334,7 @@ public class Tree<E extends Comparable<E>> {
                             .orElse(false);
             }
 
-            private boolean processPopped(E node, Tree<E> left, Tree<E> right, Cons<Tree<E>> tail) {
+            private boolean processPopped(E node, Tree<E> left, Tree<E> right, List<Tree<E>> tail) {
                 toReturn = node;
                 if (!right.isLeaf()) {
                     tail = tail.push(right);
@@ -365,7 +362,7 @@ public class Tree<E extends Comparable<E>> {
             }
 
             private Iterable<E> reverse() {
-                return fold(Cons.empty(), (E x, Cons<E> xs) -> xs.push(x)).flatten();
+                return fold(List.empty(), (E x, List<E> xs) -> xs.push(x));
             }
 
             @Override
@@ -410,16 +407,16 @@ public class Tree<E extends Comparable<E>> {
     public Iterable<E> postOrder() {
         return () -> new Iterables.Lockable<E>() {
 
-            private Cons<Object> stack = Cons.of(Tree.this);
+            private List<Object> stack = List.of(Tree.this);
             private E toReturn;
 
             @Override
             public boolean hasNextSupplier() {
-                final Tuple2<Option<E>, Cons<Object>> nextItem;
+                final Product2<Option<E>, List<Object>> nextItem;
                 nextItem = stack.nextItem((x, xs) -> Match(x).of(
                     with(Some(Leaf()), () -> Tuple(Left(false), xs)),
                     with(Some(Node($n, $l, $r)), (E $n, Tree<E> $l, Tree<E> $r) -> {
-                        Cons<Object> zs = xs;
+                        List<Object> zs = xs;
                         zs = zs.push($n);
                         if (!$r.isLeaf()) {
                             zs = zs.push($r);

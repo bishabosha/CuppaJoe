@@ -33,6 +33,7 @@ public final class Some<O> implements Option<O>, Applied1<O, Option<O>>{
         this.value = value;
     }
 
+    @Contract(pure = true)
     @Override
     public boolean isEmpty() {
         return false;
@@ -57,23 +58,29 @@ public final class Some<O> implements Option<O>, Applied1<O, Option<O>>{
             .orElse(false);
     }
 
+    @NotNull
+    @Contract(pure = true)
     @Override
     public String toString() {
         return "Some(" + get() + ")";
     }
 
+    @NotNull
+    @Contract(pure = true)
     @Override
     public Iterator<O> iterator() {
         return Iterables.singletonIt(this::get);
     }
 
+    @NotNull
     @Override
     public Option<O> apply(Product1<O> tuple) {
         return of(tuple.$1());
     }
 
+    @NotNull
     @Override
-    public Product1<O> unapply() {
-        return Tuple(get());
+    public Option<Product1<O>> unapply() {
+        return of(Tuple(get()));
     }
 }

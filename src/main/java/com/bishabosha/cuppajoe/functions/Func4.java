@@ -38,7 +38,7 @@ public interface Func4<A, B, C, D, R> {
 
     @Contract(pure = true)
     default Apply4<A, B, C, D, R> applied() {
-        return x -> tupled().apply(x.unapply());
+        return x -> tupled().apply(x);
     }
 
     R apply(A a, B b, C c, D d);

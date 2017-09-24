@@ -1,6 +1,8 @@
 package com.bishabosha.cuppajoe.tuples;
 
 import com.bishabosha.cuppajoe.Iterables;
+import com.bishabosha.cuppajoe.control.Option;
+import com.bishabosha.cuppajoe.control.Some;
 import com.bishabosha.cuppajoe.functions.Func4;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,8 +15,8 @@ public interface Product4<A, B, C, D> extends Product, Unapply4<A, B, C, D> {
     C $3();
     D $4();
 
-    default Product4<A, B, C, D> unapply() {
-        return this;
+    default Option<Product4<A, B, C, D>> unapply() {
+        return Some.of(this);
     }
 
     @Override

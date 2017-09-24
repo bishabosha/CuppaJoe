@@ -44,7 +44,7 @@ public interface Func8<A, B, C, D, E, F, G, H, R> {
 
     @Contract(pure = true)
     default Apply8<A, B, C, D, E, F, G, H, R> applied() {
-        return x -> tupled().apply(x.unapply());
+        return x -> tupled().apply(x);
     }
 
     R apply(A a, B b, C c, D d, E e, F f, G g, H h);

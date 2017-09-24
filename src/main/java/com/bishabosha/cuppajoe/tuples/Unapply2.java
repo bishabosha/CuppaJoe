@@ -1,5 +1,7 @@
 package com.bishabosha.cuppajoe.tuples;
 
+import com.bishabosha.cuppajoe.control.Option;
+
 public interface Unapply2<A, B> {
-    Product2<A, B> unapply();
+    Option<Product2<A, B>> unapply();
 }

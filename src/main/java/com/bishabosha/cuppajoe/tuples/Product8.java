@@ -1,10 +1,13 @@
 package com.bishabosha.cuppajoe.tuples;
 
 import com.bishabosha.cuppajoe.Iterables;
+import com.bishabosha.cuppajoe.control.Option;
 import com.bishabosha.cuppajoe.functions.Func8;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
+
+import static com.bishabosha.cuppajoe.API.Some;
 
 public interface Product8<A, B, C, D, E, F, G, H> extends Product, Unapply8<A, B, C, D, E, F, G, H> {
 
@@ -17,8 +20,8 @@ public interface Product8<A, B, C, D, E, F, G, H> extends Product, Unapply8<A, B
     G $7();
     H $8();
 
-    default Product8<A, B, C, D, E, F, G, H> unapply() {
-        return this;
+    default Option<Product8<A, B, C, D, E, F, G, H>> unapply() {
+        return Some(this);
     }
 
     @Override

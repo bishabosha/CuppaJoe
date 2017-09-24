@@ -39,7 +39,7 @@ public interface Func5<A, B, C, D, E, R> {
 
     @Contract(pure = true)
     default Apply5<A, B, C, D, E, R> applied() {
-        return x -> tupled().apply(x.unapply());
+        return x -> tupled().apply(x);
     }
 
     R apply(A a, B b, C c, D d, E e);
