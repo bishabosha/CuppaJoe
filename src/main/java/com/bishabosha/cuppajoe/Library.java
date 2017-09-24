@@ -4,16 +4,16 @@
 
 package com.bishabosha.cuppajoe;
 
+import com.bishabosha.cuppajoe.collections.immutable.List;
 import com.bishabosha.cuppajoe.control.Option;
-import com.bishabosha.cuppajoe.collections.immutable.Cons;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Objects;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
-import static com.bishabosha.cuppajoe.API.Nothing;
-import static com.bishabosha.cuppajoe.API.Some;
-import static com.bishabosha.cuppajoe.API.Tuple;
+import static com.bishabosha.cuppajoe.API.*;
 
 public final class Library {
 
@@ -30,12 +30,11 @@ public final class Library {
         return Nothing();
     }
 
-    public static <T, O extends Iterable<T>> List<T> flatten(Class<O> flattenClass, O toFlatten) {
-        return Cons.concat(toFlatten.iterator(), Cons.empty()).loop(
+    public static <T, O extends Iterable<T>> java.util.List<T> flatten(Class<O> flattenClass, O toFlatten) {
+        return List.concat(toFlatten.iterator(), List()).loop(
                 ArrayList::new,
-                (list, stack, optionIt) -> {
-                    if (!optionIt.isEmpty()) {
-                        final Iterator<T> it = optionIt.get();
+                (list, stack, it) -> {
+                    if (!Objects.nonNull(it)) {
                         final T current;
                         if (it.hasNext()) {
                             current = it.next();

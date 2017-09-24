@@ -2,6 +2,8 @@ package com.bishabosha.cuppajoe.collections.immutable;
 
 import org.junit.Test;
 
+import java.util.Objects;
+
 import static com.bishabosha.cuppajoe.API.Some;
 import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.*;
@@ -18,7 +20,7 @@ public class QueueTest {
 
     @Test
     public void elements_dequeued_when_added_to_empty() {
-        assertTrue(!Queue.empty().enqueue(1).dequeue().map(t -> t.$1().isEmpty()).orElse(false));
+        assertTrue(!Queue.empty().enqueue(1).dequeue().map(t -> Objects.nonNull(t.$1())).orElse(false));
     }
 
     @Test

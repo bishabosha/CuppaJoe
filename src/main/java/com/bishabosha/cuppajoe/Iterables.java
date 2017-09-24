@@ -233,12 +233,18 @@ public interface Iterables {
     }
 
     @Contract(pure = true)
-    @SuppressWarnings("unchecked")
+    @NotNull
     static <O> Iterable<O> empty() {
-        return (Iterable<O>) EMPTY_ITERABLE;
+        return Iterables::emptyIterator;
     }
 
-    Iterable<Object> EMPTY_ITERABLE = () -> new Iterator<Object>() {
+    @SuppressWarnings("unchecked")
+    @NotNull
+    static <O> Iterator<O> emptyIterator() {
+        return (Iterator<O>) EMPTY_ITERATOR;
+    }
+
+    Iterator<Object> EMPTY_ITERATOR = new Iterator<Object>() {
         @Override
         public boolean hasNext() {
             return false;

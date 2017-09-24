@@ -1,5 +1,6 @@
 package com.bishabosha.cuppajoe;
 
+import com.bishabosha.cuppajoe.collections.immutable.List;
 import com.bishabosha.cuppajoe.control.*;
 import com.bishabosha.cuppajoe.functions.CheckedFunc0;
 import com.bishabosha.cuppajoe.functions.Func0;
@@ -107,5 +108,23 @@ public class API {
 
     public static <I, O> Option<O> Match(Option<I> toMatch, Case<I, O> options) {
         return toMatch.isEmpty() ? Nothing() : options.match(toMatch.get());
+    }
+
+    @NotNull
+    @Contract(pure = true)
+    public static <O> List<O> List() {
+        return List.empty();
+    }
+
+    @NotNull
+    @Contract(pure = true)
+    public static <O> List<O> List(O elem) {
+        return List.of(elem);
+    }
+
+    @NotNull
+    @Contract(pure = true)
+    public static <O> List<O> List(O... elems) {
+        return List.of(elems);
     }
 }

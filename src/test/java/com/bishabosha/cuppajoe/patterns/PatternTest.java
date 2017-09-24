@@ -4,7 +4,7 @@
 
 package com.bishabosha.cuppajoe.patterns;
 
-import com.bishabosha.cuppajoe.collections.immutable.Cons;
+import com.bishabosha.cuppajoe.collections.immutable.List;
 import com.bishabosha.cuppajoe.collections.immutable.Tree;
 import com.bishabosha.cuppajoe.collections.mutable.trees.BinaryNode;
 import com.bishabosha.cuppajoe.control.Option;
@@ -76,16 +76,16 @@ public class PatternTest {
     @Test
     public void flattenStress() {
         final Pattern patt2Test;
-        final Tuple2<Option<Tree<Integer>>, Cons<Tree<Integer>>> underTest;
+        final Tuple2<Option<Tree<Integer>>, List<Tree<Integer>>> underTest;
 
         patt2Test = Tuple2(Some(Node($x, ¥_, $y)), $xs);
-        underTest = Tuple(Option.of(Node(1, leaf(), leaf())), Cons.of(Tree.of(2)));
+        underTest = Tuple(Option.of(Node(1, leaf(), leaf())), List.of(Tree.of(2)));
 
         patt2Test.test(underTest).ifSome(results -> {
             assertEquals(3, results.size());
             assertEquals(1, (int) results.get(0));
             assertEquals(leaf(), results.get(1));
-            assertEquals(Cons.of(Tree.of(2)), results.get(2));
+            assertEquals(List.of(Tree.of(2)), results.get(2));
         });
     }
 }

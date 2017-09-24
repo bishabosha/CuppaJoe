@@ -39,7 +39,7 @@ public interface Func3<A, B, C, R> {
 
     @Contract(pure = true)
     default Apply3<A, B, C, R> applied() {
-        return x -> tupled().apply(x.unapply());
+        return x -> tupled().apply(x);
     }
 
     R apply(A a, B b, C c);

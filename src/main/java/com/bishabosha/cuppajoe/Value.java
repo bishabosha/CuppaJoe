@@ -13,12 +13,9 @@ import static com.bishabosha.cuppajoe.API.Some;
 public interface Value<O> extends Iterable<O> {
     boolean isEmpty();
     boolean isAtMaxSingleElement();
+    int size();
     O get();
     <R> Value<R> map(Function<? super O, ? extends R> mapper);
-
-    default boolean contains(O obj) {
-        return anyMatch(e -> Objects.equals(e, obj));
-    }
 
     default O orElse(O value) {
         return isEmpty() ? value : get();
@@ -37,47 +34,6 @@ public interface Value<O> extends Iterable<O> {
             throw supplier.get();
         }
         return get();
-    }
-
-    default <R> boolean allMatch(Iterable<R> other, BiPredicate<? super O, ? super R> test) {
-        Iterator<R> otherVals = other.iterator();
-        for (O elem: this) {
-            if (!otherVals.hasNext() || !test.test(elem, otherVals.next())) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    default boolean allMatch(Predicate<? super O> test) {
-        for (O elem: this) {
-            if (!test.test(elem)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    default boolean anyMatch(Predicate<? super O> test) {
-        for (O elem: this) {
-            if (test.test(elem)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    default <R> boolean anyMatch(Iterable<R> other, BiPredicate<? super O, ? super R> test) {
-        Iterator<R> otherVals = other.iterator();
-        for (O elem: this) {
-            if (!otherVals.hasNext()) {
-                return false;
-            }
-            if (test.test(elem, otherVals.next())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     default void ifEmpty(Runnable toDo) {

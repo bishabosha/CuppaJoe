@@ -37,6 +37,6 @@ public interface Func0<R> extends Supplier<R> {
     }
 
     default Apply0 applied() {
-        return x -> tupled().apply(x.unapply());
+        return x -> tupled().apply(x);
     }
 }

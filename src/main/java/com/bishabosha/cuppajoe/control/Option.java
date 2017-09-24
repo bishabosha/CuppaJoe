@@ -25,7 +25,7 @@ public interface Option<O> extends Value<O> {
     }
 
     static <O> Option<O> from(Optional<O> optional) {
-        return optional.isPresent() ? of(optional.get()) : Nothing.getInstance();
+        return optional.map(Option::of).orElseGet(Nothing::getInstance);
     }
 
     @NotNull
@@ -34,8 +34,13 @@ public interface Option<O> extends Value<O> {
         return Objects.nonNull(value) ? Some.of(value) : Nothing.getInstance();
     }
 
+    @Override
+    default int size() {
+        return isEmpty() ? 0 : 1;
+    }
+
     @SuppressWarnings("unchecked")
-    default Option<O> join(Supplier<? extends Option<? extends O>> supplier) {
+    default Option<O> or(Supplier<? extends Option<? extends O>> supplier) {
         return isEmpty() ? (Option<O>) supplier.get() : this;
     }
 
@@ -61,7 +66,7 @@ public interface Option<O> extends Value<O> {
         return isEmpty() ? Nothing.getInstance() : toMatch.test(get()).map(mapper);
     }
 
-    default <T> Option<T> match(Case<O, T> matcher) {
+    default <T> Option<T> match(Case<? super O, T> matcher) {
         return isEmpty() ? Nothing.getInstance() : matcher.match(get());
     }
 
