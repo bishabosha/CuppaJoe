@@ -131,4 +131,20 @@ public class ListTest {
             List.<Integer>Applied().apply(List.of(1,2).unapply().get())
         );
     }
+
+    @Test
+    public void get() {
+        final List<Integer> list = List.of(1,2,3);
+        assertEquals(1, list.get(0).intValue());
+        assertEquals(2, list.get(1).intValue());
+        assertEquals(3, list.get(2).intValue());
+    }
+
+    @Test
+    public void size() {
+        assertEquals(0, List.empty().size());
+        assertEquals(1, List.of(1).size());
+        assertEquals(2, List.of(1,2).size());
+        assertEquals(3, List.of(1,2,3).size());
+    }
 }

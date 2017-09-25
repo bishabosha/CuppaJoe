@@ -190,36 +190,36 @@ public class HashTable<E> extends AbstractSet<E> {
 
 	@Override
 	public Iterator<E> iterator() {
-		return new Iterables.Lockable<E>() {
+		return new Iterables.Lockable<>() {
 
-			private int index = 0;
-			private Iterator<E> it = null;
-			private E current;
+            private int index = 0;
+            private Iterator<E> it = null;
+            private E current;
 
-			public boolean hasNextSupplier() {
-				getNextIterator();
-				return null == it ? false : it.hasNext();
-			}
+            public boolean hasNextSupplier() {
+                getNextIterator();
+                return null == it ? false : it.hasNext();
+            }
 
-			public E nextSupplier() {
-				return current = it.next();
-			}
+            public E nextSupplier() {
+                return current = it.next();
+            }
 
-			private void getNextIterator() {
-				while (index < data.length && (null == it || !it.hasNext())) {
-					LinkedList<E> list = getList(data, index);
-					if (null != list) {
-						it = list.iterator();
-					}
-					index++;
-				}
-			}
+            private void getNextIterator() {
+                while (index < data.length && (null == it || !it.hasNext())) {
+                    LinkedList<E> list = getList(data, index);
+                    if (null != list) {
+                        it = list.iterator();
+                    }
+                    index++;
+                }
+            }
 
-			@Override
-			public void remove() {
-				HashTable.this.remove(current);
-			}
-		};
+            @Override
+            public void remove() {
+                HashTable.this.remove(current);
+            }
+        };
 	}
 
 	@Override

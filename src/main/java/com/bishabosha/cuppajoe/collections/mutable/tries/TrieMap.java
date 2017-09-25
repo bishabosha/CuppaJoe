@@ -18,7 +18,7 @@ public class TrieMap<V> extends AbstractMap<String, V> {
 	private int size = 0;
 	
 	public TrieMap() {
-		this.root = new TrieNode<V>(Character.MIN_VALUE);
+		this.root = new TrieNode<>(Character.MIN_VALUE);
 	}
 	
 	public TrieMap(TrieNode<V> root) {
@@ -135,183 +135,185 @@ public class TrieMap<V> extends AbstractMap<String, V> {
 
 	@Override
 	public void clear() {
-		root = new TrieNode<V>(Character.MIN_VALUE);
+		root = new TrieNode<>(Character.MIN_VALUE);
 	}
 
 	public Set<String> keySet() {
-		return new BasicSet<String>() {
-			
-			@Override
-			public boolean contains(Object o) {
-				return containsKey(o);
-			}
-			
-			@Override
-			public boolean remove(Object o) {
-				int before = size();
-				TrieMap.this.remove(o);
-				return size() < before;
-			}
+		return new BasicSet<>() {
 
-			@Override
-			public int size() {
-				return TrieMap.this.size();
-			}
+            @Override
+            public boolean contains(Object o) {
+                return containsKey(o);
+            }
 
-			@Override
-			public void clear() {
-				TrieMap.this.clear();
-			}
-			
-			@Override
-			public Iterator<String> iterator() {
-				return new Iterator<String>() {
-					
-					private Iterator<java.util.Map.Entry<String, V>> it = entrySet().iterator();
+            @Override
+            public boolean remove(Object o) {
+                int before = size();
+                TrieMap.this.remove(o);
+                return size() < before;
+            }
 
-					@Override
-					public boolean hasNext() {
-						return it.hasNext();
-					}
+            @Override
+            public int size() {
+                return TrieMap.this.size();
+            }
 
-					@Override
-					public String next() {
-						return it.next().getKey();
-					}
-				};
-			}
-		};
+            @Override
+            public void clear() {
+                TrieMap.this.clear();
+            }
+
+            @Override
+            public Iterator<String> iterator() {
+                return new Iterator<>() {
+
+                    private Iterator<java.util.Map.Entry<String, V>> it = entrySet().iterator();
+
+                    @Override
+                    public boolean hasNext() {
+                        return it.hasNext();
+                    }
+
+                    @Override
+                    public String next() {
+                        return it.next().getKey();
+                    }
+                };
+            }
+        };
 	}
 
 	@Override
 	public Collection<V> values() {
-		return new BasicSet<V>() {
+		return new BasicSet<>() {
 
-			@Override
-			public boolean contains(Object o) {
-				return containsValue(o);
-			}
+            @Override
+            public boolean contains(Object o) {
+                return containsValue(o);
+            }
 
-			@Override
-			public boolean remove(Object o) {
-				for (java.util.Map.Entry<String, V> entry: entrySet()) {
-					if (entry.getValue().equals(o)) {
-						TrieMap.this.remove(entry.getKey());
-						return true;
-					}
-				}
-				return false;
-			}
+            @Override
+            public boolean remove(Object o) {
+                for (java.util.Map.Entry<String, V> entry : entrySet()) {
+                    if (entry.getValue().equals(o)) {
+                        TrieMap.this.remove(entry.getKey());
+                        return true;
+                    }
+                }
+                return false;
+            }
 
-			@Override
-			public int size() {
-				return TrieMap.this.size();
-			}
+            @Override
+            public int size() {
+                return TrieMap.this.size();
+            }
 
-			@Override
-			public void clear() {
-				TrieMap.this.clear();
-			}
-			
-			@Override
-			public Iterator<V> iterator() {
-				return new Iterables.Lockable<V>() {
-					private Deque<TrieNode<V>> nodeStack = new LinkedList<>();
-					private TrieNode<V> currentNode = root;
-					{
-						nodeStack.push(root);
-					}
+            @Override
+            public void clear() {
+                TrieMap.this.clear();
+            }
 
-					@Override
-					public boolean hasNextSupplier() {
-						while (!nodeStack.isEmpty()) {
-							currentNode = nodeStack.pop();
-							for (TrieNode<V> node: currentNode.nextNodes) {
-								nodeStack.push(node);
-							}
-							if (currentNode.isTerminating && currentNode.value != null) {
-								return true;
-							}
-						}
-						return false;
-					}
+            @Override
+            public Iterator<V> iterator() {
+                return new Iterables.Lockable<>() {
+                    private Deque<TrieNode<V>> nodeStack = new LinkedList<>();
+                    private TrieNode<V> currentNode = root;
 
-					@Override
-					public V nextSupplier() {
-						return currentNode.value;
-					}
-				};
-			}
-		};
+                    {
+                        nodeStack.push(root);
+                    }
+
+                    @Override
+                    public boolean hasNextSupplier() {
+                        while (!nodeStack.isEmpty()) {
+                            currentNode = nodeStack.pop();
+                            for (TrieNode<V> node : currentNode.nextNodes) {
+                                nodeStack.push(node);
+                            }
+                            if (currentNode.isTerminating && currentNode.value != null) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+
+                    @Override
+                    public V nextSupplier() {
+                        return currentNode.value;
+                    }
+                };
+            }
+        };
 	}
 
 	@Override
 	public Set<Entry<String, V>> entrySet() {
-		return new BasicSet<Entry<String, V>>() {
-			
-			@Override
-			public boolean contains(Object o) {
-				if (o instanceof Entry == false || ((Entry<?, ?>) o).getKey() instanceof String == false) {
-					return false;
-				}
-				Entry<String, ?> entry = (Entry<String, ?>) o;
-				TrieNode<V> current = searchNonTerminating(entry.getKey());
-				return current != null && current.isTerminating && current.value.equals(entry.getValue());
-			}
-			
-			@Override
-			public boolean remove(Object o) {
-				int before = size();
-				TrieMap.this.remove(o);
-				return size() < before;
-			}
-			
-			public int size() {
-				return TrieMap.this.size();
-			}
-			
-			public void clear() {
-				TrieMap.this.clear();
-			}
-			
-			@Override
-			public Iterator<Entry<String, V>> iterator() {
-				return new Iterables.Lockable<Entry<String,V>>() {
+		return new BasicSet<>() {
 
-					private Deque<TrieNode<V>> nodeStack = new LinkedList<>();
-					private Deque<String> stringStack = new LinkedList<>();
-					private Entry<String, V> currentEntry;
-					private String currentString = "";
-					private TrieNode<V> currentNode = root;
-					{
-						nodeStack.push(root);
-						stringStack.push(currentString);
-					}
+            @Override
+            public boolean contains(Object o) {
+                if (o instanceof Entry == false || ((Entry<?, ?>) o).getKey() instanceof String == false) {
+                    return false;
+                }
+                Entry<String, ?> entry = (Entry<String, ?>) o;
+                TrieNode<V> current = searchNonTerminating(entry.getKey());
+                return current != null && current.isTerminating && current.value.equals(entry.getValue());
+            }
 
-					@Override
-					public boolean hasNextSupplier() {
-						while (!nodeStack.isEmpty()) {
-							currentNode = nodeStack.pop();
-							currentString = stringStack.pop();
-							currentEntry = new MapEntry<>(currentString, currentNode.value);
-							for (TrieNode<V> node: currentNode.nextNodes) {
-								nodeStack.push(node);
-								stringStack.push(currentString + node.unwrap());
-							}
-							if (currentNode.isTerminating) {
-								return true;
-							}
-						}
-						return false;
-					}
+            @Override
+            public boolean remove(Object o) {
+                int before = size();
+                TrieMap.this.remove(o);
+                return size() < before;
+            }
 
-					@Override
-					public Entry<String, V> nextSupplier() {
-						return currentEntry;
-					}
-				};
-			}
-		};
+            public int size() {
+                return TrieMap.this.size();
+            }
+
+            public void clear() {
+                TrieMap.this.clear();
+            }
+
+            @Override
+            public Iterator<Entry<String, V>> iterator() {
+                return new Iterables.Lockable<>() {
+
+                    private Deque<TrieNode<V>> nodeStack = new LinkedList<>();
+                    private Deque<String> stringStack = new LinkedList<>();
+                    private Entry<String, V> currentEntry;
+                    private String currentString = "";
+                    private TrieNode<V> currentNode = root;
+
+                    {
+                        nodeStack.push(root);
+                        stringStack.push(currentString);
+                    }
+
+                    @Override
+                    public boolean hasNextSupplier() {
+                        while (!nodeStack.isEmpty()) {
+                            currentNode = nodeStack.pop();
+                            currentString = stringStack.pop();
+                            currentEntry = new MapEntry<>(currentString, currentNode.value);
+                            for (TrieNode<V> node : currentNode.nextNodes) {
+                                nodeStack.push(node);
+                                stringStack.push(currentString + node.unwrap());
+                            }
+                            if (currentNode.isTerminating) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+
+                    @Override
+                    public Entry<String, V> nextSupplier() {
+                        return currentEntry;
+                    }
+                };
+            }
+        };
 	}
 
 }

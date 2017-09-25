@@ -8,7 +8,6 @@ import com.bishabosha.cuppajoe.collections.immutable.List;
 import com.bishabosha.cuppajoe.control.Option;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Objects;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;

@@ -1,6 +1,5 @@
 package com.bishabosha.cuppajoe.collections.immutable;
 
-import com.bishabosha.cuppajoe.Foldable;
 import com.bishabosha.cuppajoe.Iterables;
 import com.bishabosha.cuppajoe.Value;
 import com.bishabosha.cuppajoe.control.Either;
@@ -13,7 +12,6 @@ import com.bishabosha.cuppajoe.tuples.*;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -24,7 +22,7 @@ import static com.bishabosha.cuppajoe.API.*;
 import static com.bishabosha.cuppajoe.API.Left;
 import static com.bishabosha.cuppajoe.patterns.PatternFactory.patternFor;
 
-public interface List<E> extends Bunch<E>, Foldable<E>, Unapply2<E, List<E>> {
+public interface List<E> extends Seq<E>, Unapply2<E, List<E>> {
 
     /**
      * Creates a new of instance with a head and another of for a tail.
@@ -77,27 +75,35 @@ public interface List<E> extends Bunch<E>, Foldable<E>, Unapply2<E, List<E>> {
      * @param elem the new element to push to the head.
      * @return A new of instance.
      */
+    @Override
     default List<E> push(E elem) {
         return concat(elem, this);
     }
 
+    @Override
     default Option<Product2<E, List<E>>> pop() {
         return unapply();
     }
-
-    E head();
-
-    List<E> tail();
 
     @Override
     default E get() {
         return head();
     }
 
-    List<E> take(int n);
+    @Override
+    List<E> tail();
 
-    List<E> takeRight(int n);
+    @Override
+    default List<E> take(int limit) {
+        return bufferElementsReversed(limit).reverse();
+    }
 
+    @Override
+    default List<E> takeRight(int limit) {
+        return reverse().bufferElementsReversed(limit);
+    }
+
+    @Override
     default List<E> append(E elem) {
         return foldRight(of(elem), (E x, List<E> xs) -> xs.push(x));
     }
@@ -111,13 +117,9 @@ public interface List<E> extends Bunch<E>, Foldable<E>, Unapply2<E, List<E>> {
      * @param elem the element to remove
      * @return a new of instance with the element removed.
      */
+    @Override
     default List<E> remove(E elem) {
         return fold(empty(), (E x, List<E> xs) -> Objects.equals(x, elem) ? xs : xs.push(x)).reverse();
-    }
-
-    @Override
-    default <A> A foldRight(A accumulator, Func2<E, A, A> mapper) {
-        return reverse().fold(accumulator, mapper);
     }
 
     /**
@@ -149,13 +151,7 @@ public interface List<E> extends Bunch<E>, Foldable<E>, Unapply2<E, List<E>> {
         return loopCond.flatMap((either, cons) -> Tuple(either.maybeRight(), cons));
     }
 
-    default java.util.List<E> toJavaList() {
-        return fold(new ArrayList<>(), (x, xs) -> {
-            xs.add(x);
-            return xs;
-        });
-    }
-
+    @Override
     default int size() {
         List<E> list = this;
         int size = 0;
@@ -166,6 +162,7 @@ public interface List<E> extends Bunch<E>, Foldable<E>, Unapply2<E, List<E>> {
         return size;
     }
 
+    @Override
     default List<E> reverse() {
         List<E> result = empty();
         List<E> buffer = this;
@@ -176,23 +173,7 @@ public interface List<E> extends Bunch<E>, Foldable<E>, Unapply2<E, List<E>> {
         return result;
     }
 
-    default List<E> bufferElementsReversed(int limit) {
-        if (limit < 0) {
-            throw new IllegalArgumentException("limit can't be less than zero.");
-        }
-        List<E> it = this;
-        List<E> buffer = empty();
-        while (limit > 0) {
-            limit = limit - 1;
-            if (it.isEmpty()) {
-                throw new IndexOutOfBoundsException("limit exceeds size.");
-            }
-            buffer = buffer.push(it.head());
-            it = it.tail();
-        }
-        return buffer;
-    }
-
+    @Override
     default List<E> subsequence(int from, int limit) {
         if (from < 0) {
             throw new IllegalArgumentException("from can't be less than zero.");
@@ -213,6 +194,42 @@ public interface List<E> extends Bunch<E>, Foldable<E>, Unapply2<E, List<E>> {
             it = it.tail();
         }
         return it.bufferElementsReversed(limit - from).reverse();
+    }
+
+    @Override
+    default E get(int n) {
+        if (n < 0) {
+            throw new IllegalArgumentException("n must be positive.");
+        }
+        List<E> it = this;
+        while (n >= 0) {
+            if (it.isEmpty()) {
+                break;
+            }
+            if (n == 0) {
+                return it.head();
+            }
+            n = n - 1;
+            it = it.tail();
+        }
+        throw new IndexOutOfBoundsException("n exceeds size.");
+    }
+
+    private List<E> bufferElementsReversed(int limit) {
+        if (limit < 0) {
+            throw new IllegalArgumentException("limit can't be less than zero.");
+        }
+        List<E> it = this;
+        List<E> buffer = empty();
+        while (limit > 0) {
+            limit = limit - 1;
+            if (it.isEmpty()) {
+                throw new IndexOutOfBoundsException("limit exceeds size.");
+            }
+            buffer = buffer.push(it.head());
+            it = it.tail();
+        }
+        return buffer;
     }
 
     @Override
@@ -254,19 +271,19 @@ public interface List<E> extends Bunch<E>, Foldable<E>, Unapply2<E, List<E>> {
         }
 
         @Override
-        public List<E> take(int n) {
-            if (n > 0) {
+        public List<E> take(int limit) {
+            if (limit > 0) {
                 throw new IndexOutOfBoundsException("limit exceeds size.");
             }
-            if (n < 0) {
+            if (limit < 0) {
                 throw new IllegalArgumentException("index must be positive");
             }
             return empty();
         }
 
         @Override
-        public List<E> takeRight(int n) {
-            throw new IndexOutOfBoundsException("limit exceeds size.");
+        public List<E> takeRight(int limit) {
+            return take(limit);
         }
 
         @Override
@@ -339,14 +356,6 @@ public interface List<E> extends Bunch<E>, Foldable<E>, Unapply2<E, List<E>> {
             return tail;
         }
 
-        public List<E> take(int limit) {
-            return bufferElementsReversed(limit).reverse();
-        }
-
-        public List<E> takeRight(int limit) {
-            return reverse().bufferElementsReversed(limit);
-        }
-
         @Override
         public boolean isEmpty() {
             return false;
@@ -363,7 +372,7 @@ public interface List<E> extends Bunch<E>, Foldable<E>, Unapply2<E, List<E>> {
          * @return true if any instances were found. Otherwise false.
          */
         public boolean contains(Object elem) {
-            List<E> list = this;
+            Seq<E> list = this;
             while (!list.isEmpty()) {
                 if (Objects.equals(list.head(), elem)) {
                     return true;
@@ -414,10 +423,10 @@ public interface List<E> extends Bunch<E>, Foldable<E>, Unapply2<E, List<E>> {
         @Override
         @NotNull
         public Iterator<E> iterator() {
-            return new Iterables.Lockable<E>() {
+            return new Iterables.Lockable<>() {
 
                 E current = null;
-                List<E> cons = Cons.this;
+                Seq<E> cons = Cons.this;
 
                 @Override
                 public boolean hasNextSupplier() {

@@ -17,9 +17,10 @@ abstract class AbstractBuilder<E> implements Iterable<E> {
 
     @Override
     public Iterator<E> iterator() {
-        return new Iterables.Lockable<E>() {
+        return new Iterables.Lockable<>() {
             boolean generateNewTerm = true;
             boolean lastHasNext = false;
+
             {
                 setUpIterator();
             }

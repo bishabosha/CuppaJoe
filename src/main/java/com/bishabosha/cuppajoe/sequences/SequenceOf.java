@@ -27,13 +27,14 @@ public class SequenceOf {
 	}
 	
 	public static Sequence<Long> primes() {
-		Supplier<Long> counter = new Supplier<Long>() {
-			long count = 1;
-			@Override
-			public Long get() {
-				return count += 2;
-			}
-		};
+		Supplier<Long> counter = new Supplier<>() {
+            long count = 1;
+
+            @Override
+            public Long get() {
+                return count += 2;
+            }
+        };
 		return new RecursiveSequence<>(xs -> {
 			if (0 == xs.size()) {
 				return (long)2;

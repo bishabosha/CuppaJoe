@@ -267,7 +267,7 @@ public class Tree<E extends Comparable<E>> {
     }
 
     public Foldable<E> inOrder() {
-        return new Foldable<E>() {
+        return new Foldable<>() {
 
             @Override
             public <A> A foldRight(A accumulator, Func2<E, A, A> mapper) {
@@ -285,12 +285,12 @@ public class Tree<E extends Comparable<E>> {
 
             /**
              * @param extractor should yield: [toReturn, nextTree, tail]
-             * @param brancher the function to choose which branch to go depth first on.
+             * @param brancher  the function to choose which branch to go depth first on.
              * @return an Iterator that will do in order traversal
              */
             @SuppressWarnings("unchecked")
             private Iterator<E> inOrderTraversal(Pattern extractor, UnaryOperator<Tree<E>> brancher) {
-                return new Iterables.Lockable<E>() {
+                return new Iterables.Lockable<>() {
 
                     private List<Tree<E>> stack = List.empty();
                     private Tree<E> current = Tree.this;
@@ -303,7 +303,7 @@ public class Tree<E extends Comparable<E>> {
                             current = brancher.apply(current);
                         }
                         return stack.pop(with(extractor, this::processPopped))
-                                    .orElse(false);
+                                .orElse(false);
                     }
 
                     private boolean processPopped(E head, Tree<E> nextTree, List<Tree<E>> tail) {
@@ -323,7 +323,7 @@ public class Tree<E extends Comparable<E>> {
     }
 
     public Iterable<E> preOrder() {
-        return () -> new Iterables.Lockable<E>() {
+        return () -> new Iterables.Lockable<>() {
 
             private List<Tree<E>> stack = List.of(Tree.this);
             private E toReturn;
@@ -331,7 +331,7 @@ public class Tree<E extends Comparable<E>> {
             @Override
             public boolean hasNextSupplier() {
                 return stack.pop(with(Tuple2(Some(Node($n, $l, $r)), $xs), this::processPopped))
-                            .orElse(false);
+                        .orElse(false);
             }
 
             private boolean processPopped(E node, Tree<E> left, Tree<E> right, List<Tree<E>> tail) {
@@ -354,7 +354,7 @@ public class Tree<E extends Comparable<E>> {
     }
 
     public Foldable<E> levelOrder() {
-        return new Foldable<E>() {
+        return new Foldable<>() {
 
             @Override
             public <A> A foldRight(A accumulator, Func2<E, A, A> mapper) {
@@ -371,7 +371,7 @@ public class Tree<E extends Comparable<E>> {
             }
 
             private Iterator<E> levelOrderTraversal() {
-                return new Iterables.Lockable<E>() {
+                return new Iterables.Lockable<>() {
 
                     private Queue<Tree<E>> queue = Queue.of(Tree.this);
                     private E toReturn;
@@ -379,7 +379,7 @@ public class Tree<E extends Comparable<E>> {
                     @Override
                     public boolean hasNextSupplier() {
                         return queue.dequeue(with(Tuple2(Some(Node($n, $l, $r)), $xs), this::processPopped))
-                                    .orElse(false);
+                                .orElse(false);
                     }
 
                     private boolean processPopped(E node, Tree<E> left, Tree<E> right, Queue<Tree<E>> remaining) {
@@ -405,7 +405,7 @@ public class Tree<E extends Comparable<E>> {
 
     @SuppressWarnings("unchecked")
     public Iterable<E> postOrder() {
-        return () -> new Iterables.Lockable<E>() {
+        return () -> new Iterables.Lockable<>() {
 
             private List<Object> stack = List.of(Tree.this);
             private E toReturn;
@@ -414,19 +414,19 @@ public class Tree<E extends Comparable<E>> {
             public boolean hasNextSupplier() {
                 final Product2<Option<E>, List<Object>> nextItem;
                 nextItem = stack.nextItem((x, xs) -> Match(x).of(
-                    with(Some(Leaf()), () -> Tuple(Left(false), xs)),
-                    with(Some(Node($n, $l, $r)), (E $n, Tree<E> $l, Tree<E> $r) -> {
-                        List<Object> zs = xs;
-                        zs = zs.push($n);
-                        if (!$r.isLeaf()) {
-                            zs = zs.push($r);
-                        }
-                        if (!$l.isLeaf()) {
-                            zs = zs.push($l);
-                        }
-                        return Tuple(Left(true), zs);
-                    }),
-                    with(Some($x), (E $x) -> Tuple(Right($x), xs))
+                        with(Some(Leaf()), () -> Tuple(Left(false), xs)),
+                        with(Some(Node($n, $l, $r)), (E $n, Tree<E> $l, Tree<E> $r) -> {
+                            List<Object> zs = xs;
+                            zs = zs.push($n);
+                            if (!$r.isLeaf()) {
+                                zs = zs.push($r);
+                            }
+                            if (!$l.isLeaf()) {
+                                zs = zs.push($l);
+                            }
+                            return Tuple(Left(true), zs);
+                        }),
+                        with(Some($x), (E $x) -> Tuple(Right($x), xs))
                 ));
                 stack = nextItem.$2();
                 toReturn = nextItem.$1().orElse(null);

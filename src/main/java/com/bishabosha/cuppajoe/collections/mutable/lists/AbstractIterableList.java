@@ -207,34 +207,34 @@ public abstract class AbstractIterableList<E> extends AbstractCollection<E> impl
 	@Override
 	public Iterator<E> iterator() {
 		resetCurrentTop();
-		return new Iterables.Lockable<E>() {
-			boolean returnHead = true;
+		return new Iterables.Lockable<>() {
+            boolean returnHead = true;
 
-			@Override
-			public boolean hasNextSupplier() {
-				return returnHead ? setCurrent() : setNext();
-			}
+            @Override
+            public boolean hasNextSupplier() {
+                return returnHead ? setCurrent() : setNext();
+            }
 
-			@Override
-			public E nextSupplier() {
-				if (returnHead) {
-					returnHead = false;
-					return currentValue();
-				}
-				return advanceForward();
-			}
+            @Override
+            public E nextSupplier() {
+                if (returnHead) {
+                    returnHead = false;
+                    return currentValue();
+                }
+                return advanceForward();
+            }
 
-			@Override
-			public void remove() {
-				AbstractIterableList.this.removeCurrentValue();
-			}
-		};
+            @Override
+            public void remove() {
+                AbstractIterableList.this.removeCurrentValue();
+            }
+        };
 	}
 
 	@Override
 	public Iterable<E> reversed() {
 		resetCurrentTail();
-		return () -> new Iterables.Lockable<E>() {
+		return () -> new Iterables.Lockable<>() {
             boolean returnTail = true;
 
             @Override

@@ -28,7 +28,7 @@ class TerminalNode<I, O> extends AbstractNode<O, O> implements Iterable<O>{
     public Iterator<O> iterator() {
         return (head == null) ?
                 (Iterator<O>) sourceIterable.iterator() :
-                new Iterables.Lockable<O>() {
+                new Iterables.Lockable<>() {
                     Iterator<I> source = sourceIterable.iterator();
                     boolean sourceHasNext = false;
                     O current;

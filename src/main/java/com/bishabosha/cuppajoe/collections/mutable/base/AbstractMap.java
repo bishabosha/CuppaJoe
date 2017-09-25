@@ -58,7 +58,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V>{
     }
 
     public Set<K> keySet() {
-        return new BasicSet<K>() {
+        return new BasicSet<>() {
 
             @Override
             public boolean contains(Object o) {
@@ -84,7 +84,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V>{
 
             @Override
             public Iterator<K> iterator() {
-                return new Iterator<K>() {
+                return new Iterator<>() {
 
                     private Iterator<? extends Entry<K, V>> it = data.iterator();
 
@@ -104,7 +104,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V>{
 
     @Override
     public Set<Entry<K, V>> entrySet() {
-        return new BasicSet<Entry<K,V>>() {
+        return new BasicSet<>() {
             {
                 store = data;
             }
@@ -113,7 +113,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V>{
 
     @Override
     public Collection<V> values() {
-        return new BasicSet<V>() {
+        return new BasicSet<>() {
 
             @Override
             public boolean contains(Object o) {
@@ -122,7 +122,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V>{
 
             @Override
             public boolean remove(Object o) {
-                for (Entry<K, V> entry: data) {
+                for (Entry<K, V> entry : data) {
                     if (entry.getValue().equals(o)) {
                         data.remove(entry);
                         return true;
@@ -143,7 +143,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V>{
 
             @Override
             public Iterator<V> iterator() {
-                return new Iterator<V>() {
+                return new Iterator<>() {
 
                     private Iterator<? extends Entry<K, V>> it = data.iterator();
 

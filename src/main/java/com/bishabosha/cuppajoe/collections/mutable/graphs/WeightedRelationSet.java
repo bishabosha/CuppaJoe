@@ -104,40 +104,40 @@ public class WeightedRelationSet<N, W> extends RelationSet<N> implements Weighte
 	}
 
 	public Iterable<Entry<N, W>> weightedEntries() {
-		return () -> new Iterator<Entry<N, W>>() {
-			Iterator<N> leapIt = WeightedRelationSet.super.iterator();
-			Iterator<Entry<N, W>> weightedIt = weightedRelations.entrySet().iterator();
-			boolean useLeaps = true;
+		return () -> new Iterator<>() {
+            Iterator<N> leapIt = WeightedRelationSet.super.iterator();
+            Iterator<Entry<N, W>> weightedIt = weightedRelations.entrySet().iterator();
+            boolean useLeaps = true;
 
-			@Override
-			public boolean hasNext() {
-				return useLeaps ? useLeaps = leapIt.hasNext() : weightedIt.hasNext();
-			}
+            @Override
+            public boolean hasNext() {
+                return useLeaps ? useLeaps = leapIt.hasNext() : weightedIt.hasNext();
+            }
 
-			@Override
-			public Entry<N, W> next() {
-				return useLeaps ? new MapEntry<>(leapIt.next(), null) : weightedIt.next();
-			}
-		};
+            @Override
+            public Entry<N, W> next() {
+                return useLeaps ? new MapEntry<>(leapIt.next(), null) : weightedIt.next();
+            }
+        };
 	}
 
 	@Override
 	public Iterator<N> iterator() {
-		return new Iterator<N>() {
-			Iterator<N> leapIt = WeightedRelationSet.super.iterator();
-			Iterator<N> weightedIt = weightedRelations.keySet().iterator();
-			boolean useLeaps = true;
+		return new Iterator<>() {
+            Iterator<N> leapIt = WeightedRelationSet.super.iterator();
+            Iterator<N> weightedIt = weightedRelations.keySet().iterator();
+            boolean useLeaps = true;
 
-			@Override
-			public boolean hasNext() {
-				return useLeaps ? useLeaps = leapIt.hasNext() : weightedIt.hasNext();
-			}
+            @Override
+            public boolean hasNext() {
+                return useLeaps ? useLeaps = leapIt.hasNext() : weightedIt.hasNext();
+            }
 
-			@Override
-			public N next() {
-				return useLeaps ? leapIt.next() : weightedIt.next();
-			}
-		};
+            @Override
+            public N next() {
+                return useLeaps ? leapIt.next() : weightedIt.next();
+            }
+        };
 	}
 
 	public String toString() {

@@ -11,7 +11,7 @@ public interface Bunch<O> extends Value<O> {
 
     @Override
     default boolean isAtMaxSingleElement() {
-        return true;
+        return false;
     }
 
     default boolean contains(O obj) {

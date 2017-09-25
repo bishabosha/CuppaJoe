@@ -66,7 +66,7 @@ public interface Iterables {
     }
 
     static <E> Iterator<E> singletonIt(Supplier<? extends E> supplier) {
-        return new Iterator<E>() {
+        return new Iterator<>() {
             boolean unwrapped = false;
 
             @Override
@@ -89,8 +89,7 @@ public interface Iterables {
     @Contract(pure = true)
     @SafeVarargs
     static <E> Iterable<E> ofSuppliers(Supplier<E>... suppliers) {
-        return () -> new Lockable<E>() {
-
+        return () -> new Lockable<>() {
             private int i = 0;
 
             @Override
@@ -109,7 +108,7 @@ public interface Iterables {
     @Contract(pure = true)
     @SafeVarargs
     static <E> Iterable<E> concat(Iterable<E>... iterables) {
-        return () -> new Lockable<E>() {
+        return () -> new Lockable<>() {
             Iterator<E> current;
             int i = 0;
 
@@ -119,7 +118,7 @@ public interface Iterables {
                         || getNext();
             }
 
-            public boolean getNext() {
+            private boolean getNext() {
                 while (i < iterables.length) {
                     if ((current = iterables[i++].iterator()).hasNext()) {
                         return true;
@@ -144,9 +143,9 @@ public interface Iterables {
     @NotNull
     @Contract(pure = true)
     static <R> Iterable<R> iterate(R identity,
-                                          Predicate<R> terminatingCondition,
-                                          UnaryOperator<R> accumulator) {
-        return () -> new Lockable<R>() {
+            Predicate<R> terminatingCondition,
+            UnaryOperator<R> accumulator) {
+        return () -> new Lockable<>() {
             private R current = identity;
 
             @Override
@@ -163,7 +162,7 @@ public interface Iterables {
     }
 
     static <R> Iterable<R> fromOptional(Optional<R> optional) {
-        return () -> new Iterator<R>() {
+        return () -> new Iterator<>() {
 
             private boolean unWrapped = false;
 
@@ -244,7 +243,7 @@ public interface Iterables {
         return (Iterator<O>) EMPTY_ITERATOR;
     }
 
-    Iterator<Object> EMPTY_ITERATOR = new Iterator<Object>() {
+    Iterator<Object> EMPTY_ITERATOR = new Iterator<>() {
         @Override
         public boolean hasNext() {
             return false;
@@ -258,7 +257,7 @@ public interface Iterables {
 
 
     static <R> Iterable<R> wrap(R[] values) {
-        return () -> new Lockable<R>() {
+        return () -> new Lockable<>() {
 
             private int i = 0;
 
@@ -279,7 +278,7 @@ public interface Iterables {
     }
 
     static <R> Iterable<R> cycle(Iterable<R> source) {
-        return () -> new Lockable<R>() {
+        return () -> new Lockable<>() {
 
             Iterator<R> it = getIt();
 
