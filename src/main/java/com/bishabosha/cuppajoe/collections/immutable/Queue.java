@@ -92,7 +92,7 @@ public class Queue<E> implements Foldable<E> {
     }
 
     @Override
-    public <A> A foldRight(A accumulator, Func2<E, A, A> mapper) {
+    public <A> A foldRight(A accumulator, Func2<A, E, A> mapper) {
         return reverse().fold(accumulator, mapper);
     }
 

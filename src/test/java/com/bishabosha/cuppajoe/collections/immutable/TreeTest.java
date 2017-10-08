@@ -24,10 +24,6 @@ public class TreeTest {
             Tree.of(4, 3, 6, 1, 2, 5).inOrder(),
             contains(1, 2, 3, 4, 5, 6)
         );
-//        assertThat(
-//            Tree.of(4, 3, 6, 1, 2, 5).inOrder().reverse(),
-//            contains(6, 5, 4, 3, 2, 1)
-//        );
         assertThat(
             Tree.leaf().inOrder(),
             emptyIterable()

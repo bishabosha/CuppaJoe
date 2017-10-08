@@ -105,7 +105,7 @@ public interface List<E> extends Seq<E>, Unapply2<E, List<E>> {
 
     @Override
     default List<E> append(E elem) {
-        return foldRight(of(elem), (E x, List<E> xs) -> xs.push(x));
+        return foldRight(of(elem), (List<E> xs, E x) -> xs.push(x));
     }
 
     default <U> Option<U> pop(Case<Product2<E, List<E>>, U> matcher) {
@@ -119,7 +119,7 @@ public interface List<E> extends Seq<E>, Unapply2<E, List<E>> {
      */
     @Override
     default List<E> remove(E elem) {
-        return fold(empty(), (E x, List<E> xs) -> Objects.equals(x, elem) ? xs : xs.push(x)).reverse();
+        return fold(empty(), (List<E> xs, E x) -> Objects.equals(x, elem) ? xs : xs.push(x)).reverse();
     }
 
     /**
@@ -363,7 +363,7 @@ public interface List<E> extends Seq<E>, Unapply2<E, List<E>> {
 
         @Override
         public <R> Value<R> map(Function<? super E, ? extends R> mapper) {
-            return foldRight(empty(), (E x, List<R> xs) -> xs.push(mapper.apply(x))).reverse();
+            return foldRight(empty(), (List<R> xs, E x) -> xs.push(mapper.apply(x))).reverse();
         }
 
         /**

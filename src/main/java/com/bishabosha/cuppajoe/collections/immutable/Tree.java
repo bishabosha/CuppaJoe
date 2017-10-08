@@ -167,7 +167,7 @@ public class Tree<E extends Comparable<E>> {
     }
 
     public int size() {
-        return inOrder().fold(0, (x, acc) -> acc + 1);
+        return inOrder().fold(0, (acc, x) -> acc + 1);
     }
 
     /**
@@ -256,21 +256,14 @@ public class Tree<E extends Comparable<E>> {
     }
 
     public List<E> toList() {
-        return inOrder().foldRight(List(), (x, xs) -> xs.push(x));
-    }
-
-    public java.util.List<E> toJavaList() {
-        return inOrder().fold(new ArrayList<>(), (x, xs) -> {
-            xs.add(x);
-            return xs;
-        });
+        return inOrder().foldRight(List(), (xs, x) -> xs.push(x));
     }
 
     public Foldable<E> inOrder() {
         return new Foldable<>() {
 
             @Override
-            public <A> A foldRight(A accumulator, Func2<E, A, A> mapper) {
+            public <A> A foldRight(A accumulator, Func2<A, E, A> mapper) {
                 return Foldable.foldOver(reverse(), accumulator, mapper);
             }
 
@@ -353,52 +346,33 @@ public class Tree<E extends Comparable<E>> {
         };
     }
 
-    public Foldable<E> levelOrder() {
-        return new Foldable<>() {
+    public Iterable<E> levelOrder() {
+        return () -> new Iterables.Lockable<>() {
+
+            private Queue<Tree<E>> queue = Queue.of(Tree.this);
+            private E toReturn;
 
             @Override
-            public <A> A foldRight(A accumulator, Func2<E, A, A> mapper) {
-                return Foldable.foldOver(reverse(), accumulator, mapper);
+            public boolean hasNextSupplier() {
+                return queue.dequeue(with(Tuple2(Node($n, $l, $r), $xs), this::processPopped))
+                            .orElse(false);
             }
 
-            private Iterable<E> reverse() {
-                return fold(List.empty(), (E x, List<E> xs) -> xs.push(x));
+            private boolean processPopped(E node, Tree<E> left, Tree<E> right, Queue<Tree<E>> remaining) {
+                toReturn = node;
+                if (!left.isLeaf()) {
+                    remaining = remaining.enqueue(left);
+                }
+                if (!right.isLeaf()) {
+                    remaining = remaining.enqueue(right);
+                }
+                queue = remaining;
+                return true;
             }
 
             @Override
-            public Iterator<E> iterator() {
-                return levelOrderTraversal();
-            }
-
-            private Iterator<E> levelOrderTraversal() {
-                return new Iterables.Lockable<>() {
-
-                    private Queue<Tree<E>> queue = Queue.of(Tree.this);
-                    private E toReturn;
-
-                    @Override
-                    public boolean hasNextSupplier() {
-                        return queue.dequeue(with(Tuple2(Node($n, $l, $r), $xs), this::processPopped))
-                                .orElse(false);
-                    }
-
-                    private boolean processPopped(E node, Tree<E> left, Tree<E> right, Queue<Tree<E>> remaining) {
-                        toReturn = node;
-                        if (!left.isLeaf()) {
-                            remaining = remaining.enqueue(left);
-                        }
-                        if (!right.isLeaf()) {
-                            remaining = remaining.enqueue(right);
-                        }
-                        queue = remaining;
-                        return true;
-                    }
-
-                    @Override
-                    public E nextSupplier() {
-                        return toReturn;
-                    }
-                };
+            public E nextSupplier() {
+                return toReturn;
             }
         };
     }

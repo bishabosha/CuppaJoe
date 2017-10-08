@@ -74,7 +74,7 @@ public class PatternResult extends AbstractBase<Object> {
      * @return A Tuple4 fromList unknown type that contains only singleton values
      */
     public PatternResult flatten() {
-        list = Library.flatten(PatternResult.class, this);
+        list = Library.foldLeft(PatternResult.class, this);
         return this;
     }
 }

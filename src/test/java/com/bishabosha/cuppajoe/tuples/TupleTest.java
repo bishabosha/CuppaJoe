@@ -4,9 +4,12 @@
 
 package com.bishabosha.cuppajoe.tuples;
 
+import com.bishabosha.cuppajoe.Foldable;
+import com.bishabosha.cuppajoe.Library;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static com.bishabosha.cuppajoe.API.Tuple;
@@ -15,9 +18,21 @@ public class TupleTest {
 
     @Test
     public void testFlatten() {
+        Product toFlatten = Tuple(Tuple(Tuple(Tuple("Hi"), Tuple("there", Tuple()), Tuple()), "World"));
         Assert.assertEquals(
             Arrays.asList("Hi", "there", "World"),
-            Tuple(Tuple(Tuple(Tuple("Hi"), Tuple("there", Unit.UNIT), Unit.UNIT), "World")).flatten()
+            toFlatten.flatten()
+        );
+        Assert.assertEquals(
+            Arrays.asList("Hi", "there", "World"),
+            Foldable.foldOver(
+                Library.inOrder(Product.class, toFlatten),
+                new ArrayList<>(),
+                (xs, x) -> {
+                    xs.add(x);
+                    return xs;
+                }
+            )
         );
     }
 

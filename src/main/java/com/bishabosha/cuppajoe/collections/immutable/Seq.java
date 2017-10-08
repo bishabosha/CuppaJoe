@@ -30,7 +30,7 @@ public interface Seq<E> extends Bunch<E>, Foldable<E> {
     Seq<E> remove(E elem);
 
     @Override
-    default <A> A foldRight(A accumulator, Func2<E, A, A> mapper) {
+    default <A> A foldRight(A accumulator, Func2<A, E, A> mapper) {
         return reverse().fold(accumulator, mapper);
     }
 }

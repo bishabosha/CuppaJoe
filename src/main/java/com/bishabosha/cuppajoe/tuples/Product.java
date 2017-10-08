@@ -18,7 +18,7 @@ public interface Product extends Iterable<Object> {
     }
 
     default List<Object> flatten() {
-        return Library.flatten(Product.class, this);
+        return Library.foldLeft(Product.class, this);
     }
 
     default boolean contains(Object o) {
