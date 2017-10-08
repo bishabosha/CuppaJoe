@@ -20,14 +20,20 @@ public class QueueTest {
 
     @Test
     public void elements_dequeued_when_added_to_empty() {
-        assertTrue(!Queue.empty().enqueue(1).dequeue().map(t -> Objects.nonNull(t.$1())).orElse(false));
+        assertTrue(
+            Queue.<Integer>empty()
+                 .enqueue(1)
+                 .dequeue()
+                 .map(t -> t.$1() == 1)
+                 .orElse(false)
+        );
     }
 
     @Test
     public void iterate_over_of() {
         assertThat(
             Queue.of(1, 2, 3, 4, 5),
-            contains(Some(1), Some(2), Some(3), Some(4), Some(5))
+            contains(1, 2, 3, 4, 5)
         );
     }
 
@@ -35,11 +41,11 @@ public class QueueTest {
     public void iterate_over_empty_concat() {
         assertThat(
             Queue.empty().enqueue(1).enqueue(2).enqueue(3).enqueue(4).enqueue(5),
-            contains(Some(1), Some(2), Some(3), Some(4), Some(5))
+            contains(1, 2, 3, 4, 5)
         );
         assertThat(
             Queue.empty().enqueueAll(1, 2, 3, 4, 5),
-            contains(Some(1), Some(2), Some(3), Some(4), Some(5))
+            contains(1, 2, 3, 4, 5)
         );
     }
 

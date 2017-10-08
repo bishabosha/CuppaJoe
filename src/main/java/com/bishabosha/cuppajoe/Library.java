@@ -33,7 +33,7 @@ public final class Library {
         return List.concat(toFlatten.iterator(), List()).loop(
                 ArrayList::new,
                 (list, stack, it) -> {
-                    if (!Objects.nonNull(it)) {
+                    if (Objects.nonNull(it)) {
                         final T current;
                         if (it.hasNext()) {
                             current = it.next();

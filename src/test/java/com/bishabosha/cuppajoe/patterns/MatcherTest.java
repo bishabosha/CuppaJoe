@@ -111,16 +111,16 @@ public class MatcherTest {
     }
 
     Tree<Integer> getTree() {
-        return Tree.Node(
+        return Node(
             0,
-            Tree.Node(
+            Node(
             -1,
-                Tree.Node(
+                Node(
                 -2,
                     leaf(),
                     leaf()),
                 leaf()),
-            Tree.Node(
+            Node(
                 1,
                 leaf(),
                 leaf())
@@ -131,7 +131,7 @@ public class MatcherTest {
     public void testPatterns() {
 
         Tree<Integer> tree = getTree();
-        Tree<Integer> leaf = Tree.Node(25, leaf(), leaf());
+        Tree<Integer> leaf = Node(25, leaf(), leaf());
 
         Assert.assertEquals(
             Option.of(1),
@@ -140,7 +140,7 @@ public class MatcherTest {
             )
         );
         Assert.assertEquals(
-            Tree.Node(1, leaf(), leaf()),
+            Node(1, leaf(), leaf()),
             Match(tree).option(
                 with(Node(¥_, ¥_, $r), $r -> $r)
             ).get()
@@ -181,13 +181,13 @@ public class MatcherTest {
         );
         Tree<String> hello = ((Tree<String>) leaf()).add("Hello");
         Assert.assertEquals(
-            Tree.Node("Hello", leaf(), leaf()),
+            Node("Hello", leaf(), leaf()),
             hello
         );
     }
 
     Tree<Integer> makeTree(int x, Tree<Integer> left, Tree<Integer> right) {
-        return Tree.Node(x, left, right);
+        return Node(x, left, right);
     }
 
     int sumNodes(Tree<Integer> x, Tree<Integer> y) {

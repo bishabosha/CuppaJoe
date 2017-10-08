@@ -167,7 +167,7 @@ public class Tree<E extends Comparable<E>> {
     }
 
     public int size() {
-        return inOrder().fold(0, (x, y) -> y + 1);
+        return inOrder().fold(0, (x, acc) -> acc + 1);
     }
 
     /**
@@ -275,12 +275,12 @@ public class Tree<E extends Comparable<E>> {
             }
 
             private Iterable<E> reverse() {
-                return () -> inOrderTraversal(Tuple2(Some(Node($n, $l, ¥_)), $xs), Tree::right);
+                return () -> inOrderTraversal(Tuple2(Node($n, $l, ¥_), $xs), Tree::right);
             }
 
             @Override
             public Iterator<E> iterator() {
-                return inOrderTraversal(Tuple2(Some(Node($n, ¥_, $r)), $xs), Tree::left);
+                return inOrderTraversal(Tuple2(Node($n, ¥_, $r), $xs), Tree::left);
             }
 
             /**
@@ -303,7 +303,7 @@ public class Tree<E extends Comparable<E>> {
                             current = brancher.apply(current);
                         }
                         return stack.pop(with(extractor, this::processPopped))
-                                .orElse(false);
+                                    .orElse(false);
                     }
 
                     private boolean processPopped(E head, Tree<E> nextTree, List<Tree<E>> tail) {
@@ -330,8 +330,8 @@ public class Tree<E extends Comparable<E>> {
 
             @Override
             public boolean hasNextSupplier() {
-                return stack.pop(with(Tuple2(Some(Node($n, $l, $r)), $xs), this::processPopped))
-                        .orElse(false);
+                return stack.pop(with(Tuple2(Node($n, $l, $r), $xs), this::processPopped))
+                            .orElse(false);
             }
 
             private boolean processPopped(E node, Tree<E> left, Tree<E> right, List<Tree<E>> tail) {
@@ -378,7 +378,7 @@ public class Tree<E extends Comparable<E>> {
 
                     @Override
                     public boolean hasNextSupplier() {
-                        return queue.dequeue(with(Tuple2(Some(Node($n, $l, $r)), $xs), this::processPopped))
+                        return queue.dequeue(with(Tuple2(Node($n, $l, $r), $xs), this::processPopped))
                                 .orElse(false);
                     }
 
@@ -414,19 +414,19 @@ public class Tree<E extends Comparable<E>> {
             public boolean hasNextSupplier() {
                 final Product2<Option<E>, List<Object>> nextItem;
                 nextItem = stack.nextItem((x, xs) -> Match(x).of(
-                        with(Some(Leaf()), () -> Tuple(Left(false), xs)),
-                        with(Some(Node($n, $l, $r)), (E $n, Tree<E> $l, Tree<E> $r) -> {
-                            List<Object> zs = xs;
-                            zs = zs.push($n);
-                            if (!$r.isLeaf()) {
-                                zs = zs.push($r);
-                            }
-                            if (!$l.isLeaf()) {
-                                zs = zs.push($l);
-                            }
-                            return Tuple(Left(true), zs);
-                        }),
-                        with(Some($x), (E $x) -> Tuple(Right($x), xs))
+                    with(Leaf(), () -> Tuple(Left(false), xs)),
+                    with(Node($n, $l, $r), (E $n, Tree<E> $l, Tree<E> $r) -> {
+                        List<Object> zs = xs;
+                        zs = zs.push($n);
+                        if (!$r.isLeaf()) {
+                            zs = zs.push($r);
+                        }
+                        if (!$l.isLeaf()) {
+                            zs = zs.push($l);
+                        }
+                        return Tuple(Left(true), zs);
+                    }),
+                    with($x, (E $x) -> Tuple(Right($x), xs))
                 ));
                 stack = nextItem.$2();
                 toReturn = nextItem.$1().orElse(null);
