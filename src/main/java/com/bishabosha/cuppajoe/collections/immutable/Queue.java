@@ -117,7 +117,7 @@ public class Queue<E> implements Foldable<E>, Bunch<E> {
     public boolean equals(Object obj) {
         return obj == this || !Option.of(obj)
             .cast(Queue.class)
-            .filter(q -> allMatch(q, Objects::equals))
+            .filter(q -> allMatchExhaustive(q, Objects::equals))
             .isEmpty();
     }
 

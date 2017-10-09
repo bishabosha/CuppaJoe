@@ -391,7 +391,7 @@ public interface List<E> extends Seq<E>, Unapply2<E, List<E>> {
         public boolean equals(Object obj) {
             return obj == this ? true : Option.of(obj)
                 .cast(Cons.class)
-                .map(l -> allMatch(l, Objects::equals))
+                .map(l -> allMatchExhaustive(l, Objects::equals))
                 .orElse(false);
         }
 

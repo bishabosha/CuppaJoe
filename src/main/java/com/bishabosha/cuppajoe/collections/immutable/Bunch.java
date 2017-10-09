@@ -50,12 +50,20 @@ public interface Bunch<O> extends Value<O> {
     }
 
     default <R> boolean allMatch(Iterable<R> other, BiPredicate<? super O, ? super R> test) {
+        return allMatch(false, other, test);
+    }
+
+    default <R> boolean allMatchExhaustive(Iterable<R> other, BiPredicate<? super O, ? super R> test) {
+        return allMatch(true, other, test);
+    }
+
+    private <R> boolean allMatch(boolean checkExhaustion, Iterable<R> other, BiPredicate<? super O, ? super R> test) {
         Iterator<R> otherVals = other.iterator();
         for (O elem: this) {
             if (!otherVals.hasNext() || !test.test(elem, otherVals.next())) {
                 return false;
             }
         }
-        return true;
+        return !(checkExhaustion && otherVals.hasNext());
     }
 }
