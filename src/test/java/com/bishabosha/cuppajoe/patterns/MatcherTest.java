@@ -13,12 +13,14 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import static com.bishabosha.cuppajoe.API.Match;
-import static com.bishabosha.cuppajoe.control.Some.Some;
+import static com.bishabosha.cuppajoe.collections.immutable.Tree.Leaf.¥Leaf;
+import static com.bishabosha.cuppajoe.collections.immutable.Tree.Node.$Node;
+import static com.bishabosha.cuppajoe.control.Some.$Some;
 import static com.bishabosha.cuppajoe.patterns.Matcher.guardUnsafe;
 import static com.bishabosha.cuppajoe.patterns.Pattern.*;
 import static com.bishabosha.cuppajoe.patterns.Case.*;
 import static com.bishabosha.cuppajoe.API.Tuple;
-import static com.bishabosha.cuppajoe.tuples.Tuple2.Tuple2;
+import static com.bishabosha.cuppajoe.tuples.Tuple2.$Tuple2;
 import static com.bishabosha.cuppajoe.collections.immutable.Tree.*;
 
 public class MatcherTest {
@@ -136,31 +138,31 @@ public class MatcherTest {
         Assert.assertEquals(
             Option.of(1),
             Match(tree).option(
-                with(Node($x, ¥_, ¥_), (Integer $x) -> $x + 1)
+                with($Node($x, ¥_, ¥_), (Integer $x) -> $x + 1)
             )
         );
         Assert.assertEquals(
             Node(1, leaf(), leaf()),
             Match(tree).option(
-                with(Node(¥_, ¥_, $r), $r -> $r)
+                with($Node(¥_, ¥_, $r), $r -> $r)
             ).get()
         );
         Assert.assertEquals(
             Option.of(0),
             Match(tree).option(
-                with(Node(¥_, $x, $y), this::sumNodes)
+                with($Node(¥_, $x, $y), this::sumNodes)
             )
         );
         Assert.assertEquals(
             tree,
             Match(tree).of(
-                with(Node($x, $y, $z), this::makeTree)
+                with($Node($x, $y, $z), this::makeTree)
             )
         );
         Assert.assertEquals(
             Option.of(25),
             Match(leaf).option(
-                with(Node($x, Leaf(), Leaf()), $x -> $x)
+                with($Node($x, ¥Leaf(), ¥Leaf()), $x -> $x)
             )
         );
     }
@@ -192,10 +194,10 @@ public class MatcherTest {
 
     int sumNodes(Tree<Integer> x, Tree<Integer> y) {
         return Match(Tuple(x, y)).of(
-            with(Tuple2(Leaf(), Leaf()),                                             () -> 0),
-            with(Tuple2(Node($n, ¥_, ¥_), Node($n, ¥_, ¥_)), (Integer $n1, Integer $n2) -> $n1 + $n2),
-            with(Tuple2(Leaf(), Node($n, ¥_, ¥_)),                         (Integer $n) -> $n),
-            with(Tuple2(Node($n, ¥_, ¥_), Leaf()),                         (Integer $n) -> $n)
+            with($Tuple2(¥Leaf(), ¥Leaf()),                                             () -> 0),
+            with($Tuple2($Node($n, ¥_, ¥_), $Node($n, ¥_, ¥_)), (Integer $n1, Integer $n2) -> $n1 + $n2),
+            with($Tuple2(¥Leaf(), $Node($n, ¥_, ¥_)),                         (Integer $n) -> $n),
+            with($Tuple2($Node($n, ¥_, ¥_), ¥Leaf()),                         (Integer $n) -> $n)
         );
     }
 
@@ -224,7 +226,7 @@ public class MatcherTest {
         Assert.assertEquals(
             10,
                 (int) Match(option).of(
-                with(Some($x), (Integer $x) -> guardUnsafe(
+                with($Some($x), (Integer $x) -> guardUnsafe(
                     when(() -> $x > 5, () -> $x)
                 ))
             )

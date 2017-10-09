@@ -10,67 +10,37 @@ import com.bishabosha.cuppajoe.functions.Func2;
 import com.bishabosha.cuppajoe.patterns.Pattern;
 import com.bishabosha.cuppajoe.API;
 import com.bishabosha.cuppajoe.Foldable;
-import com.bishabosha.cuppajoe.Library;
 import com.bishabosha.cuppajoe.tuples.Product2;
+import org.jetbrains.annotations.Contract;
 
-import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.UnaryOperator;
 
 import static com.bishabosha.cuppajoe.API.*;
 import static com.bishabosha.cuppajoe.API.Tuple;
-import static com.bishabosha.cuppajoe.control.Some.Some;
+import static com.bishabosha.cuppajoe.collections.immutable.Tree.Leaf.¥Leaf;
+import static com.bishabosha.cuppajoe.collections.immutable.Tree.Node.$Node;
 import static com.bishabosha.cuppajoe.patterns.Case.*;
 import static com.bishabosha.cuppajoe.patterns.Matcher.guardUnsafe;
 import static com.bishabosha.cuppajoe.patterns.Pattern.*;
 import static com.bishabosha.cuppajoe.patterns.PatternFactory.patternFor;
-import static com.bishabosha.cuppajoe.tuples.Tuple2.Tuple2;
+import static com.bishabosha.cuppajoe.tuples.Tuple2.$Tuple2;
 
 /**
  * Immutable tree
  * @param <E> the type that the Tree contains
  */
-public class Tree<E extends Comparable<E>> {
+public interface Tree<E extends Comparable<E>> {
 
-    /**
-     * Singleton instance of the leaf node
-     */
-    private static final Tree<?> TREE_LEAF = new Tree<>(null, null, null);
-
-
-    /**
-     * This will check {@link Tree#node} {@link Tree#left} and {@link Tree#right} for <b>null</b> without binding.
-     */
-    public static final Pattern Leaf() {
-        return x -> Option.of(x)
-                          .cast(Tree.class)
-                          .filter(Tree::isLeaf)
-                          .flatMap(t -> Pattern.PASS);
-    }
-
-    /**
-     * For use after {@link Tree#Leaf()}. This will apply patterns to {@link Tree#node} {@link Tree#left} and {@link Tree#right}
-     * @param node The pattern to check the node
-     * @param left The pattern to check the left sub tree
-     * @param right The pattern to check the right sub tree
-     * @return <b>Option&lt;PatternResult&gt;</b> if all patterns pass, otherwise {@link API#Nothing()}
-     */
-    public static Pattern Node(Pattern node, Pattern left, Pattern right) {
-        return patternFor(Tree.class).testThree(
-            Tuple(node, x -> x.node),
-            Tuple(left, x -> x.left),
-            Tuple(right, x -> x.right)
-        );
-    }
-
-    private E node;
-    private Tree<E> left;
-    private Tree<E> right;
+    E node();
+    Tree<E> left();
+    Tree<E> right();
 
     @SafeVarargs
-    public static <R extends Comparable<R>> Tree<R> of(R... elems) {
-        Tree<R> tree = leaf();
+    static <R extends Comparable<R>> Tree<R> of(R... elems) {
+        Tree<R> tree = Leaf.getInstance();
         for (R elem: elems) {
             tree = tree.add(elem);
         }
@@ -78,11 +48,11 @@ public class Tree<E extends Comparable<E>> {
     }
 
     /**
-     * Returns the static {@link Tree#TREE_LEAF} instance.
+     * Returns the static {@link Leaf#LEAF} instance.
      * @param <R> The type that the tree encapsulates.
      */
-    public static <R extends Comparable<R>> Tree<R> leaf() {
-        return (Tree<R>) TREE_LEAF;
+    static <R extends Comparable<R>> Tree<R> leaf() {
+        return Leaf.getInstance();
     }
 
     /**
@@ -94,29 +64,8 @@ public class Tree<E extends Comparable<E>> {
      * @return the new {@link Tree} instance.
      * @throws NullPointerException if node, left or right are null.
      */
-    public static <R extends Comparable<R>> Tree<R> Node(R node, Tree<R> left, Tree<R> right) {
-        return new Tree<>(Objects.requireNonNull(node), Objects.requireNonNull(left), Objects.requireNonNull(right));
-    }
-
-    public Tree<E> left() {
-        return left;
-    }
-
-    public Tree<E> right() {
-        return right;
-    }
-
-    public E node() {
-        return node;
-    }
-
-    /**
-     * Private Tree constructor for creating {@link Tree} instances
-     */
-    private Tree(E node, Tree<E> left, Tree<E> right) {
-        this.node = node;
-        this.left = left;
-        this.right = right;
+    static <R extends Comparable<R>> Tree<R> Node(R node, Tree<R> left, Tree<R> right) {
+        return Node.of(Objects.requireNonNull(node), Objects.requireNonNull(left), Objects.requireNonNull(right));
     }
 
     /**
@@ -125,16 +74,16 @@ public class Tree<E extends Comparable<E>> {
      * @return true if there is a node in the tree that equals elem.
      * @throws NullPointerException if elem is null.
      */
-    public boolean contains(E elem) {
+    default boolean contains(E elem) {
         if (Objects.isNull(elem)) {
             return false;
         }
         return guardUnsafe(
-            when(this::isLeaf, () -> false),
-            edge(() -> Match(elem.compareTo(node)).of(
+            when(this::isEmpty, () -> false),
+            edge(() -> Match(elem.compareTo(node())).of(
                 with(¥EQ, () -> true),
-                with(¥LT, () -> left.contains(elem)),
-                with(¥GT, () -> right.contains(elem))
+                with(¥LT, () -> left().contains(elem)),
+                with(¥GT, () -> right().contains(elem))
             ))
         );
     }
@@ -143,30 +92,34 @@ public class Tree<E extends Comparable<E>> {
      * Checks if there are no nodes in this Tree.
      * @return true if it is a leaf node
      */
-    public boolean isLeaf() {
-        return this == TREE_LEAF || Library.allEqual(null, node, left, right);
+    default boolean isEmpty() {
+        return this == Leaf.LEAF;
     }
 
     /**
-     * Gets the root of this tree
-     * @return {@link API#Nothing()} if this is a leaf, otherwise {@link Option} of the root value.
+     * Gets the first in order element of this tree.
+     * @throws java.util.NoSuchElementException if a leaf.
      */
-    public Option<E> root() {
-        return isLeaf() ? Nothing() : API.Some(node);
+    default E get() {
+        Iterator<E> inOrder = inOrder().iterator();
+        if (!inOrder.hasNext()) {
+            throw new NoSuchElementException();
+        }
+        return inOrder.next();
     }
 
     /**
      * Gets the height of this tree
      * @return int the height of this tree.
      */
-    public int height() {
+    default int height() {
         return guardUnsafe(
-            when(this::isLeaf, () -> 0),
-            edge(              () -> 1 + Math.max(left.height(), right.height()))
+            when(this::isEmpty, () -> 0),
+            edge(               () -> 1 + Math.max(left().height(), right().height()))
         );
     }
 
-    public int size() {
+    default int size() {
         return inOrder().fold(0, (acc, x) -> acc + 1);
     }
 
@@ -174,11 +127,11 @@ public class Tree<E extends Comparable<E>> {
      * Removes the largest element of this Tree.
      * @return a new Tree instance with the largest element removed
      */
-    public Tree<E> deleteLargest() {
+    default Tree<E> deleteLargest() {
         return guardUnsafe(
-            when(this::isLeaf,  () -> leaf()),
-            when(right::isLeaf, () -> left),
-            edge(               () -> Node(node, left, right.deleteLargest()))
+            when(this::isEmpty,    () -> leaf()),
+            when(right()::isEmpty, () -> left()),
+            edge(                  () -> Node(node(), left(), right().deleteLargest()))
         );
     }
 
@@ -186,11 +139,11 @@ public class Tree<E extends Comparable<E>> {
      * Finds the largest value of this Tree.
      * @return {@link API#Nothing()} if this is a leaf, otherwise {@link Option} of the largest value.
      */
-    public Option<E> largest() {
+    default Option<E> largest() {
         return guardUnsafe(
-            when(this::isLeaf,  () -> Nothing()),
-            when(right::isLeaf, () -> API.Some(node)),
-            edge(               () -> right.largest())
+            when(this::isEmpty,    () -> Nothing()),
+            when(right()::isEmpty, () -> Some(node())),
+            edge(                  () -> right().largest())
         );
     }
 
@@ -199,14 +152,14 @@ public class Tree<E extends Comparable<E>> {
      * @return a new Tree instance with the element added.
      * @throws NullPointerException if elem is null.
      */
-    public Tree<E> add(E elem) {
+    default Tree<E> add(E elem) {
         Objects.requireNonNull(elem);
         return guardUnsafe(
-            when(this::isLeaf, () -> Node(elem, leaf(), leaf())),
-            edge(() -> Match(elem.compareTo(node)).of(
-                with(¥LT, () -> Node(node, left.add(elem), right)),
-                with(¥GT, () -> Node(node, left, right.add(elem))),
-                with(¥EQ, () -> Node(node, left, right))
+            when(this::isEmpty, () -> Node(elem, leaf(), leaf())),
+            edge(() -> Match(elem.compareTo(node())).of(
+                with(¥LT, () -> Node(node(), left().add(elem), right())),
+                with(¥GT, () -> Node(node(), left(), right().add(elem))),
+                with(¥EQ, () -> Node(node(), left(), right()))
             ))
         );
     }
@@ -216,50 +169,25 @@ public class Tree<E extends Comparable<E>> {
      * @param elem The element to remove
      * @return A new Tree instance with the element removed.
      */
-    public Tree<E> remove(E elem) {
+    default Tree<E> remove(E elem) {
         return Objects.isNull(elem) ? this : guardUnsafe(
-            when(this::isLeaf, Tree::leaf),
-            edge(() -> Match(elem.compareTo(node)).of(
-                with(¥LT, () -> Node(node, left.remove(elem), right)),
-                with(¥GT, () -> Node(node, left, right.remove(elem))),
+            when(this::isEmpty, Tree::leaf),
+            edge(() -> Match(elem.compareTo(node())).of(
+                with(¥LT, () -> Node(node(), left().remove(elem), right())),
+                with(¥GT, () -> Node(node(), left(), right().remove(elem))),
                 with(¥EQ, () -> guardUnsafe(
-                    when(() -> left == leaf(), () -> right),
-                    edge(                      () -> Node(left.largest().get(), left.deleteLargest(), right))
+                    when(left()::isEmpty, () -> right()),
+                    edge(                 () -> Node(left().largest().get(), left().deleteLargest(), right()))
                 ))
             ))
         );
     }
 
-    /**
-     * Checks if an object is the same instance, and if not, recursively checks each element for equality.
-     * @param obj
-     * @return
-     */
-    @Override
-    public boolean equals(Object obj) {
-        return obj == this ? true : Option(obj)
-                                      .cast(Tree.class)
-                                      .map(this::eq)
-                                      .orElse(false);
-    }
-
-    /**
-     * Recursively analyses if the other tree is the same
-     * @param tree The tree to check for equality
-     * @return true if the trees of.
-     */
-    private boolean eq(Tree tree) {
-        return guardUnsafe(
-            when(this::isLeaf, tree::isLeaf),
-            edge(() -> node.equals(tree.node) && left.eq(tree.left) && right.eq(tree.right))
-        );
-    }
-
-    public List<E> toList() {
+    default List<E> toList() {
         return inOrder().foldRight(List(), (xs, x) -> xs.push(x));
     }
 
-    public Foldable<E> inOrder() {
+    default Foldable<E> inOrder() {
         return new Foldable<>() {
 
             @Override
@@ -268,12 +196,12 @@ public class Tree<E extends Comparable<E>> {
             }
 
             private Iterable<E> reverse() {
-                return () -> inOrderTraversal(Tuple2(Node($n, $l, ¥_), $xs), Tree::right);
+                return () -> inOrderTraversal($Tuple2($Node($n, $l, ¥_), $xs), Tree::right);
             }
 
             @Override
             public Iterator<E> iterator() {
-                return inOrderTraversal(Tuple2(Node($n, ¥_, $r), $xs), Tree::left);
+                return inOrderTraversal($Tuple2($Node($n, ¥_, $r), $xs), Tree::left);
             }
 
             /**
@@ -291,7 +219,7 @@ public class Tree<E extends Comparable<E>> {
 
                     @Override
                     public boolean hasNextSupplier() {
-                        while (!current.isLeaf()) {
+                        while (!current.isEmpty()) {
                             stack = stack.push(current);
                             current = brancher.apply(current);
                         }
@@ -315,7 +243,7 @@ public class Tree<E extends Comparable<E>> {
         };
     }
 
-    public Iterable<E> preOrder() {
+    default Iterable<E> preOrder() {
         return () -> new Iterables.Lockable<>() {
 
             private List<Tree<E>> stack = List.of(Tree.this);
@@ -323,16 +251,16 @@ public class Tree<E extends Comparable<E>> {
 
             @Override
             public boolean hasNextSupplier() {
-                return stack.pop(with(Tuple2(Node($n, $l, $r), $xs), this::processPopped))
+                return stack.pop(with($Tuple2($Node($n, $l, $r), $xs), this::processPopped))
                             .orElse(false);
             }
 
             private boolean processPopped(E node, Tree<E> left, Tree<E> right, List<Tree<E>> tail) {
                 toReturn = node;
-                if (!right.isLeaf()) {
+                if (!right.isEmpty()) {
                     tail = tail.push(right);
                 }
-                if (!left.isLeaf()) {
+                if (!left.isEmpty()) {
                     tail = tail.push(left);
                 }
                 stack = tail;
@@ -346,7 +274,7 @@ public class Tree<E extends Comparable<E>> {
         };
     }
 
-    public Iterable<E> levelOrder() {
+    default Iterable<E> levelOrder() {
         return () -> new Iterables.Lockable<>() {
 
             private Queue<Tree<E>> queue = Queue.of(Tree.this);
@@ -354,16 +282,16 @@ public class Tree<E extends Comparable<E>> {
 
             @Override
             public boolean hasNextSupplier() {
-                return queue.dequeue(with(Tuple2(Node($n, $l, $r), $xs), this::processPopped))
+                return queue.dequeue(with($Tuple2($Node($n, $l, $r), $xs), this::processPopped))
                             .orElse(false);
             }
 
             private boolean processPopped(E node, Tree<E> left, Tree<E> right, Queue<Tree<E>> remaining) {
                 toReturn = node;
-                if (!left.isLeaf()) {
+                if (!left.isEmpty()) {
                     remaining = remaining.enqueue(left);
                 }
-                if (!right.isLeaf()) {
+                if (!right.isEmpty()) {
                     remaining = remaining.enqueue(right);
                 }
                 queue = remaining;
@@ -378,7 +306,7 @@ public class Tree<E extends Comparable<E>> {
     }
 
     @SuppressWarnings("unchecked")
-    public Iterable<E> postOrder() {
+    default Iterable<E> postOrder() {
         return () -> new Iterables.Lockable<>() {
 
             private List<Object> stack = List.of(Tree.this);
@@ -388,14 +316,14 @@ public class Tree<E extends Comparable<E>> {
             public boolean hasNextSupplier() {
                 final Product2<Option<E>, List<Object>> nextItem;
                 nextItem = stack.nextItem((x, xs) -> Match(x).of(
-                    with(Leaf(), () -> Tuple(Left(false), xs)),
-                    with(Node($n, $l, $r), (E $n, Tree<E> $l, Tree<E> $r) -> {
+                    with(¥Leaf(), () -> Tuple(Left(false), xs)),
+                    with($Node($n, $l, $r), (E $n, Tree<E> $l, Tree<E> $r) -> {
                         List<Object> zs = xs;
                         zs = zs.push($n);
-                        if (!$r.isLeaf()) {
+                        if (!$r.isEmpty()) {
                             zs = zs.push($r);
                         }
-                        if (!$l.isLeaf()) {
+                        if (!$l.isEmpty()) {
                             zs = zs.push($l);
                         }
                         return Tuple(Left(true), zs);
@@ -414,23 +342,137 @@ public class Tree<E extends Comparable<E>> {
         };
     }
 
-    @Override
-    public int hashCode() {
-        return hashCodeRec(1);
+    class Leaf<E extends Comparable<E>> implements Tree<E> {
+
+        /**
+         * Singleton instance of the leaf node
+         */
+        private static final Leaf<?> LEAF = new Leaf<>();
+
+        @Contract(pure = true)
+        @SuppressWarnings("unchecked")
+        public static <O extends Comparable<O>> Leaf<O> getInstance() {
+            return (Leaf<O>) LEAF;
+        }
+
+        /**
+         * This will check {@link Tree#node} {@link Tree#left} and {@link Tree#right} for <b>null</b> without binding.
+         */
+        public static Pattern ¥Leaf() {
+            return x -> x == Leaf.LEAF ? PASS : FAIL;
+        }
+
+        private Leaf() {
+        }
+
+        @Override
+        public E node() {
+            throw new NoSuchElementException();
+        }
+
+        @Override
+        public Tree<E> left() {
+            throw new NoSuchElementException();
+        }
+
+        @Override
+        public Tree<E> right() {
+            throw new NoSuchElementException();
+        }
+
+        @Override
+        public int height() {
+            return 0;
+        }
+
+        @Override
+        public int hashCode() {
+            return 0;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return obj == LEAF;
+        }
+
+        @Override
+        public String toString() {
+            return "[]";
+        }
     }
 
-    private int hashCodeRec(int hashCode) {
-        return guardUnsafe(
-            when(this::isLeaf, () -> hashCode),
-            edge(() -> {
-                int hash = 17 * hashCode + node.hashCode();
-                return hash + left.hashCodeRec(hash) + right.hashCodeRec(hash);
-            })
-        );
-    }
+    class Node<E extends Comparable<E>> implements Tree<E> {
 
-    @Override
-    public String toString() {
-        return Iterables.toString('[', ']', inOrder().iterator());
+        private final E node;
+        private final Tree<E> left;
+        private final Tree<E> right;
+
+        /**
+         * For use after {@link Leaf#¥Leaf()}. This will apply patterns to {@link Tree#node} {@link Tree#left} and {@link Tree#right}
+         * @param node The pattern to check the node
+         * @param left The pattern to check the left sub tree
+         * @param right The pattern to check the right sub tree
+         * @return <b>Option&lt;PatternResult&gt;</b> if all patterns pass, otherwise {@link API#Nothing()}
+         */
+        public static Pattern $Node(Pattern node, Pattern left, Pattern right) {
+            return patternFor(Node.class).testThree(
+                Tuple(node, Tree::node),
+                Tuple(left, Tree::left),
+                Tuple(right, Tree::right)
+            );
+        }
+
+        private Node(E node, Tree<E> left, Tree<E> right) {
+            this.node = node;
+            this.left = left;
+            this.right = right;
+        }
+
+        public static <O extends Comparable<O>> Node<O> of(O node, Tree<O> left, Tree<O> right) {
+            return new Node<>(node, left, right);
+        }
+
+        public Tree<E> left() {
+            return left;
+        }
+
+        public Tree<E> right() {
+            return right;
+        }
+
+        public E node() {
+            return node;
+        }
+
+        @Override
+        public int hashCode() {
+            return inOrder().foldLeft(1, (hash, x) -> 31*hash + (x == null ? 0 : x.hashCode()));
+        }
+
+        /**
+         * Checks if an object is the same instance, and if not, recursively checks each element for equality.
+         * @param obj
+         * @return
+         */
+        @Override
+        public boolean equals(Object obj) {
+            return obj == this ? true : Option(obj)
+                .cast(Node.class)
+                .map(n -> {
+                    Iterator<?> elems = n.inOrder().iterator();
+                    for (E x: inOrder()) {
+                        if (!(elems.hasNext() && Objects.equals(x, elems.next()))) {
+                            return false;
+                        }
+                    }
+                    return !elems.hasNext();
+                })
+                .orElse(false);
+        }
+
+        @Override
+        public String toString() {
+            return Iterables.toString('[', ']', inOrder().iterator());
+        }
     }
 }

@@ -80,7 +80,7 @@ public interface Pattern {
         };
     }
 
-    static Pattern instance(Class<?> clazz) {
+    static Pattern $class(Class<?> clazz) {
         return x -> clazz.isInstance(x) ? bind(x) : FAIL;
     }
 

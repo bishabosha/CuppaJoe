@@ -12,7 +12,7 @@ public class Success<E> implements Try<E> {
 
     private final E value;
 
-    static Pattern Success(Pattern pattern) {
+    static Pattern $Success(Pattern pattern) {
         return patternFor(Success.class).atomic(pattern, x -> x.value);
     }
 

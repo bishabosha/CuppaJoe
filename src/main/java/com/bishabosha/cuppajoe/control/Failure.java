@@ -11,7 +11,7 @@ public class Failure<E> implements Try<E> {
 
     private final Throwable error;
 
-    static Pattern Failure() {
+    static Pattern ¥Failure() {
         return x -> x instanceof Failure ? Pattern.PASS : Pattern.FAIL;
     }
 

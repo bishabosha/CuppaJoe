@@ -19,7 +19,7 @@ public final class Tuple4<A, B, C, D> implements Product4<A, B, C, D> {
     private final C $3;
     private final D $4;
 
-    public static Pattern Tuple4(Pattern $1, Pattern $2, Pattern $3, Pattern $4) {
+    public static Pattern $Tuple4(Pattern $1, Pattern $2, Pattern $3, Pattern $4) {
         return patternFor(Tuple4.class)
             .addTest($1, Product4::$1)
             .addTest($2, Product4::$2)
@@ -32,7 +32,7 @@ public final class Tuple4<A, B, C, D> implements Product4<A, B, C, D> {
         return new Tuple4<>($1, $2, $3, $4);
     }
 
-    protected Tuple4(A $1, B $2, C $3, D $4) {
+    private Tuple4(A $1, B $2, C $3, D $4) {
         this.$1 = $1;
         this.$2 = $2;
         this.$3 = $3;

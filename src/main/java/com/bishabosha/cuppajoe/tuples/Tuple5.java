@@ -20,7 +20,7 @@ public final class Tuple5<A, B, C, D, E> implements Product5<A, B, C, D, E> {
     private final D $4;
     private final E $5;
 
-    public static Pattern Tuple5(Pattern $1, Pattern $2, Pattern $3, Pattern $4, Pattern $5) {
+    public static Pattern $Tuple5(Pattern $1, Pattern $2, Pattern $3, Pattern $4, Pattern $5) {
         return patternFor(Tuple5.class)
             .addTest($1, Product5::$1)
             .addTest($2, Product5::$2)
@@ -36,7 +36,7 @@ public final class Tuple5<A, B, C, D, E> implements Product5<A, B, C, D, E> {
         return new Tuple5<>($1, $2, $3, $4, $5);
     }
 
-    protected Tuple5(A $1, B $2, C $3, D $4, E $5) {
+    private Tuple5(A $1, B $2, C $3, D $4, E $5) {
         this.$1 = $1;
         this.$2 = $2;
         this.$3 = $3;

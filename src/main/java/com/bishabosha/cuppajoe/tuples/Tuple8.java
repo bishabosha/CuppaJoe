@@ -23,7 +23,7 @@ public class Tuple8<A, B, C, D, E, F, G, H> implements Product8<A, B, C, D, E, F
     private final G $7;
     private final H $8;
 
-    public static Pattern Tuple8(Pattern $1, Pattern $2, Pattern $3, Pattern $4,
+    public static Pattern $Tuple8(Pattern $1, Pattern $2, Pattern $3, Pattern $4,
                                  Pattern $5, Pattern $6, Pattern $7, Pattern $8) {
         return patternFor(Tuple8.class)
                 .addTest($1, Tuple8::$1)
@@ -43,7 +43,7 @@ public class Tuple8<A, B, C, D, E, F, G, H> implements Product8<A, B, C, D, E, F
         return new Tuple8<>($1, $2, $3, $4, $5, $6, $7, $8);
     }
 
-    protected Tuple8(A $1, B $2, C $3, D $4, E $5, F $6, G $7, H $8) {
+    private Tuple8(A $1, B $2, C $3, D $4, E $5, F $6, G $7, H $8) {
         this.$1 = $1;
         this.$2 = $2;
         this.$3 = $3;

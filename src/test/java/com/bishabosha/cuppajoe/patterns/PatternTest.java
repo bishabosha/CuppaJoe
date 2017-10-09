@@ -14,11 +14,12 @@ import org.junit.Test;
 import static com.bishabosha.cuppajoe.API.Nothing;
 import static com.bishabosha.cuppajoe.API.Tuple;
 import static com.bishabosha.cuppajoe.collections.immutable.Tree.Node;
+import static com.bishabosha.cuppajoe.collections.immutable.Tree.Node.$Node;
 import static com.bishabosha.cuppajoe.collections.immutable.Tree.leaf;
-import static com.bishabosha.cuppajoe.control.Some.Some;
+import static com.bishabosha.cuppajoe.control.Some.$Some;
 import static com.bishabosha.cuppajoe.patterns.Pattern.*;
 import static com.bishabosha.cuppajoe.patterns.PatternFactory.patternFor;
-import static com.bishabosha.cuppajoe.tuples.Tuple2.Tuple2;
+import static com.bishabosha.cuppajoe.tuples.Tuple2.$Tuple2;
 import static org.junit.Assert.assertEquals;
 
 public class PatternTest {
@@ -78,7 +79,7 @@ public class PatternTest {
         final Pattern patt2Test;
         final Tuple2<Option<Tree<Integer>>, List<Tree<Integer>>> underTest;
 
-        patt2Test = Tuple2(Some(Node($x, ¥_, $y)), $xs);
+        patt2Test = $Tuple2($Some($Node($x, ¥_, $y)), $xs);
         underTest = Tuple(Option.of(Node(1, leaf(), leaf())), List.of(Tree.of(2)));
 
         patt2Test.test(underTest).ifSome(results -> {

@@ -246,7 +246,7 @@ public interface List<E> extends Seq<E>, Unapply2<E, List<E>> {
         /**
          * Pattern to test if any object is equivalent to an empty tail element.
          */
-        public static Pattern Empty() {
+        public static Pattern ¥Empty() {
             return x -> x instanceof Empty<?> ? Pattern.PASS : Pattern.FAIL;
         }
 
@@ -328,7 +328,7 @@ public interface List<E> extends Seq<E>, Unapply2<E, List<E>> {
          * @param $xs The pattern for the tail
          * @return The composed pattern
          */
-        public static Pattern Cons(Pattern $x, Pattern $xs) {
+        public static Pattern $Cons(Pattern $x, Pattern $xs) {
             return patternFor(Cons.class).testTwo(
                 Tuple($x, Cons::head),
                 Tuple($xs, Cons::tail)
@@ -390,9 +390,9 @@ public interface List<E> extends Seq<E>, Unapply2<E, List<E>> {
         @Override
         public boolean equals(Object obj) {
             return obj == this ? true : Option.of(obj)
-                    .cast(Cons.class)
-                    .map(l -> allMatch(l, Objects::equals))
-                    .orElse(false);
+                .cast(Cons.class)
+                .map(l -> allMatch(l, Objects::equals))
+                .orElse(false);
         }
 
         /**

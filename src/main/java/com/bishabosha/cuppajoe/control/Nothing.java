@@ -15,7 +15,7 @@ public final class Nothing<E> implements Option<E>, Applied0<Nothing<E>> {
 
     @NotNull
     @Contract(pure = true)
-    public static final Pattern Nothing() {
+    public static final Pattern $Nothing() {
         return x -> NOTHING.equals(x) ? Pattern.PASS : Pattern.FAIL;
     }
 

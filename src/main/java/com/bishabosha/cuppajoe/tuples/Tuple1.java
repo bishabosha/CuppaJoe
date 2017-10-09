@@ -16,7 +16,7 @@ public final class Tuple1<A> implements Product1<A> {
 
     private final A $1;
 
-    public static Pattern Tuple1(Pattern $1) {
+    public static Pattern $Tuple1(Pattern $1) {
         return patternFor(Product1.class).atomic($1, Product1::$1);
     }
 
@@ -24,7 +24,7 @@ public final class Tuple1<A> implements Product1<A> {
         return new Tuple1<>($1);
     }
 
-    protected Tuple1(A $1) {
+    private Tuple1(A $1) {
         this.$1 = $1;
     }
 

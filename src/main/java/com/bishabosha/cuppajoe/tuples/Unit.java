@@ -13,9 +13,12 @@ public class Unit implements Product0 {
 
     public final static Unit UNIT = new Unit();
 
+    private Unit() {
+    }
+
     @NotNull
     @Contract(pure = true)
-    public static Pattern Unit() {
+    public static Pattern ¥Unit() {
         return x -> x == UNIT ? Pattern.PASS : Pattern.FAIL;
     }
 

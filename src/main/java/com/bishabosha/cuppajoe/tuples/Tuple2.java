@@ -18,7 +18,7 @@ public final class Tuple2<A, B> implements Product2<A, B> {
     private final A $1;
     private final B $2;
 
-    public static Pattern Tuple2(Pattern $1, Pattern $2) {
+    public static Pattern $Tuple2(Pattern $1, Pattern $2) {
         return patternFor(Tuple2.class).testTwo(
             of($1, Product2::$1),
             of($2, Product2::$2)
@@ -29,7 +29,7 @@ public final class Tuple2<A, B> implements Product2<A, B> {
         return new Tuple2<>($1, $2);
     }
 
-    protected Tuple2(A $1, B $2) {
+    private Tuple2(A $1, B $2) {
         this.$1 = $1;
         this.$2 = $2;
     }

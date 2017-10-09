@@ -19,7 +19,7 @@ public final class Some<O> implements Option<O>, Applied1<O, Option<O>>{
     private O value;
 
     @NotNull
-    public static Pattern Some(Pattern pattern) {
+    public static Pattern $Some(Pattern pattern) {
         return patternFor(Some.class).atomic(pattern, Some::get);
     }
 
@@ -62,7 +62,7 @@ public final class Some<O> implements Option<O>, Applied1<O, Option<O>>{
     @Contract(pure = true)
     @Override
     public String toString() {
-        return "Some(" + get() + ")";
+        return "$Some(" + get() + ")";
     }
 
     @NotNull

@@ -22,8 +22,8 @@ public final class Tuple7<A, B, C, D, E, F, G> implements Product7<A, B, C, D, E
     private final F $6;
     private final G $7;
 
-    public static Pattern Tuple7(Pattern $1, Pattern $2, Pattern $3, Pattern $4,
-                                 Pattern $5, Pattern $6, Pattern $7) {
+    public static Pattern $Tuple7(Pattern $1, Pattern $2, Pattern $3, Pattern $4,
+                                  Pattern $5, Pattern $6, Pattern $7) {
         return patternFor(Tuple7.class)
                 .addTest($1, Product7::$1)
                 .addTest($2, Product7::$2)
@@ -41,7 +41,7 @@ public final class Tuple7<A, B, C, D, E, F, G> implements Product7<A, B, C, D, E
         return new Tuple7<>($1, $2, $3, $4, $5, $6, $7);
     }
 
-    protected Tuple7(A $1, B $2, C $3, D $4, E $5, F $6, G $7) {
+    private Tuple7(A $1, B $2, C $3, D $4, E $5, F $6, G $7) {
         this.$1 = $1;
         this.$2 = $2;
         this.$3 = $3;

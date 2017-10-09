@@ -21,8 +21,8 @@ public final class Tuple6<A, B, C, D, E, F> implements Product6<A, B, C, D, E, F
     private final E $5;
     private final F $6;
 
-    public static Pattern Tuple6(Pattern $1, Pattern $2, Pattern $3, Pattern $4,
-                                 Pattern $5, Pattern $6) {
+    public static Pattern $Tuple6(Pattern $1, Pattern $2, Pattern $3, Pattern $4,
+                                  Pattern $5, Pattern $6) {
         return patternFor(Tuple6.class)
             .addTest($1, Product6::$1)
             .addTest($2, Product6::$2)
@@ -39,7 +39,7 @@ public final class Tuple6<A, B, C, D, E, F> implements Product6<A, B, C, D, E, F
         return new Tuple6<>($1, $2, $3, $4, $5, $6);
     }
 
-    protected Tuple6(A $1, B $2, C $3, D $4, E $5, F $6) {
+    private Tuple6(A $1, B $2, C $3, D $4, E $5, F $6) {
         this.$1 = $1;
         this.$2 = $2;
         this.$3 = $3;

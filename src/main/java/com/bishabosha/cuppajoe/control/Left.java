@@ -15,7 +15,7 @@ public class Left<L, R> implements Either<L, R> {
 
     @NotNull
     @Contract(pure = true)
-    public static final Pattern Left(Pattern pattern) {
+    public static final Pattern $Left(Pattern pattern) {
         return x -> x instanceof Left ? pattern.test(((Left) x).getLeft()) : Pattern.FAIL;
     }
 
