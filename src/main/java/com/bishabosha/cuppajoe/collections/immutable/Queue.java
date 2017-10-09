@@ -1,6 +1,7 @@
 package com.bishabosha.cuppajoe.collections.immutable;
 
 import com.bishabosha.cuppajoe.Iterables;
+import com.bishabosha.cuppajoe.Value;
 import com.bishabosha.cuppajoe.functions.Func2;
 import com.bishabosha.cuppajoe.patterns.Case;
 import com.bishabosha.cuppajoe.Foldable;
@@ -11,10 +12,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.function.Function;
 
 import static com.bishabosha.cuppajoe.API.Tuple;
 
-public class Queue<E> implements Foldable<E> {
+public class Queue<E> implements Foldable<E>, Bunch<E> {
     private List<E> head;
     private List<E> tail;
 
@@ -47,6 +49,16 @@ public class Queue<E> implements Foldable<E> {
 
     public final int size() {
         return head.size() + tail.size();
+    }
+
+    @Override
+    public E get() {
+        return head.isEmpty() ? tail.reverse().head() : head.head();
+    }
+
+    @Override
+    public <R> Queue<R> map(Function<? super E, ? extends R> mapper) {
+        return foldLeft(empty(), (xs, x) -> xs.enqueue(mapper.apply(x)));
     }
 
     @NotNull
@@ -94,6 +106,19 @@ public class Queue<E> implements Foldable<E> {
     @Override
     public <A> A foldRight(A accumulator, Func2<A, E, A> mapper) {
         return reverse().fold(accumulator, mapper);
+    }
+
+    @Override
+    public int hashCode() {
+        return foldLeft(1, (hash, x) -> 31*hash + (x == null ? 0 : x.hashCode()));
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj == this || !Option.of(obj)
+            .cast(Queue.class)
+            .filter(q -> allMatch(q, Objects::equals))
+            .isEmpty();
     }
 
     @Override

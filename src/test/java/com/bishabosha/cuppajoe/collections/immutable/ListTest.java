@@ -1,10 +1,12 @@
 package com.bishabosha.cuppajoe.collections.immutable;
 
+import com.bishabosha.cuppajoe.API;
 import org.hamcrest.CoreMatchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import static com.bishabosha.cuppajoe.API.List;
 import static com.bishabosha.cuppajoe.API.Some;
 import static com.bishabosha.cuppajoe.API.Tuple;
 import static org.junit.Assert.*;
@@ -146,5 +148,10 @@ public class ListTest {
         assertEquals(1, List.of(1).size());
         assertEquals(2, List.of(1,2).size());
         assertEquals(3, List.of(1,2,3).size());
+    }
+
+    @Test
+    public void map() {
+        assertEquals(List(2,3,4), List(1,2,3).map(x -> x + 1));
     }
 }

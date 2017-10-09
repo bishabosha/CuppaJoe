@@ -1,6 +1,7 @@
 package com.bishabosha.cuppajoe;
 
 import com.bishabosha.cuppajoe.collections.immutable.List;
+import com.bishabosha.cuppajoe.collections.immutable.Queue;
 import com.bishabosha.cuppajoe.control.*;
 import com.bishabosha.cuppajoe.functions.CheckedFunc0;
 import com.bishabosha.cuppajoe.functions.Func0;
@@ -126,5 +127,23 @@ public class API {
     @Contract(pure = true)
     public static <O> List<O> List(O... elems) {
         return List.of(elems);
+    }
+
+    @NotNull
+    @Contract(pure = true)
+    public static <O> Queue<O> Queue() {
+        return Queue.empty();
+    }
+
+    @NotNull
+    @Contract(pure = true)
+    public static <O> Queue<O> Queue(O elem) {
+        return Queue.of(elem);
+    }
+
+    @NotNull
+    @Contract(pure = true)
+    public static <O> Queue<O> Queue(O... elems) {
+        return Queue.of(elems);
     }
 }

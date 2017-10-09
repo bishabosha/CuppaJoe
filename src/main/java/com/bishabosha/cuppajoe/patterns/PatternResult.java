@@ -71,10 +71,13 @@ public class PatternResult extends AbstractBase<Object> {
 
     /**
      * Standard Iterative, In-order, Depth First Search
-     * @return A Tuple4 fromList unknown type that contains only singleton values
+     * @return A flat list of matched results
      */
     public PatternResult flatten() {
-        list = Library.foldLeft(PatternResult.class, this);
+        list = Library.foldLeft(PatternResult.class, this, ArrayList::new, (xs, x) -> {
+            xs.add(x);
+            return xs;
+        });
         return this;
     }
 }

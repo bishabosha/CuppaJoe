@@ -4,35 +4,27 @@
 
 package com.bishabosha.cuppajoe.tuples;
 
-import com.bishabosha.cuppajoe.Foldable;
+import com.bishabosha.cuppajoe.API;
 import com.bishabosha.cuppajoe.Library;
+import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
+import static com.bishabosha.cuppajoe.API.Queue;
 import static com.bishabosha.cuppajoe.API.Tuple;
 
 public class TupleTest {
 
     @Test
     public void testFlatten() {
-        Product toFlatten = Tuple(Tuple(Tuple(Tuple("Hi"), Tuple("there", Tuple()), Tuple()), "World"));
+        Product toFlatten = Tuple(Tuple(Tuple(Tuple("One"), Tuple("Two", Tuple()), Tuple()), "Three"));
         Assert.assertEquals(
-            Arrays.asList("Hi", "there", "World"),
-            toFlatten.flatten()
+            Queue("One", "Two", "Three"),
+            toFlatten.flatten(API::Queue, (xs, x) -> xs.enqueue(x))
         );
-        Assert.assertEquals(
-            Arrays.asList("Hi", "there", "World"),
-            Foldable.foldOver(
-                Library.inOrder(Product.class, toFlatten),
-                new ArrayList<>(),
-                (xs, x) -> {
-                    xs.add(x);
-                    return xs;
-                }
-            )
+        Assert.assertThat(
+            Library.inOrder(Product.class, toFlatten),
+            Matchers.contains("One", "Two", "Three")
         );
     }
 

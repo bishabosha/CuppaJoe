@@ -363,7 +363,7 @@ public interface List<E> extends Seq<E>, Unapply2<E, List<E>> {
 
         @Override
         public <R> Value<R> map(Function<? super E, ? extends R> mapper) {
-            return foldRight(empty(), (List<R> xs, E x) -> xs.push(mapper.apply(x))).reverse();
+            return foldRight(empty(), (List<R> xs, E x) -> xs.push(mapper.apply(x)));
         }
 
         /**
@@ -383,38 +383,16 @@ public interface List<E> extends Seq<E>, Unapply2<E, List<E>> {
         }
 
         @Override
+        public int hashCode() {
+            return foldLeft(1, (hash, x) -> 31*hash + (x == null ? 0 : x.hashCode()));
+        }
+
+        @Override
         public boolean equals(Object obj) {
             return obj == this ? true : Option.of(obj)
                     .cast(Cons.class)
-                    .map(this::equateCons)
+                    .map(l -> allMatch(l, Objects::equals))
                     .orElse(false);
-        }
-
-        /**
-         * Iteratively checks that two of are equal, without Stack Overflow
-         * @param otherCons the of to check
-         * @return true, if they are the same length and all elements are equal and in the same order.
-         */
-        private boolean equateCons(Cons<?> otherCons) {
-            Option<Product2<E, List<E>>> thisPopped = this.pop();
-            Option<? extends Product2<?, ? extends List<?>>> otherPopped = otherCons.pop();
-            while (true) {
-                final boolean thisEmpty = thisPopped.isEmpty();
-                final boolean otherEmpty = otherPopped.isEmpty();
-                if (otherEmpty ^ thisEmpty) {
-                    return false; // if both different return false.
-                }
-                if (otherEmpty) {
-                    return true; // both must be the same
-                }
-                final Product2<E, List<E>> thisTup = thisPopped.get();
-                final Product2<?, ? extends List<?>> otherTup = otherPopped.get();
-                if (!Objects.equals(thisTup.$1(), otherTup.$1())) {
-                    return false;
-                }
-                thisPopped = thisTup.$2().pop();
-                otherPopped = otherTup.$2().pop();
-            }
         }
 
         /**

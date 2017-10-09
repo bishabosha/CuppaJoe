@@ -2,9 +2,6 @@ package com.bishabosha.cuppajoe.collections.immutable;
 
 import org.junit.Test;
 
-import java.util.Objects;
-
-import static com.bishabosha.cuppajoe.API.Some;
 import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.*;
 

@@ -2,8 +2,10 @@ package com.bishabosha.cuppajoe.tuples;
 
 import com.bishabosha.cuppajoe.Library;
 import com.bishabosha.cuppajoe.control.Try;
+import com.bishabosha.cuppajoe.functions.Func2;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import static com.bishabosha.cuppajoe.API.Try;
 
@@ -17,8 +19,8 @@ public interface Product extends Iterable<Object> {
         return Try(() -> $(index));
     }
 
-    default List<Object> flatten() {
-        return Library.foldLeft(Product.class, this);
+    default <A> A flatten(Supplier<A> accumulator, Func2<A, Object, A> mapper) {
+        return Library.foldLeft(Product.class, this, accumulator, mapper);
     }
 
     default boolean contains(Object o) {

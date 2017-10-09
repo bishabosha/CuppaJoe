@@ -61,6 +61,14 @@ public interface Iterables {
         public abstract E nextSupplier();
     }
 
+    static int hash(Iterable<?> iterable) {
+        int hash = 1;
+        for (Object element : iterable) {
+            hash = 29 * hash + (element != null ? element.hashCode() : 0);
+        }
+        return hash;
+    }
+
     static <E> Iterable<E> singleton(Supplier<? extends E> supplier) {
         return () -> singletonIt(supplier);
     }

@@ -8,7 +8,6 @@ import com.bishabosha.cuppajoe.collections.immutable.List;
 import com.bishabosha.cuppajoe.control.Option;
 import com.bishabosha.cuppajoe.functions.Func2;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.function.BooleanSupplier;
@@ -30,14 +29,6 @@ public final class Library {
             }
         }
         return Nothing();
-    }
-
-
-    public static <T, O extends Iterable<T>> java.util.List<T> foldLeft(Class<O> flattenClass, O toFlatten) {
-        return foldLeft(flattenClass, toFlatten, ArrayList::new, (xs, x) -> {
-            xs.add(x);
-            return xs;
-        });
     }
 
     /**
