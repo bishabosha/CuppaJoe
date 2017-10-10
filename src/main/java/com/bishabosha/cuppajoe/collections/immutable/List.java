@@ -103,6 +103,8 @@ public interface List<E> extends Seq<E>, Unapply2<E, List<E>> {
         return reverse().bufferElementsReversed(limit);
     }
 
+    <R> List<R> map(Function<? super E, ? extends R> mapper);
+
     @Override
     default List<E> append(E elem) {
         return foldRight(of(elem), (List<E> xs, E x) -> xs.push(x));
@@ -362,7 +364,7 @@ public interface List<E> extends Seq<E>, Unapply2<E, List<E>> {
         }
 
         @Override
-        public <R> Value<R> map(Function<? super E, ? extends R> mapper) {
+        public <R> List<R> map(Function<? super E, ? extends R> mapper) {
             return foldRight(empty(), (List<R> xs, E x) -> xs.push(mapper.apply(x)));
         }
 
