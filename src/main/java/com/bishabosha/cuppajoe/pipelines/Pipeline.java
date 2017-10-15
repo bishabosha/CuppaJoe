@@ -45,7 +45,7 @@ public class Pipeline<T> extends com.bishabosha.cuppajoe.pipelines.AbstractPipel
     }
 
     public static <R> Pipeline<R> of(R... values) {
-        return new Pipeline<>(Iterables.wrap(values));
+        return new Pipeline<>(() -> Iterables.wrap(values));
     }
 
     public static <R> Pipeline<R> of(Iterable<R> it) {
@@ -57,7 +57,7 @@ public class Pipeline<T> extends com.bishabosha.cuppajoe.pipelines.AbstractPipel
     }
 
     public static <R> Pipeline<R> empty() {
-        return of(Iterables.empty());
+        return of(Iterables::empty);
     }
 
     public static <R> Pipeline<R> copy(com.bishabosha.cuppajoe.pipelines.AbstractPipeline pipeline) {
@@ -162,7 +162,7 @@ public class Pipeline<T> extends com.bishabosha.cuppajoe.pipelines.AbstractPipel
     public Pipeline<T> sorted(Comparator comparator) {
         Object[] toSort = toArray();
         Arrays.sort(toSort, comparator);
-        return new Pipeline<>(Iterables.wrap(toSort));
+        return new Pipeline<>(() -> Iterables.wrap(toSort));
     }
 
     public Pipeline<T> takeWhile(Predicate<? super T> predicate) {

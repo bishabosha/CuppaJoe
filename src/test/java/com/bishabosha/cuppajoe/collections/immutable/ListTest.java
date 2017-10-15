@@ -1,6 +1,5 @@
 package com.bishabosha.cuppajoe.collections.immutable;
 
-import com.bishabosha.cuppajoe.API;
 import org.hamcrest.CoreMatchers;
 import org.junit.Rule;
 import org.junit.Test;
@@ -102,10 +101,10 @@ public class ListTest {
 
     @Test
     public void remove() {
-        assertEquals(List.empty(), List.of(1).remove(1));
-        assertEquals(List.of(1), List.of(1,2).remove(2));
-        assertEquals(List.of(1,1,1), List.of(1,2,1,2,2,2,1).remove(2));
-        assertEquals(List.of(1), List.of(null, null, null, 1).remove(null));
+        assertEquals(List.empty(), List.of(1).removeAll(1));
+        assertEquals(List.of(1), List.of(1,2).removeAll(2));
+        assertEquals(List.of(1,1,1), List.of(1,2,1,2,2,2,1).removeAll(2));
+        assertEquals(List.of(1), List.of(null, null, null, 1).removeAll(null));
     }
 
     @Test

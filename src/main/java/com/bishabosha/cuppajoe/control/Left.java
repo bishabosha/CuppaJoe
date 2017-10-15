@@ -81,6 +81,6 @@ public class Left<L, R> implements Either<L, R> {
     @NotNull
     @Override
     public Iterator<R> iterator() {
-        return Iterables.<R>empty().iterator();
+        return Iterables.empty();
     }
 }

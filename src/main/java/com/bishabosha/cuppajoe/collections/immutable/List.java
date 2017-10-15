@@ -1,7 +1,6 @@
 package com.bishabosha.cuppajoe.collections.immutable;
 
 import com.bishabosha.cuppajoe.Iterables;
-import com.bishabosha.cuppajoe.Value;
 import com.bishabosha.cuppajoe.control.Either;
 import com.bishabosha.cuppajoe.control.Option;
 import com.bishabosha.cuppajoe.functions.Func2;
@@ -103,6 +102,8 @@ public interface List<E> extends Seq<E>, Unapply2<E, List<E>> {
         return reverse().bufferElementsReversed(limit);
     }
 
+    <R> List<R> map(Function<? super E, ? extends R> mapper);
+
     @Override
     default List<E> append(E elem) {
         return foldRight(of(elem), (List<E> xs, E x) -> xs.push(x));
@@ -118,7 +119,7 @@ public interface List<E> extends Seq<E>, Unapply2<E, List<E>> {
      * @return a new of instance with the element removed.
      */
     @Override
-    default List<E> remove(E elem) {
+    default List<E> removeAll(E elem) {
         return fold(empty(), (List<E> xs, E x) -> Objects.equals(x, elem) ? xs : xs.push(x)).reverse();
     }
 
@@ -304,7 +305,7 @@ public interface List<E> extends Seq<E>, Unapply2<E, List<E>> {
         @NotNull
         @Override
         public Iterator<E> iterator() {
-            return Iterables.emptyIterator();
+            return Iterables.empty();
         }
 
         @Override
@@ -362,7 +363,7 @@ public interface List<E> extends Seq<E>, Unapply2<E, List<E>> {
         }
 
         @Override
-        public <R> Value<R> map(Function<? super E, ? extends R> mapper) {
+        public <R> List<R> map(Function<? super E, ? extends R> mapper) {
             return foldRight(empty(), (List<R> xs, E x) -> xs.push(mapper.apply(x)));
         }
 

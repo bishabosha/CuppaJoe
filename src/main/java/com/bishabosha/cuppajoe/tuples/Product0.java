@@ -26,6 +26,6 @@ public interface Product0 extends Product, Unapply0 {
     @Override
     @NotNull
     default Iterator<Object> iterator() {
-        return Iterables.empty().iterator();
+        return Iterables.empty();
     }
 }

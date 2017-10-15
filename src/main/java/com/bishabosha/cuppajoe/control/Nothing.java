@@ -51,7 +51,7 @@ public final class Nothing<E> implements Option<E>, Applied0<Nothing<E>> {
     @NotNull
     @Override
     public Iterator<E> iterator() {
-        return Iterables.<E>empty().iterator();
+        return Iterables.empty();
     }
 
     @NotNull
