@@ -235,19 +235,13 @@ public interface Iterables {
         return map;
     }
 
-    static <R> Iterable<R> of(R... values) {
+    static <R> Iterator<R> of(R... values) {
         return wrap(values);
-    }
-
-    @Contract(pure = true)
-    @NotNull
-    static <O> Iterable<O> empty() {
-        return Iterables::emptyIterator;
     }
 
     @SuppressWarnings("unchecked")
     @NotNull
-    static <O> Iterator<O> emptyIterator() {
+    static <O> Iterator<O> empty() {
         return (Iterator<O>) EMPTY_ITERATOR;
     }
 
@@ -264,8 +258,8 @@ public interface Iterables {
     };
 
 
-    static <R> Iterable<R> wrap(R[] values) {
-        return () -> new Lockable<>() {
+    static <R> Iterator<R> wrap(R[] values) {
+        return new Lockable<>() {
 
             private int i = 0;
 
@@ -281,8 +275,25 @@ public interface Iterables {
         };
     }
 
+    static <R> Iterator<R> cast(Object[] values) {
+        return new Lockable<>() {
+
+            private int i = 0;
+
+            @Override
+            public boolean hasNextSupplier() {
+                return i < values.length;
+            }
+
+            @Override
+            public R nextSupplier() {
+                return (R) values[i++];
+            }
+        };
+    }
+
     static <R> Iterable<R> cycle(R... values) {
-        return cycle(of(values));
+        return cycle(() -> of(values));
     }
 
     static <R> Iterable<R> cycle(Iterable<R> source) {

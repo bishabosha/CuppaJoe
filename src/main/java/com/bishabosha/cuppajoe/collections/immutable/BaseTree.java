@@ -1,10 +1,12 @@
 package com.bishabosha.cuppajoe.collections.immutable;
 
+import static com.bishabosha.cuppajoe.API.List;
+
 public interface BaseTree<E> {
 
     @SafeVarargs
     static <E> BaseTree<E> of(E... values) {
-        return new Node<>(List.of(values).map(Leaf::new));
+        return new Node<>(Array.of(values).foldRight(List(), (xs, x) -> xs.push(new Leaf<>(x))));
     }
 
     static <E> BaseTree<E> of(E value) {

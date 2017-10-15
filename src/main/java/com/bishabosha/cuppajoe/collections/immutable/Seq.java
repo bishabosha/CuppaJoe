@@ -27,7 +27,7 @@ public interface Seq<E> extends Bunch<E>, Foldable<E> {
 
     Seq<E> append(E elem);
 
-    Seq<E> remove(E elem);
+    Seq<E> removeAll(E elem);
 
     @Override
     default <A> A foldRight(A accumulator, Func2<A, E, A> mapper) {
