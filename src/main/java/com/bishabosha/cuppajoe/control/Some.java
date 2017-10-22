@@ -69,7 +69,7 @@ public final class Some<O> implements Option<O>, Applied1<O, Option<O>>{
     @Contract(pure = true)
     @Override
     public Iterator<O> iterator() {
-        return Iterables.singletonIt(this::get);
+        return Iterables.singleton(this::get);
     }
 
     @NotNull

@@ -1,7 +1,6 @@
 package com.bishabosha.cuppajoe.collections.immutable;
 
 import com.bishabosha.cuppajoe.Iterables;
-import com.bishabosha.cuppajoe.control.Either;
 import com.bishabosha.cuppajoe.control.Option;
 import com.bishabosha.cuppajoe.functions.Func2;
 import com.bishabosha.cuppajoe.functions.Func3;
@@ -18,7 +17,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.bishabosha.cuppajoe.API.*;
-import static com.bishabosha.cuppajoe.API.Left;
 import static com.bishabosha.cuppajoe.patterns.PatternFactory.patternFor;
 
 public interface List<E> extends Seq<E>, Unapply2<E, List<E>> {
@@ -142,14 +140,15 @@ public interface List<E> extends Seq<E>, Unapply2<E, List<E>> {
         return option.map(Tuple2::$1).orElseGet(identity);
     }
 
-    default <O> Tuple2<Option<O>, List<E>> nextItem(Func2<E, List<E>, Tuple2<Either<Boolean, O>, List<E>>> mapper) {
-        Tuple2<Either<Boolean, O>, List<E>> loopCond = Tuple(Left(true), this);
-        while (loopCond.$1().getLeftOrElse(() -> false)) {
-            loopCond = loopCond.$2().pop()
-                .map(t -> t.map(mapper))
-                .orElseGet(() -> Tuple(Left(false), empty()));
+    default <O> Tuple2<Option<O>, List<E>> nextItem(Func2<E, List<E>, Option<Tuple2<Option<O>, List<E>>>> mapper) {
+        Option<Tuple2<Option<O>, List<E>>> loopCond = Some(Tuple(Nothing(), this));
+        while (!loopCond.isEmpty() && loopCond.get().$1().isEmpty()) {
+            loopCond = loopCond.get()
+                               .$2()
+                               .pop()
+                               .flatMap(t -> t.map(mapper));
         }
-        return loopCond.flatMap((either, cons) -> Tuple(either.maybeRight(), cons));
+        return loopCond.orElseGet(() -> Tuple(Nothing(), empty()));
     }
 
     @Override
@@ -330,9 +329,9 @@ public interface List<E> extends Seq<E>, Unapply2<E, List<E>> {
          * @return The composed pattern
          */
         public static Pattern $Cons(Pattern $x, Pattern $xs) {
-            return patternFor(Cons.class).testTwo(
-                Tuple($x, Cons::head),
-                Tuple($xs, Cons::tail)
+            return patternFor(Cons.class).test2(
+                $x, Cons::head,
+                $xs, Cons::tail
             );
         }
 

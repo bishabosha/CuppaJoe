@@ -23,14 +23,14 @@ public final class Tuple6<A, B, C, D, E, F> implements Product6<A, B, C, D, E, F
 
     public static Pattern $Tuple6(Pattern $1, Pattern $2, Pattern $3, Pattern $4,
                                   Pattern $5, Pattern $6) {
-        return patternFor(Tuple6.class)
-            .addTest($1, Product6::$1)
-            .addTest($2, Product6::$2)
-            .addTest($3, Product6::$3)
-            .addTest($4, Product6::$4)
-            .addTest($5, Product6::$5)
-            .addTest($6, Product6::$6)
-            .build();
+        return patternFor(Tuple6.class).test6(
+            $1, Product6::$1,
+            $2, Product6::$2,
+            $3, Product6::$3,
+            $4, Product6::$4,
+            $5, Product6::$5,
+            $6, Product6::$6
+        );
     }
 
     public static <A, B, C, D, E, F>

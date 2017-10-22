@@ -19,10 +19,10 @@ public final class Tuple3<A, B, C> implements Product3<A, B, C> {
     private final C $3;
 
     public static Pattern $Tuple3(Pattern $1, Pattern $2, Pattern $3) {
-        return patternFor(Tuple3.class).testThree(
-            Tuple2.of($1, Product3::$1),
-            Tuple2.of($2, Product3::$2),
-            Tuple2.of($3, Product3::$3)
+        return patternFor(Tuple3.class).test3(
+            $1, Product3::$1,
+            $2, Product3::$2,
+            $3, Product3::$3
         );
     }
 

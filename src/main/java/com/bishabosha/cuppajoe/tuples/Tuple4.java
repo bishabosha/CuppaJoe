@@ -20,12 +20,12 @@ public final class Tuple4<A, B, C, D> implements Product4<A, B, C, D> {
     private final D $4;
 
     public static Pattern $Tuple4(Pattern $1, Pattern $2, Pattern $3, Pattern $4) {
-        return patternFor(Tuple4.class)
-            .addTest($1, Product4::$1)
-            .addTest($2, Product4::$2)
-            .addTest($3, Product4::$3)
-            .addTest($4, Product4::$4)
-            .build();
+        return patternFor(Tuple4.class).test4(
+            $1, Product4::$1,
+            $2, Product4::$2,
+            $3, Product4::$3,
+            $4, Product4::$4
+        );
     }
 
     public static <A, B, C, D> Tuple4<A, B, C, D> of(A $1, B $2, C $3, D $4) {

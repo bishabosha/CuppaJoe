@@ -69,11 +69,7 @@ public interface Iterables {
         return hash;
     }
 
-    static <E> Iterable<E> singleton(Supplier<? extends E> supplier) {
-        return () -> singletonIt(supplier);
-    }
-
-    static <E> Iterator<E> singletonIt(Supplier<? extends E> supplier) {
+    static <E> Iterator<E> singleton(Supplier<? extends E> supplier) {
         return new Iterator<>() {
             boolean unwrapped = false;
 

@@ -20,7 +20,7 @@ public class Array<E> implements Seq<E>{
     }
 
     public static <O> Array<O> of(O... elems) {
-        return new Array<>(elems);
+        return new Array<>(elems == null ? new Object[]{null} : elems);
     }
 
     public static <R> Array<R> empty() {
@@ -76,7 +76,7 @@ public class Array<E> implements Seq<E>{
 
     @Override
     public Array<E> subsequence(int from, int limit) {
-        final int length = limit-from+1;
+        final int length = limit-from;
         final Object[] destination = new Object[length];
         System.arraycopy(array, from, destination, 0, length);
         return new Array<>(destination);
@@ -155,5 +155,25 @@ public class Array<E> implements Seq<E>{
             accumulator = mapper.apply(accumulator, get(i));
         }
         return accumulator;
+    }
+
+    @Override
+    public int hashCode() {
+        return array.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj == this
+            ? true
+            : Option.of(obj)
+                    .cast(Array.class)
+                    .map(x -> allMatchExhaustive(x, Objects::equals))
+                    .orElse(false);
+    }
+
+    @Override
+    public String toString() {
+        return Iterables.toString('[', ']', iterator());
     }
 }

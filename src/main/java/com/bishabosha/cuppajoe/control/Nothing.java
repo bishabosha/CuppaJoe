@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public final class Nothing<E> implements Option<E>, Applied0<Nothing<E>> {
 
@@ -38,7 +39,7 @@ public final class Nothing<E> implements Option<E>, Applied0<Nothing<E>> {
     @Contract(" -> fail")
     @Override
     public E get() {
-        throw new IllegalStateException("There is nothing present.");
+        throw new NoSuchElementException("There is nothing present.");
     }
 
     @NotNull

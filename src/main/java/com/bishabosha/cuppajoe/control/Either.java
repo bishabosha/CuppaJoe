@@ -19,11 +19,11 @@ public interface Either<L, R> extends Value<R> {
         return isRight() ? 1 : 0;
     }
 
-    default Option<L> maybeLeft() {
+    default Option<L> toLeftOption() {
         return when(this::isLeft, this::getLeft).match();
     }
 
-    default Option<R> maybeRight() {
+    default Option<R> toRightOption() {
         return when(this::isRight, this::get).match();
     }
 

@@ -25,6 +25,10 @@ public class TreeTest {
             contains(1, 2, 3, 4, 5, 6)
         );
         assertThat(
+            Tree.of(4, 3, 6, 1, 2, 5).inOrder().foldRight(Queue.empty(), (xs, x) -> xs.enqueue(x)),
+            contains(6, 5, 4, 3, 2, 1)
+        );
+        assertThat(
             Tree.leaf().inOrder(),
             emptyIterable()
         );
@@ -56,9 +60,5 @@ public class TreeTest {
             Tree.of(4, 2, 1, 3, 6, 5).levelOrder(),
             contains(4, 2, 6, 1, 3, 5)
         );
-//        assertThat(
-//            Tree.of(4, 2, 1, 3, 6, 5).levelOrder().reverse(),
-//            contains(5, 3, 1, 6, 2, 4)
-//        );
     }
 }

@@ -19,9 +19,9 @@ public final class Tuple2<A, B> implements Product2<A, B> {
     private final B $2;
 
     public static Pattern $Tuple2(Pattern $1, Pattern $2) {
-        return patternFor(Tuple2.class).testTwo(
-            of($1, Product2::$1),
-            of($2, Product2::$2)
+        return patternFor(Tuple2.class).test2(
+            $1, Product2::$1,
+            $2, Product2::$2
         );
     }
 

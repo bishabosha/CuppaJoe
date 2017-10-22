@@ -76,6 +76,6 @@ public class Right<L, R> implements Either<L, R> {
 
     @Override
     public Iterator<R> iterator() {
-        return Iterables.singletonIt(this::get);
+        return Iterables.singleton(this::get);
     }
 }

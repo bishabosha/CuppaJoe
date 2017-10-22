@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class Unit implements Product0 {
 
-    public final static Unit UNIT = new Unit();
+    private final static Unit UNIT = new Unit();
 
     private Unit() {
     }

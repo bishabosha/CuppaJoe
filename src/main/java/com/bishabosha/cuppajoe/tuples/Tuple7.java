@@ -24,15 +24,15 @@ public final class Tuple7<A, B, C, D, E, F, G> implements Product7<A, B, C, D, E
 
     public static Pattern $Tuple7(Pattern $1, Pattern $2, Pattern $3, Pattern $4,
                                   Pattern $5, Pattern $6, Pattern $7) {
-        return patternFor(Tuple7.class)
-                .addTest($1, Product7::$1)
-                .addTest($2, Product7::$2)
-                .addTest($3, Product7::$3)
-                .addTest($4, Product7::$4)
-                .addTest($5, Product7::$5)
-                .addTest($6, Product7::$6)
-                .addTest($7, Product7::$7)
-                .build();
+        return patternFor(Tuple7.class).test7(
+            $1, Product7::$1,
+            $2, Product7::$2,
+            $3, Product7::$3,
+            $4, Product7::$4,
+            $5, Product7::$5,
+            $6, Product7::$6,
+            $7, Product7::$7
+        );
     }
 
     public static <A, B, C, D, E, F, G>

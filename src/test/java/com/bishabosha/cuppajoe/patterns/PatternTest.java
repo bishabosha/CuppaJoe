@@ -25,14 +25,14 @@ import static org.junit.Assert.assertEquals;
 public class PatternTest {
 
     static Pattern tree(Pattern node, Pattern left, Pattern right) {
-        return patternFor(BinaryNode.class).testThree(
-            Tuple(node, BinaryNode::getValue),
-            Tuple(left, BinaryNode::getLeft),
-            Tuple(right, BinaryNode::getRight)
+        return patternFor(BinaryNode.class).test3(
+            node, BinaryNode::getValue,
+            left, BinaryNode::getLeft,
+            right, BinaryNode::getRight
         );
     }
 
-    Pattern tree = patternFor(BinaryNode.class).build();
+    Pattern tree = x -> x instanceof BinaryNode ? Pattern.bind(x) : Pattern.FAIL;
 
     @Test
     public void testTree() {

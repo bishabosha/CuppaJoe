@@ -10,6 +10,7 @@ import com.bishabosha.cuppajoe.tuples.Tuple2;
 import com.bishabosha.cuppajoe.collections.mutable.lists.LinkedList;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -17,20 +18,9 @@ import static com.bishabosha.cuppajoe.API.Tuple;
 
 public class PatternFactory<I> {
     private Class<I> inputClass;
-    private List<Tuple2<Pattern, Function<I, ?>>> tests;
-    private List<Predicate<I>> conditions;
 
     public static <C> PatternFactory<C> patternFor(Class<C> clazz) {
         return new PatternFactory<>(clazz);
-    }
-    
-    public <O> Pattern conditionalAtomic(Predicate<I> condition,
-                                         Func1<I, O> mapper, Pattern pattern) {
-        return x -> Option.of(x)
-                          .cast(inputClass)
-                          .filter(condition)
-                          .map(mapper)
-                          .flatMap(pattern::test);
     }
     
     public <O> Pattern atomic(Pattern pattern, Func1<I, O> mapper) {
@@ -40,51 +30,108 @@ public class PatternFactory<I> {
                           .flatMap(pattern::test);
     }
 
-    public <A, B> Pattern testTwo(
-        Tuple2<Pattern, Function<I, A>> a,
-        Tuple2<Pattern, Function<I, B>> b) {
+    public <A, B> Pattern test2(
+        Pattern p1, Function<I, A> g1,
+        Pattern p2, Function<I, B> g2) {
             return testBase(x -> PatternResult.of(
-                checkedFail(a.$1().test(a.$2().apply(x))),
-                checkedFail(b.$1().test(b.$2().apply(x)))
+                p1.test(g1.apply(x)).get(),
+                p2.test(g2.apply(x)).get()
             ));
         }
 
-    public <A, B, C> Pattern testThree(
-        Tuple2<Pattern, Function<I, A>> a,
-        Tuple2<Pattern, Function<I, B>> b,
-        Tuple2<Pattern, Function<I, C>> c) {
+    public <A, B, C> Pattern test3(
+        Pattern p1, Function<I, A> g1,
+        Pattern p2, Function<I, B> g2,
+        Pattern p3, Function<I, C> g3) {
             return testBase(x -> PatternResult.of(
-                checkedFail(a.$1().test(a.$2().apply(x))),
-                checkedFail(b.$1().test(b.$2().apply(x))),
-                checkedFail(c.$1().test(c.$2().apply(x)))
+                p1.test(g1.apply(x)).get(),
+                p2.test(g2.apply(x)).get(),
+                p3.test(g3.apply(x)).get()
             ));
         }
 
-    public <A, B, C, D> Pattern testFour(
-        Tuple2<Pattern, Function<I, A>> a,
-        Tuple2<Pattern, Function<I, B>> b,
-        Tuple2<Pattern, Function<I, C>> c,
-        Tuple2<Pattern, Function<I, D>> d) {
+    public <A, B, C, D> Pattern test4(
+        Pattern p1, Function<I, A> g1,
+        Pattern p2, Function<I, B> g2,
+        Pattern p3, Function<I, C> g3,
+        Pattern p4, Function<I, D> g4) {
             return testBase(x -> PatternResult.of(
-                checkedFail(a.$1().test(a.$2().apply(x))),
-                checkedFail(b.$1().test(b.$2().apply(x))),
-                checkedFail(c.$1().test(c.$2().apply(x))),
-                checkedFail(d.$1().test(d.$2().apply(x)))
+                p1.test(g1.apply(x)).get(),
+                p2.test(g2.apply(x)).get(),
+                p3.test(g3.apply(x)).get(),
+                p4.test(g4.apply(x)).get()
             ));
         }
 
-    public <A, B, C, D, E> Pattern testFive(
-        Tuple2<Pattern, Function<I, A>> a,
-        Tuple2<Pattern, Function<I, B>> b,
-        Tuple2<Pattern, Function<I, C>> c,
-        Tuple2<Pattern, Function<I, D>> d,
-        Tuple2<Pattern, Function<I, E>> e) {
+    public <A, B, C, D, E> Pattern test5(
+        Pattern p1, Function<I, A> g1,
+        Pattern p2, Function<I, B> g2,
+        Pattern p3, Function<I, C> g3,
+        Pattern p4, Function<I, D> g4,
+        Pattern p5, Function<I, E> g5) {
             return testBase(x -> PatternResult.of(
-                checkedFail(a.$1().test(a.$2().apply(x))),
-                checkedFail(b.$1().test(b.$2().apply(x))),
-                checkedFail(c.$1().test(c.$2().apply(x))),
-                checkedFail(d.$1().test(d.$2().apply(x))),
-                checkedFail(e.$1().test(e.$2().apply(x)))
+                p1.test(g1.apply(x)).get(),
+                p2.test(g2.apply(x)).get(),
+                p3.test(g3.apply(x)).get(),
+                p4.test(g4.apply(x)).get(),
+                p5.test(g5.apply(x)).get()
+            ));
+        }
+
+    public <A, B, C, D, E, F> Pattern test6(
+        Pattern p1, Function<I, A> g1,
+        Pattern p2, Function<I, B> g2,
+        Pattern p3, Function<I, C> g3,
+        Pattern p4, Function<I, D> g4,
+        Pattern p5, Function<I, E> g5,
+        Pattern p6, Function<I, F> g6) {
+            return testBase(x -> PatternResult.of(
+                p1.test(g1.apply(x)).get(),
+                p2.test(g2.apply(x)).get(),
+                p3.test(g3.apply(x)).get(),
+                p4.test(g4.apply(x)).get(),
+                p5.test(g5.apply(x)).get(),
+                p6.test(g6.apply(x)).get()
+            ));
+        }
+
+    public <A, B, C, D, E, F, G> Pattern test7(
+        Pattern p1, Function<I, A> g1,
+        Pattern p2, Function<I, B> g2,
+        Pattern p3, Function<I, C> g3,
+        Pattern p4, Function<I, D> g4,
+        Pattern p5, Function<I, E> g5,
+        Pattern p6, Function<I, F> g6,
+        Pattern p7, Function<I, G> g7) {
+            return testBase(x -> PatternResult.of(
+                p1.test(g1.apply(x)).get(),
+                p2.test(g2.apply(x)).get(),
+                p3.test(g3.apply(x)).get(),
+                p4.test(g4.apply(x)).get(),
+                p5.test(g5.apply(x)).get(),
+                p6.test(g6.apply(x)).get(),
+                p7.test(g7.apply(x)).get()
+            ));
+        }
+
+    public <A, B, C, D, E, F, G, H> Pattern test8(
+        Pattern p1, Function<I, A> g1,
+        Pattern p2, Function<I, B> g2,
+        Pattern p3, Function<I, C> g3,
+        Pattern p4, Function<I, D> g4,
+        Pattern p5, Function<I, E> g5,
+        Pattern p6, Function<I, F> g6,
+        Pattern p7, Function<I, G> g7,
+        Pattern p8, Function<I, H> g8) {
+            return testBase(x -> PatternResult.of(
+                p1.test(g1.apply(x)).get(),
+                p2.test(g2.apply(x)).get(),
+                p3.test(g3.apply(x)).get(),
+                p4.test(g4.apply(x)).get(),
+                p5.test(g5.apply(x)).get(),
+                p6.test(g6.apply(x)).get(),
+                p7.test(g7.apply(x)).get(),
+                p8.test(g8.apply(x)).get()
             ));
         }
 
@@ -94,7 +141,7 @@ public class PatternFactory<I> {
                 I toTest = inputClass.cast(x);
                 try {
                     return Pattern.compile(supplier.apply(toTest));
-                } catch (Exception e) {
+                } catch (NoSuchElementException e) {
                     // fallthrough
                 }
             }
@@ -104,99 +151,5 @@ public class PatternFactory<I> {
 
     private PatternFactory(Class<I> inputClass) {
         this.inputClass = inputClass;
-    }
-
-    public PatternFactory<I> addPrecondition(Predicate<I> condition) {
-        if (conditions == null) {
-            conditions = new LinkedList<>();
-        }
-        conditions.add(condition);
-        return this;
-    }
-
-    public <O> PatternFactory<I> addTest(Pattern test, Function<I, O> extractor) {
-        if (tests == null) {
-            tests = new LinkedList<>();
-        }
-        tests.add(Tuple(test, extractor));
-        return this;
-    }
-
-    public Pattern build() {
-        final boolean hasTests = tests != null && tests.size() > 0;
-        final boolean hasConditions = conditions != null && conditions.size() > 0;
-        if (hasTests && hasConditions) {
-            return buildAll();
-        } else if (hasTests) {
-            return buildRecursive();
-        } else if (hasConditions) {
-            return buildConditions();
-        } else {
-            return buildNothing();
-        }
-    }
-
-    private Pattern buildNothing() {
-        return x -> inputClass.isInstance(x) ?
-                Pattern.bind(inputClass.cast(x)) :
-                Pattern.FAIL;
-    }
-
-    private Pattern buildConditions() {
-        return x -> {
-            if (inputClass.isInstance(x)){
-                I toTest = inputClass.cast(x);
-                for (Predicate<I> condition: conditions) {
-                    if (!condition.test(toTest)) {
-                        return Pattern.FAIL;
-                    }
-                }
-                return Pattern.bind(toTest);
-            }
-            return Pattern.FAIL;
-        };
-    }
-
-    private Pattern buildRecursive() {
-        return x -> {
-            if (inputClass.isInstance(x)){
-                return getRecursion(inputClass.cast(x));
-            }
-            return Pattern.FAIL;
-        };
-    }
-
-    private Pattern buildAll() {
-        return x -> {
-            if (inputClass.isInstance(x)){
-                I toTest = inputClass.cast(x);
-                for (Predicate<I> condition: conditions) {
-                    if (!condition.test(toTest)) {
-                        return Pattern.FAIL;
-                    }
-                }
-                return getRecursion(toTest);
-            }
-            return Pattern.FAIL;
-        };
-    }
-
-    private Option<PatternResult> getRecursion(I toTest) {
-        try {
-            PatternResult result = PatternResult.create();
-            tests.forEach(x -> result.add(
-                checkedFail(x.$1().test(x.$2().apply(toTest)))
-            ));
-            return Pattern.compile(result);
-        } catch (Exception e) {
-            return Pattern.FAIL;
-        }
-    }
-
-    private Object checkedFail(Option<?> toTest) throws IllegalArgumentException {
-        if (toTest.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-        return toTest.get();
     }
 }

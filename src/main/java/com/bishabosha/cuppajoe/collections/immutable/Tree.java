@@ -310,13 +310,13 @@ public interface Tree<E extends Comparable<E>> {
         return () -> new Iterables.Lockable<>() {
 
             private List<Object> stack = List.of(Tree.this);
-            private E toReturn;
+            private Option<E> toReturn;
 
             @Override
             public boolean hasNextSupplier() {
                 final Product2<Option<E>, List<Object>> nextItem;
                 nextItem = stack.nextItem((x, xs) -> Match(x).of(
-                    with(¥Leaf(), () -> Tuple(Left(false), xs)),
+                    with(¥Leaf(), () -> Nothing()),
                     with($Node($n, $l, $r), (E $n, Tree<E> $l, Tree<E> $r) -> {
                         List<Object> zs = xs;
                         zs = zs.push($n);
@@ -326,18 +326,18 @@ public interface Tree<E extends Comparable<E>> {
                         if (!$l.isEmpty()) {
                             zs = zs.push($l);
                         }
-                        return Tuple(Left(true), zs);
+                        return Some(Tuple(Nothing(), zs));
                     }),
-                    with($x, (E $x) -> Tuple(Right($x), xs))
+                    with($x, (E $x) -> Some(Tuple(Some($x), xs)))
                 ));
                 stack = nextItem.$2();
-                toReturn = nextItem.$1().orElse(null);
+                toReturn = nextItem.$1();
                 return !nextItem.$1().isEmpty();
             }
 
             @Override
             public E nextSupplier() {
-                return toReturn;
+                return toReturn.get();
             }
         };
     }
@@ -415,10 +415,10 @@ public interface Tree<E extends Comparable<E>> {
          * @return <b>Option&lt;PatternResult&gt;</b> if all patterns pass, otherwise {@link API#Nothing()}
          */
         public static Pattern $Node(Pattern node, Pattern left, Pattern right) {
-            return patternFor(Node.class).testThree(
-                Tuple(node, Tree::node),
-                Tuple(left, Tree::left),
-                Tuple(right, Tree::right)
+            return patternFor(Node.class).test3(
+                node, Tree::node,
+                left, Tree::left,
+                right, Tree::right
             );
         }
 

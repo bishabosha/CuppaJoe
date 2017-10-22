@@ -21,13 +21,13 @@ public final class Tuple5<A, B, C, D, E> implements Product5<A, B, C, D, E> {
     private final E $5;
 
     public static Pattern $Tuple5(Pattern $1, Pattern $2, Pattern $3, Pattern $4, Pattern $5) {
-        return patternFor(Tuple5.class)
-            .addTest($1, Product5::$1)
-            .addTest($2, Product5::$2)
-            .addTest($3, Product5::$3)
-            .addTest($4, Product5::$4)
-            .addTest($5, Product5::$5)
-            .build();
+        return patternFor(Tuple5.class).test5(
+            $1, Product5::$1,
+            $2, Product5::$2,
+            $3, Product5::$3,
+            $4, Product5::$4,
+            $5, Product5::$5
+        );
     }
 
     public static <A, B, C, D, E>

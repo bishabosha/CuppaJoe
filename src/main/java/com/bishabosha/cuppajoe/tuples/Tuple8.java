@@ -25,16 +25,16 @@ public class Tuple8<A, B, C, D, E, F, G, H> implements Product8<A, B, C, D, E, F
 
     public static Pattern $Tuple8(Pattern $1, Pattern $2, Pattern $3, Pattern $4,
                                  Pattern $5, Pattern $6, Pattern $7, Pattern $8) {
-        return patternFor(Tuple8.class)
-                .addTest($1, Tuple8::$1)
-                .addTest($2, Tuple8::$2)
-                .addTest($3, Tuple8::$3)
-                .addTest($4, Tuple8::$4)
-                .addTest($5, Tuple8::$5)
-                .addTest($6, Tuple8::$6)
-                .addTest($7, Tuple8::$7)
-                .addTest($8, Tuple8::$8)
-                .build();
+        return patternFor(Tuple8.class).test8(
+            $1, Tuple8::$1,
+            $2, Tuple8::$2,
+            $3, Tuple8::$3,
+            $4, Tuple8::$4,
+            $5, Tuple8::$5,
+            $6, Tuple8::$6,
+            $7, Tuple8::$7,
+            $8, Tuple8::$8
+        );
     }
 
     public static <A, B, C, D, E, F, G, H>
