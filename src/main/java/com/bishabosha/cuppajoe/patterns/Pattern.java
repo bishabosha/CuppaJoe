@@ -15,20 +15,12 @@ public interface Pattern {
 
     Option<PatternResult> test(Object obj);
 
-    Option<PatternResult> PASS = Some(PatternResult.create());
+    Option<PatternResult> PASS = Some(PatternResult.empty());
 
     Option<PatternResult> FAIL = Nothing();
 
     static Option<PatternResult> bind(Object x) {
         return Option.of(PatternResult.of(x));
-    }
-
-    static Option<PatternResult> bind(Object... xs) {
-        return Option.of(PatternResult.of(xs));
-    }
-
-    static Option<PatternResult> compile(PatternResult result) {
-        return Option.of(result.flatten());
     }
 
     Pattern ¥LT = x -> x instanceof Integer && ((Integer)x) < 0 ? PASS : FAIL;

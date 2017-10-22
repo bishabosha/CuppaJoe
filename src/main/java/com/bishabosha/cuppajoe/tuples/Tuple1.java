@@ -17,7 +17,7 @@ public final class Tuple1<A> implements Product1<A> {
     private final A $1;
 
     public static Pattern $Tuple1(Pattern $1) {
-        return patternFor(Product1.class).atomic($1, Product1::$1);
+        return patternFor(Product1.class).test1($1, Product1::$1);
     }
 
     public static <A> Tuple1<A> of(A $1) {
@@ -38,7 +38,7 @@ public final class Tuple1<A> implements Product1<A> {
 
     @Override
     public int hashCode() {
-        return $1().hashCode();
+        return Objects.hashCode($1());
     }
 
     @Override

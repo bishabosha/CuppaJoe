@@ -128,7 +128,7 @@ public abstract class AbstractSequence<T> extends AbstractArrayHelper<T> impleme
 
     @Override
     public boolean equals(Object obj) {
-        return Iterables.equals(this, obj, Sequence.class);
+        return obj == this || Iterables.equals(this, obj, Sequence.class);
     }
 
     @Override

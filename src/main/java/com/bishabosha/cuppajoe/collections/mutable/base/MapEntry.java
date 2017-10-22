@@ -48,11 +48,14 @@ public class MapEntry<K, V> implements Entry<K, V> {
 	
 	@Override
 	public int hashCode() {
-		return key.hashCode();
+		return Objects.hashCode(key);
 	}
 	
 	@Override
 	public boolean equals(Object obj) {
+		if (obj == this) {
+			return true;
+		}
 		if (obj instanceof Entry) {
 			final Entry entry = (Entry) obj;
 			return Objects.equals(key, entry.getKey()) && Objects.equals(value, entry.getValue());

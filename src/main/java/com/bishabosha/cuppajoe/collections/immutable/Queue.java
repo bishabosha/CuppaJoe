@@ -110,7 +110,7 @@ public class Queue<E> implements Foldable<E>, Bunch<E> {
 
     @Override
     public int hashCode() {
-        return foldLeft(1, (hash, x) -> 31*hash + (x == null ? 0 : x.hashCode()));
+        return foldLeft(1, (hash, x) -> 31*hash + (x == null ? 0 : Objects.hashCode(x)));
     }
 
     @Override

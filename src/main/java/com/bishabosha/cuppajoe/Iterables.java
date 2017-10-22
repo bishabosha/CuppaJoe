@@ -186,17 +186,17 @@ public interface Iterables {
         };
     }
 
-    static <C, E> boolean equals(Iterable<E> base, Object obj, Class<C> clazz) {
+    static <C extends Iterable, E> boolean equals(Iterable<E> base, Object obj, Class<C> clazz) {
         if (!(clazz.isInstance(obj))) {
             return false;
         }
-        Iterator<E> it = ((Iterable) obj).iterator();
-        for (E term: base) {
-            if (!it.hasNext() || !term.equals(it.next())) {
+        Iterator it = ((Iterable) obj).iterator();
+        for (Object term: base) {
+            if (!it.hasNext() || !Objects.equals(term, it.next())) {
                 return false;
             }
         }
-        return true;
+        return !it.hasNext();
     }
 
     static boolean equalElements(Collection a, Collection b) {

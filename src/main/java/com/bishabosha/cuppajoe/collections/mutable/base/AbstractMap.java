@@ -163,6 +163,6 @@ public abstract class AbstractMap<K, V> implements Map<K, V>{
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof Map && entrySet().equals(((Map) obj).entrySet());
+        return obj == this || obj instanceof Map && entrySet().equals(((Map) obj).entrySet());
     }
 }

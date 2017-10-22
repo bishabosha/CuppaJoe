@@ -12,6 +12,9 @@ import java.util.Set;
 public abstract class AbstractSet<E> extends AbstractCollection<E> implements Set<E>{
     @Override
     public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
         if (!(obj instanceof Set<?>)) {
             return false;
         }

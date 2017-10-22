@@ -1,83 +1,222 @@
-/*
- * Copyright (c) 2017. Jamie Thompson <bishbashboshjt@gmail.com>
- */
-
 package com.bishabosha.cuppajoe.patterns;
 
-import com.bishabosha.cuppajoe.collections.mutable.base.AbstractBase;
-import com.bishabosha.cuppajoe.Library;
+import com.bishabosha.cuppajoe.Foldable;
+import com.bishabosha.cuppajoe.Iterables;
+import com.bishabosha.cuppajoe.collections.immutable.Array;
+import com.bishabosha.cuppajoe.collections.immutable.List;
 import com.bishabosha.cuppajoe.control.Option;
+import com.bishabosha.cuppajoe.tuples.Product2;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 
-public class PatternResult extends AbstractBase<Object> {
-    private List<Object> list;
+import static com.bishabosha.cuppajoe.API.*;
 
-    private PatternResult(Object... objects) {
-        list = Arrays.asList(objects);
+public interface PatternResult<E> extends Iterable<E> {
+
+    @SafeVarargs
+    static <E> PatternResult<E> compose(PatternResult<E>... trees) {
+        return trees == null
+            ? new Leaf<>(null)
+            : new Node<>(Array.of(trees));
     }
 
-    private PatternResult() {
-        list = new ArrayList<>();
+    @SafeVarargs
+    static <E> PatternResult<E> of(E... values) {
+        return values == null
+            ? new Leaf<>(null)
+            : values.length == 0
+                ? empty()
+                : new Node<>(Array.of(values).map(Leaf::new));
     }
 
-    public static PatternResult create() {
-        return new PatternResult();
+    static <E> PatternResult<E> of(E value) {
+        return new Leaf<>(value);
     }
 
-    public static PatternResult of(Object... objects) {
-        return new PatternResult(objects);
+    @SuppressWarnings("unchecked")
+    static <E> PatternResult<E> empty() {
+        return (PatternResult<E>) Node.EMPTY;
     }
 
-    public int size() {
-        return list.size();
+    boolean isEmpty();
+
+    boolean isLeaf();
+
+    Option<E> get();
+
+    Array<PatternResult<E>> branches();
+
+    default Values values() {
+        return new Values(iterator());
     }
 
-    public boolean isEmpty() {
-        return list.isEmpty();
+    default int size() {
+        return Foldable.foldOver(this, 0, (acc, x) -> acc = acc + 1);
     }
 
-    @Override
-    public boolean contains(Object o) {
-        return list.contains(o);
-    }
+    class Node<E> implements PatternResult<E> {
 
-    public <T> T get(int index) {
-        try {
-            return (T) list.get(index);
-        } catch (ClassCastException cce) {
-            throw new ClassCastException("PatternResult.get(" + index + ") is not of the type requested.");
-        } catch (IndexOutOfBoundsException ioobe) {
-            throw new IllegalArgumentException("Not enough values contained in PatternResult.");
+        private static final PatternResult<?> EMPTY = new Node<>(Array.empty());
+
+        Array<PatternResult<E>> branches;
+
+        private Node(Array<PatternResult<E>> branches) {
+            this.branches = branches;
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return branches.isEmpty();
+        }
+
+        public boolean isLeaf() {
+            return false;
+        }
+
+        @Override
+        public Option<E> get() {
+            return Nothing();
+        }
+
+        @Override
+        public Array<PatternResult<E>> branches() {
+            return branches;
+        }
+
+        @NotNull
+        @Override
+        public Iterator<E> iterator() {
+            return new Iterables.Lockable<>() {
+                private List<Iterator<PatternResult<E>>> stack = isEmpty() ? List() : List(Node.this.branches().iterator());
+                private Option<E> toReturn;
+
+                @Override
+                public boolean hasNextSupplier() {
+                    final Product2<Option<E>, List<Iterator<PatternResult<E>>>> nextItem;
+                    nextItem = stack.nextItem((it, xs) -> {
+                        if (it.hasNext()) {
+                            PatternResult<E> tree = it.next();
+                            if (it.hasNext()) {
+                                xs = xs.push(it);
+                            }
+                            if (tree.isLeaf()) {
+                                return Some(Tuple(tree.get(), xs));
+                            } else {
+                                return Some(Tuple(Nothing(), tree.isEmpty() ? xs : xs.push(tree.branches().iterator())));
+                            }
+                        }
+                        return Nothing();
+                    });
+                    toReturn = nextItem.$1();
+                    stack = nextItem.$2();
+                    return !toReturn.isEmpty();
+                }
+
+                @Override
+                public E nextSupplier() {
+                    return toReturn.get();
+                }
+            };
+        }
+
+        @Override
+        public int hashCode() {
+            return Iterables.hash(this);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return obj == this || Iterables.equals(this, obj, PatternResult.class);
+        }
+
+        @Override
+        public String toString() {
+            return Iterables.toString('[', ']', iterator());
         }
     }
 
-    public boolean add(Object obj) {
-        return list.add(obj);
+    class Leaf<E> implements PatternResult<E> {
+
+        private E value;
+
+        private Leaf(E value) {
+            this.value = value;
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return false;
+        }
+
+        @Override
+        public boolean isLeaf() {
+            return true;
+        }
+
+        @Override
+        public Option<E> get() {
+            return Some(value);
+        }
+
+        @Override
+        public Array<PatternResult<E>> branches() {
+            return Array.empty();
+        }
+
+        @NotNull
+        @Override
+        public Iterator<E> iterator() {
+            return Iterables.singleton(() -> value);
+        }
+
+        @Override
+        public String toString() {
+            return "[" + value + "]" ;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(value);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return obj == this || Option(obj)
+                                    .cast(PatternResult.class)
+                                    .map(x -> {
+                                        Iterator other = x.iterator();
+                                        if (other.hasNext() && Objects.equals(other.next(), value) && !other.hasNext()) {
+                                            return true;
+                                        }
+                                        return false;
+                                    })
+                                    .orElse(false);
+        }
     }
 
-    @Override
-    public Iterator<Object> iterator() {
-        return list.iterator();
-    }
+    class Values {
+        private final Iterator<?> iterator;
+        private int count = -1;
 
-    @Override
-    public boolean equals(Object obj) {
-        return Option.of(obj)
-                     .cast(PatternResult.class)
-                     .map(x -> Objects.equals(x.list, list))
-                     .orElse(false);
-    }
+        private Values(Iterator<?> iterator) {
+            this.iterator = iterator;
+        }
 
-    /**
-     * Standard Iterative, In-order, Depth First Search
-     * @return A flat list of matched results
-     */
-    public PatternResult flatten() {
-        list = Library.foldLeft(PatternResult.class, this, ArrayList::new, (xs, x) -> {
-            xs.add(x);
-            return xs;
-        });
-        return this;
+        @SuppressWarnings("unchecked")
+        public <O> O next() {
+            try {
+                if (iterator.hasNext()) {
+                    count = count + 1;
+                    return (O) iterator.next();
+                } else {
+                    throw new NoSuchElementException("Not enough values contained in Pattern Result.");
+                }
+            } catch (ClassCastException cce) {
+                throw new ClassCastException("Pattern Result elem("+count+") is not of the type requested.");
+            }
+        }
     }
 }

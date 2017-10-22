@@ -6,14 +6,11 @@ package com.bishabosha.cuppajoe.patterns;
 
 import com.bishabosha.cuppajoe.control.Option;
 import com.bishabosha.cuppajoe.functions.Func1;
-import com.bishabosha.cuppajoe.tuples.Tuple2;
-import com.bishabosha.cuppajoe.collections.mutable.lists.LinkedList;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
+import static com.bishabosha.cuppajoe.API.Some;
 import static com.bishabosha.cuppajoe.API.Tuple;
 
 public class PatternFactory<I> {
@@ -23,17 +20,18 @@ public class PatternFactory<I> {
         return new PatternFactory<>(clazz);
     }
     
-    public <O> Pattern atomic(Pattern pattern, Func1<I, O> mapper) {
-        return x -> Option.of(x)
-                          .cast(inputClass)
-                          .map(mapper)
-                          .flatMap(pattern::test);
-    }
+    public <O> Pattern test1(
+        Pattern p1, Func1<I, O> g1) {
+            return x -> Option.of(x)
+                              .cast(inputClass)
+                              .map(g1)
+                              .flatMap(p1::test);
+        }
 
     public <A, B> Pattern test2(
         Pattern p1, Function<I, A> g1,
         Pattern p2, Function<I, B> g2) {
-            return testBase(x -> PatternResult.of(
+            return testBase(x -> PatternResult.compose(
                 p1.test(g1.apply(x)).get(),
                 p2.test(g2.apply(x)).get()
             ));
@@ -43,7 +41,7 @@ public class PatternFactory<I> {
         Pattern p1, Function<I, A> g1,
         Pattern p2, Function<I, B> g2,
         Pattern p3, Function<I, C> g3) {
-            return testBase(x -> PatternResult.of(
+            return testBase(x -> PatternResult.compose(
                 p1.test(g1.apply(x)).get(),
                 p2.test(g2.apply(x)).get(),
                 p3.test(g3.apply(x)).get()
@@ -55,7 +53,7 @@ public class PatternFactory<I> {
         Pattern p2, Function<I, B> g2,
         Pattern p3, Function<I, C> g3,
         Pattern p4, Function<I, D> g4) {
-            return testBase(x -> PatternResult.of(
+            return testBase(x -> PatternResult.compose(
                 p1.test(g1.apply(x)).get(),
                 p2.test(g2.apply(x)).get(),
                 p3.test(g3.apply(x)).get(),
@@ -69,7 +67,7 @@ public class PatternFactory<I> {
         Pattern p3, Function<I, C> g3,
         Pattern p4, Function<I, D> g4,
         Pattern p5, Function<I, E> g5) {
-            return testBase(x -> PatternResult.of(
+            return testBase(x -> PatternResult.compose(
                 p1.test(g1.apply(x)).get(),
                 p2.test(g2.apply(x)).get(),
                 p3.test(g3.apply(x)).get(),
@@ -85,7 +83,7 @@ public class PatternFactory<I> {
         Pattern p4, Function<I, D> g4,
         Pattern p5, Function<I, E> g5,
         Pattern p6, Function<I, F> g6) {
-            return testBase(x -> PatternResult.of(
+            return testBase(x -> PatternResult.compose(
                 p1.test(g1.apply(x)).get(),
                 p2.test(g2.apply(x)).get(),
                 p3.test(g3.apply(x)).get(),
@@ -103,7 +101,7 @@ public class PatternFactory<I> {
         Pattern p5, Function<I, E> g5,
         Pattern p6, Function<I, F> g6,
         Pattern p7, Function<I, G> g7) {
-            return testBase(x -> PatternResult.of(
+            return testBase(x -> PatternResult.compose(
                 p1.test(g1.apply(x)).get(),
                 p2.test(g2.apply(x)).get(),
                 p3.test(g3.apply(x)).get(),
@@ -123,7 +121,7 @@ public class PatternFactory<I> {
         Pattern p6, Function<I, F> g6,
         Pattern p7, Function<I, G> g7,
         Pattern p8, Function<I, H> g8) {
-            return testBase(x -> PatternResult.of(
+            return testBase(x -> PatternResult.compose(
                 p1.test(g1.apply(x)).get(),
                 p2.test(g2.apply(x)).get(),
                 p3.test(g3.apply(x)).get(),
@@ -140,7 +138,7 @@ public class PatternFactory<I> {
             if (inputClass.isInstance(x)) {
                 I toTest = inputClass.cast(x);
                 try {
-                    return Pattern.compile(supplier.apply(toTest));
+                    return Some(supplier.apply(toTest));
                 } catch (NoSuchElementException e) {
                     // fallthrough
                 }

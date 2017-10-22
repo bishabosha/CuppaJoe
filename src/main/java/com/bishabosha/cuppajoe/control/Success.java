@@ -13,7 +13,7 @@ public class Success<E> implements Try<E> {
     private final E value;
 
     static Pattern $Success(Pattern pattern) {
-        return patternFor(Success.class).atomic(pattern, x -> x.value);
+        return patternFor(Success.class).test1(pattern, x -> x.value);
     }
 
     @NotNull
@@ -42,7 +42,7 @@ public class Success<E> implements Try<E> {
 
     @Override
     public int hashCode() {
-        return value.hashCode();
+        return Objects.hashCode(value);
     }
 
     @Override

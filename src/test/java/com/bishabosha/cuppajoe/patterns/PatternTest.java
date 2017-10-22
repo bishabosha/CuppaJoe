@@ -83,10 +83,11 @@ public class PatternTest {
         underTest = Tuple(Option.of(Node(1, leaf(), leaf())), List.of(Tree.of(2)));
 
         patt2Test.test(underTest).ifSome(results -> {
+            PatternResult.Values values = results.values();
             assertEquals(3, results.size());
-            assertEquals(1, (int) results.get(0));
-            assertEquals(leaf(), results.get(1));
-            assertEquals(List.of(Tree.of(2)), results.get(2));
+            assertEquals(1, (int) values.next());
+            assertEquals(leaf(), values.next());
+            assertEquals(List.of(Tree.of(2)), values.next());
         });
     }
 }

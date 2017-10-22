@@ -64,71 +64,59 @@ public interface Case<I, O> {
 
     static <I, O> Case<I, O>
     with(Pattern matcher, Supplier<O> binder) {
-        return base(matcher, t -> binder.get());
+        return base(matcher, xs -> binder.get());
     }
 
     static <I, O, A> Case<I, O>
     with(Pattern matcher, Func1<A, O> binder) {
-        return base(matcher, l -> binder.apply(l.get(0)));
+        return base(matcher,
+            xs -> binder.apply(xs.next()));
     }
 
     static <I, O, A, B> Case<I, O>
     with(Pattern matcher, Func2<A, B, O> binder) {
-        return base(matcher, l ->
-            binder.apply(l.get(0), l.get(1)));
+        return base(matcher,
+            xs -> binder.apply(xs.next(), xs.next()));
     }
 
     static <I, O, A, B, C> Case<I, O>
     with(Pattern matcher, Func3<A, B, C, O> binder) {
-        return base(matcher, l ->
-            binder.apply(l.get(0), l.get(1), l.get(2)));
+        return base(matcher,
+            xs -> binder.apply(xs.next(), xs.next(), xs.next()));
     }
 
     static <I, O, A, B, C, D> Case<I, O>
     with(Pattern matcher, Func4<A, B, C, D, O> binder) {
-        return base(matcher, l ->
-            binder.apply(l.get(0), l.get(1), l.get(2),
-                    l.get(3)));
+        return base(matcher,
+            xs -> binder.apply(xs.next(), xs.next(), xs.next(), xs.next()));
     }
 
     static <I, O, A, B, C, D, E> Case<I, O>
     with(Pattern matcher, Func5<A, B, C, D, E, O> binder) {
-        return base(matcher, l ->
-            binder.apply(l.get(0), l.get(1), l.get(2),
-                    l.get(3), l.get(4)));
+        return base(matcher,
+            xs -> binder.apply(xs.next(), xs.next(), xs.next(), xs.next(), xs.next()));
     }
 
     static <I, O, A, B, C, D, E, F> Case<I, O>
     with(Pattern matcher, Func6<A, B, C, D, E, F, O> binder) {
-        return base(matcher, l ->
-            binder.apply(l.get(0), l.get(1), l.get(2),
-                    l.get(3), l.get(4), l.get(5)));
+        return base(matcher,
+            xs -> binder.apply(xs.next(), xs.next(), xs.next(), xs.next(), xs.next(), xs.next()));
     }
 
     static <I, O, A, B, C, D, E, F, G> Case<I, O>
     with(Pattern matcher, Func7<A, B, C, D, E, F, G, O> binder) {
-        return base(matcher, l ->
-            binder.apply(l.get(0), l.get(1), l.get(2),
-                    l.get(3), l.get(4), l.get(5), l.get(6)));
+        return base(matcher,
+            xs -> binder.apply(xs.next(), xs.next(), xs.next(), xs.next(), xs.next(), xs.next(), xs.next()));
     }
 
     static <I, O, A, B, C, D, E, F, G, H> Case<I, O>
     with(Pattern matcher, Func8<A, B, C, D, E, F, G, H, O> binder) {
-        return base(matcher, l ->
-            binder.apply(l.get(0), l.get(1), l.get(2),
-                    l.get(3), l.get(4), l.get(5), l.get(6),
-                    l.get(7)));
+        return base(matcher,
+            xs -> binder.apply(xs.next(), xs.next(), xs.next(), xs.next(), xs.next(), xs.next(), xs.next(), xs.next()));
     }
 
-    static <I, O> Case<I, O> base(Pattern matcher, Function<PatternResult, O> mapper) {
-        return i -> {
-            Option<PatternResult> option = matcher.test(i);
-            if (option.isEmpty()) {
-                return Nothing();
-            }
-            PatternResult result = option.get();
-            return Option(mapper.apply(result));
-        };
+    static <I, O> Case<I, O> base(Pattern matcher, Function<PatternResult.Values, O> mapper) {
+        return i -> matcher.test(i).flatMap(patternResult -> Option(mapper.apply(patternResult.values())));
     }
 
     static <O> Guard<O> combine(Guard<O>... guards) {

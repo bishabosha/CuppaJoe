@@ -446,7 +446,7 @@ public interface Tree<E extends Comparable<E>> {
 
         @Override
         public int hashCode() {
-            return inOrder().foldLeft(1, (hash, x) -> 31*hash + (x == null ? 0 : x.hashCode()));
+            return inOrder().foldLeft(1, (hash, x) -> 31*hash + (x == null ? 0 : Objects.hashCode(x)));
         }
 
         /**
@@ -456,7 +456,7 @@ public interface Tree<E extends Comparable<E>> {
          */
         @Override
         public boolean equals(Object obj) {
-            return obj == this ? true : Option(obj)
+            return obj == this || Option(obj)
                 .cast(Node.class)
                 .map(n -> {
                     Iterator<?> elems = n.inOrder().iterator();

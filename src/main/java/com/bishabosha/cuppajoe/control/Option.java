@@ -5,10 +5,10 @@
 package com.bishabosha.cuppajoe.control;
 
 import com.bishabosha.cuppajoe.Value;
+import com.bishabosha.cuppajoe.patterns.PatternResult;
 import com.bishabosha.cuppajoe.functions.Func1;
 import com.bishabosha.cuppajoe.patterns.Case;
 import com.bishabosha.cuppajoe.patterns.Pattern;
-import com.bishabosha.cuppajoe.patterns.PatternResult;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 

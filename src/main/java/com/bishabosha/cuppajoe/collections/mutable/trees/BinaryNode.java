@@ -123,6 +123,6 @@ public class BinaryNode<T extends Comparable<T>> {
 	
 	@Override
 	public boolean equals(Object obj) {
-		return (obj instanceof BinaryNode) && (((BinaryNode<?>) obj).value.equals(value));
+		return obj == this || ((obj instanceof BinaryNode) && (((BinaryNode<?>) obj).value.equals(value)));
 	}
 }

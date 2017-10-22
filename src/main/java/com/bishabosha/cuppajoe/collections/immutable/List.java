@@ -384,12 +384,12 @@ public interface List<E> extends Seq<E>, Unapply2<E, List<E>> {
 
         @Override
         public int hashCode() {
-            return foldLeft(1, (hash, x) -> 31*hash + (x == null ? 0 : x.hashCode()));
+            return foldLeft(1, (hash, x) -> 31*hash + (x == null ? 0 : Objects.hashCode(x)));
         }
 
         @Override
         public boolean equals(Object obj) {
-            return obj == this ? true : Option.of(obj)
+            return obj == this || Option.of(obj)
                 .cast(Cons.class)
                 .map(l -> allMatchExhaustive(l, Objects::equals))
                 .orElse(false);

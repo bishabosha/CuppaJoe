@@ -255,6 +255,6 @@ public abstract class AbstractIterableList<E> extends AbstractCollection<E> impl
 
 	@Override
 	public boolean equals(Object obj) {
-		return Iterables.equals(this, obj, List.class);
+		return obj == this || Iterables.equals(this, obj, List.class);
 	}
 }

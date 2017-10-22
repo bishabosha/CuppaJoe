@@ -15,7 +15,7 @@ import static com.bishabosha.cuppajoe.patterns.PatternFactory.patternFor;
 public class Lazy<E> implements Supplier<E> {
 
     public static Pattern Lazy(Pattern pattern) {
-        return patternFor(Lazy.class).atomic(pattern, Lazy::get);
+        return patternFor(Lazy.class).test1(pattern, Lazy::get);
     }
 
     private boolean isComputed = false;
@@ -51,9 +51,9 @@ public class Lazy<E> implements Supplier<E> {
 
     @Override
     public boolean equals(Object obj) {
-        return this == obj ? true : Option(obj)
-                                          .cast(Lazy.class)
-                                          .map(l -> Objects.equals(l.get(), get()))
-                                          .orElse(false);
+        return this == obj || Option(obj)
+                                  .cast(Lazy.class)
+                                  .map(l -> Objects.equals(l.get(), get()))
+                                  .orElse(false);
     }
 }

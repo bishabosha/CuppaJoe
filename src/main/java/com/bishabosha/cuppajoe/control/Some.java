@@ -20,7 +20,7 @@ public final class Some<O> implements Option<O>, Applied1<O, Option<O>>{
 
     @NotNull
     public static Pattern $Some(Pattern pattern) {
-        return patternFor(Some.class).atomic(pattern, Some::get);
+        return patternFor(Some.class).test1(pattern, Some::get);
     }
 
     @NotNull
@@ -52,7 +52,7 @@ public final class Some<O> implements Option<O>, Applied1<O, Option<O>>{
 
     @Override
     public boolean equals(Object obj) {
-        return this == obj ? true : Option.of(obj)
+        return this == obj || Option.of(obj)
             .cast(Some.class)
             .map(o -> Objects.equals(o.get(), get()))
             .orElse(false);

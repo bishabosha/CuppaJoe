@@ -42,7 +42,7 @@ public class Failure<E> implements Try<E> {
 
     @Override
     public int hashCode() {
-        return error.hashCode();
+        return Objects.hashCode(error);
     }
 
     @Override

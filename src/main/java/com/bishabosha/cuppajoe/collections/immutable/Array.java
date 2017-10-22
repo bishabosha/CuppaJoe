@@ -159,17 +159,15 @@ public class Array<E> implements Seq<E>{
 
     @Override
     public int hashCode() {
-        return array.hashCode();
+        return Objects.hashCode(array.hashCode());
     }
 
     @Override
     public boolean equals(Object obj) {
-        return obj == this
-            ? true
-            : Option.of(obj)
-                    .cast(Array.class)
-                    .map(x -> allMatchExhaustive(x, Objects::equals))
-                    .orElse(false);
+        return obj == this || Option.of(obj)
+                                    .cast(Array.class)
+                                    .map(x -> allMatchExhaustive(x, Objects::equals))
+                                    .orElse(false);
     }
 
     @Override

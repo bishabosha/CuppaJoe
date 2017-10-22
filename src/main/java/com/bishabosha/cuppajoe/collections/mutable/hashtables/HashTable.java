@@ -6,6 +6,7 @@ package com.bishabosha.cuppajoe.collections.mutable.hashtables;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Objects;
 
 import com.bishabosha.cuppajoe.collections.mutable.base.AbstractSet;
 import com.bishabosha.cuppajoe.functions.Equator;
@@ -93,7 +94,7 @@ public class HashTable<E> extends AbstractSet<E> {
 			return null;
 		}
 		for (E storedEntry: list) {
-			if (storedEntry.hashCode() == entry.hashCode()
+			if (Objects.equals(Objects.hashCode(storedEntry), Objects.hashCode(entry))
 					&& getTest.test(entry, storedEntry)) {
 				return storedEntry;
 			}
