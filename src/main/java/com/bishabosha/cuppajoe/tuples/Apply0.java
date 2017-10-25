@@ -1,5 +1,6 @@
 package com.bishabosha.cuppajoe.tuples;
 
-public interface Apply0<R> {
-    R apply(Product0 tuple);
+import com.bishabosha.cuppajoe.functions.Func1;
+
+public interface Apply0<R> extends Func1<Product0, R> {
 }

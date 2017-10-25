@@ -14,7 +14,7 @@ import java.util.Objects;
 import static com.bishabosha.cuppajoe.API.Tuple;
 import static com.bishabosha.cuppajoe.patterns.PatternFactory.patternFor;
 
-public final class Some<O> implements Option<O>, Applied1<O, Option<O>>{
+public final class Some<O> implements Option<O> {
 
     private O value;
 
@@ -70,17 +70,5 @@ public final class Some<O> implements Option<O>, Applied1<O, Option<O>>{
     @Override
     public Iterator<O> iterator() {
         return Iterables.singleton(this::get);
-    }
-
-    @NotNull
-    @Override
-    public Option<O> apply(Product1<O> tuple) {
-        return of(tuple.$1());
-    }
-
-    @NotNull
-    @Override
-    public Option<Product1<O>> unapply() {
-        return of(Tuple(get()));
     }
 }

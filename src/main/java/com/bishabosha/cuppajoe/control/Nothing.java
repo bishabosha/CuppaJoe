@@ -4,13 +4,14 @@ import com.bishabosha.cuppajoe.Iterables;
 import com.bishabosha.cuppajoe.patterns.Pattern;
 import com.bishabosha.cuppajoe.tuples.Applied0;
 import com.bishabosha.cuppajoe.tuples.Product0;
+import com.bishabosha.cuppajoe.tuples.Unapply0;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public final class Nothing<E> implements Option<E>, Applied0<Nothing<E>> {
+public final class Nothing<E> implements Option<E> {
 
     private static final Nothing<?> NOTHING = new Nothing<>();
 
@@ -53,12 +54,5 @@ public final class Nothing<E> implements Option<E>, Applied0<Nothing<E>> {
     @Override
     public Iterator<E> iterator() {
         return Iterables.empty();
-    }
-
-    @NotNull
-    @Contract(pure = true)
-    @Override
-    public Nothing<E> apply(Product0 tuple) {
-        return getInstance();
     }
 }

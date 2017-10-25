@@ -6,8 +6,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import static com.bishabosha.cuppajoe.API.List;
-import static com.bishabosha.cuppajoe.API.Some;
-import static com.bishabosha.cuppajoe.API.Tuple;
+import static com.bishabosha.cuppajoe.API.*;
 import static org.junit.Assert.*;
 
 public class ListTest {
@@ -129,7 +128,7 @@ public class ListTest {
     public void apply() {
         assertEquals(
             List.of(1,2),
-            List.<Integer>Applied().apply(List.of(1,2).unapply().get())
+            List.of(1,2).unapply().map(x -> List.<Integer>Applied().apply(x)).get()
         );
     }
 

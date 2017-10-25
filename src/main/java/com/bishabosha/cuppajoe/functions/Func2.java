@@ -38,13 +38,8 @@ public interface Func2<A, B, R> extends BiFunction<A, B, R> {
     }
 
     @Contract(pure = true)
-    default Func1<Product2<A, B>, R> tupled() {
-        return x -> apply(x.$1(), x.$2());
-    }
-
-    @Contract(pure = true)
     default Apply2<A, B, R> applied() {
-        return x -> tupled().apply(x);
+        return x -> apply(x.$1(), x.$2());
     }
 
     default Func1<B, R> apply(A a) {

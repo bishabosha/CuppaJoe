@@ -31,12 +31,7 @@ public interface Func1<A, R> extends Function<A, R> {
         return x -> Try.<R>narrow(Try.of(() -> func.apply(x))).get();
     }
 
-    @Contract(pure = true)
-    default Func1<Product1<A>, R> tupled() {
-        return x -> apply(x.$1());
-    }
-
     default Apply1<A, R> applied() {
-        return x -> tupled().apply(x);
+        return x -> apply(x.$1());
     }
 }

@@ -32,11 +32,7 @@ public interface Func0<R> extends Supplier<R> {
     }
 
     @Contract(pure = true)
-    default Func1<Product0, R> tupled() {
-        return x -> get();
-    }
-
     default Apply0 applied() {
-        return x -> tupled().apply(x);
+        return x -> get();
     }
 }

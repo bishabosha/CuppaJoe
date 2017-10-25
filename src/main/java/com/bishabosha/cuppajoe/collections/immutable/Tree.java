@@ -7,10 +7,11 @@ package com.bishabosha.cuppajoe.collections.immutable;
 import com.bishabosha.cuppajoe.Iterables;
 import com.bishabosha.cuppajoe.control.Option;
 import com.bishabosha.cuppajoe.functions.Func2;
+import com.bishabosha.cuppajoe.functions.Func3;
 import com.bishabosha.cuppajoe.patterns.Pattern;
 import com.bishabosha.cuppajoe.API;
 import com.bishabosha.cuppajoe.Foldable;
-import com.bishabosha.cuppajoe.tuples.Product2;
+import com.bishabosha.cuppajoe.tuples.*;
 import org.jetbrains.annotations.Contract;
 
 import java.util.Iterator;
@@ -32,7 +33,7 @@ import static com.bishabosha.cuppajoe.tuples.Tuple2.$Tuple2;
  * Immutable tree
  * @param <E> the type that the Tree contains
  */
-public interface Tree<E extends Comparable<E>> {
+public interface Tree<E extends Comparable<E>> extends Unapply3<E, Tree<E>, Tree<E>> {
 
     E node();
     Tree<E> left();
@@ -66,6 +67,15 @@ public interface Tree<E extends Comparable<E>> {
      */
     static <R extends Comparable<R>> Tree<R> Node(R node, Tree<R> left, Tree<R> right) {
         return Node.of(Objects.requireNonNull(node), Objects.requireNonNull(left), Objects.requireNonNull(right));
+    }
+
+    static <R extends Comparable<R>> Apply3<R, Tree<R>, Tree<R>, Tree<R>> Applied() {
+        return Func3.<R, Tree<R>, Tree<R>, Tree<R>>of(Tree::Node).applied();
+    }
+
+    @Override
+    default Option<Product3<E, Tree<E>, Tree<E>>> unapply() {
+        return isEmpty() ? Nothing() : Some(Tuple(node(), left(), right()));
     }
 
     /**

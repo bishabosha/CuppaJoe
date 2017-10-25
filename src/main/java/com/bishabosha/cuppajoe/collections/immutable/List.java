@@ -67,6 +67,15 @@ public interface List<E> extends Seq<E>, Unapply2<E, List<E>> {
         return cons;
     }
 
+    static <O> Apply2<O, List<O>, List<O>> Applied() {
+        return Func2.<O, List<O>, List<O>>of(List::concat).applied();
+    }
+
+    @Override
+    default Option<Product2<E, List<E>>> unapply() {
+        return isEmpty() ? Nothing() : Some(Tuple(head(), tail()));
+    }
+
     /**
      * Creates a new of instance with this as its tail and elem as its head.
      * @param elem the new element to push to the head.
@@ -232,16 +241,7 @@ public interface List<E> extends Seq<E>, Unapply2<E, List<E>> {
         return buffer;
     }
 
-    @Override
-    default Option<Product2<E, List<E>>> unapply() {
-        return isEmpty() ? Nothing() : Some(Tuple(head(), tail()));
-    }
-
-    static <O> Apply2<O, List<O>, Cons<O>> Applied() {
-        return t -> new Cons<>(t.$1(), t.$2());
-    }
-
-    class Empty<E> implements List<E>, Apply0<Empty<E>> {
+    class Empty<E> implements List<E> {
 
         /**
          * Pattern to test if any object is equivalent to an empty tail element.
@@ -310,11 +310,6 @@ public interface List<E> extends Seq<E>, Unapply2<E, List<E>> {
         @Override
         public String toString() {
             return "[]";
-        }
-
-        @Override
-        public Empty<E> apply(Product0 tuple) {
-            return getInstance();
         }
     }
 

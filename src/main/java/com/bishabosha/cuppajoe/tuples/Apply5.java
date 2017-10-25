@@ -1,5 +1,6 @@
 package com.bishabosha.cuppajoe.tuples;
 
-public interface Apply5<A, B, C, D, E, R> {
-    R apply(Product5<A, B, C, D, E> tuple);
+import com.bishabosha.cuppajoe.functions.Func1;
+
+public interface Apply5<A, B, C, D, E, R> extends Func1<Product5<A, B, C, D, E>, R> {
 }

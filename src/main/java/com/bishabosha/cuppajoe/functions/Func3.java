@@ -33,13 +33,8 @@ public interface Func3<A, B, C, R> {
     }
 
     @Contract(pure = true)
-    default Func1<Product3<A, B, C>, R> tupled() {
-        return x -> apply(x.$1(), x.$2(), x.$3());
-    }
-
-    @Contract(pure = true)
     default Apply3<A, B, C, R> applied() {
-        return x -> tupled().apply(x);
+        return x -> apply(x.$1(), x.$2(), x.$3());
     }
 
     R apply(A a, B b, C c);
