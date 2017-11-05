@@ -4,7 +4,6 @@ import com.bishabosha.cuppajoe.Library;
 import com.bishabosha.cuppajoe.control.Try;
 import com.bishabosha.cuppajoe.functions.Func2;
 
-import java.util.List;
 import java.util.function.Supplier;
 
 import static com.bishabosha.cuppajoe.API.Try;

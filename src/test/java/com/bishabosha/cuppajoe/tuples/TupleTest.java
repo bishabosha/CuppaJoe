@@ -5,9 +5,7 @@
 package com.bishabosha.cuppajoe.tuples;
 
 import com.bishabosha.cuppajoe.API;
-import com.bishabosha.cuppajoe.Library;
 import com.bishabosha.cuppajoe.collections.immutable.Queue;
-import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
 

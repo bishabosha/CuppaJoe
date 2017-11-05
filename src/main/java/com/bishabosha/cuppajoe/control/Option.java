@@ -9,10 +9,6 @@ import com.bishabosha.cuppajoe.patterns.PatternResult;
 import com.bishabosha.cuppajoe.functions.Func1;
 import com.bishabosha.cuppajoe.patterns.Case;
 import com.bishabosha.cuppajoe.patterns.Pattern;
-import com.bishabosha.cuppajoe.tuples.Applied1;
-import com.bishabosha.cuppajoe.tuples.Apply1;
-import com.bishabosha.cuppajoe.tuples.Product1;
-import com.bishabosha.cuppajoe.tuples.Unapply1;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,9 +18,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static com.bishabosha.cuppajoe.API.Tuple;
-
-public interface Option<O> extends Value<O>, Unapply1<O> {
+public interface Option<O> extends Value<O> {
 
     static <O> Option<Option<O>> wrappedNothing() {
         return of(Nothing.getInstance());
@@ -38,16 +32,6 @@ public interface Option<O> extends Value<O>, Unapply1<O> {
     @Contract(pure = true)
     static <O> Option<O> of(O value) {
         return Objects.nonNull(value) ? Some.of(value) : Nothing.getInstance();
-    }
-
-    static <O> Apply1<O, Option<O>> Applied() {
-        return Func1.<O, Option<O>>of(Option::of).applied();
-    }
-
-    @NotNull
-    @Override
-    default Option<Product1<O>> unapply() {
-        return of(Tuple(get()));
     }
 
     @Override

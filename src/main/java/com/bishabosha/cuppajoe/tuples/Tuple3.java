@@ -6,11 +6,11 @@ package com.bishabosha.cuppajoe.tuples;
 
 import com.bishabosha.cuppajoe.patterns.Pattern;
 import com.bishabosha.cuppajoe.functions.Func3;
+import com.bishabosha.cuppajoe.patterns.PatternFactory;
 
 import java.util.Objects;
 
 import static com.bishabosha.cuppajoe.API.Option;
-import static com.bishabosha.cuppajoe.patterns.PatternFactory.patternFor;
 
 public final class Tuple3<A, B, C> implements Product3<A, B, C> {
 
@@ -18,12 +18,10 @@ public final class Tuple3<A, B, C> implements Product3<A, B, C> {
     private final B $2;
     private final C $3;
 
+    private static final Func3<Pattern, Pattern, Pattern, Pattern> PATTERN = PatternFactory.gen3(Tuple3.class);
+
     public static Pattern $Tuple3(Pattern $1, Pattern $2, Pattern $3) {
-        return patternFor(Tuple3.class).test3(
-            $1, Product3::$1,
-            $2, Product3::$2,
-            $3, Product3::$3
-        );
+        return PATTERN.apply($1, $2, $3);
     }
 
     public static <A, B, C> Tuple3<A, B, C> of(A $1, B $2, C $3) {

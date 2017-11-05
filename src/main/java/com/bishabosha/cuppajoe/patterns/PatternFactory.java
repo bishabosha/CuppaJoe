@@ -5,149 +5,120 @@
 package com.bishabosha.cuppajoe.patterns;
 
 import com.bishabosha.cuppajoe.control.Option;
-import com.bishabosha.cuppajoe.functions.Func1;
+import com.bishabosha.cuppajoe.functions.*;
+import com.bishabosha.cuppajoe.tuples.*;
 
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 
 import static com.bishabosha.cuppajoe.API.Some;
-import static com.bishabosha.cuppajoe.API.Tuple;
+import static com.bishabosha.cuppajoe.API.Try;
 
 public class PatternFactory<I> {
-    private Class<I> inputClass;
 
-    public static <C> PatternFactory<C> patternFor(Class<C> clazz) {
-        return new PatternFactory<>(clazz);
-    }
-    
-    public <O> Pattern test1(
-        Pattern p1, Func1<I, O> g1) {
-            return x -> Option.of(x)
-                              .cast(inputClass)
-                              .map(g1)
-                              .flatMap(p1::test);
-        }
-
-    public <A, B> Pattern test2(
-        Pattern p1, Function<I, A> g1,
-        Pattern p2, Function<I, B> g2) {
-            return testBase(x -> PatternResult.compose(
-                p1.test(g1.apply(x)).get(),
-                p2.test(g2.apply(x)).get()
-            ));
-        }
-
-    public <A, B, C> Pattern test3(
-        Pattern p1, Function<I, A> g1,
-        Pattern p2, Function<I, B> g2,
-        Pattern p3, Function<I, C> g3) {
-            return testBase(x -> PatternResult.compose(
-                p1.test(g1.apply(x)).get(),
-                p2.test(g2.apply(x)).get(),
-                p3.test(g3.apply(x)).get()
-            ));
-        }
-
-    public <A, B, C, D> Pattern test4(
-        Pattern p1, Function<I, A> g1,
-        Pattern p2, Function<I, B> g2,
-        Pattern p3, Function<I, C> g3,
-        Pattern p4, Function<I, D> g4) {
-            return testBase(x -> PatternResult.compose(
-                p1.test(g1.apply(x)).get(),
-                p2.test(g2.apply(x)).get(),
-                p3.test(g3.apply(x)).get(),
-                p4.test(g4.apply(x)).get()
-            ));
-        }
-
-    public <A, B, C, D, E> Pattern test5(
-        Pattern p1, Function<I, A> g1,
-        Pattern p2, Function<I, B> g2,
-        Pattern p3, Function<I, C> g3,
-        Pattern p4, Function<I, D> g4,
-        Pattern p5, Function<I, E> g5) {
-            return testBase(x -> PatternResult.compose(
-                p1.test(g1.apply(x)).get(),
-                p2.test(g2.apply(x)).get(),
-                p3.test(g3.apply(x)).get(),
-                p4.test(g4.apply(x)).get(),
-                p5.test(g5.apply(x)).get()
-            ));
-        }
-
-    public <A, B, C, D, E, F> Pattern test6(
-        Pattern p1, Function<I, A> g1,
-        Pattern p2, Function<I, B> g2,
-        Pattern p3, Function<I, C> g3,
-        Pattern p4, Function<I, D> g4,
-        Pattern p5, Function<I, E> g5,
-        Pattern p6, Function<I, F> g6) {
-            return testBase(x -> PatternResult.compose(
-                p1.test(g1.apply(x)).get(),
-                p2.test(g2.apply(x)).get(),
-                p3.test(g3.apply(x)).get(),
-                p4.test(g4.apply(x)).get(),
-                p5.test(g5.apply(x)).get(),
-                p6.test(g6.apply(x)).get()
-            ));
-        }
-
-    public <A, B, C, D, E, F, G> Pattern test7(
-        Pattern p1, Function<I, A> g1,
-        Pattern p2, Function<I, B> g2,
-        Pattern p3, Function<I, C> g3,
-        Pattern p4, Function<I, D> g4,
-        Pattern p5, Function<I, E> g5,
-        Pattern p6, Function<I, F> g6,
-        Pattern p7, Function<I, G> g7) {
-            return testBase(x -> PatternResult.compose(
-                p1.test(g1.apply(x)).get(),
-                p2.test(g2.apply(x)).get(),
-                p3.test(g3.apply(x)).get(),
-                p4.test(g4.apply(x)).get(),
-                p5.test(g5.apply(x)).get(),
-                p6.test(g6.apply(x)).get(),
-                p7.test(g7.apply(x)).get()
-            ));
-        }
-
-    public <A, B, C, D, E, F, G, H> Pattern test8(
-        Pattern p1, Function<I, A> g1,
-        Pattern p2, Function<I, B> g2,
-        Pattern p3, Function<I, C> g3,
-        Pattern p4, Function<I, D> g4,
-        Pattern p5, Function<I, E> g5,
-        Pattern p6, Function<I, F> g6,
-        Pattern p7, Function<I, G> g7,
-        Pattern p8, Function<I, H> g8) {
-            return testBase(x -> PatternResult.compose(
-                p1.test(g1.apply(x)).get(),
-                p2.test(g2.apply(x)).get(),
-                p3.test(g3.apply(x)).get(),
-                p4.test(g4.apply(x)).get(),
-                p5.test(g5.apply(x)).get(),
-                p6.test(g6.apply(x)).get(),
-                p7.test(g7.apply(x)).get(),
-                p8.test(g8.apply(x)).get()
-            ));
-        }
-
-    private Pattern testBase(Function<I, PatternResult> supplier) {
-        return x -> {
-            if (inputClass.isInstance(x)) {
-                I toTest = inputClass.cast(x);
-                try {
-                    return Some(supplier.apply(toTest));
-                } catch (NoSuchElementException e) {
-                    // fallthrough
-                }
-            }
-            return Pattern.FAIL;
-        };
+    public static <U extends Unapply1<?>>
+    Func1<Pattern, Pattern> gen1(Class<U> unapply1) {
+        return $1 -> x -> Option.of(x)
+            .cast(unapply1)
+            .map(Unapply1::unapply)
+            .flatMap(values -> $1.test(values.$1()));
     }
 
-    private PatternFactory(Class<I> inputClass) {
-        this.inputClass = inputClass;
+    public static <U extends Unapply2<?, ?>>
+    Func2<Pattern, Pattern, Pattern> gen2(Class<U> unapply2) {
+        return ($1, $2) -> x -> Option.of(x)
+            .cast(unapply2)
+            .map(Unapply2::unapply)
+            .flatMap(
+                values -> $1.test(values.$1()).flatMap(
+                    a -> $2.test(values.$2()).map(
+                        b -> PatternResult.compose(a, b))));
+    }
+
+    public static <U extends Unapply3<?, ?, ?>>
+    Func3<Pattern, Pattern, Pattern, Pattern> gen3(Class<U> unapply3) {
+        return ($1, $2, $3) -> x -> Option.of(x)
+           .cast(unapply3)
+           .map(Unapply3::unapply)
+           .flatMap(
+               values -> $1.test(values.$1()).flatMap(
+                   a -> $2.test(values.$2()).flatMap(
+                       b -> $3.test(values.$3()).map(
+                           c -> PatternResult.compose(a, b, c)))));
+    }
+
+    public static <U extends Unapply4<?, ?, ?, ?>>
+    Func4<Pattern, Pattern, Pattern, Pattern, Pattern> gen4(Class<U> unapply4) {
+        return ($1, $2, $3, $4) -> x -> Option.of(x)
+            .cast(unapply4)
+            .map(Unapply4::unapply)
+            .flatMap(
+                values -> $1.test(values.$1()).flatMap(
+                    a -> $2.test(values.$2()).flatMap(
+                        b -> $3.test(values.$3()).flatMap(
+                            c -> $4.test(values.$4()).map(
+                                d -> PatternResult.compose(a, b, c, d))))));
+    }
+
+    public static <U extends Unapply5<?, ?, ?, ?, ?>>
+    Func5<Pattern, Pattern, Pattern, Pattern, Pattern, Pattern> gen5(Class<U> unapply5) {
+        return ($1, $2, $3, $4, $5) -> x -> Option.of(x)
+            .cast(unapply5)
+            .map(Unapply5::unapply)
+            .flatMap(
+                values -> $1.test(values.$1()).flatMap(
+                    a -> $2.test(values.$2()).flatMap(
+                        b -> $3.test(values.$3()).flatMap(
+                            c -> $4.test(values.$4()).flatMap(
+                                d -> $5.test(values.$5()).map(
+                                    e -> PatternResult.compose(a, b, c, d, e)))))));
+    }
+
+    public static <U extends Unapply6<?, ?, ?, ?, ?, ?>>
+    Func6<Pattern, Pattern, Pattern, Pattern, Pattern, Pattern, Pattern> gen6(Class<U> unapply6) {
+        return ($1, $2, $3, $4, $5, $6) -> x -> Option.of(x)
+            .cast(unapply6)
+            .map(Unapply6::unapply)
+            .flatMap(
+                values -> $1.test(values.$1()).flatMap(
+                    a -> $2.test(values.$2()).flatMap(
+                        b -> $3.test(values.$3()).flatMap(
+                            c -> $4.test(values.$4()).flatMap(
+                                d -> $5.test(values.$5()).flatMap(
+                                    e -> $6.test(values.$6()).map(
+                                        f -> PatternResult.compose(a, b, c, d, e, f))))))));
+    }
+
+    public static <U extends Unapply7<?, ?, ?, ?, ?, ?, ?>>
+    Func7<Pattern, Pattern, Pattern, Pattern, Pattern, Pattern, Pattern, Pattern> gen7(Class<U> unapply7) {
+        return ($1, $2, $3, $4, $5, $6, $7) -> x -> Option.of(x)
+            .cast(unapply7)
+            .map(Unapply7::unapply)
+            .flatMap(
+                values -> $1.test(values.$1()).flatMap(
+                    a -> $2.test(values.$2()).flatMap(
+                        b -> $3.test(values.$3()).flatMap(
+                            c -> $4.test(values.$4()).flatMap(
+                                d -> $5.test(values.$5()).flatMap(
+                                    e -> $6.test(values.$6()).flatMap(
+                                        f -> $7.test(values.$7()).map(
+                                            g -> PatternResult.compose(a, b, c, d, e, f, g)))))))));
+    }
+
+    public static <U extends Unapply8<?, ?, ?, ?, ?, ?, ?, ?>>
+    Func8<Pattern, Pattern, Pattern, Pattern, Pattern, Pattern, Pattern, Pattern, Pattern> gen8(Class<U> unapply8) {
+        return ($1, $2, $3, $4, $5, $6, $7, $8) -> x -> Option.of(x)
+            .cast(unapply8)
+            .map(Unapply8::unapply)
+            .flatMap(
+                values -> $1.test(values.$1()).flatMap(
+                    a -> $2.test(values.$2()).flatMap(
+                        b -> $3.test(values.$3()).flatMap(
+                            c -> $4.test(values.$4()).flatMap(
+                                d -> $5.test(values.$5()).flatMap(
+                                    e -> $6.test(values.$6()).flatMap(
+                                        f -> $7.test(values.$7()).flatMap(
+                                            g -> $8.test(values.$8()).map(
+                                                h -> PatternResult.compose(a, b, c, d, e, f, g, h))))))))));
     }
 }

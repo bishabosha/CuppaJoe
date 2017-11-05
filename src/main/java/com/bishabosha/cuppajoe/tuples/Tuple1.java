@@ -4,20 +4,22 @@
 
 package com.bishabosha.cuppajoe.tuples;
 
-import com.bishabosha.cuppajoe.patterns.Pattern;
 import com.bishabosha.cuppajoe.functions.Func1;
+import com.bishabosha.cuppajoe.patterns.Pattern;
+import com.bishabosha.cuppajoe.patterns.PatternFactory;
 
 import java.util.Objects;
 
 import static com.bishabosha.cuppajoe.API.Option;
-import static com.bishabosha.cuppajoe.patterns.PatternFactory.patternFor;
 
 public final class Tuple1<A> implements Product1<A> {
 
     private final A $1;
 
+    private static final Func1<Pattern, Pattern> PATTERN = PatternFactory.gen1(Tuple1.class);
+
     public static Pattern $Tuple1(Pattern $1) {
-        return patternFor(Product1.class).test1($1, Product1::$1);
+        return PATTERN.apply($1);
     }
 
     public static <A> Tuple1<A> of(A $1) {

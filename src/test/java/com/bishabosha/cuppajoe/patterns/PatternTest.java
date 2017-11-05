@@ -18,18 +18,22 @@ import static com.bishabosha.cuppajoe.collections.immutable.Tree.Node.$Node;
 import static com.bishabosha.cuppajoe.collections.immutable.Tree.leaf;
 import static com.bishabosha.cuppajoe.control.Some.$Some;
 import static com.bishabosha.cuppajoe.patterns.Pattern.*;
-import static com.bishabosha.cuppajoe.patterns.PatternFactory.patternFor;
 import static com.bishabosha.cuppajoe.tuples.Tuple2.$Tuple2;
 import static org.junit.Assert.assertEquals;
 
 public class PatternTest {
 
     static Pattern tree(Pattern node, Pattern left, Pattern right) {
-        return patternFor(BinaryNode.class).test3(
-            node, BinaryNode::getValue,
-            left, BinaryNode::getLeft,
-            right, BinaryNode::getRight
-        );
+        return x -> {
+            if (x instanceof BinaryNode) {
+                BinaryNode binaryNode = (BinaryNode) x;
+                return node.test(binaryNode.getValue()).flatMap(
+                    n -> left.test(binaryNode.getLeft()).flatMap(
+                        l -> right.test(binaryNode.getRight()).map(
+                            r -> PatternResult.compose(n, l, r))));
+            }
+            return Nothing();
+        };
     }
 
     Pattern tree = x -> x instanceof BinaryNode ? Pattern.bind(x) : Pattern.FAIL;

@@ -7,7 +7,6 @@ package com.bishabosha.cuppajoe.functions;
 import com.bishabosha.cuppajoe.control.Option;
 import com.bishabosha.cuppajoe.control.Try;
 import com.bishabosha.cuppajoe.tuples.Apply2;
-import com.bishabosha.cuppajoe.tuples.Product2;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 

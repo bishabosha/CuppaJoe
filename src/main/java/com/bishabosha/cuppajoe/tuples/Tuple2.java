@@ -6,23 +6,22 @@ package com.bishabosha.cuppajoe.tuples;
 
 import com.bishabosha.cuppajoe.patterns.Pattern;
 import com.bishabosha.cuppajoe.functions.Func2;
+import com.bishabosha.cuppajoe.patterns.PatternFactory;
 import org.jetbrains.annotations.Contract;
 
 import java.util.Objects;
 
 import static com.bishabosha.cuppajoe.API.Option;
-import static com.bishabosha.cuppajoe.patterns.PatternFactory.patternFor;
 
 public final class Tuple2<A, B> implements Product2<A, B> {
 
     private final A $1;
     private final B $2;
 
+    private static final Func2<Pattern, Pattern, Pattern> PATTERN = PatternFactory.gen2(Tuple2.class);
+
     public static Pattern $Tuple2(Pattern $1, Pattern $2) {
-        return patternFor(Tuple2.class).test2(
-            $1, Product2::$1,
-            $2, Product2::$2
-        );
+        return PATTERN.apply($1, $2);
     }
 
     public static <A, B> Tuple2<A, B> of(A $1, B $2) {

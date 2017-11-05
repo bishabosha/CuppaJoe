@@ -2,8 +2,6 @@ package com.bishabosha.cuppajoe;
 
 import com.bishabosha.cuppajoe.control.Option;
 
-import java.util.Iterator;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.*;
 

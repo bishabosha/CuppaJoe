@@ -129,7 +129,7 @@ public interface PatternResult<E> extends Iterable<E> {
 
         @Override
         public boolean equals(Object obj) {
-            return obj == this || Iterables.equals(this, obj, PatternResult.class);
+            return obj == this || obj instanceof PatternResult && Iterables.equals(this, obj);
         }
 
         @Override

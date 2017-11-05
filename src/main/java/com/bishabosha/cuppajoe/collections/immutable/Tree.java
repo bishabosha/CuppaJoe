@@ -11,6 +11,7 @@ import com.bishabosha.cuppajoe.functions.Func3;
 import com.bishabosha.cuppajoe.patterns.Pattern;
 import com.bishabosha.cuppajoe.API;
 import com.bishabosha.cuppajoe.Foldable;
+import com.bishabosha.cuppajoe.patterns.PatternFactory;
 import com.bishabosha.cuppajoe.tuples.*;
 import org.jetbrains.annotations.Contract;
 
@@ -20,20 +21,18 @@ import java.util.Objects;
 import java.util.function.UnaryOperator;
 
 import static com.bishabosha.cuppajoe.API.*;
-import static com.bishabosha.cuppajoe.API.Tuple;
 import static com.bishabosha.cuppajoe.collections.immutable.Tree.Leaf.¥Leaf;
 import static com.bishabosha.cuppajoe.collections.immutable.Tree.Node.$Node;
 import static com.bishabosha.cuppajoe.patterns.Case.*;
 import static com.bishabosha.cuppajoe.patterns.Matcher.guardUnsafe;
 import static com.bishabosha.cuppajoe.patterns.Pattern.*;
-import static com.bishabosha.cuppajoe.patterns.PatternFactory.patternFor;
 import static com.bishabosha.cuppajoe.tuples.Tuple2.$Tuple2;
 
 /**
  * Immutable tree
  * @param <E> the type that the Tree contains
  */
-public interface Tree<E extends Comparable<E>> extends Unapply3<E, Tree<E>, Tree<E>> {
+public interface Tree<E extends Comparable<E>> {
 
     E node();
     Tree<E> left();
@@ -67,15 +66,6 @@ public interface Tree<E extends Comparable<E>> extends Unapply3<E, Tree<E>, Tree
      */
     static <R extends Comparable<R>> Tree<R> Node(R node, Tree<R> left, Tree<R> right) {
         return Node.of(Objects.requireNonNull(node), Objects.requireNonNull(left), Objects.requireNonNull(right));
-    }
-
-    static <R extends Comparable<R>> Apply3<R, Tree<R>, Tree<R>, Tree<R>> Applied() {
-        return Func3.<R, Tree<R>, Tree<R>, Tree<R>>of(Tree::Node).applied();
-    }
-
-    @Override
-    default Option<Product3<E, Tree<E>, Tree<E>>> unapply() {
-        return isEmpty() ? Nothing() : Some(Tuple(node(), left(), right()));
     }
 
     /**
@@ -365,9 +355,6 @@ public interface Tree<E extends Comparable<E>> extends Unapply3<E, Tree<E>, Tree
             return (Leaf<O>) LEAF;
         }
 
-        /**
-         * This will check {@link Tree#node} {@link Tree#left} and {@link Tree#right} for <b>null</b> without binding.
-         */
         public static Pattern ¥Leaf() {
             return x -> x == Leaf.LEAF ? PASS : FAIL;
         }
@@ -411,25 +398,22 @@ public interface Tree<E extends Comparable<E>> extends Unapply3<E, Tree<E>, Tree
         }
     }
 
-    class Node<E extends Comparable<E>> implements Tree<E> {
+    class Node<E extends Comparable<E>> implements Tree<E>, Unapply3<E, Tree<E>, Tree<E>> {
 
         private final E node;
         private final Tree<E> left;
         private final Tree<E> right;
 
+        private static final Func3<Pattern, Pattern, Pattern, Pattern> PATTERN = PatternFactory.gen3(Node.class);
+
         /**
-         * For use after {@link Leaf#¥Leaf()}. This will apply patterns to {@link Tree#node} {@link Tree#left} and {@link Tree#right}
          * @param node The pattern to check the node
          * @param left The pattern to check the left sub tree
          * @param right The pattern to check the right sub tree
          * @return <b>Option&lt;PatternResult&gt;</b> if all patterns pass, otherwise {@link API#Nothing()}
          */
         public static Pattern $Node(Pattern node, Pattern left, Pattern right) {
-            return patternFor(Node.class).test3(
-                node, Tree::node,
-                left, Tree::left,
-                right, Tree::right
-            );
+            return PATTERN.apply(node, left, right);
         }
 
         private Node(E node, Tree<E> left, Tree<E> right) {
@@ -440,6 +424,15 @@ public interface Tree<E extends Comparable<E>> extends Unapply3<E, Tree<E>, Tree
 
         public static <O extends Comparable<O>> Node<O> of(O node, Tree<O> left, Tree<O> right) {
             return new Node<>(node, left, right);
+        }
+
+        static <R extends Comparable<R>> Apply3<R, Tree<R>, Tree<R>, Tree<R>> Applied() {
+            return Func3.<R, Tree<R>, Tree<R>, Tree<R>>of(Tree::Node).applied();
+        }
+
+        @Override
+        public Product3<E, Tree<E>, Tree<E>> unapply() {
+            return Tuple(node(), left(), right());
         }
 
         public Tree<E> left() {

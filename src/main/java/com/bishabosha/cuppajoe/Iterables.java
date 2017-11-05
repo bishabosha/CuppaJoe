@@ -186,10 +186,7 @@ public interface Iterables {
         };
     }
 
-    static <C extends Iterable, E> boolean equals(Iterable<E> base, Object obj, Class<C> clazz) {
-        if (!(clazz.isInstance(obj))) {
-            return false;
-        }
+    static <C extends Iterable, E> boolean equals(Iterable<E> base, Object obj) {
         Iterator it = ((Iterable) obj).iterator();
         for (Object term: base) {
             if (!it.hasNext() || !Objects.equals(term, it.next())) {

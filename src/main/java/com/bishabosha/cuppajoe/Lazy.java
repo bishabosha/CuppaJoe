@@ -4,18 +4,24 @@
 
 package com.bishabosha.cuppajoe;
 
+import com.bishabosha.cuppajoe.functions.Func1;
 import com.bishabosha.cuppajoe.patterns.Pattern;
+import com.bishabosha.cuppajoe.patterns.PatternFactory;
+import com.bishabosha.cuppajoe.tuples.Product1;
+import com.bishabosha.cuppajoe.tuples.Unapply1;
 
 import java.util.Objects;
 import java.util.function.Supplier;
 
 import static com.bishabosha.cuppajoe.API.Option;
-import static com.bishabosha.cuppajoe.patterns.PatternFactory.patternFor;
+import static com.bishabosha.cuppajoe.API.Tuple;
 
-public class Lazy<E> implements Supplier<E> {
+public class Lazy<E> implements Supplier<E>, Unapply1<E> {
+
+    private static final Func1<Pattern, Pattern> PATTERN = PatternFactory.gen1(Lazy.class);
 
     public static Pattern Lazy(Pattern pattern) {
-        return patternFor(Lazy.class).test1(pattern, Lazy::get);
+        return PATTERN.apply(pattern);
     }
 
     private boolean isComputed = false;
@@ -55,5 +61,10 @@ public class Lazy<E> implements Supplier<E> {
                                   .cast(Lazy.class)
                                   .map(l -> Objects.equals(l.get(), get()))
                                   .orElse(false);
+    }
+
+    @Override
+    public Product1<E> unapply() {
+        return Tuple(get());
     }
 }

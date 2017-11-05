@@ -4,13 +4,13 @@
 
 package com.bishabosha.cuppajoe.tuples;
 
-import com.bishabosha.cuppajoe.patterns.Pattern;
 import com.bishabosha.cuppajoe.functions.Func4;
+import com.bishabosha.cuppajoe.patterns.Pattern;
+import com.bishabosha.cuppajoe.patterns.PatternFactory;
 
 import java.util.Objects;
 
 import static com.bishabosha.cuppajoe.API.Option;
-import static com.bishabosha.cuppajoe.patterns.PatternFactory.patternFor;
 
 public final class Tuple4<A, B, C, D> implements Product4<A, B, C, D> {
 
@@ -19,13 +19,10 @@ public final class Tuple4<A, B, C, D> implements Product4<A, B, C, D> {
     private final C $3;
     private final D $4;
 
+    private static final Func4<Pattern, Pattern, Pattern, Pattern, Pattern> PATTERN = PatternFactory.gen4(Tuple4.class);
+
     public static Pattern $Tuple4(Pattern $1, Pattern $2, Pattern $3, Pattern $4) {
-        return patternFor(Tuple4.class).test4(
-            $1, Product4::$1,
-            $2, Product4::$2,
-            $3, Product4::$3,
-            $4, Product4::$4
-        );
+        return PATTERN.apply($1, $2, $3, $4);
     }
 
     public static <A, B, C, D> Tuple4<A, B, C, D> of(A $1, B $2, C $3, D $4) {

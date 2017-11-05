@@ -4,13 +4,13 @@
 
 package com.bishabosha.cuppajoe.tuples;
 
-import com.bishabosha.cuppajoe.patterns.Pattern;
 import com.bishabosha.cuppajoe.functions.Func8;
+import com.bishabosha.cuppajoe.patterns.Pattern;
+import com.bishabosha.cuppajoe.patterns.PatternFactory;
 
 import java.util.Objects;
 
 import static com.bishabosha.cuppajoe.API.Option;
-import static com.bishabosha.cuppajoe.patterns.PatternFactory.patternFor;
 
 public class Tuple8<A, B, C, D, E, F, G, H> implements Product8<A, B, C, D, E, F, G, H> {
 
@@ -23,19 +23,14 @@ public class Tuple8<A, B, C, D, E, F, G, H> implements Product8<A, B, C, D, E, F
     private final G $7;
     private final H $8;
 
-    public static Pattern $Tuple8(Pattern $1, Pattern $2, Pattern $3, Pattern $4,
-                                 Pattern $5, Pattern $6, Pattern $7, Pattern $8) {
-        return patternFor(Tuple8.class).test8(
-            $1, Tuple8::$1,
-            $2, Tuple8::$2,
-            $3, Tuple8::$3,
-            $4, Tuple8::$4,
-            $5, Tuple8::$5,
-            $6, Tuple8::$6,
-            $7, Tuple8::$7,
-            $8, Tuple8::$8
-        );
-    }
+    private static final Func8<Pattern, Pattern, Pattern, Pattern, Pattern, Pattern, Pattern, Pattern, Pattern>
+        PATTERN = PatternFactory.gen8(Tuple8.class);
+
+    public static Pattern $Tuple8(
+        Pattern $1, Pattern $2, Pattern $3, Pattern $4,
+        Pattern $5, Pattern $6, Pattern $7, Pattern $8) {
+            return PATTERN.apply($1, $2, $3, $4, $5, $6, $7, $8);
+        }
 
     public static <A, B, C, D, E, F, G, H>
     Tuple8<A, B, C, D, E, F, G, H>

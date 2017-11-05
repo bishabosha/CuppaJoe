@@ -6,7 +6,6 @@ package com.bishabosha.cuppajoe.functions;
 import com.bishabosha.cuppajoe.control.Option;
 import com.bishabosha.cuppajoe.control.Try;
 import com.bishabosha.cuppajoe.tuples.Apply4;
-import com.bishabosha.cuppajoe.tuples.Product4;
 import org.jetbrains.annotations.Contract;
 
 public interface Func4<A, B, C, D, R> {

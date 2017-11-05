@@ -116,10 +116,10 @@ public class ListTest {
 
     @Test
     public void unapply() {
-        final List<Integer> list = List.of(1,2);
+        final List.Cons<Integer> list = Cons(1, Cons(2, List()));
         assertThat(list, CoreMatchers.instanceOf(List.Cons.class));
         assertEquals(
-            Some(Tuple(1, List.of(2))),
+            Tuple(1, List.of(2)),
             list.unapply()
         );
     }
@@ -128,7 +128,7 @@ public class ListTest {
     public void apply() {
         assertEquals(
             List.of(1,2),
-            List.of(1,2).unapply().map(x -> List.<Integer>Applied().apply(x)).get()
+            List.Cons.<Integer>Applied().apply(Cons(1, Cons(2, List())).unapply())
         );
     }
 

@@ -131,6 +131,12 @@ public class API {
 
     @NotNull
     @Contract(pure = true)
+    public static <O> List.Cons<O> Cons(O head, List<O> tail) {
+        return List.concat(head, tail);
+    }
+
+    @NotNull
+    @Contract(pure = true)
     public static <O> Queue<O> Queue() {
         return Queue.empty();
     }

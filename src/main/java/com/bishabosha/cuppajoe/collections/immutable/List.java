@@ -6,6 +6,7 @@ import com.bishabosha.cuppajoe.functions.Func2;
 import com.bishabosha.cuppajoe.functions.Func3;
 import com.bishabosha.cuppajoe.patterns.Case;
 import com.bishabosha.cuppajoe.patterns.Pattern;
+import com.bishabosha.cuppajoe.patterns.PatternFactory;
 import com.bishabosha.cuppajoe.tuples.*;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -17,9 +18,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.bishabosha.cuppajoe.API.*;
-import static com.bishabosha.cuppajoe.patterns.PatternFactory.patternFor;
 
-public interface List<E> extends Seq<E>, Unapply2<E, List<E>> {
+public interface List<E> extends Seq<E> {
 
     /**
      * Creates a new of instance with a head and another of for a tail.
@@ -30,7 +30,7 @@ public interface List<E> extends Seq<E>, Unapply2<E, List<E>> {
      */
     @NotNull
     @Contract(pure = true)
-    static <R> List<R> concat(R x, List<R> xs) {
+    static <R> Cons<R> concat(R x, List<R> xs) {
         return new Cons<>(x, xs);
     }
 
@@ -67,15 +67,6 @@ public interface List<E> extends Seq<E>, Unapply2<E, List<E>> {
         return cons;
     }
 
-    static <O> Apply2<O, List<O>, List<O>> Applied() {
-        return Func2.<O, List<O>, List<O>>of(List::concat).applied();
-    }
-
-    @Override
-    default Option<Product2<E, List<E>>> unapply() {
-        return isEmpty() ? Nothing() : Some(Tuple(head(), tail()));
-    }
-
     /**
      * Creates a new of instance with this as its tail and elem as its head.
      * @param elem the new element to push to the head.
@@ -84,11 +75,6 @@ public interface List<E> extends Seq<E>, Unapply2<E, List<E>> {
     @Override
     default List<E> push(E elem) {
         return concat(elem, this);
-    }
-
-    @Override
-    default Option<Product2<E, List<E>>> pop() {
-        return unapply();
     }
 
     @Override
@@ -115,6 +101,8 @@ public interface List<E> extends Seq<E>, Unapply2<E, List<E>> {
     default List<E> append(E elem) {
         return foldRight(of(elem), (List<E> xs, E x) -> xs.push(x));
     }
+
+    Option<Product2<E, List<E>>> pop();
 
     default <U> Option<U> pop(Case<Product2<E, List<E>>, U> matcher) {
         return pop().match(matcher);
@@ -261,6 +249,11 @@ public interface List<E> extends Seq<E>, Unapply2<E, List<E>> {
         }
 
         @Override
+        public Option<Product2<E, List<E>>> pop() {
+            return Nothing();
+        }
+
+        @Override
         public E head() {
             throw new NoSuchElementException();
         }
@@ -313,9 +306,11 @@ public interface List<E> extends Seq<E>, Unapply2<E, List<E>> {
         }
     }
 
-    class Cons<E> implements List<E> {
+    class Cons<E> implements List<E>, Unapply2<E, List<E>> {
         private E head;
         private List<E> tail;
+
+        private static final Func2<Pattern, Pattern, Pattern> PATTERN = PatternFactory.gen2(Cons.class);
 
         /**
          * Composes patterns for the head and tail and checks that the element is a of.
@@ -324,10 +319,7 @@ public interface List<E> extends Seq<E>, Unapply2<E, List<E>> {
          * @return The composed pattern
          */
         public static Pattern $Cons(Pattern $x, Pattern $xs) {
-            return patternFor(Cons.class).test2(
-                $x, Cons::head,
-                $xs, Cons::tail
-            );
+            return PATTERN.apply($x, $xs);
         }
 
         /**
@@ -339,6 +331,20 @@ public interface List<E> extends Seq<E>, Unapply2<E, List<E>> {
             Objects.requireNonNull(tail, "tail must be a non null Cons.");
             this.head = head;
             this.tail = tail;
+        }
+
+        static <O> Apply2<O, List<O>, List<O>> Applied() {
+            return Func2.<O, List<O>, List<O>>of(List::concat).applied();
+        }
+
+        @Override
+        public Option<Product2<E, List<E>>> pop() {
+            return Some(unapply());
+        }
+
+        @Override
+        public Product2<E, List<E>> unapply() {
+            return Tuple(head(), tail());
         }
 
         @Override

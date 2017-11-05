@@ -6,11 +6,11 @@ package com.bishabosha.cuppajoe.tuples;
 
 import com.bishabosha.cuppajoe.patterns.Pattern;
 import com.bishabosha.cuppajoe.functions.Func7;
+import com.bishabosha.cuppajoe.patterns.PatternFactory;
 
 import java.util.Objects;
 
 import static com.bishabosha.cuppajoe.API.Option;
-import static com.bishabosha.cuppajoe.patterns.PatternFactory.patternFor;
 
 public final class Tuple7<A, B, C, D, E, F, G> implements Product7<A, B, C, D, E, F, G> {
 
@@ -22,17 +22,11 @@ public final class Tuple7<A, B, C, D, E, F, G> implements Product7<A, B, C, D, E
     private final F $6;
     private final G $7;
 
-    public static Pattern $Tuple7(Pattern $1, Pattern $2, Pattern $3, Pattern $4,
-                                  Pattern $5, Pattern $6, Pattern $7) {
-        return patternFor(Tuple7.class).test7(
-            $1, Product7::$1,
-            $2, Product7::$2,
-            $3, Product7::$3,
-            $4, Product7::$4,
-            $5, Product7::$5,
-            $6, Product7::$6,
-            $7, Product7::$7
-        );
+    private static final Func7<Pattern, Pattern, Pattern, Pattern, Pattern, Pattern, Pattern, Pattern>
+        PATTERN = PatternFactory.gen7(Tuple7.class);
+
+    public static Pattern $Tuple7(Pattern $1, Pattern $2, Pattern $3, Pattern $4, Pattern $5, Pattern $6, Pattern $7) {
+        return PATTERN.apply($1, $2, $3, $4, $5, $6, $7);
     }
 
     public static <A, B, C, D, E, F, G>

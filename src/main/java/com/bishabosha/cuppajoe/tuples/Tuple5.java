@@ -4,13 +4,13 @@
 
 package com.bishabosha.cuppajoe.tuples;
 
-import com.bishabosha.cuppajoe.patterns.Pattern;
 import com.bishabosha.cuppajoe.functions.Func5;
+import com.bishabosha.cuppajoe.patterns.Pattern;
+import com.bishabosha.cuppajoe.patterns.PatternFactory;
 
 import java.util.Objects;
 
 import static com.bishabosha.cuppajoe.API.Option;
-import static com.bishabosha.cuppajoe.patterns.PatternFactory.patternFor;
 
 public final class Tuple5<A, B, C, D, E> implements Product5<A, B, C, D, E> {
 
@@ -20,14 +20,11 @@ public final class Tuple5<A, B, C, D, E> implements Product5<A, B, C, D, E> {
     private final D $4;
     private final E $5;
 
+    private static final Func5<Pattern, Pattern, Pattern, Pattern, Pattern, Pattern>
+        PATTERN = PatternFactory.gen5(Tuple5.class);
+
     public static Pattern $Tuple5(Pattern $1, Pattern $2, Pattern $3, Pattern $4, Pattern $5) {
-        return patternFor(Tuple5.class).test5(
-            $1, Product5::$1,
-            $2, Product5::$2,
-            $3, Product5::$3,
-            $4, Product5::$4,
-            $5, Product5::$5
-        );
+        return PATTERN.apply($1, $2, $3, $4, $5);
     }
 
     public static <A, B, C, D, E>

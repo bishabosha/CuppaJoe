@@ -6,11 +6,11 @@ package com.bishabosha.cuppajoe.tuples;
 
 import com.bishabosha.cuppajoe.patterns.Pattern;
 import com.bishabosha.cuppajoe.functions.Func6;
+import com.bishabosha.cuppajoe.patterns.PatternFactory;
 
 import java.util.Objects;
 
 import static com.bishabosha.cuppajoe.API.Option;
-import static com.bishabosha.cuppajoe.patterns.PatternFactory.patternFor;
 
 public final class Tuple6<A, B, C, D, E, F> implements Product6<A, B, C, D, E, F> {
 
@@ -21,17 +21,12 @@ public final class Tuple6<A, B, C, D, E, F> implements Product6<A, B, C, D, E, F
     private final E $5;
     private final F $6;
 
-    public static Pattern $Tuple6(Pattern $1, Pattern $2, Pattern $3, Pattern $4,
-                                  Pattern $5, Pattern $6) {
-        return patternFor(Tuple6.class).test6(
-            $1, Product6::$1,
-            $2, Product6::$2,
-            $3, Product6::$3,
-            $4, Product6::$4,
-            $5, Product6::$5,
-            $6, Product6::$6
-        );
-    }
+    private static final Func6<Pattern, Pattern, Pattern, Pattern, Pattern, Pattern, Pattern>
+        PATTERN = PatternFactory.gen6(Tuple6.class);
+
+    public static Pattern $Tuple6(Pattern $1, Pattern $2, Pattern $3, Pattern $4, Pattern $5, Pattern $6) {
+            return PATTERN.apply($1, $2, $3, $4, $5, $6);
+        }
 
     public static <A, B, C, D, E, F>
     Tuple6<A, B, C, D, E, F>
