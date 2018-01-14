@@ -13,13 +13,13 @@ import static com.bishabosha.cuppajoe.API.Some;
 
 public interface Pattern {
 
-    Option<PatternResult> test(Object obj);
+    Option<PatternResult<Object>> test(Object obj);
 
-    Option<PatternResult> PASS = Some(PatternResult.empty());
+    Option<PatternResult<Object>> PASS = Some(PatternResult.empty());
 
-    Option<PatternResult> FAIL = Nothing();
+    Option<PatternResult<Object>> FAIL = Nothing();
 
-    static Option<PatternResult> bind(Object x) {
+    static Option<PatternResult<Object>> bind(Object x) {
         return Option.of(PatternResult.of(x));
     }
 

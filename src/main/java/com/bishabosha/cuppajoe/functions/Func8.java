@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public interface Func8<A, B, C, D, E, F, G, H, R> {
 
@@ -44,6 +45,10 @@ public interface Func8<A, B, C, D, E, F, G, H, R> {
 
     default <U> Func8<A, B, C, D, E, F, G, H, U> andThen(Function<? super R, ? extends U> next) {
         return (s, t, u, v, w, x, y, z) -> next.apply(apply(s, t, u, v, w, x, y, z));
+    }
+
+    default Func8<Supplier<A>, Supplier<B>, Supplier<C>, Supplier<D>, Supplier<E>, Supplier<F>, Supplier<G>, Supplier<H>, R> lazyInput() {
+        return (a, b, c, d, e, f, g, h) -> apply(a.get(), b.get(), c.get(), d.get(), e.get(), f.get(), g.get(), h.get());
     }
 
     R apply(A a, B b, C c, D d, E e, F f, G g, H h);

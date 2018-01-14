@@ -9,6 +9,7 @@ import com.bishabosha.cuppajoe.tuples.Apply4;
 import org.jetbrains.annotations.Contract;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public interface Func4<A, B, C, D, R> {
 
@@ -39,6 +40,10 @@ public interface Func4<A, B, C, D, R> {
 
     default <U> Func4<A, B, C, D, U> andThen(Function<? super R, ? extends U> next) {
         return (s, t, u, v) -> next.apply(apply(s, t, u, v));
+    }
+
+    default Func4<Supplier<A>, Supplier<B>, Supplier<C>, Supplier<D>, R> lazyInput() {
+        return (a, b, c, d) -> apply(a.get(), b.get(), c.get(), d.get());
     }
 
     R apply(A a, B b, C c, D d);

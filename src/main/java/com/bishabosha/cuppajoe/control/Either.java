@@ -5,6 +5,8 @@
 package com.bishabosha.cuppajoe.control;
 
 import com.bishabosha.cuppajoe.Value;
+import com.bishabosha.cuppajoe.functions.Func1;
+import com.bishabosha.cuppajoe.typeclass.Functor;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -12,7 +14,7 @@ import java.util.function.Supplier;
 
 import static com.bishabosha.cuppajoe.patterns.Case.when;
 
-public interface Either<L, R> extends Value<R> {
+public interface Either<L, R> extends Value<R>, Functor<Either, R> {
 
     @Override
     default int size() {
@@ -40,11 +42,6 @@ public interface Either<L, R> extends Value<R> {
     boolean isRight();
 
     boolean isLeft();
-
-    @Override
-    default boolean isAtMaxSingleElement() {
-        return true;
-    }
 
     @SuppressWarnings("unchecked")
     @Override

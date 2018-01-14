@@ -1,6 +1,9 @@
 package com.bishabosha.cuppajoe;
 
 import com.bishabosha.cuppajoe.control.Option;
+import com.bishabosha.cuppajoe.functions.Func1;
+import com.bishabosha.cuppajoe.typeclass.Functor;
+import com.bishabosha.cuppajoe.typeclass.Monad;
 
 import java.util.Optional;
 import java.util.function.*;
@@ -10,10 +13,8 @@ import static com.bishabosha.cuppajoe.API.Some;
 
 public interface Value<O> extends Iterable<O> {
     boolean isEmpty();
-    boolean isAtMaxSingleElement();
     int size();
     O get();
-    <R> Value<R> map(Function<? super O, ? extends R> mapper);
 
     default O orElse(O value) {
         return isEmpty() ? value : get();
@@ -21,10 +22,6 @@ public interface Value<O> extends Iterable<O> {
 
     default O orElseGet(Supplier<? extends O> supplier) {
         return isEmpty() ? supplier.get() : get();
-    }
-
-    default O orElseNull() {
-        return isEmpty() ? null : get();
     }
 
     default <X extends Throwable> O orElseThrow(Supplier<? extends X> supplier) throws X {

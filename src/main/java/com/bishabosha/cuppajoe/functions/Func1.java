@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public interface Func1<A, R> extends Function<A, R> {
 
@@ -28,6 +29,10 @@ public interface Func1<A, R> extends Function<A, R> {
     @Contract(pure = true)
     static <X, R> Func1<X, Option<R>> lift(Function<? super X, ? extends R> func) {
         return x -> Try.<R>narrow(Try.of(() -> func.apply(x))).get();
+    }
+
+    default Func1<Supplier<A>, R> lazyInput() {
+        return x -> apply(x.get());
     }
 
     default Apply1<A, R> applied() {

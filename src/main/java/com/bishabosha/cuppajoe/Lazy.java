@@ -13,7 +13,6 @@ import com.bishabosha.cuppajoe.tuples.Unapply1;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-import static com.bishabosha.cuppajoe.API.Option;
 import static com.bishabosha.cuppajoe.API.Tuple;
 
 public class Lazy<E> implements Supplier<E>, Unapply1<E> {
@@ -28,7 +27,7 @@ public class Lazy<E> implements Supplier<E>, Unapply1<E> {
     private E value = null;
     private Supplier<E> getter;
 
-    static <R> Lazy<R> Get(Supplier<R> getter) {
+    static <R> Lazy<R> of(Supplier<R> getter) {
         return new Lazy<>(getter);
     }
 
@@ -52,15 +51,12 @@ public class Lazy<E> implements Supplier<E>, Unapply1<E> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(value);
+        return Objects.hashCode(get());
     }
 
     @Override
     public boolean equals(Object obj) {
-        return this == obj || Option(obj)
-                                  .cast(Lazy.class)
-                                  .map(l -> Objects.equals(l.get(), get()))
-                                  .orElse(false);
+        return this == obj || obj instanceof Lazy && Objects.equals(get(), ((Lazy) obj).get());
     }
 
     @Override

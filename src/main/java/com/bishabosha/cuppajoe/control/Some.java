@@ -7,12 +7,14 @@ import com.bishabosha.cuppajoe.patterns.PatternFactory;
 import com.bishabosha.cuppajoe.tuples.Apply1;
 import com.bishabosha.cuppajoe.tuples.Product1;
 import com.bishabosha.cuppajoe.tuples.Unapply1;
+import com.bishabosha.cuppajoe.typeclass.Monad;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.function.Function;
 
 import static com.bishabosha.cuppajoe.API.Tuple;
 
@@ -76,7 +78,7 @@ public final class Some<O> implements Option<O>, Unapply1<O> {
     @Contract(pure = true)
     @Override
     public String toString() {
-        return "$Some(" + get() + ")";
+        return "Some(" + get() + ")";
     }
 
     @NotNull

@@ -10,6 +10,7 @@ import com.bishabosha.cuppajoe.tuples.Apply6;
 import org.jetbrains.annotations.Contract;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public interface Func6<A, B, C, D, E, F, R> {
 
@@ -40,6 +41,10 @@ public interface Func6<A, B, C, D, E, F, R> {
 
     default <U> Func6<A, B, C, D, E, F, U> andThen(Function<? super R, ? extends U> next) {
         return (s, t, u, v, w, x) -> next.apply(apply(s, t, u, v, w, x));
+    }
+
+    default Func6<Supplier<A>, Supplier<B>, Supplier<C>, Supplier<D>, Supplier<E>, Supplier<F>, R> lazyInput() {
+        return (a, b, c, d, e, f) -> apply(a.get(), b.get(), c.get(), d.get(), e.get(), f.get());
     }
 
     R apply(A a, B b, C c, D d, E e, F f);

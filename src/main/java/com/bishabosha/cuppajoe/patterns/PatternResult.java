@@ -5,6 +5,7 @@ import com.bishabosha.cuppajoe.Iterables;
 import com.bishabosha.cuppajoe.collections.immutable.Array;
 import com.bishabosha.cuppajoe.collections.immutable.List;
 import com.bishabosha.cuppajoe.control.Option;
+import com.bishabosha.cuppajoe.functions.*;
 import com.bishabosha.cuppajoe.tuples.Product2;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,11 +17,36 @@ import static com.bishabosha.cuppajoe.API.*;
 
 public interface PatternResult<E> extends Iterable<E> {
 
-    @SafeVarargs
-    static <E> PatternResult<E> compose(PatternResult<E>... trees) {
-        return trees == null
-            ? new Leaf<>(null)
-            : new Node<>(Array.of(trees));
+    static <E> PatternResult<E> compose(PatternResult<E>... results) {
+        return results == null ? new Leaf<>(null) : new Node<>(Array.of(results));
+    }
+
+    static <E> Func2<PatternResult<E>, PatternResult<E>, PatternResult<E>> compose2() {
+        return (a, b) -> new Node<>(Array.of(a, b));
+    }
+
+    static <E> Func3<PatternResult<E>, PatternResult<E>, PatternResult<E>, PatternResult<E>> compose3() {
+        return (a, b, c) -> new Node<>(Array.of(a, b, c));
+    }
+
+    static <E> Func4<PatternResult<E>, PatternResult<E>, PatternResult<E>, PatternResult<E>, PatternResult<E>> compose4() {
+        return (a, b, c, d) -> new Node<>(Array.of(a, b, c, d));
+    }
+
+    static <E> Func5<PatternResult<E>, PatternResult<E>, PatternResult<E>, PatternResult<E>, PatternResult<E>, PatternResult<E>> compose5() {
+        return (a, b, c, d, e) -> new Node<>(Array.of(a, b, c, d, e));
+    }
+
+    static <E> Func6<PatternResult<E>, PatternResult<E>, PatternResult<E>, PatternResult<E>, PatternResult<E>, PatternResult<E>, PatternResult<E>> compose6() {
+        return (a, b, c, d, e, f) -> new Node<>(Array.of(a, b, c, d, e, f));
+    }
+
+    static <E> Func7<PatternResult<E>, PatternResult<E>, PatternResult<E>, PatternResult<E>, PatternResult<E>, PatternResult<E>, PatternResult<E>, PatternResult<E>> compose7() {
+        return (a, b, c, d, e, f, g) -> new Node<>(Array.of(a, b, c, d, e, f, g));
+    }
+
+    static <E> Func8<PatternResult<E>, PatternResult<E>, PatternResult<E>, PatternResult<E>, PatternResult<E>, PatternResult<E>, PatternResult<E>, PatternResult<E>, PatternResult<E>> compose8() {
+        return (a, b, c, d, e, f, g, h) -> new Node<>(Array.of(a, b, c, d, e, f, g, h));
     }
 
     @SafeVarargs

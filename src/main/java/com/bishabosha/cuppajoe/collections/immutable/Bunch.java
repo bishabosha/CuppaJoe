@@ -9,11 +9,6 @@ import java.util.function.Predicate;
 
 public interface Bunch<O> extends Value<O> {
 
-    @Override
-    default boolean isAtMaxSingleElement() {
-        return false;
-    }
-
     default boolean contains(O obj) {
         return anyMatch(e -> Objects.equals(e, obj));
     }

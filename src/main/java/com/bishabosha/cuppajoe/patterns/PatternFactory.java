@@ -8,13 +8,11 @@ import com.bishabosha.cuppajoe.control.Option;
 import com.bishabosha.cuppajoe.functions.*;
 import com.bishabosha.cuppajoe.tuples.*;
 
-import java.util.NoSuchElementException;
-import java.util.function.Function;
+import static com.bishabosha.cuppajoe.API.Nothing;
 
-import static com.bishabosha.cuppajoe.API.Some;
-import static com.bishabosha.cuppajoe.API.Try;
+public class PatternFactory {
 
-public class PatternFactory<I> {
+    //TODO: fix non shortcutting issue -> need way to transform functions so that their input is lazily evaluated
 
     public static <U extends Unapply1<?>>
     Func1<Pattern, Pattern> gen1(Class<U> unapply1) {
@@ -30,9 +28,10 @@ public class PatternFactory<I> {
             .cast(unapply2)
             .map(Unapply2::unapply)
             .flatMap(
-                values -> $1.test(values.$1()).flatMap(
-                    a -> $2.test(values.$2()).map(
-                        b -> PatternResult.compose(a, b))));
+                values -> Nothing().lift2(PatternResult.compose2()).apply(
+                    $1.test(values.$1()),
+                    $2.test(values.$2())
+                ));
     }
 
     public static <U extends Unapply3<?, ?, ?>>
@@ -41,10 +40,11 @@ public class PatternFactory<I> {
            .cast(unapply3)
            .map(Unapply3::unapply)
            .flatMap(
-               values -> $1.test(values.$1()).flatMap(
-                   a -> $2.test(values.$2()).flatMap(
-                       b -> $3.test(values.$3()).map(
-                           c -> PatternResult.compose(a, b, c)))));
+               values -> Nothing().lift3(PatternResult.compose3()).apply(
+                   $1.test(values.$1()),
+                   $2.test(values.$2()),
+                   $3.test(values.$3())
+               ));
     }
 
     public static <U extends Unapply4<?, ?, ?, ?>>
@@ -53,11 +53,12 @@ public class PatternFactory<I> {
             .cast(unapply4)
             .map(Unapply4::unapply)
             .flatMap(
-                values -> $1.test(values.$1()).flatMap(
-                    a -> $2.test(values.$2()).flatMap(
-                        b -> $3.test(values.$3()).flatMap(
-                            c -> $4.test(values.$4()).map(
-                                d -> PatternResult.compose(a, b, c, d))))));
+                values -> Nothing().lift4(PatternResult.compose4()).apply(
+                    $1.test(values.$1()),
+                    $2.test(values.$2()),
+                    $3.test(values.$3()),
+                    $4.test(values.$4())
+                ));
     }
 
     public static <U extends Unapply5<?, ?, ?, ?, ?>>
@@ -66,12 +67,13 @@ public class PatternFactory<I> {
             .cast(unapply5)
             .map(Unapply5::unapply)
             .flatMap(
-                values -> $1.test(values.$1()).flatMap(
-                    a -> $2.test(values.$2()).flatMap(
-                        b -> $3.test(values.$3()).flatMap(
-                            c -> $4.test(values.$4()).flatMap(
-                                d -> $5.test(values.$5()).map(
-                                    e -> PatternResult.compose(a, b, c, d, e)))))));
+                values -> Nothing().lift5(PatternResult.compose5()).apply(
+                    $1.test(values.$1()),
+                    $2.test(values.$2()),
+                    $3.test(values.$3()),
+                    $4.test(values.$4()),
+                    $5.test(values.$5())
+                ));
     }
 
     public static <U extends Unapply6<?, ?, ?, ?, ?, ?>>
@@ -80,13 +82,14 @@ public class PatternFactory<I> {
             .cast(unapply6)
             .map(Unapply6::unapply)
             .flatMap(
-                values -> $1.test(values.$1()).flatMap(
-                    a -> $2.test(values.$2()).flatMap(
-                        b -> $3.test(values.$3()).flatMap(
-                            c -> $4.test(values.$4()).flatMap(
-                                d -> $5.test(values.$5()).flatMap(
-                                    e -> $6.test(values.$6()).map(
-                                        f -> PatternResult.compose(a, b, c, d, e, f))))))));
+                values -> Nothing().lift6(PatternResult.compose6()).apply(
+                    $1.test(values.$1()),
+                    $2.test(values.$2()),
+                    $3.test(values.$3()),
+                    $4.test(values.$4()),
+                    $5.test(values.$5()),
+                    $6.test(values.$6())
+                ));
     }
 
     public static <U extends Unapply7<?, ?, ?, ?, ?, ?, ?>>
@@ -95,14 +98,15 @@ public class PatternFactory<I> {
             .cast(unapply7)
             .map(Unapply7::unapply)
             .flatMap(
-                values -> $1.test(values.$1()).flatMap(
-                    a -> $2.test(values.$2()).flatMap(
-                        b -> $3.test(values.$3()).flatMap(
-                            c -> $4.test(values.$4()).flatMap(
-                                d -> $5.test(values.$5()).flatMap(
-                                    e -> $6.test(values.$6()).flatMap(
-                                        f -> $7.test(values.$7()).map(
-                                            g -> PatternResult.compose(a, b, c, d, e, f, g)))))))));
+                values -> Nothing().lift7(PatternResult.compose7()).apply(
+                    $1.test(values.$1()),
+                    $2.test(values.$2()),
+                    $3.test(values.$3()),
+                    $4.test(values.$4()),
+                    $5.test(values.$5()),
+                    $6.test(values.$6()),
+                    $7.test(values.$7())
+                ));
     }
 
     public static <U extends Unapply8<?, ?, ?, ?, ?, ?, ?, ?>>
@@ -111,14 +115,15 @@ public class PatternFactory<I> {
             .cast(unapply8)
             .map(Unapply8::unapply)
             .flatMap(
-                values -> $1.test(values.$1()).flatMap(
-                    a -> $2.test(values.$2()).flatMap(
-                        b -> $3.test(values.$3()).flatMap(
-                            c -> $4.test(values.$4()).flatMap(
-                                d -> $5.test(values.$5()).flatMap(
-                                    e -> $6.test(values.$6()).flatMap(
-                                        f -> $7.test(values.$7()).flatMap(
-                                            g -> $8.test(values.$8()).map(
-                                                h -> PatternResult.compose(a, b, c, d, e, f, g, h))))))))));
+                values -> Nothing().lift8(PatternResult.compose8()).apply(
+                    $1.test(values.$1()),
+                    $2.test(values.$2()),
+                    $3.test(values.$3()),
+                    $4.test(values.$4()),
+                    $5.test(values.$5()),
+                    $6.test(values.$6()),
+                    $7.test(values.$7()),
+                    $8.test(values.$8())
+                ));
     }
 }

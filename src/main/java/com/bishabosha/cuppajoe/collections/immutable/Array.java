@@ -2,8 +2,10 @@ package com.bishabosha.cuppajoe.collections.immutable;
 
 import com.bishabosha.cuppajoe.Iterables;
 import com.bishabosha.cuppajoe.control.Option;
+import com.bishabosha.cuppajoe.functions.Func1;
 import com.bishabosha.cuppajoe.functions.Func2;
 import com.bishabosha.cuppajoe.tuples.Product2;
+import com.bishabosha.cuppajoe.typeclass.Functor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -12,7 +14,7 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.function.Function;
 
-public class Array<E> implements Seq<E>{
+public class Array<E> implements Seq<E>, Functor<Array, E> {
     private Object[] array;
 
     private Array(Object[] array) {
@@ -21,6 +23,38 @@ public class Array<E> implements Seq<E>{
 
     public static <O> Array<O> of(O... elems) {
         return new Array<>(elems == null ? new Object[]{null} : elems);
+    }
+
+    public static <O> Array<O> of(O a) {
+        return new Array<>(new Object[]{ a });
+    }
+
+    public static <O> Array<O> of(O a, O b) {
+        return new Array<>(new Object[]{ a, b });
+    }
+
+    public static <O> Array<O> of(O a, O b, O c) {
+        return new Array<>(new Object[]{ a, b, c });
+    }
+
+    public static <O> Array<O> of(O a, O b, O c, O d) {
+        return new Array<>(new Object[]{ a, b, c, d });
+    }
+
+    public static <O> Array<O> of(O a, O b, O c, O d, O e) {
+        return new Array<>(new Object[]{ a, b, c, d, e });
+    }
+
+    public static <O> Array<O> of(O a, O b, O c, O d, O e, O f) {
+        return new Array<>(new Object[]{ a, b, c, d, e, f });
+    }
+
+    public static <O> Array<O> of(O a, O b, O c, O d, O e, O f, O g) {
+        return new Array<>(new Object[]{ a, b, c, d, e, f, g });
+    }
+
+    public static <O> Array<O> of(O a, O b, O c, O d, O e, O f, O g, O h) {
+        return new Array<>(new Object[]{ a, b, c, d, e, f, g, h });
     }
 
     public static <R> Array<R> empty() {
@@ -121,7 +155,7 @@ public class Array<E> implements Seq<E>{
     }
 
     @Override
-    public <R> Array<R> map(Function<? super E, ? extends R> mapper) {
+    public <U> Array<U> map(Function<? super E, ? extends U> mapper) {
         final int size = size();
         Object[] result = new Object[size];
         for (int i = 0; i < size; i++) {

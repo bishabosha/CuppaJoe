@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 public interface Func2<A, B, R> extends BiFunction<A, B, R> {
 
@@ -39,6 +40,10 @@ public interface Func2<A, B, R> extends BiFunction<A, B, R> {
     @Contract(pure = true)
     default Apply2<A, B, R> applied() {
         return x -> apply(x.$1(), x.$2());
+    }
+
+    default Func2<Supplier<A>, Supplier<B>, R> lazyInput() {
+        return (a, b) -> apply(a.get(), b.get());
     }
 
     default Func1<B, R> apply(A a) {
