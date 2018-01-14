@@ -24,6 +24,10 @@ hs_err_pid*
 *.iml
 .idea
 .out
+.classpath
+.project
+.settings
+.vscode
 
 .DS_Store
 
