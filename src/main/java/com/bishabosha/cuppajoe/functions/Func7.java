@@ -9,6 +9,8 @@ import com.bishabosha.cuppajoe.control.Try;
 import com.bishabosha.cuppajoe.tuples.Apply7;
 import org.jetbrains.annotations.Contract;
 
+import java.util.function.Function;
+
 public interface Func7<A, B, C, D, E, F, G, R> {
 
     @Contract(pure = true)
@@ -34,6 +36,10 @@ public interface Func7<A, B, C, D, E, F, G, R> {
     @Contract(pure = true)
     default Apply7<A, B, C, D, E, F, G, R> applied() {
         return x -> apply(x.$1(), x.$2(), x.$3(), x.$4(), x.$5(), x.$6(), x.$7());
+    }
+
+    default <U> Func7<A, B, C, D, E, F, G, U> andThen(Function<? super R, ? extends U> next) {
+        return (s, t, u, v, w, x, y) -> next.apply(apply(s, t, u, v, w, x, y));
     }
 
     R apply(A a, B b, C c, D d, E e, F f, G g);

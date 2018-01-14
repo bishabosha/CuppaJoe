@@ -10,6 +10,8 @@ import com.bishabosha.cuppajoe.tuples.Apply8;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.function.Function;
+
 public interface Func8<A, B, C, D, E, F, G, H, R> {
 
     @Contract(pure = true)
@@ -38,6 +40,10 @@ public interface Func8<A, B, C, D, E, F, G, H, R> {
     @Contract(pure = true)
     default Apply8<A, B, C, D, E, F, G, H, R> applied() {
         return x -> apply(x.$1(), x.$2(), x.$3(), x.$4(), x.$5(), x.$6(), x.$7(), x.$8());
+    }
+
+    default <U> Func8<A, B, C, D, E, F, G, H, U> andThen(Function<? super R, ? extends U> next) {
+        return (s, t, u, v, w, x, y, z) -> next.apply(apply(s, t, u, v, w, x, y, z));
     }
 
     R apply(A a, B b, C c, D d, E e, F f, G g, H h);
