@@ -1,4 +1,4 @@
-package com.bishabosha.cuppajoe.typeclass;
+package com.bishabosha.cuppajoe.typeclass.monad;
 
 import com.bishabosha.cuppajoe.typeclass.applicative.BiApplicative;
 

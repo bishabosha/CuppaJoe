@@ -9,8 +9,8 @@ import com.bishabosha.cuppajoe.functions.*;
 import com.bishabosha.cuppajoe.patterns.Case;
 import com.bishabosha.cuppajoe.patterns.Pattern;
 import com.bishabosha.cuppajoe.patterns.Result;
+import com.bishabosha.cuppajoe.typeclass.monad.Monad;
 import com.bishabosha.cuppajoe.typeclass.applicative.Applicative;
-import com.bishabosha.cuppajoe.typeclass.Monad;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 

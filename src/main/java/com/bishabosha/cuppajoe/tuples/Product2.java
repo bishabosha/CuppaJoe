@@ -2,7 +2,7 @@ package com.bishabosha.cuppajoe.tuples;
 
 import com.bishabosha.cuppajoe.Iterables;
 import com.bishabosha.cuppajoe.typeclass.applicative.BiApplicative;
-import com.bishabosha.cuppajoe.typeclass.Dyad;
+import com.bishabosha.cuppajoe.typeclass.monad.Dyad;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
