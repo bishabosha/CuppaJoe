@@ -2,10 +2,9 @@ package com.bishabosha.cuppajoe.collections.immutable;
 
 import com.bishabosha.cuppajoe.Iterables;
 import com.bishabosha.cuppajoe.control.Option;
-import com.bishabosha.cuppajoe.functions.Func1;
-import com.bishabosha.cuppajoe.functions.Func2;
+import com.bishabosha.cuppajoe.functions.*;
 import com.bishabosha.cuppajoe.tuples.Product2;
-import com.bishabosha.cuppajoe.typeclass.Functor;
+import com.bishabosha.cuppajoe.typeclass.functor.Functor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -25,36 +24,36 @@ public class Array<E> implements Seq<E>, Functor<Array, E> {
         return new Array<>(elems == null ? new Object[]{null} : elems);
     }
 
-    public static <O> Array<O> of(O a) {
-        return new Array<>(new Object[]{ a });
+    public static <O> Func1<O, Array<O>> of1() {
+        return a -> new Array<>(new Object[]{ a });
     }
 
-    public static <O> Array<O> of(O a, O b) {
-        return new Array<>(new Object[]{ a, b });
+    public static <O> Func2<O, O, Array<O>> of2() {
+        return (a, b) -> new Array<>(new Object[]{ a, b });
     }
 
-    public static <O> Array<O> of(O a, O b, O c) {
-        return new Array<>(new Object[]{ a, b, c });
+    public static <O> Func3<O, O, O, Array<O>> of3() {
+        return (a, b, c) -> new Array<>(new Object[]{ a, b, c });
     }
 
-    public static <O> Array<O> of(O a, O b, O c, O d) {
-        return new Array<>(new Object[]{ a, b, c, d });
+    public static <O> Func4<O, O, O, O, Array<O>> of4() {
+        return (a, b, c, d) -> new Array<>(new Object[]{ a, b, c, d });
     }
 
-    public static <O> Array<O> of(O a, O b, O c, O d, O e) {
-        return new Array<>(new Object[]{ a, b, c, d, e });
+    public static <O> Func5<O, O, O, O, O, Array<O>> of5() {
+        return (a, b, c, d, e) -> new Array<>(new Object[]{ a, b, c, d, e });
     }
 
-    public static <O> Array<O> of(O a, O b, O c, O d, O e, O f) {
-        return new Array<>(new Object[]{ a, b, c, d, e, f });
+    public static <O> Func6<O, O, O, O, O, O, Array<O>> of6() {
+        return (a, b, c, d, e, f) -> new Array<>(new Object[]{ a, b, c, d, e, f });
     }
 
-    public static <O> Array<O> of(O a, O b, O c, O d, O e, O f, O g) {
-        return new Array<>(new Object[]{ a, b, c, d, e, f, g });
+    public static <O> Func7<O, O, O, O, O, O, O, Array<O>> of7() {
+        return (a, b, c, d, e, f, g) -> new Array<>(new Object[]{ a, b, c, d, e, f, g });
     }
 
-    public static <O> Array<O> of(O a, O b, O c, O d, O e, O f, O g, O h) {
-        return new Array<>(new Object[]{ a, b, c, d, e, f, g, h });
+    public static <O> Func8<O, O, O, O, O, O, O, O, Array<O>> of8() {
+        return (a, b, c, d, e, f, g, h) -> new Array<>(new Object[]{ a, b, c, d, e, f, g, h });
     }
 
     public static <R> Array<R> empty() {

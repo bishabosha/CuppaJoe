@@ -115,7 +115,7 @@ public interface Case<I, O> {
             xs -> binder.apply(xs.next(), xs.next(), xs.next(), xs.next(), xs.next(), xs.next(), xs.next(), xs.next()));
     }
 
-    static <I, O> Case<I, O> base(Pattern matcher, Function<PatternResult.Values, O> mapper) {
+    static <I, O> Case<I, O> base(Pattern matcher, Function<Result.Values, O> mapper) {
         return i -> matcher.test(i).flatMap(patternResult -> Option(mapper.apply(patternResult.values())));
     }
 

@@ -1,13 +1,12 @@
 package com.bishabosha.cuppajoe.collections.immutable;
 
 import com.bishabosha.cuppajoe.Iterables;
-import com.bishabosha.cuppajoe.functions.Func1;
 import com.bishabosha.cuppajoe.functions.Func2;
 import com.bishabosha.cuppajoe.patterns.Case;
 import com.bishabosha.cuppajoe.Foldable;
 import com.bishabosha.cuppajoe.control.Option;
 import com.bishabosha.cuppajoe.tuples.Product2;
-import com.bishabosha.cuppajoe.typeclass.Functor;
+import com.bishabosha.cuppajoe.typeclass.functor.Functor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;

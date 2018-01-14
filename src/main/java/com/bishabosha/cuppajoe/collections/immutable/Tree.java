@@ -410,7 +410,7 @@ public interface Tree<E extends Comparable<E>> {
          * @param node The pattern to check the node
          * @param left The pattern to check the left sub tree
          * @param right The pattern to check the right sub tree
-         * @return <b>Option&lt;PatternResult&gt;</b> if all patterns pass, otherwise {@link API#Nothing()}
+         * @return <b>Option&lt;Result&gt;</b> if all patterns pass, otherwise {@link API#Nothing()}
          */
         public static Pattern $Node(Pattern node, Pattern left, Pattern right) {
             return PATTERN.apply(node, left, right);

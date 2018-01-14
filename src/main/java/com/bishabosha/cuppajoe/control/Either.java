@@ -5,8 +5,7 @@
 package com.bishabosha.cuppajoe.control;
 
 import com.bishabosha.cuppajoe.Value;
-import com.bishabosha.cuppajoe.functions.Func1;
-import com.bishabosha.cuppajoe.typeclass.Functor;
+import com.bishabosha.cuppajoe.typeclass.functor.Functor;
 
 import java.util.Objects;
 import java.util.function.Function;

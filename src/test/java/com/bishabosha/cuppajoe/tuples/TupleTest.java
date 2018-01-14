@@ -25,7 +25,7 @@ public class TupleTest {
 
     @Test
     public void lifted() {
-        Tuple2<Boolean, Boolean> tuple = Tuple(true, false);
+        Product2<Boolean, Boolean> tuple = Tuple(true, false);
         Assert.assertTrue(
             tuple.try$(1).isPresent()
         );

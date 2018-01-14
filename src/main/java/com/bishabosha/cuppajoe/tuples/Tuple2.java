@@ -4,14 +4,13 @@
 
 package com.bishabosha.cuppajoe.tuples;
 
-import com.bishabosha.cuppajoe.patterns.Pattern;
+import com.bishabosha.cuppajoe.control.Option;
 import com.bishabosha.cuppajoe.functions.Func2;
+import com.bishabosha.cuppajoe.patterns.Pattern;
 import com.bishabosha.cuppajoe.patterns.PatternFactory;
 import org.jetbrains.annotations.Contract;
 
 import java.util.Objects;
-
-import static com.bishabosha.cuppajoe.API.Option;
 
 public final class Tuple2<A, B> implements Product2<A, B> {
 
@@ -24,17 +23,13 @@ public final class Tuple2<A, B> implements Product2<A, B> {
         return PATTERN.apply($1, $2);
     }
 
-    public static <A, B> Tuple2<A, B> of(A $1, B $2) {
+    public static <A, B> Product2<A, B> of(A $1, B $2) {
         return new Tuple2<>($1, $2);
     }
 
     private Tuple2(A $1, B $2) {
         this.$1 = $1;
         this.$2 = $2;
-    }
-
-    public <AA, BB> Tuple2<AA, BB> flatMap(Func2<A, B, Tuple2<AA, BB>> mapper) {
-        return mapper.apply($1(), $2());
     }
 
     @Contract(pure = true)
@@ -56,10 +51,7 @@ public final class Tuple2<A, B> implements Product2<A, B> {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        return Option(obj)
+        return obj == this || Option.of(obj)
             .cast(Tuple2.class)
             .map(o -> Objects.equals($1(), o.$1()) && Objects.equals($2(), o.$2()))
             .orElse(false);

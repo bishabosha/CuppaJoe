@@ -8,8 +8,8 @@ import com.bishabosha.cuppajoe.Value;
 import com.bishabosha.cuppajoe.functions.*;
 import com.bishabosha.cuppajoe.patterns.Case;
 import com.bishabosha.cuppajoe.patterns.Pattern;
-import com.bishabosha.cuppajoe.patterns.PatternResult;
-import com.bishabosha.cuppajoe.typeclass.Applicative;
+import com.bishabosha.cuppajoe.patterns.Result;
+import com.bishabosha.cuppajoe.typeclass.applicative.Applicative;
 import com.bishabosha.cuppajoe.typeclass.Monad;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -57,7 +57,7 @@ public interface Option<O> extends Value<O>, Monad<Option, O> {
         return isEmpty() ? Nothing.getInstance() : Objects.requireNonNull((Option<U>) mapper.apply(get()));
     }
 
-    default <T> Option<T> match(Pattern toMatch, Func1<PatternResult, T> mapper) {
+    default <T> Option<T> match(Pattern toMatch, Func1<Result, T> mapper) {
         return isEmpty() ? Nothing.getInstance() : toMatch.test(get()).map(mapper);
     }
 
@@ -67,6 +67,15 @@ public interface Option<O> extends Value<O>, Monad<Option, O> {
 
     default <R> Option<R> cast(Class<R> clazz) {
         return !isEmpty() && clazz.isInstance(get()) ? Some.of(clazz.cast(get())) : Nothing.getInstance();
+    }
+
+    default boolean contains(O o) {
+        return !isEmpty() && Objects.equals(get(), o);
+    }
+
+    @Override
+    default Option<O> toOption() {
+        return this;
     }
 
     @Override
@@ -153,15 +162,6 @@ public interface Option<O> extends Value<O>, Monad<Option, O> {
                                 f -> o7.flatMap(
                                     g -> o8.map(
                                         h -> function.apply(a, b, c, d, e, f, g, h)))))))));
-    }
-
-    default boolean contains(O o) {
-        return !isEmpty() && Objects.equals(get(), o);
-    }
-
-    @Override
-    default Option<O> toOption() {
-        return this;
     }
 }
 

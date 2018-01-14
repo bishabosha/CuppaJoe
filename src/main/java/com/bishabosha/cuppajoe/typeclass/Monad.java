@@ -1,5 +1,7 @@
 package com.bishabosha.cuppajoe.typeclass;
 
+import com.bishabosha.cuppajoe.typeclass.applicative.Applicative;
+
 import java.util.function.Function;
 
 public interface Monad<INSTANCE, T> extends Applicative<INSTANCE, T> {

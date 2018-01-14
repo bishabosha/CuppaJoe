@@ -125,25 +125,25 @@ public interface List<E> extends Seq<E> {
      * @param <O> the type of the accumulator.
      * @return The accumulator with whatever modifications have been applied.
      */
-    default <O> O loop(Supplier<O> identity, Func3<O, List<E>, E, Tuple2<O, List<E>>> consumer) {
-        Option<Tuple2<O, List<E>>> option = Some(Tuple(identity.get(), this));
-        Tuple2<O, List<E>> accStackPair;
+    default <O> O loop(Supplier<O> identity, Func3<O, List<E>, E, Product2<O, List<E>>> consumer) {
+        Option<Product2<O, List<E>>> option = Some(Tuple(identity.get(), this));
+        Product2<O, List<E>> accStackPair;
         while (!option.isEmpty() && !(accStackPair = option.get()).$2().isEmpty()) {
             final O acc = accStackPair.$1();
             final List<E> stack = accStackPair.$2();
             option = stack.pop()
-                          .map(t -> t.map((head, tail) -> consumer.apply(acc, tail, head)));
+                          .map(t -> t.compose((head, tail) -> consumer.apply(acc, tail, head)));
         }
-        return option.map(Tuple2::$1).orElseGet(identity);
+        return option.map(Product2::$1).orElseGet(identity);
     }
 
-    default <O> Tuple2<Option<O>, List<E>> nextItem(Func2<E, List<E>, Option<Tuple2<Option<O>, List<E>>>> mapper) {
-        Option<Tuple2<Option<O>, List<E>>> loopCond = Some(Tuple(Nothing(), this));
+    default <O> Product2<Option<O>, List<E>> nextItem(Func2<E, List<E>, Option<Product2<Option<O>, List<E>>>> mapper) {
+        Option<Product2<Option<O>, List<E>>> loopCond = Some(Tuple(Nothing(), this));
         while (!loopCond.isEmpty() && loopCond.get().$1().isEmpty()) {
             loopCond = loopCond.get()
                                .$2()
                                .pop()
-                               .flatMap(t -> t.map(mapper));
+                               .flatMap(t -> t.compose(mapper));
         }
         return loopCond.orElseGet(() -> Tuple(Nothing(), empty()));
     }

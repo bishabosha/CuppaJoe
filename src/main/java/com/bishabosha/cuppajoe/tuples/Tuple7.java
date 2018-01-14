@@ -4,13 +4,12 @@
 
 package com.bishabosha.cuppajoe.tuples;
 
-import com.bishabosha.cuppajoe.patterns.Pattern;
+import com.bishabosha.cuppajoe.control.Option;
 import com.bishabosha.cuppajoe.functions.Func7;
+import com.bishabosha.cuppajoe.patterns.Pattern;
 import com.bishabosha.cuppajoe.patterns.PatternFactory;
 
 import java.util.Objects;
-
-import static com.bishabosha.cuppajoe.API.Option;
 
 public final class Tuple7<A, B, C, D, E, F, G> implements Product7<A, B, C, D, E, F, G> {
 
@@ -92,10 +91,7 @@ public final class Tuple7<A, B, C, D, E, F, G> implements Product7<A, B, C, D, E
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        return Option(obj)
+        return obj == this || Option.of(obj)
                 .cast(Tuple7.class)
                 .map(o -> Objects.equals($1(), o.$1()) && Objects.equals($2(), o.$2()) && Objects.equals($3(), o.$3())
                         && Objects.equals($4(), o.$4()) && Objects.equals($5(), o.$5()) && Objects.equals($6(), o.$6())

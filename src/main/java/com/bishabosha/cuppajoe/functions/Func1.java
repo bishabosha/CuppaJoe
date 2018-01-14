@@ -38,4 +38,14 @@ public interface Func1<A, R> extends Function<A, R> {
     default Apply1<A, R> applied() {
         return x -> apply(x.$1());
     }
+
+    @Override
+    default <U> Func1<U, R> compose(Function<? super U, ? extends A> before) {
+        return u -> apply(before.apply(u));
+    }
+
+    @Override
+    default <U> Func1<A, U> andThen(Function<? super R, ? extends U> after) {
+        return a -> after.apply(apply(a));
+    }
 }

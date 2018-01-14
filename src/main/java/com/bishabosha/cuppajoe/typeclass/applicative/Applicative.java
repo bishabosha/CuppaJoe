@@ -1,6 +1,7 @@
-package com.bishabosha.cuppajoe.typeclass;
+package com.bishabosha.cuppajoe.typeclass.applicative;
 
 import com.bishabosha.cuppajoe.functions.*;
+import com.bishabosha.cuppajoe.typeclass.functor.Functor;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;

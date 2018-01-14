@@ -1,9 +1,6 @@
 package com.bishabosha.cuppajoe;
 
 import com.bishabosha.cuppajoe.control.Option;
-import com.bishabosha.cuppajoe.functions.Func1;
-import com.bishabosha.cuppajoe.typeclass.Functor;
-import com.bishabosha.cuppajoe.typeclass.Monad;
 
 import java.util.Optional;
 import java.util.function.*;
