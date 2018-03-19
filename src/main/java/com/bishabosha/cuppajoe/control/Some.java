@@ -66,10 +66,7 @@ public final class Some<O> implements Option<O>, Unapply1<O> {
 
     @Override
     public boolean equals(Object obj) {
-        return this == obj || Option.of(obj)
-            .cast(Some.class)
-            .map(o -> Objects.equals(o.get(), get()))
-            .orElse(false);
+        return this == obj || obj instanceof Some && Objects.equals(((Some) obj).get(), get());
     }
 
     @NotNull

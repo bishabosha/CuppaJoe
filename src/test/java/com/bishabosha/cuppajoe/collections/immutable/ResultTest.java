@@ -4,7 +4,8 @@ import com.bishabosha.cuppajoe.patterns.Result;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 public class ResultTest {
 

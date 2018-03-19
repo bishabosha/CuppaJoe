@@ -12,8 +12,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import static com.bishabosha.cuppajoe.API.Option;
-
 class ComputeNode<I, O> extends AbstractNode<I, O> {
 
     private BiConsumer<ComputeNode, Option<I>> compute;
@@ -26,7 +24,7 @@ class ComputeNode<I, O> extends AbstractNode<I, O> {
     public static <T, R> ComputeNode<T, R> flatMap(Func1<? super T, ? extends AbstractPipeline> mapper){
         return new ComputeNode<>(
             (cn, op) -> cn.sendFlattened(
-                op.flatMap(x -> Option(mapper.apply(x)))));
+                op.flatMap(x -> Option.of(mapper.apply(x)))));
     }
 
     public static <T> ComputeNode<T, T> peek(Consumer<? super T> action) {
@@ -54,10 +52,10 @@ class ComputeNode<I, O> extends AbstractNode<I, O> {
     }
 
     private void sendFlattened(Option<? extends AbstractPipeline> option) {
-        option.ifSome(p -> {
+        option.peek(p -> {
             Iterator<O> iterator = p.iterator();
             while (!downstreamWillTerminate() && iterator.hasNext()) {
-                send(Option(iterator.next()));
+                send(Option.of(iterator.next()));
             }
         });
     }

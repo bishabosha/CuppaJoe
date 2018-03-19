@@ -14,6 +14,10 @@ import java.util.function.Supplier;
 
 public interface Func0<R> extends Supplier<R> {
 
+    default R apply() {
+        return get();
+    }
+
     @NotNull
     @Contract(pure = true)
     static <R> Func0<R> of(Supplier<R> reference) {
@@ -27,7 +31,7 @@ public interface Func0<R> extends Supplier<R> {
 
     @Contract(pure = true)
     static <R> Func0<Option<R>> lift(Supplier<? extends R> func) {
-        return Try.<R>narrow(Try.of(func::get))::get;
+        return Try.<R>of(func::get)::lift;
     }
 
     @Contract(pure = true)

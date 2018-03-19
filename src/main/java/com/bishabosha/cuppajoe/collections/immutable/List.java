@@ -1,25 +1,34 @@
 package com.bishabosha.cuppajoe.collections.immutable;
 
 import com.bishabosha.cuppajoe.Iterables;
+import com.bishabosha.cuppajoe.control.Nothing;
 import com.bishabosha.cuppajoe.control.Option;
 import com.bishabosha.cuppajoe.functions.Func2;
 import com.bishabosha.cuppajoe.functions.Func3;
+import com.bishabosha.cuppajoe.math.PredicateFor;
 import com.bishabosha.cuppajoe.patterns.Case;
 import com.bishabosha.cuppajoe.patterns.Pattern;
 import com.bishabosha.cuppajoe.patterns.PatternFactory;
-import com.bishabosha.cuppajoe.tuples.*;
+import com.bishabosha.cuppajoe.tuples.Apply2;
+import com.bishabosha.cuppajoe.tuples.Product2;
+import com.bishabosha.cuppajoe.tuples.Unapply2;
+import com.bishabosha.cuppajoe.typeclass.applicative.Applicative1;
+import com.bishabosha.cuppajoe.typeclass.monad.Monad1;
+import com.bishabosha.cuppajoe.typeclass.monoid.Monoid1;
+import com.bishabosha.cuppajoe.typeclass.value.Value1;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.bishabosha.cuppajoe.API.*;
 
-public interface List<E> extends Seq<E> {
+public interface List<E> extends Seq<List, E>, Value1<List, E> {
 
     /**
      * Creates a new of instance with a head and another of for a tail.
@@ -39,7 +48,7 @@ public interface List<E> extends Seq<E> {
      * @param <R> the type encapsulated by the of
      */
     @Contract(pure = true)
-    static <R> Empty<R> empty() {
+    static <R> List<R> empty() {
         return Empty.getInstance();
     }
 
@@ -60,11 +69,11 @@ public interface List<E> extends Seq<E> {
         if (Objects.isNull(elems)) {
             return concat(null, empty());
         }
-        List<R> cons = empty();
-        for (int x = elems.length - 1; x >= 0; x--) {
-            cons = cons.push(elems[x]);
+        var list = List.<R>empty();
+        for (var x = elems.length - 1; x >= 0; x--) {
+            list = list.push(elems[x]);
         }
-        return cons;
+        return list;
     }
 
     /**
@@ -83,6 +92,11 @@ public interface List<E> extends Seq<E> {
     }
 
     @Override
+    default List<E> or(Supplier<? extends Value1<List, ? extends E>> alternative) {
+        return isEmpty() ? Value1.Type.<List<E>, List, E>narrow(alternative.get()) : this;
+    }
+
+    @Override
     List<E> tail();
 
     @Override
@@ -95,13 +109,12 @@ public interface List<E> extends Seq<E> {
         return reverse().bufferElementsReversed(limit);
     }
 
-    <R> List<R> map(Function<? super E, ? extends R> mapper);
-
     @Override
     default List<E> append(E elem) {
-        return foldRight(of(elem), (List<E> xs, E x) -> xs.push(x));
+        return foldRight(of(elem), List::push);
     }
 
+    @Override
     Option<Product2<E, List<E>>> pop();
 
     default <U> Option<U> pop(Case<Product2<E, List<E>>, U> matcher) {
@@ -115,7 +128,7 @@ public interface List<E> extends Seq<E> {
      */
     @Override
     default List<E> removeAll(E elem) {
-        return fold(empty(), (List<E> xs, E x) -> Objects.equals(x, elem) ? xs : xs.push(x)).reverse();
+        return foldLeft(empty(), (List<E> xs, E x) -> Objects.equals(x, elem) ? xs : xs.push(x)).reverse();
     }
 
     /**
@@ -126,63 +139,43 @@ public interface List<E> extends Seq<E> {
      * @return The accumulator with whatever modifications have been applied.
      */
     default <O> O loop(Supplier<O> identity, Func3<O, List<E>, E, Product2<O, List<E>>> consumer) {
-        Option<Product2<O, List<E>>> option = Some(Tuple(identity.get(), this));
-        Product2<O, List<E>> accStackPair;
-        while (!option.isEmpty() && !(accStackPair = option.get()).$2().isEmpty()) {
-            final O acc = accStackPair.$1();
-            final List<E> stack = accStackPair.$2();
-            option = stack.pop()
-                          .map(t -> t.compose((head, tail) -> consumer.apply(acc, tail, head)));
+        var accStackOp = Some(Tuple(identity.get(), this));
+        while (!accStackOp.isEmpty() && !accStackOp.get().$2().isEmpty()) {
+            accStackOp = accStackOp.get().compose((acc, stack) ->
+                stack.pop()
+                     .map(headTail -> headTail.compose((head, tail) ->
+                         consumer.apply(acc, tail, head))));
         }
-        return option.map(Product2::$1).orElseGet(identity);
+        return accStackOp.map(Product2::$1).orElseSupply(identity);
     }
 
     default <O> Product2<Option<O>, List<E>> nextItem(Func2<E, List<E>, Option<Product2<Option<O>, List<E>>>> mapper) {
-        Option<Product2<Option<O>, List<E>>> loopCond = Some(Tuple(Nothing(), this));
+        var loopCond = Some(Tuple(Nothing.<O>getInstance(), this));
         while (!loopCond.isEmpty() && loopCond.get().$1().isEmpty()) {
             loopCond = loopCond.get()
                                .$2()
                                .pop()
                                .flatMap(t -> t.compose(mapper));
         }
-        return loopCond.orElseGet(() -> Tuple(Nothing(), empty()));
-    }
-
-    @Override
-    default int size() {
-        List<E> list = this;
-        int size = 0;
-        while (!list.isEmpty()) {
-            size = size + 1;
-            list = list.tail();
-        }
-        return size;
+        return loopCond.orElseSupply(() -> Tuple(Nothing(), empty()));
     }
 
     @Override
     default List<E> reverse() {
-        List<E> result = empty();
-        List<E> buffer = this;
-        while (!buffer.isEmpty()) {
-            result = result.push(buffer.head());
-            buffer = buffer.tail();
-        }
-        return result;
+        return foldLeft(identity(), List::push);
     }
 
     @Override
     default List<E> subsequence(int from, int limit) {
         if (from < 0) {
             throw new IllegalArgumentException("from can't be less than zero.");
-        }
-        if (limit < 0) {
+        } else if (limit < 0) {
             throw new IllegalArgumentException("limit can't be less than zero.");
-        }
-        if (limit < from) {
+        } else if (limit < from) {
             throw new IllegalArgumentException("limit must be greater than or equal to from.");
         }
-        List<E> it = this;
-        int count = 0;
+        var it = this;
+        var count = 0;
         while (count < from) {
             count = count + 1;
             if (it.isEmpty()) {
@@ -193,31 +186,12 @@ public interface List<E> extends Seq<E> {
         return it.bufferElementsReversed(limit - from).reverse();
     }
 
-    @Override
-    default E get(int n) {
-        if (n < 0) {
-            throw new IllegalArgumentException("n must be positive.");
-        }
-        List<E> it = this;
-        while (n >= 0) {
-            if (it.isEmpty()) {
-                break;
-            }
-            if (n == 0) {
-                return it.head();
-            }
-            n = n - 1;
-            it = it.tail();
-        }
-        throw new IndexOutOfBoundsException("n exceeds size.");
-    }
-
     private List<E> bufferElementsReversed(int limit) {
         if (limit < 0) {
             throw new IllegalArgumentException("limit can't be less than zero.");
         }
-        List<E> it = this;
-        List<E> buffer = empty();
+        var it = this;
+        var buffer = List.<E>empty();
         while (limit > 0) {
             limit = limit - 1;
             if (it.isEmpty()) {
@@ -229,7 +203,51 @@ public interface List<E> extends Seq<E> {
         return buffer;
     }
 
-    class Empty<E> implements List<E> {
+    @Override
+    default <O> List<E> distinct(Function<E, O> propertyGetter) {
+        var isDistinct = PredicateFor.distinctProperty(propertyGetter);
+        return foldRight(identity(), (xs, x) -> isDistinct.test(x) ? xs.push(x) : xs);
+    }
+
+    @Override
+    default <U> List<U> pure(U value) {
+        return of(value);
+    }
+
+    @Override
+    default List<E> identity() {
+        return empty();
+    }
+
+
+    default List<E> mappend(Monoid1<List, ? extends E> other) {
+        return foldRight(Monoid1.Type.<List<E>, List, E>narrow(other), List::push);
+    }
+
+    @Override
+    default List<E> mconcat(List<Monoid1<List, ? extends E>> list) {
+        return Monoid1.Type.narrow(Seq.super.mconcat(list));
+    }
+
+    @Override
+    default <U> List<U> map(Function<? super E, ? extends U> mapper) {
+        Objects.requireNonNull(mapper);
+        return !isEmpty() ? foldRight(List.<U>empty(), (xs, x) -> xs.push(mapper.apply(x))) : empty();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    default <U> List<U> flatMap(Function<? super E, Monad1<List, ? extends U>> mapper) {
+        Objects.requireNonNull(mapper);
+        return !isEmpty() ? List.<U>empty().mconcat(map(mapper.andThen(Monad1.Type::<List<U>, List, U>narrow))) : empty();
+    }
+
+    @Override
+    default <U> List<U> apply(Applicative1<List, Function<? super E, ? extends U>> applicative1) {
+        return Monad1.applyImpl(this, applicative1);
+    }
+
+    class Empty<E> implements EmptySeq<List, E>, List<E> {
 
         /**
          * Pattern to test if any object is equivalent to an empty tail element.
@@ -238,7 +256,7 @@ public interface List<E> extends Seq<E> {
             return x -> x instanceof Empty<?> ? Pattern.PASS : Pattern.FAIL;
         }
 
-        private static final Empty<?> EMPTY_LIST = new Empty<>();
+        private static final Empty<?> EMPTY_LIST = new List.Empty<>();
 
         @SuppressWarnings("unchecked")
         static <O> Empty<O> getInstance() {
@@ -267,8 +285,7 @@ public interface List<E> extends Seq<E> {
         public List<E> take(int limit) {
             if (limit > 0) {
                 throw new IndexOutOfBoundsException("limit exceeds size.");
-            }
-            if (limit < 0) {
+            } else if (limit < 0) {
                 throw new IllegalArgumentException("index must be positive");
             }
             return empty();
@@ -373,7 +390,7 @@ public interface List<E> extends Seq<E> {
          * @return true if any instances were found. Otherwise false.
          */
         public boolean contains(Object elem) {
-            Seq<E> list = this;
+            List<E> list = this;
             while (!list.isEmpty()) {
                 if (Objects.equals(list.head(), elem)) {
                     return true;
@@ -381,6 +398,47 @@ public interface List<E> extends Seq<E> {
                 list = list.tail();
             }
             return false;
+        }
+
+        @Override
+        public <O> O foldLeft(O accumulator, BiFunction<O, E, O> mapper) {
+            List<E> elements = this;
+            Objects.requireNonNull(mapper);
+            while (!elements.isEmpty()) {
+                accumulator = mapper.apply(accumulator, elements.head());
+                elements = elements.tail();
+            }
+            return accumulator;
+        }
+
+        @Override
+        public int size() {
+            List<E> list = this;
+            int size = 0;
+            while (!list.isEmpty()) {
+                size = size + 1;
+                list = list.tail();
+            }
+            return size;
+        }
+
+        @Override
+        public E get(int n) {
+            if (n < 0) {
+                throw new IllegalArgumentException("n must be positive.");
+            }
+            List<E> it = this;
+            while (n >= 0) {
+                if (it.isEmpty()) {
+                    break;
+                }
+                if (n == 0) {
+                    return it.head();
+                }
+                n = n - 1;
+                it = it.tail();
+            }
+            throw new IndexOutOfBoundsException("n exceeds size.");
         }
 
         @Override
@@ -405,7 +463,7 @@ public interface List<E> extends Seq<E> {
             return new Iterables.Lockable<>() {
 
                 E current = null;
-                Seq<E> cons = Cons.this;
+                List<E> cons = Cons.this;
 
                 @Override
                 public boolean hasNextSupplier() {

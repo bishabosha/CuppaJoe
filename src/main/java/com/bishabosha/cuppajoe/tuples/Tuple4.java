@@ -75,16 +75,6 @@ public final class Tuple4<A, B, C, D> implements Product4<A, B, C, D> {
 
     @Override
     public String toString() {
-        return new StringBuilder()
-                .append('(')
-                .append($1())
-                .append(", ")
-                .append($2())
-                .append(", ")
-                .append($3())
-                .append(", ")
-                .append($4())
-                .append(')')
-                .toString();
+        return "(" + $1() + ", " + $2() + ", " + $3() + ", " + $4() + ")";
     }
 }

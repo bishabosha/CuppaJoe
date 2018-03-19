@@ -4,10 +4,10 @@
 
 package com.bishabosha.cuppajoe.collections.mutable.tries;
 
-import java.util.Iterator;
-
 import com.bishabosha.cuppajoe.collections.mutable.base.AbstractSet;
 import com.bishabosha.cuppajoe.collections.mutable.lists.LinkedList;
+
+import java.util.Iterator;
 
 public class TrieSet extends AbstractSet<String> {
 	

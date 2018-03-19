@@ -6,7 +6,6 @@ import com.bishabosha.cuppajoe.collections.immutable.Array;
 import com.bishabosha.cuppajoe.collections.immutable.List;
 import com.bishabosha.cuppajoe.control.Option;
 import com.bishabosha.cuppajoe.functions.*;
-import com.bishabosha.cuppajoe.tuples.Product2;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
@@ -121,8 +120,7 @@ public interface Result<E> extends Iterable<E> {
 
                 @Override
                 public boolean hasNextSupplier() {
-                    final Product2<Option<E>, List<Iterator<Result<E>>>> nextItem;
-                    nextItem = stack.nextItem((it, xs) -> {
+                    var nextItem = stack.nextItem((it, xs) -> {
                         if (it.hasNext()) {
                             Result<E> tree = it.next();
                             if (it.hasNext()) {
@@ -210,16 +208,16 @@ public interface Result<E> extends Iterable<E> {
 
         @Override
         public boolean equals(Object obj) {
-            return obj == this || Option(obj)
-                                    .cast(Result.class)
-                                    .map(x -> {
-                                        Iterator other = x.iterator();
-                                        if (other.hasNext() && Objects.equals(other.next(), value) && !other.hasNext()) {
-                                            return true;
-                                        }
-                                        return false;
-                                    })
-                                    .orElse(false);
+            if (obj == this) {
+                return true;
+            }
+            if (obj instanceof Result) {
+                var otherVals = ((Result) obj).iterator();
+                return otherVals.hasNext()
+                    && Objects.equals(otherVals.next(), value)
+                    && !otherVals.hasNext();
+            }
+            return false;
         }
     }
 
@@ -241,7 +239,7 @@ public interface Result<E> extends Iterable<E> {
                     throw new NoSuchElementException("Not enough values contained in Pattern Result.");
                 }
             } catch (ClassCastException cce) {
-                throw new ClassCastException("Pattern Result elem("+count+") is not of the type requested.");
+                throw new ClassCastException("Pattern Result elem(" + count + ") is not of the type requested.");
             }
         }
     }

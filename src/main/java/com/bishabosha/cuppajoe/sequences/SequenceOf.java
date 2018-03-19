@@ -40,8 +40,8 @@ public class SequenceOf {
 				return (long)2;
 			}
 			while (true){
-				long value = counter.get();
-				int sqrt = (int) Math.sqrt(value);
+				var value = counter.get();
+				var sqrt = Math.sqrt(value);
 				if (!PredicateFor.isMultipleOf(xs, x -> x > sqrt).test(value)) {
 					return value;
 				}

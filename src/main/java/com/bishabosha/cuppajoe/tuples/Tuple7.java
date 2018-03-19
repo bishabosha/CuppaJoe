@@ -101,22 +101,6 @@ public final class Tuple7<A, B, C, D, E, F, G> implements Product7<A, B, C, D, E
 
     @Override
     public String toString() {
-        return new StringBuilder()
-                .append('(')
-                .append($1())
-                .append(", ")
-                .append($2())
-                .append(", ")
-                .append($3())
-                .append(", ")
-                .append($4())
-                .append(", ")
-                .append($5())
-                .append(", ")
-                .append($6())
-                .append(", ")
-                .append($7())
-                .append(')')
-                .toString();
+        return "(" + $1() + ", " + $2() + ", " + $3() + ", " + $4() + ", " + $5() + ", " + $6() + ", " + $7() + ")";
     }
 }

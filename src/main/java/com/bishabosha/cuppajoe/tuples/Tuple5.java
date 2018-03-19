@@ -85,18 +85,6 @@ public final class Tuple5<A, B, C, D, E> implements Product5<A, B, C, D, E> {
 
     @Override
     public String toString() {
-        return new StringBuilder()
-                .append('(')
-                .append($1())
-                .append(", ")
-                .append($2())
-                .append(", ")
-                .append($3())
-                .append(", ")
-                .append($4())
-                .append(", ")
-                .append($5())
-                .append(')')
-                .toString();
+        return "(" + $1() + ", " + $2() + ", " + $3() + ", " + $4() + ", " + $5() + ")";
     }
 }

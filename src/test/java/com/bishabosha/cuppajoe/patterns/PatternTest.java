@@ -9,7 +9,6 @@ import com.bishabosha.cuppajoe.collections.immutable.Tree;
 import com.bishabosha.cuppajoe.collections.mutable.trees.BinaryNode;
 import com.bishabosha.cuppajoe.control.Option;
 import com.bishabosha.cuppajoe.tuples.Product2;
-import com.bishabosha.cuppajoe.tuples.Tuple2;
 import org.junit.Test;
 
 import static com.bishabosha.cuppajoe.API.Nothing;
@@ -87,7 +86,7 @@ public class PatternTest {
         patt2Test = $Tuple2($Some($Node($x, ¥_, $y)), $xs);
         underTest = Tuple(Option.of(Node(1, leaf(), leaf())), List.of(Tree.of(2)));
 
-        patt2Test.test(underTest).ifSome(results -> {
+        patt2Test.test(underTest).peek(results -> {
             Result.Values values = results.values();
             assertEquals(3, results.size());
             assertEquals(1, (int) values.next());

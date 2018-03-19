@@ -4,10 +4,13 @@
 
 package com.bishabosha.cuppajoe.collections.mutable.lists;
 
-import com.bishabosha.cuppajoe.collections.mutable.base.AbstractCollection;
 import com.bishabosha.cuppajoe.Iterables;
+import com.bishabosha.cuppajoe.collections.mutable.base.AbstractCollection;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 public abstract class AbstractIterableList<E> extends AbstractCollection<E> implements IterableList<E> {
 	protected int currentIndex = 0;

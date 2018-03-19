@@ -6,9 +6,10 @@ package com.bishabosha.cuppajoe.collections.mutable.graphs;
 
 import com.bishabosha.cuppajoe.collections.mutable.base.MapEntry;
 import com.bishabosha.cuppajoe.collections.mutable.hashtables.HashMap;
+
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Map.*;
+import java.util.Map.Entry;
 
 public class WeightedRelationSet<N, W> extends RelationSet<N> implements WeightedRelation<N, W> {
 

@@ -1,21 +1,23 @@
 package com.bishabosha.cuppajoe.collections.immutable;
 
-import com.bishabosha.cuppajoe.Iterables;
-import com.bishabosha.cuppajoe.functions.Func2;
-import com.bishabosha.cuppajoe.patterns.Case;
 import com.bishabosha.cuppajoe.Foldable;
+import com.bishabosha.cuppajoe.Iterables;
 import com.bishabosha.cuppajoe.control.Option;
+import com.bishabosha.cuppajoe.patterns.Case;
 import com.bishabosha.cuppajoe.tuples.Product2;
-import com.bishabosha.cuppajoe.typeclass.functor.Functor;
+import com.bishabosha.cuppajoe.typeclass.functor.Functor1;
+import com.bishabosha.cuppajoe.typeclass.value.Value1;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static com.bishabosha.cuppajoe.API.Tuple;
 
-public class Queue<E> implements Foldable<E>, Bunch<E>, Functor<Queue, E> {
+public class Queue<E> implements Foldable<E>, Bunch<E>, Value1<Queue, E>, Functor1<Queue, E> {
     private List<E> head;
     private List<E> tail;
 
@@ -44,6 +46,11 @@ public class Queue<E> implements Foldable<E>, Bunch<E>, Functor<Queue, E> {
 
     public final boolean isEmpty() {
         return head.isEmpty() && tail.isEmpty();
+    }
+
+    @Override
+    public Queue<E> or(Supplier<? extends Value1<Queue, ? extends E>> alternative) {
+        return isEmpty() ? Value1.Type.narrow(alternative.get()) : this;
     }
 
     public final int size() {
@@ -103,8 +110,8 @@ public class Queue<E> implements Foldable<E>, Bunch<E>, Functor<Queue, E> {
     }
 
     @Override
-    public <A> A foldRight(A accumulator, Func2<A, E, A> mapper) {
-        return reverse().fold(accumulator, mapper);
+    public <A> A foldRight(A accumulator, BiFunction<A, E, A> mapper) {
+        return reverse().foldLeft(accumulator, mapper);
     }
 
     @Override

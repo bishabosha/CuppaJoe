@@ -51,6 +51,6 @@ public final class Tuple1<A> implements Product1<A> {
     }
 
     public String toString() {
-        return "("+$1()+")";
+        return "(" + $1() + ")";
     }
 }

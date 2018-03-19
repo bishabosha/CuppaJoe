@@ -8,12 +8,6 @@ import com.bishabosha.cuppajoe.control.Option;
 import com.bishabosha.cuppajoe.functions.*;
 import com.bishabosha.cuppajoe.tuples.*;
 
-import java.util.NoSuchElementException;
-import java.util.function.Function;
-
-import static com.bishabosha.cuppajoe.API.Some;
-import static com.bishabosha.cuppajoe.API.Try;
-
 public class PatternFactory<I> {
 
     public static <U extends Unapply1<?>>

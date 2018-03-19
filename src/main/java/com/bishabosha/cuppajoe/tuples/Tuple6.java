@@ -92,20 +92,6 @@ public final class Tuple6<A, B, C, D, E, F> implements Product6<A, B, C, D, E, F
 
     @Override
     public String toString() {
-        return new StringBuilder()
-                .append('(')
-                .append($1())
-                .append(", ")
-                .append($2())
-                .append(", ")
-                .append($3())
-                .append(", ")
-                .append($4())
-                .append(", ")
-                .append($5())
-                .append(", ")
-                .append($6())
-                .append(')')
-                .toString();
+        return "(" + $1() + ", " + $2() + ", " + $3() + ", " + $4() + ", " + $5() + ", " + $6() + ")";
     }
 }

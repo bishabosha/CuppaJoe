@@ -5,16 +5,16 @@
 package com.bishabosha.cuppajoe.pipelines;
 
 import com.bishabosha.cuppajoe.collections.mutable.base.MapEntry;
-import com.bishabosha.cuppajoe.patterns.Case;
 import com.bishabosha.cuppajoe.control.Option;
 import com.bishabosha.cuppajoe.math.Arithmetic;
+import com.bishabosha.cuppajoe.patterns.Case;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
-import java.util.stream.*;
+import java.util.stream.Collectors;
 
 import static com.bishabosha.cuppajoe.patterns.Case.with;
 import static com.bishabosha.cuppajoe.patterns.Pattern.$any;

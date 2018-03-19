@@ -23,7 +23,7 @@ public interface CheckedFunc0<R> {
 
     @Contract(pure = true)
     static <R> Func0<Option<R>> lift(CheckedFunc0<? extends R> func) {
-        return Try.<R>narrow(Try.of(func::apply))::get;
+        return Try.<R>of(func::apply)::lift;
     }
 
     @Contract(pure = true)

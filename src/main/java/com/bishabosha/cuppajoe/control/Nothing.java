@@ -2,6 +2,7 @@ package com.bishabosha.cuppajoe.control;
 
 import com.bishabosha.cuppajoe.Iterables;
 import com.bishabosha.cuppajoe.patterns.Pattern;
+import com.bishabosha.cuppajoe.typeclass.monad.Monad1;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -10,7 +11,7 @@ import java.util.NoSuchElementException;
 
 public final class Nothing<E> implements Option<E> {
 
-    private static final Nothing<?> NOTHING = new Nothing<>();
+    private static final Nothing<Object> NOTHING = new Nothing<>();
 
     @NotNull
     @Contract(pure = true)
@@ -20,9 +21,8 @@ public final class Nothing<E> implements Option<E> {
 
     @NotNull
     @Contract(pure = true)
-    @SuppressWarnings("unchecked")
-    public static <O> Nothing<O> getInstance() {
-        return (Nothing<O>) NOTHING;
+    public static <O> Option<O> getInstance() {
+        return Monad1.Type.<Option<O>, Option, O>castParam(NOTHING);
     }
 
     private Nothing() {

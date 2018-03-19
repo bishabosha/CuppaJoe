@@ -4,8 +4,8 @@
 
 package com.bishabosha.cuppajoe.patterns;
 
-import com.bishabosha.cuppajoe.control.Option;
 import com.bishabosha.cuppajoe.collections.immutable.Tree;
+import com.bishabosha.cuppajoe.control.Option;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -13,15 +13,16 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import static com.bishabosha.cuppajoe.API.Match;
+import static com.bishabosha.cuppajoe.API.Tuple;
 import static com.bishabosha.cuppajoe.collections.immutable.Tree.Leaf.¥Leaf;
+import static com.bishabosha.cuppajoe.collections.immutable.Tree.Node;
 import static com.bishabosha.cuppajoe.collections.immutable.Tree.Node.$Node;
+import static com.bishabosha.cuppajoe.collections.immutable.Tree.leaf;
 import static com.bishabosha.cuppajoe.control.Some.$Some;
+import static com.bishabosha.cuppajoe.patterns.Case.*;
 import static com.bishabosha.cuppajoe.patterns.Matcher.guardUnsafe;
 import static com.bishabosha.cuppajoe.patterns.Pattern.*;
-import static com.bishabosha.cuppajoe.patterns.Case.*;
-import static com.bishabosha.cuppajoe.API.Tuple;
 import static com.bishabosha.cuppajoe.tuples.Tuple2.$Tuple2;
-import static com.bishabosha.cuppajoe.collections.immutable.Tree.*;
 
 public class MatcherTest {
 

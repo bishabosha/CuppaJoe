@@ -25,7 +25,7 @@ public interface CheckedFunc2<A, B, R> {
     @NotNull
     @Contract(pure = true)
     static <X, Y, R> Func2<X, Y, Option<R>> lift(CheckedFunc2<? super X, ? super Y, ? extends R> func) {
-        return (x, y) -> Try.<R>narrow(Try.of(() -> func.apply(x, y))).get();
+        return (x, y) -> Try.<R>of(() -> func.apply(x, y)).lift();
     }
 
     @Contract(pure = true)

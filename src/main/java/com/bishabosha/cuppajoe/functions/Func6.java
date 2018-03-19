@@ -26,7 +26,7 @@ public interface Func6<A, B, C, D, E, F, R> {
 
     @Contract(pure = true)
     static <U, V, W, X, Y, Z, R> Func6<U, V, W, X, Y, Z, Option<R>> lift(Func6<? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z, ? extends R> func) {
-        return (u, v, w, x, y, z) -> Try.<R>narrow(Try.of(() -> func.apply(u, v, w, x, y, z))).get();
+        return (u, v, w, x, y, z) -> Try.<R>of(() -> func.apply(u, v, w, x, y, z)).lift();
     }
 
     @Contract(pure = true)

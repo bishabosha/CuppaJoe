@@ -15,9 +15,9 @@ import java.util.function.BooleanSupplier;
 
 public class API {
 
-    public static Unit
+    public static Tuple0
     Tuple() {
-        return Unit.getInstance();
+        return Tuple0.getInstance();
     }
 
     public static <A>
@@ -68,21 +68,15 @@ public class API {
     }
 
     public static <L, R> Either<L, R> Left(L left) {
-        return Left.of(left);
+        return Either.left(left);
     }
 
     public static <L, R> Either<L, R> Right(R right) {
-        return Right.of(right);
-    }
-
-    @Contract(pure = true)
-    @NotNull
-    public static <O> Option<O> Option(O elem) {
-        return Option.of(elem);
+        return Either.right(right);
     }
 
     public static <O> Option<O> Option(BooleanSupplier condition, Func0<O> elem) {
-        return condition.getAsBoolean() ? Option(elem.get()) : Nothing();
+        return condition.getAsBoolean() ? Option.of(elem.apply()) : Nothing();
     }
 
     @NotNull

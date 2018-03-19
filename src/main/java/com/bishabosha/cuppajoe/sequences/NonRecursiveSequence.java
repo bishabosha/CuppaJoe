@@ -9,8 +9,6 @@ import com.bishabosha.cuppajoe.pipelines.Pipeline;
 
 import java.util.function.Function;
 
-import static com.bishabosha.cuppajoe.API.Option;
-
 public class NonRecursiveSequence<T> extends AbstractSequence<T> {
 
     public NonRecursiveSequence(Function<Integer, T> algorithm) {
@@ -31,7 +29,7 @@ public class NonRecursiveSequence<T> extends AbstractSequence<T> {
         }
 
         public void setTerms(int from) {
-            int old = initialTerm;
+            var old = initialTerm;
             if (from != old) {
                 n = offset = from - 1;
                 cache = getEmptyList();
@@ -70,7 +68,7 @@ public class NonRecursiveSequence<T> extends AbstractSequence<T> {
     public Option<T> term(int n) {
         removeOffset(n);
         return getPipeline().isEmpty() ?
-            Option(((NonRecursiveBuilder)builder).calculate(n)) :
+            Option.of(((NonRecursiveBuilder)builder).calculate(n)) :
             super.term(n);
     }
 
@@ -82,7 +80,7 @@ public class NonRecursiveSequence<T> extends AbstractSequence<T> {
 
     @Override
     public Pipeline<T> pipeline() {
-        Pipeline<T> stream = copyPipeline();
+        var stream = copyPipeline();
         if (finalTerm > initialTerm) {
             stream.pushLimit(finalTerm - initialTerm);
         }

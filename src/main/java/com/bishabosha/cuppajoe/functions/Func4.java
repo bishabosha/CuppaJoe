@@ -25,7 +25,7 @@ public interface Func4<A, B, C, D, R> {
 
     @Contract(pure = true)
     static <W, X, Y, Z, R> Func4<W, X, Y, Z, Option<R>> lift(Func4<? super W, ? super X, ? super Y, ? super Z, ? extends R> func) {
-        return (w, x, y, z) -> Try.<R>narrow(Try.of(() -> func.apply(w, x, y, z))).get();
+        return (w, x, y, z) -> Try.<R>of(() -> func.apply(w, x, y, z)).lift();
     }
 
     @Contract(pure = true)

@@ -67,14 +67,6 @@ public final class Tuple3<A, B, C> implements Product3<A, B, C> {
 
     @Override
     public String toString() {
-        return new StringBuilder()
-                .append('(')
-                .append($1())
-                .append(", ")
-                .append($2())
-                .append(", ")
-                .append($3())
-                .append(')')
-                .toString();
+        return "(" + $1() + ", " + $2() + ", " + $3() + ")";
     }
 }

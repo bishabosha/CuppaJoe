@@ -4,8 +4,8 @@
 
 package com.bishabosha.cuppajoe.patterns;
 
-import com.bishabosha.cuppajoe.patterns.Case.Guard;
 import com.bishabosha.cuppajoe.control.Option;
+import com.bishabosha.cuppajoe.patterns.Case.Guard;
 
 import static com.bishabosha.cuppajoe.API.Nothing;
 

@@ -30,7 +30,7 @@ public interface Func2<A, B, R> extends BiFunction<A, B, R> {
 
     @Contract(pure = true)
     static <X, Y, R> Func2<X, Y, Option<R>> lift(BiFunction<? super X, ? super Y, ? extends R> func) {
-        return (x, y) -> Try.<R>narrow(Try.of(() -> func.apply(x, y))).get();
+        return (x, y) -> Try.<R>of(() -> func.apply(x, y)).lift();
     }
 
     @Contract(pure = true)

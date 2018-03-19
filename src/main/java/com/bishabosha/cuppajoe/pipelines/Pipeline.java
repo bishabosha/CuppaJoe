@@ -5,16 +5,21 @@
 package com.bishabosha.cuppajoe.pipelines;
 
 import com.bishabosha.cuppajoe.Iterables;
+import com.bishabosha.cuppajoe.collections.mutable.hashtables.HashTable;
+import com.bishabosha.cuppajoe.control.Option;
 import com.bishabosha.cuppajoe.functions.Func1;
 import com.bishabosha.cuppajoe.patterns.Case;
-import com.bishabosha.cuppajoe.control.Option;
-import com.bishabosha.cuppajoe.collections.mutable.hashtables.HashTable;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.Optional;
 import java.util.function.*;
-import java.util.stream.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import static com.bishabosha.cuppajoe.API.Option;
+import static com.bishabosha.cuppajoe.API.*;
 
 /**
  * Pipeline diverges from the Stream interface with new methods
@@ -128,7 +133,7 @@ public class Pipeline<T> extends com.bishabosha.cuppajoe.pipelines.AbstractPipel
     }
 
     public <R, V> Pipeline<V> zipWith(Iterable<R> other, BiFunction<T, R, V> function) {
-        Iterator<R> otherIt = other.iterator();
+        var otherIt = other.iterator();
         takeWhile(x -> otherIt.hasNext());
         return map(x -> function.apply(x, otherIt.next()));
     }
@@ -151,7 +156,7 @@ public class Pipeline<T> extends com.bishabosha.cuppajoe.pipelines.AbstractPipel
     }
 
     public Pipeline<T> distinct() {
-        Set<T> distinct = new HashTable<>();
+        var distinct = new HashTable<T>();
         return (Pipeline<T>) addFunction(ComputeNode.filter(distinct::add, false));
     }
 
@@ -160,7 +165,7 @@ public class Pipeline<T> extends com.bishabosha.cuppajoe.pipelines.AbstractPipel
     }
 
     public Pipeline<T> sorted(Comparator comparator) {
-        Object[] toSort = toArray();
+        var toSort = toArray();
         Arrays.sort(toSort, comparator);
         return new Pipeline<>(() -> Iterables.wrap(toSort));
     }
@@ -202,7 +207,7 @@ public class Pipeline<T> extends com.bishabosha.cuppajoe.pipelines.AbstractPipel
     }
 
     public Option<T> findFirst() {
-        Iterator<T> it = iterator();
+        var it = iterator();
         return Option(() -> it.hasNext(), () -> it.next());
     }
 
@@ -210,7 +215,7 @@ public class Pipeline<T> extends com.bishabosha.cuppajoe.pipelines.AbstractPipel
      * See {@link Stream#reduce(Object, BinaryOperator)}
      */
     public T reduce(T identity, BinaryOperator<T> accumulator) {
-        Iterator<T> it = iterator();
+        var it = iterator();
         while (it.hasNext()) {
             identity = accumulator.apply(identity, it.next());
         }
@@ -221,9 +226,9 @@ public class Pipeline<T> extends com.bishabosha.cuppajoe.pipelines.AbstractPipel
      * See {@link Stream#reduce(BinaryOperator)}
      */
     public Option<T> reduce(BinaryOperator<T> accumulator) {
-        boolean foundAny = false;
         T result = null;
-        for (T element: this) {
+        var foundAny = false;
+        for (var element: this) {
             if (!foundAny) {
                 foundAny = true;
                 result = element;
@@ -231,17 +236,15 @@ public class Pipeline<T> extends com.bishabosha.cuppajoe.pipelines.AbstractPipel
                 result = accumulator.apply(result, element);
             }
         }
-        final boolean didFindAny = foundAny;
-        final T finalResult = result;
-        return Option(() -> didFindAny, () -> finalResult);
+        return foundAny ? Some(result) : Nothing();
     }
 
     /**
      * @see {@link Stream#reduce(Object, BiFunction, BinaryOperator)}
      */
     public <U> U reduce(U identity, BiFunction<U, ? super T, U> accumulator, BinaryOperator<U> combiner) {
-        U result = identity;
-        for (T element: this) {
+        var result = identity;
+        for (var element: this) {
             result = combiner.apply(result, accumulator.apply(identity, element));
         }
         return result;
@@ -251,7 +254,7 @@ public class Pipeline<T> extends com.bishabosha.cuppajoe.pipelines.AbstractPipel
      * See {@link Stream#collect(Collector)}
      */
     public <R, A> R collect(Collector<? super T, A, R> collector) {
-        A result = collector.supplier().get();
+        var result = collector.supplier().get();
         forEach(x -> collector.accumulator().accept(result, x));
         return collector.finisher().apply(result);
     }
@@ -260,7 +263,7 @@ public class Pipeline<T> extends com.bishabosha.cuppajoe.pipelines.AbstractPipel
      * See {@link Stream#collect(Supplier, BiConsumer, BiConsumer)}
      */
     public <R> R collect(Supplier<R> supplier, BiConsumer<R, ? super T> accumulator) {
-        R result = supplier.get();
+        var result = supplier.get();
         forEach(x -> accumulator.accept(result, x));
         return result;
     }

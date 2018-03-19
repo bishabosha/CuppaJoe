@@ -28,7 +28,7 @@ public interface Func1<A, R> extends Function<A, R> {
 
     @Contract(pure = true)
     static <X, R> Func1<X, Option<R>> lift(Function<? super X, ? extends R> func) {
-        return x -> Try.<R>narrow(Try.of(() -> func.apply(x))).get();
+        return x -> Try.<R>of(() -> func.apply(x)).lift();
     }
 
     default Func1<Supplier<A>, R> lazyInput() {

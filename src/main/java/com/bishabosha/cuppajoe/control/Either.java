@@ -1,61 +1,165 @@
-/*
- * Copyright (c) 2017. Jamie Thompson <bishbashboshjt@gmail.com>
- */
-
 package com.bishabosha.cuppajoe.control;
 
-import com.bishabosha.cuppajoe.Value;
-import com.bishabosha.cuppajoe.typeclass.functor.Functor;
+import com.bishabosha.cuppajoe.typeclass.functor.Functor1;
+import com.bishabosha.cuppajoe.typeclass.functor.Functor2;
+import com.bishabosha.cuppajoe.typeclass.peek.Peek1;
+import com.bishabosha.cuppajoe.typeclass.peek.Peek2;
 
+import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
-import static com.bishabosha.cuppajoe.patterns.Case.when;
-
-public interface Either<L, R> extends Value<R>, Functor<Either, R> {
-
-    @Override
-    default int size() {
-        return isRight() ? 1 : 0;
-    }
-
-    default Option<L> toLeftOption() {
-        return when(this::isLeft, this::getLeft).match();
-    }
-
-    default Option<R> toRightOption() {
-        return when(this::isRight, this::get).match();
-    }
-
-    default L getLeftOrElse(Supplier<? extends L> supplier) {
-        return isRight() ? supplier.get() : getLeft();
-    }
-
-    default R getRightOrElse(Supplier<? extends R> supplier) {
-        return orElseGet(supplier);
-    }
-
-    L getLeft();
-
-    boolean isRight();
+public interface Either<L, R> extends Functor2<Either, L, R>, Peek2<L, R> {
 
     boolean isLeft();
+    L left();
+    R right();
 
-    @SuppressWarnings("unchecked")
-    @Override
-    default <X> Either<L, X> map(Function<? super R, ? extends X> mapper) {
-        return isRight() ? Right.of(mapper.apply(get())) : (Either<L, X>) this;
+    default <U1, U2> Either<U1, U2> map(Function<? super L, ? extends U1> ifLeft, Function<? super R, ? extends U2> ifRight) {
+        Objects.requireNonNull(ifLeft);
+        Objects.requireNonNull(ifRight);
+        return isLeft() ? Either.left(ifLeft.apply(left())) : Either.right(ifRight.apply(right()));
     }
 
-    default <A, B> Either<A, B> biMap(Function<? super L, ? extends A> ifLeft, Function<? super R, ? extends B> ifRight) {
-        return isRight() ? Right.of(ifRight.apply(get())) : Left.of(ifLeft.apply(getLeft()));
+    default void peek(Consumer<? super L> ifLeft, Consumer<? super R> ifRight) {
+        Objects.requireNonNull(ifRight);
+        Objects.requireNonNull(ifLeft);
+        if (isLeft()) {
+            ifLeft.accept(left());
+        } else {
+            ifRight.accept(right());
+        }
     }
 
-    @SuppressWarnings("unchecked")
-    default <A, B> Either<A, B> flatBiMap(Function<? super L, ? extends Either<? extends A, ? extends B>> ifLeft, Function<? super R, ? extends Either<? extends A, ? extends B>> ifRight) {
-        return (Either<A, B>) (isRight()
-            ? Objects.requireNonNull(ifRight.apply(get()))
-            : Objects.requireNonNull(ifLeft.apply(getLeft())));
+    default LeftProjection<L, R> leftProject() {
+        return new LeftProjection<>(this);
+    }
+
+    default RightProjection<L, R> rightProject() {
+        return new RightProjection<>(this);
+    }
+
+    static <L, R> Left<L, R> left(L left) {
+        return new Left<>(left);
+    }
+
+    static <L, R> Right<L, R> right(R right) {
+        return new Right<>(right);
+    }
+
+    interface Projection<L, R> {
+        Either<L, R> restore();
+    }
+
+    class LeftProjection<L, R> implements Projection<L, R>, Functor1<LeftProjection, L>, Peek1<L> {
+
+        private final Either<L, R> value;
+
+        @Override
+        public Either<L, R> restore() {
+            return value;
+        }
+
+        private LeftProjection(Either<L, R> value) {
+            this.value = value;
+        }
+
+        @Override
+        public <U> LeftProjection<U, R> map(Function<? super L, ? extends U> mapper) {
+            Objects.requireNonNull(mapper);
+            return restore().isLeft() ? new LeftProjection<>(new Left<>(mapper.apply(restore().left()))) : Functor1.Type.<LeftProjection<U, R>, LeftProjection, U>castParam(this);
+        }
+
+        @Override
+        public void peek(Consumer<? super L> consumer) {
+            Objects.requireNonNull(consumer);
+            if (restore().isLeft()) {
+                consumer.accept(restore().left());
+            }
+        }
+
+        public <X extends Exception> void throwLeft(Function<? super L, ? extends X> exceptionMapper) throws X {
+            Objects.requireNonNull(exceptionMapper);
+            if (restore().isLeft()) {
+                throw exceptionMapper.apply(restore().left());
+            }
+        }
+    }
+
+    class RightProjection<L, R> implements Projection<L, R>, Functor1<RightProjection, R>, Peek1<R> {
+
+        private final Either<L, R> value;
+
+        private RightProjection(Either<L, R> value) {
+            this.value = value;
+        }
+
+        @Override
+        public Either<L, R> restore() {
+            return value;
+        }
+
+        @Override
+        public <U> RightProjection<L, U> map(Function<? super R, ? extends U> mapper) {
+            Objects.requireNonNull(mapper);
+            return !value.isLeft() ? new RightProjection<>(new Right<>(mapper.apply(restore().right()))) : Functor1.Type.<RightProjection<L, U>, RightProjection, U>castParam(this);
+        }
+
+        @Override
+        public void peek(Consumer<? super R> consumer) {
+            Objects.requireNonNull(consumer);
+            if (!value.isLeft()) {
+                consumer.accept(restore().right());
+            }
+        }
+    }
+
+    class Left<L, R> implements Either<L, R> {
+
+        private final L value;
+
+        private Left(L value) {
+            this.value = value;
+        }
+
+        @Override
+        public boolean isLeft() {
+            return true;
+        }
+
+        @Override
+        public L left(){
+            return value;
+        }
+
+        @Override
+        public R right() throws NoSuchElementException {
+            throw new NoSuchElementException("No Right element on Left kind.");
+        }
+    }
+
+    class Right<L, R> implements Either<L, R> {
+
+        private final R value;
+
+        private Right(R value) {
+            this.value = value;
+        }
+
+        @Override
+        public boolean isLeft() {
+            return false;
+        }
+
+        @Override
+        public L left() throws NoSuchElementException {
+            throw new NoSuchElementException("No Left element on Right kind.");
+        }
+
+        @Override
+        public R right() {
+            return value;
+        }
     }
 }

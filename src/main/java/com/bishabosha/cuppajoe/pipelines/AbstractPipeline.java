@@ -8,7 +8,9 @@ import com.bishabosha.cuppajoe.collections.mutable.base.AbstractBase;
 import com.bishabosha.cuppajoe.collections.mutable.lists.LinkedList;
 
 import java.util.*;
-import java.util.function.*;
+import java.util.function.Function;
+import java.util.function.IntFunction;
+import java.util.function.Predicate;
 
 class AbstractPipeline<T> extends AbstractBase<T> {
     boolean isClosed;
@@ -112,7 +114,7 @@ class AbstractPipeline<T> extends AbstractBase<T> {
 
     @Override
     public Spliterator<T> spliterator() {
-        LinkedList<T> list = new LinkedList<>();
+        var list = new LinkedList<T>();
         iterator().forEachRemaining(list::add);
         return list.spliterator();
     }
@@ -159,8 +161,8 @@ class AbstractPipeline<T> extends AbstractBase<T> {
                               boolean ifMatch,
                               boolean noneMatch,
                               Predicate<? super T> predicate) {
-        for (T elem: this) {
-            boolean test = predicate.test(elem);
+        for (var elem: this) {
+            var test = predicate.test(elem);
             if ((test && testMatch) || (!test && !testMatch)) {
                 return ifMatch;
             }
@@ -177,7 +179,7 @@ class AbstractPipeline<T> extends AbstractBase<T> {
     }
 
     private Object[] toArrayFunc(Function<List<T>, Object[]> function) {
-        List<T> list = new ArrayList<>();
+        var list = new ArrayList<T>();
         forEach(list::add);
         return function.apply(list);
     }

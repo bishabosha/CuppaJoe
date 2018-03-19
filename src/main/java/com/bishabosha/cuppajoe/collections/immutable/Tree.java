@@ -4,22 +4,26 @@
 
 package com.bishabosha.cuppajoe.collections.immutable;
 
-import com.bishabosha.cuppajoe.Iterables;
-import com.bishabosha.cuppajoe.control.Option;
-import com.bishabosha.cuppajoe.functions.Func2;
-import com.bishabosha.cuppajoe.functions.Func3;
-import com.bishabosha.cuppajoe.patterns.Pattern;
 import com.bishabosha.cuppajoe.API;
 import com.bishabosha.cuppajoe.Foldable;
+import com.bishabosha.cuppajoe.Iterables;
+import com.bishabosha.cuppajoe.control.Option;
+import com.bishabosha.cuppajoe.functions.Func3;
+import com.bishabosha.cuppajoe.patterns.Pattern;
 import com.bishabosha.cuppajoe.patterns.PatternFactory;
-import com.bishabosha.cuppajoe.tuples.*;
+import com.bishabosha.cuppajoe.tuples.Apply3;
+import com.bishabosha.cuppajoe.tuples.Product2;
+import com.bishabosha.cuppajoe.tuples.Product3;
+import com.bishabosha.cuppajoe.tuples.Unapply3;
 import org.jetbrains.annotations.Contract;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
+import static com.bishabosha.cuppajoe.API.List;
 import static com.bishabosha.cuppajoe.API.*;
 import static com.bishabosha.cuppajoe.collections.immutable.Tree.Leaf.¥Leaf;
 import static com.bishabosha.cuppajoe.collections.immutable.Tree.Node.$Node;
@@ -65,7 +69,11 @@ public interface Tree<E extends Comparable<E>> {
      * @throws NullPointerException if node, left or right are null.
      */
     static <R extends Comparable<R>> Tree<R> Node(R node, Tree<R> left, Tree<R> right) {
-        return Node.of(Objects.requireNonNull(node), Objects.requireNonNull(left), Objects.requireNonNull(right));
+        return Node.of(
+            Objects.requireNonNull(node),
+            Objects.requireNonNull(left),
+            Objects.requireNonNull(right)
+        );
     }
 
     /**
@@ -120,7 +128,7 @@ public interface Tree<E extends Comparable<E>> {
     }
 
     default int size() {
-        return inOrder().fold(0, (acc, x) -> acc + 1);
+        return inOrder().foldLeft(0, (acc, x) -> acc + 1);
     }
 
     /**
@@ -191,7 +199,7 @@ public interface Tree<E extends Comparable<E>> {
         return new Foldable<>() {
 
             @Override
-            public <A> A foldRight(A accumulator, Func2<A, E, A> mapper) {
+            public <A> A foldRight(A accumulator, BiFunction<A, E, A> mapper) {
                 return Foldable.foldOver(reverse(), accumulator, mapper);
             }
 
@@ -459,7 +467,7 @@ public interface Tree<E extends Comparable<E>> {
          */
         @Override
         public boolean equals(Object obj) {
-            return obj == this || Option(obj)
+            return obj == this || Option.of(obj)
                 .cast(Node.class)
                 .map(n -> {
                     Iterator<?> elems = n.inOrder().iterator();
