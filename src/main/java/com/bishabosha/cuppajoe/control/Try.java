@@ -21,13 +21,32 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.bishabosha.cuppajoe.API.Nothing;
 import static com.bishabosha.cuppajoe.API.Tuple;
 
 public interface Try<E> extends Monad1<Try, E>, Peek1<E>, Value1<Try, E> {
 
     boolean isSuccess();
     boolean isFailure();
-    Throwable getError();
+    Exception getError();
+
+    static <O> Try<O> of(CheckedFunc0<O> supplier) {
+        Objects.requireNonNull(supplier);
+        try {
+            O value = supplier.apply();
+            return success(value);
+        } catch (Exception error) {
+            return failure(error);
+        }
+    }
+
+    static <O> Success<O> success(O value) {
+        return new Success<>(value);
+    }
+
+    static <O> Failure<O> failure(Exception error) {
+        return new Failure<>(error);
+    }
 
     @Override
     default boolean isEmpty() {
@@ -50,55 +69,13 @@ public interface Try<E> extends Monad1<Try, E>, Peek1<E>, Value1<Try, E> {
         return isSuccess() ? Monad1.Type.<Try<U>, Try, U>narrow(mapper.apply(get())) : Failure.cast(this);
     }
 
-    interface CheckedConsumer<O> {
-        void accept(O o) throws Exception;
-    }
-
-    interface CheckedFunction<I, O> {
-        O apply(I i) throws Exception;
-    }
-
-    static <O> Function<O, Try<Void>> sink(CheckedConsumer<O> consumer) {
-        Objects.requireNonNull(consumer);
-        return o -> {
-            try {
-                consumer.accept(o);
-                return new Success<>(null);
-            } catch (Exception error) {
-                return new Failure<>(error);
-            }
-        };
-    }
-
-    static <I, O> Function<I, Try<O>> lift(CheckedFunction<I, O> mapper) {
-        Objects.requireNonNull(mapper);
-        return i -> {
-            try {
-                O value = mapper.apply(i);
-                return new Success<>(value);
-            } catch (Exception error) {
-                return new Failure<>(error);
-            }
-        };
-    }
-
-    static <O> Try<O> of(CheckedFunc0<O> supplier) {
-        Objects.requireNonNull(supplier);
-        try {
-            O value = supplier.apply();
-            return new Success<>(value);
-        } catch (Throwable error) {
-            return new Failure<>(error);
-        }
-    }
-
     @Override
     default Try<E> or(Supplier<? extends Value1<Try, ? extends E>> alternative) {
         Objects.requireNonNull(alternative);
         return isSuccess() ? this : Value1.Type.<Try<E>, Try, E>narrow(alternative.get());
     }
 
-    default <X extends Throwable> E orElseThrowMapped(Function<Throwable, ? extends X> errorMapper) throws X {
+    default <X extends Throwable> E orElseThrowMapped(Function<Exception, ? extends X> errorMapper) throws X {
         Objects.requireNonNull(errorMapper);
         if (isSuccess()) {
             return get();
@@ -110,12 +87,12 @@ public interface Try<E> extends Monad1<Try, E>, Peek1<E>, Value1<Try, E> {
         if (isSuccess()) {
             return Option.of(get());
         } else {
-            return Nothing.getInstance();
+            return Nothing();
         }
     }
 
 
-    default Optional<E> liftWhenError(Consumer<Throwable> ifError) {
+    default Optional<E> liftWhenError(Consumer<Exception> ifError) {
         Objects.requireNonNull(ifError);
         if (isSuccess()) {
             return Optional.ofNullable(get());
@@ -133,7 +110,7 @@ public interface Try<E> extends Monad1<Try, E>, Peek1<E>, Value1<Try, E> {
         }
     }
 
-    default void consumeElse(Consumer<E> ifSuccess, Consumer<Throwable> ifError) {
+    default void consumeElse(Consumer<E> ifSuccess, Consumer<Exception> ifError) {
         Objects.requireNonNull(ifSuccess);
         Objects.requireNonNull(ifError);
         if (isSuccess()) {
@@ -143,7 +120,7 @@ public interface Try<E> extends Monad1<Try, E>, Peek1<E>, Value1<Try, E> {
         }
     }
 
-    default void ifError(Consumer<Throwable> ifError) {
+    default void ifError(Consumer<Exception> ifError) {
         Objects.requireNonNull(ifError);
         if (isFailure()) {
             ifError.accept(getError());
@@ -161,7 +138,7 @@ public interface Try<E> extends Monad1<Try, E>, Peek1<E>, Value1<Try, E> {
        return isEmpty() ? Iterables.empty() : Iterables.singleton(this::get);
     }
 
-    class Success<E> implements Try<E>, Unapply1<E> {
+    final class Success<E> implements Try<E>, Unapply1<E> {
 
         private static final Func1<Pattern, Pattern> PATTERN = PatternFactory.gen1(Success.class);
 
@@ -216,9 +193,9 @@ public interface Try<E> extends Monad1<Try, E>, Peek1<E>, Value1<Try, E> {
         }
     }
 
-    class Failure<E> implements Try<E>, Unapply1<Throwable> {
+    final class Failure<E> implements Try<E>, Unapply1<Exception> {
 
-        private final Throwable error;
+        private final Exception error;
 
         private static final Func1<Pattern, Pattern> PATTERN = PatternFactory.gen1(Failure.class);
 
@@ -226,7 +203,7 @@ public interface Try<E> extends Monad1<Try, E>, Peek1<E>, Value1<Try, E> {
             return PATTERN.apply(error);
         }
 
-        private Failure(Throwable error) {
+        private Failure(Exception error) {
             this.error = error;
         }
 
@@ -246,7 +223,7 @@ public interface Try<E> extends Monad1<Try, E>, Peek1<E>, Value1<Try, E> {
         }
 
         @Override
-        public Throwable getError() {
+        public Exception getError() {
             return error;
         }
 
@@ -261,7 +238,7 @@ public interface Try<E> extends Monad1<Try, E>, Peek1<E>, Value1<Try, E> {
         }
 
         @Override
-        public Product1<Throwable> unapply() {
+        public Product1<Exception> unapply() {
             return Tuple(error);
         }
     }

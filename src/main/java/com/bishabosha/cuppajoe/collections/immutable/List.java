@@ -1,7 +1,6 @@
 package com.bishabosha.cuppajoe.collections.immutable;
 
 import com.bishabosha.cuppajoe.Iterables;
-import com.bishabosha.cuppajoe.control.Nothing;
 import com.bishabosha.cuppajoe.control.Option;
 import com.bishabosha.cuppajoe.functions.Func2;
 import com.bishabosha.cuppajoe.functions.Func3;
@@ -48,7 +47,7 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
      * @param <R> the type encapsulated by the of
      */
     @Contract(pure = true)
-    static <R> List<R> empty() {
+    static <R> Empty<R> empty() {
         return Empty.getInstance();
     }
 
@@ -67,11 +66,11 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
     @SafeVarargs
     static <R> List<R> of(R... elems) {
         if (Objects.isNull(elems)) {
-            return concat(null, empty());
+            return new Cons<>(null, Empty.getInstance());
         }
-        var list = List.<R>empty();
+        List<R> list = List.empty();
         for (var x = elems.length - 1; x >= 0; x--) {
-            list = list.push(elems[x]);
+            list = new Cons<>(elems[x], list);
         }
         return list;
     }
@@ -139,7 +138,7 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
      * @return The accumulator with whatever modifications have been applied.
      */
     default <O> O loop(Supplier<O> identity, Func3<O, List<E>, E, Product2<O, List<E>>> consumer) {
-        var accStackOp = Some(Tuple(identity.get(), this));
+        Option<Product2<O, List<E>>> accStackOp = Some(Tuple(identity.get(), this));
         while (!accStackOp.isEmpty() && !accStackOp.get().$2().isEmpty()) {
             accStackOp = accStackOp.get().compose((acc, stack) ->
                 stack.pop()
@@ -150,7 +149,7 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
     }
 
     default <O> Product2<Option<O>, List<E>> nextItem(Func2<E, List<E>, Option<Product2<Option<O>, List<E>>>> mapper) {
-        var loopCond = Some(Tuple(Nothing.<O>getInstance(), this));
+        Option<Product2<Option<O>, List<E>>> loopCond = Some(Tuple(Option.<O>nothing(), this));
         while (!loopCond.isEmpty() && loopCond.get().$1().isEmpty()) {
             loopCond = loopCond.get()
                                .$2()
@@ -191,7 +190,7 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
             throw new IllegalArgumentException("limit can't be less than zero.");
         }
         var it = this;
-        var buffer = List.<E>empty();
+        List<E> buffer = List.empty();
         while (limit > 0) {
             limit = limit - 1;
             if (it.isEmpty()) {
@@ -232,7 +231,7 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
     @Override
     default <U> List<U> map(Function<? super E, ? extends U> mapper) {
         Objects.requireNonNull(mapper);
-        return !isEmpty() ? foldRight(List.<U>empty(), (xs, x) -> xs.push(mapper.apply(x))) : empty();
+        return !isEmpty() ? foldRight((List)List.<U>empty(), (xs, x) -> xs.push(mapper.apply(x))) : empty();
     }
 
     @Override
@@ -259,7 +258,7 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
         private static final Empty<?> EMPTY_LIST = new List.Empty<>();
 
         @SuppressWarnings("unchecked")
-        static <O> Empty<O> getInstance() {
+        private static <O> Empty<O> getInstance() {
             return (Empty<O>) EMPTY_LIST;
         }
 

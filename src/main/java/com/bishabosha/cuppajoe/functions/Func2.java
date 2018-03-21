@@ -4,7 +4,6 @@
 
 package com.bishabosha.cuppajoe.functions;
 
-import com.bishabosha.cuppajoe.control.Option;
 import com.bishabosha.cuppajoe.control.Try;
 import com.bishabosha.cuppajoe.tuples.Apply2;
 import org.jetbrains.annotations.Contract;
@@ -14,6 +13,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+@FunctionalInterface
 public interface Func2<A, B, R> extends BiFunction<A, B, R> {
 
     @NotNull
@@ -29,8 +29,8 @@ public interface Func2<A, B, R> extends BiFunction<A, B, R> {
     }
 
     @Contract(pure = true)
-    static <X, Y, R> Func2<X, Y, Option<R>> lift(BiFunction<? super X, ? super Y, ? extends R> func) {
-        return (x, y) -> Try.<R>of(() -> func.apply(x, y)).lift();
+    static <X, Y, R> Func2<X, Y, Try<R>> lift(BiFunction<? super X, ? super Y, ? extends R> func) {
+        return CheckedFunc2.lift(func::apply);
     }
 
     @Contract(pure = true)

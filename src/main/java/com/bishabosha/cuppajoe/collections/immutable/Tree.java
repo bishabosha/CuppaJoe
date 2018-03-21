@@ -435,7 +435,7 @@ public interface Tree<E extends Comparable<E>> {
         }
 
         static <R extends Comparable<R>> Apply3<R, Tree<R>, Tree<R>, Tree<R>> Applied() {
-            return Func3.<R, Tree<R>, Tree<R>, Tree<R>>of(Tree::Node).applied();
+            return Func3.<R, Tree<R>, Tree<R>, Tree<R>>of(Tree::Node).tupled();
         }
 
         @Override

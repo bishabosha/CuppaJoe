@@ -2,7 +2,13 @@ package com.bishabosha.cuppajoe;
 
 import com.bishabosha.cuppajoe.collections.immutable.List;
 import com.bishabosha.cuppajoe.collections.immutable.Queue;
-import com.bishabosha.cuppajoe.control.*;
+import com.bishabosha.cuppajoe.control.Either;
+import com.bishabosha.cuppajoe.control.Option;
+import com.bishabosha.cuppajoe.control.Option.Nothing;
+import com.bishabosha.cuppajoe.control.Option.Some;
+import com.bishabosha.cuppajoe.control.Try;
+import com.bishabosha.cuppajoe.control.Try.Failure;
+import com.bishabosha.cuppajoe.control.Try.Success;
 import com.bishabosha.cuppajoe.functions.CheckedFunc0;
 import com.bishabosha.cuppajoe.functions.Func0;
 import com.bishabosha.cuppajoe.patterns.Case;
@@ -10,10 +16,11 @@ import com.bishabosha.cuppajoe.patterns.Matcher;
 import com.bishabosha.cuppajoe.tuples.*;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BooleanSupplier;
 
-public class API {
+public final class API {
 
     public static Tuple0
     Tuple() {
@@ -76,24 +83,36 @@ public class API {
     }
 
     public static <O> Option<O> Option(BooleanSupplier condition, Func0<O> elem) {
-        return condition.getAsBoolean() ? Option.of(elem.apply()) : Nothing();
+        return condition.getAsBoolean() ? Option.of(elem.get()) : Nothing();
     }
 
     @NotNull
     @Contract(pure = true)
-    public static <O> Option<O> Some(O elem) {
-        return Some.of(elem);
+    public static <O> Some<O> Some(@Nullable O elem) {
+        return Option.some(elem);
     }
 
     @NotNull
     @Contract(pure = true)
-    public static <O> Option<O> Nothing() {
-        return Nothing.getInstance();
+    public static <O> Nothing<O> Nothing() {
+        return Option.nothing();
     }
 
     @NotNull
-    public static <O> Try<O> Try(CheckedFunc0<O> getter) {
+    public static <O> Try<O> Try(@NotNull CheckedFunc0<O> getter) {
         return Try.of(getter);
+    }
+
+    @NotNull
+    @Contract(pure = true)
+    public static <O> Success<O> Success(@Nullable O value) {
+        return Try.success(value);
+    }
+
+    @NotNull
+    @Contract(pure = true)
+    public static <O> Failure<O> Failure(@NotNull Exception error) {
+        return Try.failure(error);
     }
 
     @NotNull
@@ -113,20 +132,56 @@ public class API {
 
     @NotNull
     @Contract(pure = true)
-    public static <O> List<O> List(O elem) {
-        return List.of(elem);
+    public static <O> List<O> List(O a) {
+        return List.of(a);
+    }
+
+    @NotNull
+    @Contract(pure = true)
+    public static <O> List<O> List(O a, O b) {
+        return List.concat(a, List.of(b));
+    }
+
+    @NotNull
+    @Contract(pure = true)
+    public static <O> List<O> List(O a, O b, O c) {
+        return List.concat(a, List.concat(b, List.of(c)));
+    }
+
+    @NotNull
+    @Contract(pure = true)
+    public static <O> List<O> List(O a, O b, O c, O d) {
+        return List.concat(a, List.concat(b, List.concat(c, List.of(d))));
+    }
+
+    @NotNull
+    @Contract(pure = true)
+    public static <O> List<O> List(O a, O b, O c, O d, O e) {
+        return List.concat(a, List.concat(b, List.concat(c, List.concat(d, List.of(e)))));
+    }
+
+    @NotNull
+    @Contract(pure = true)
+    public static <O> List<O> List(O a, O b, O c, O d, O e, O f) {
+        return List.concat(a, List.concat(b, List.concat(c, List.concat(d, List.concat(e, List.of(f))))));
+    }
+
+    @NotNull
+    @Contract(pure = true)
+    public static <O> List<O> List(O a, O b, O c, O d, O e, O f, O g) {
+        return List.concat(a, List.concat(b, List.concat(c, List.concat(d, List.concat(e, List.concat(f, List.of(g)))))));
+    }
+
+    @NotNull
+    @Contract(pure = true)
+    public static <O> List<O> List(O a, O b, O c, O d, O e, O f, O g, O h) {
+        return List.concat(a, List.concat(b, List.concat(c, List.concat(d, List.concat(e, List.concat(f, List.concat(g, List.of(h))))))));
     }
 
     @NotNull
     @Contract(pure = true)
     public static <O> List<O> List(O... elems) {
         return List.of(elems);
-    }
-
-    @NotNull
-    @Contract(pure = true)
-    public static <O> List.Cons<O> Cons(O head, List<O> tail) {
-        return List.concat(head, tail);
     }
 
     @NotNull

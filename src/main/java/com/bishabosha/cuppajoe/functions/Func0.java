@@ -4,7 +4,6 @@
 
 package com.bishabosha.cuppajoe.functions;
 
-import com.bishabosha.cuppajoe.control.Option;
 import com.bishabosha.cuppajoe.control.Try;
 import com.bishabosha.cuppajoe.tuples.Apply0;
 import org.jetbrains.annotations.Contract;
@@ -12,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
+@FunctionalInterface
 public interface Func0<R> extends Supplier<R> {
 
     default R apply() {
@@ -30,12 +30,12 @@ public interface Func0<R> extends Supplier<R> {
     }
 
     @Contract(pure = true)
-    static <R> Func0<Option<R>> lift(Supplier<? extends R> func) {
-        return Try.<R>of(func::get)::lift;
+    static <R> Func0<Try<R>> lift(Supplier<? extends R> func) {
+        return CheckedFunc0.lift(func::get);
     }
 
     @Contract(pure = true)
-    default Apply0 applied() {
+    default Apply0 tupled() {
         return x -> get();
     }
 }

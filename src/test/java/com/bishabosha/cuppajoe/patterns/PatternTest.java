@@ -16,7 +16,7 @@ import static com.bishabosha.cuppajoe.API.Tuple;
 import static com.bishabosha.cuppajoe.collections.immutable.Tree.Node;
 import static com.bishabosha.cuppajoe.collections.immutable.Tree.Node.$Node;
 import static com.bishabosha.cuppajoe.collections.immutable.Tree.leaf;
-import static com.bishabosha.cuppajoe.control.Some.$Some;
+import static com.bishabosha.cuppajoe.control.Option.Some.$Some;
 import static com.bishabosha.cuppajoe.patterns.Pattern.*;
 import static com.bishabosha.cuppajoe.tuples.Tuple2.$Tuple2;
 import static org.junit.Assert.assertEquals;

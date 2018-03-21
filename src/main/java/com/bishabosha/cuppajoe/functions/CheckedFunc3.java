@@ -4,12 +4,12 @@
 
 package com.bishabosha.cuppajoe.functions;
 
-import com.bishabosha.cuppajoe.control.Option;
 import com.bishabosha.cuppajoe.control.Try;
 import com.bishabosha.cuppajoe.tuples.Product3;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+@FunctionalInterface
 public interface CheckedFunc3<A, B, C, R> {
 
     @Contract(pure = true)
@@ -24,8 +24,8 @@ public interface CheckedFunc3<A, B, C, R> {
 
     @NotNull
     @Contract(pure = true)
-    static <X, Y, Z, R> Func3<X, Y, Z, Option<R>> lift(CheckedFunc3<? super X, ? super Y, ? super Z, ? extends R> func) {
-        return (x, y, z) -> Try.<R>of(() -> func.apply(x, y, z)).lift();
+    static <X, Y, Z, R> Func3<X, Y, Z, Try<R>> lift(CheckedFunc3<? super X, ? super Y, ? super Z, ? extends R> func) {
+        return (x, y, z) -> Try.of(() -> func.apply(x, y, z));
     }
 
     @Contract(pure = true)
@@ -38,7 +38,7 @@ public interface CheckedFunc3<A, B, C, R> {
         return x -> apply(x.$1(), x.$2(), x.$3());
     }
 
-    R apply(A a, B b, C c) throws Throwable;
+    R apply(A a, B b, C c) throws Exception;
 
     default CheckedFunc2<B, C, R> apply(A a) {
         return (b, c) -> apply(a, b, c);

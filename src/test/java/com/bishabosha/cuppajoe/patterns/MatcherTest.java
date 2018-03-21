@@ -18,7 +18,7 @@ import static com.bishabosha.cuppajoe.collections.immutable.Tree.Leaf.¥Leaf;
 import static com.bishabosha.cuppajoe.collections.immutable.Tree.Node;
 import static com.bishabosha.cuppajoe.collections.immutable.Tree.Node.$Node;
 import static com.bishabosha.cuppajoe.collections.immutable.Tree.leaf;
-import static com.bishabosha.cuppajoe.control.Some.$Some;
+import static com.bishabosha.cuppajoe.control.Option.Some.$Some;
 import static com.bishabosha.cuppajoe.patterns.Case.*;
 import static com.bishabosha.cuppajoe.patterns.Matcher.guardUnsafe;
 import static com.bishabosha.cuppajoe.patterns.Pattern.*;

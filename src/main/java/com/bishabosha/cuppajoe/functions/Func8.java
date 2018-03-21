@@ -4,7 +4,6 @@
 
 package com.bishabosha.cuppajoe.functions;
 
-import com.bishabosha.cuppajoe.control.Option;
 import com.bishabosha.cuppajoe.control.Try;
 import com.bishabosha.cuppajoe.tuples.Apply8;
 import org.jetbrains.annotations.Contract;
@@ -13,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+@FunctionalInterface
 public interface Func8<A, B, C, D, E, F, G, H, R> {
 
     @Contract(pure = true)
@@ -28,8 +28,8 @@ public interface Func8<A, B, C, D, E, F, G, H, R> {
     }
 
     @Contract(pure = true)
-    static <S, T, U, V, W, X, Y, Z, R> Func8<S, T, U, V, W, X, Y, Z, Option<R>> lift(Func8<? super S, ? super T, ? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z, ? extends R> func) {
-        return (s, t, u, v, w, x, y, z) -> Try.<R>of(() -> func.apply(s, t, u, v, w, x, y, z)).lift();
+    static <S, T, U, V, W, X, Y, Z, R> Func8<S, T, U, V, W, X, Y, Z, Try<R>> lift(Func8<? super S, ? super T, ? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z, ? extends R> func) {
+        return CheckedFunc8.lift(func::apply);
     }
 
     @Contract(pure = true)
@@ -39,7 +39,7 @@ public interface Func8<A, B, C, D, E, F, G, H, R> {
     }
 
     @Contract(pure = true)
-    default Apply8<A, B, C, D, E, F, G, H, R> applied() {
+    default Apply8<A, B, C, D, E, F, G, H, R> tupled() {
         return x -> apply(x.$1(), x.$2(), x.$3(), x.$4(), x.$5(), x.$6(), x.$7(), x.$8());
     }
 

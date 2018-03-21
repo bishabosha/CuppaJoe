@@ -4,12 +4,12 @@
 
 package com.bishabosha.cuppajoe.functions;
 
-import com.bishabosha.cuppajoe.control.Option;
 import com.bishabosha.cuppajoe.control.Try;
 import com.bishabosha.cuppajoe.tuples.Product5;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+@FunctionalInterface
 public interface CheckedFunc5<A, B, C, D, E, R> {
 
     @Contract(pure = true)
@@ -24,8 +24,8 @@ public interface CheckedFunc5<A, B, C, D, E, R> {
 
     @NotNull
     @Contract(pure = true)
-    static <V, W, X, Y, Z, R> Func5<V, W, X, Y, Z, Option<R>> lift(CheckedFunc5<? super V, ? super W, ? super X, ? super Y, ? super Z, ? extends R> func) {
-        return (v, w, x, y, z) -> Try.<R>of(() -> func.apply(v, w, x, y, z)).lift();
+    static <V, W, X, Y, Z, R> Func5<V, W, X, Y, Z, Try<R>> lift(CheckedFunc5<? super V, ? super W, ? super X, ? super Y, ? super Z, ? extends R> func) {
+        return (v, w, x, y, z) -> Try.of(() -> func.apply(v, w, x, y, z));
     }
 
     @Contract(pure = true)
@@ -38,7 +38,7 @@ public interface CheckedFunc5<A, B, C, D, E, R> {
         return x -> apply(x.$1(), x.$2(), x.$3(), x.$4(), x.$5());
     }
 
-    R apply(A a, B b, C c, D d, E e) throws Throwable;
+    R apply(A a, B b, C c, D d, E e) throws Exception;
 
     default CheckedFunc4<B, C, D, E, R> apply(A a) {
         return (b, c, d, e) -> apply(a, b, c, d, e);
