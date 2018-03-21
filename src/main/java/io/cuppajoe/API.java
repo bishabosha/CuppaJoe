@@ -104,7 +104,7 @@ public final class API {
     }
 
     @NotNull
-    public static <O> Try<O> Try(@NotNull CheckedFunc0<O> getter) {
+    public static <O> Try<O> Try(CheckedFunc0<O> getter) {
         return Try.of(getter);
     }
 
@@ -116,7 +116,7 @@ public final class API {
 
     @NotNull
     @Contract(pure = true)
-    public static <O> Failure<O> Failure(@NotNull Exception error) {
+    public static <O> Failure<O> Failure(Exception error) {
         return Try.failure(error);
     }
 

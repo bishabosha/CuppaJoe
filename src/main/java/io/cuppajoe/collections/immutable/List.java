@@ -350,7 +350,7 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
         }
 
         static <O> Apply2<O, List<O>, List<O>> Applied() {
-            return Func2.<O, List<O>, List<O>>of(List::concat).applied();
+            return Func2.<O, List<O>, List<O>>of(List::concat).tupled();
         }
 
         @Override

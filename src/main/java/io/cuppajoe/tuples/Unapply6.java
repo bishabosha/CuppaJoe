@@ -1,5 +1,4 @@
 package io.cuppajoe.tuples;
 
-public interface Unapply6<A, B, C, D, E, F> {
-    Product6<A, B, C, D, E, F> unapply();
+public interface Unapply6<A, B, C, D, E, F> extends Unapply<Product6<A, B, C, D, E, F>> {
 }

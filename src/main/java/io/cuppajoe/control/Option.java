@@ -6,6 +6,7 @@ package io.cuppajoe.control;
 
 import io.cuppajoe.tuples.Apply1;
 import io.cuppajoe.tuples.Product1;
+import io.cuppajoe.tuples.Unapply0;
 import io.cuppajoe.tuples.Unapply1;
 import io.cuppajoe.typeclass.applicative.Applicative1;
 import io.cuppajoe.typeclass.monad.Monad1;
@@ -168,7 +169,7 @@ public interface Option<O> extends Monad1<Option, O>, Peek1<O>, Value1<Option, O
         }
     }
 
-    final class Nothing<E> implements Option<E> {
+    final class Nothing<E> implements Option<E>, Unapply0 {
 
         private static final Nothing<Object> NOTHING = new Nothing<>();
 
