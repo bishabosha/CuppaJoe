@@ -3,13 +3,14 @@
  */
 package com.bishabosha.cuppajoe.functions;
 
-import com.bishabosha.cuppajoe.control.Option;
 import com.bishabosha.cuppajoe.control.Try;
 import com.bishabosha.cuppajoe.tuples.Apply4;
 import org.jetbrains.annotations.Contract;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 
+@FunctionalInterface
 public interface Func4<A, B, C, D, R> {
 
     @Contract(pure = true)
@@ -23,8 +24,8 @@ public interface Func4<A, B, C, D, R> {
     }
 
     @Contract(pure = true)
-    static <W, X, Y, Z, R> Func4<W, X, Y, Z, Option<R>> lift(Func4<? super W, ? super X, ? super Y, ? super Z, ? extends R> func) {
-        return (w, x, y, z) -> Try.<R>narrow(Try.of(() -> func.apply(w, x, y, z))).get();
+    static <W, X, Y, Z, R> Func4<W, X, Y, Z, Try<R>> lift(Func4<? super W, ? super X, ? super Y, ? super Z, ? extends R> func) {
+        return CheckedFunc4.lift(func::apply);
     }
 
     @Contract(pure = true)
@@ -33,12 +34,16 @@ public interface Func4<A, B, C, D, R> {
     }
 
     @Contract(pure = true)
-    default Apply4<A, B, C, D, R> applied() {
+    default Apply4<A, B, C, D, R> tupled() {
         return x -> apply(x.$1(), x.$2(), x.$3(), x.$4());
     }
 
     default <U> Func4<A, B, C, D, U> andThen(Function<? super R, ? extends U> next) {
         return (s, t, u, v) -> next.apply(apply(s, t, u, v));
+    }
+
+    default Func4<Supplier<A>, Supplier<B>, Supplier<C>, Supplier<D>, R> lazyInput() {
+        return (a, b, c, d) -> apply(a.get(), b.get(), c.get(), d.get());
     }
 
     R apply(A a, B b, C c, D d);

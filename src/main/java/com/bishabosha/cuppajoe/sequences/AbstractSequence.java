@@ -4,8 +4,8 @@
 
 package com.bishabosha.cuppajoe.sequences;
 
-import com.bishabosha.cuppajoe.collections.mutable.base.AbstractArrayHelper;
 import com.bishabosha.cuppajoe.Iterables;
+import com.bishabosha.cuppajoe.collections.mutable.base.AbstractArrayHelper;
 import com.bishabosha.cuppajoe.control.Option;
 import com.bishabosha.cuppajoe.pipelines.Pipeline;
 
@@ -14,7 +14,6 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import static com.bishabosha.cuppajoe.API.Nothing;
-import static com.bishabosha.cuppajoe.API.Option;
 
 public abstract class AbstractSequence<T> extends AbstractArrayHelper<T> implements Sequence<T> {
     int initialTerm = 0;
@@ -44,14 +43,13 @@ public abstract class AbstractSequence<T> extends AbstractArrayHelper<T> impleme
 
     @Override
     public Option<T> term(int n) {
-        int num = removeOffset(n);
-        Iterator<T> it = iterator();
-        int i = 0;
-        T val;
+        var num = removeOffset(n);
+        var it = iterator();
+        var i = 0;
         while (i < num && it.hasNext()) {
-            val = it.next();
+            var val = it.next();
             if ((++i) == num) {
-                return Option(val);
+                return Option.of(val);
             }
         }
         return Nothing();
@@ -116,7 +114,7 @@ public abstract class AbstractSequence<T> extends AbstractArrayHelper<T> impleme
 
     @Override
     public Pipeline<T> pipeline() {
-        Pipeline<T> stream = copyPipeline();
+        var stream = copyPipeline();
         if (finalTerm > initialTerm) {
             stream.pushLimit(finalTerm - initialTerm);
         }

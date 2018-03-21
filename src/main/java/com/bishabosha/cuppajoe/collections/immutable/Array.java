@@ -2,17 +2,26 @@ package com.bishabosha.cuppajoe.collections.immutable;
 
 import com.bishabosha.cuppajoe.Iterables;
 import com.bishabosha.cuppajoe.control.Option;
-import com.bishabosha.cuppajoe.functions.Func2;
+import com.bishabosha.cuppajoe.functions.*;
+import com.bishabosha.cuppajoe.math.PredicateFor;
 import com.bishabosha.cuppajoe.tuples.Product2;
+import com.bishabosha.cuppajoe.typeclass.applicative.Applicative1;
+import com.bishabosha.cuppajoe.typeclass.monad.Monad1;
+import com.bishabosha.cuppajoe.typeclass.monoid.Monoid1;
+import com.bishabosha.cuppajoe.typeclass.value.Value1;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
-public class Array<E> implements Seq<E>{
+import static com.bishabosha.cuppajoe.API.*;
+
+public class Array<E> implements Seq<Array, E>, Value1<Array, E> {
     private Object[] array;
 
     private Array(Object[] array) {
@@ -23,18 +32,58 @@ public class Array<E> implements Seq<E>{
         return new Array<>(elems == null ? new Object[]{null} : elems);
     }
 
+    public static <O> Func1<O, Array<O>> of1() {
+        return a -> new Array<>(new Object[]{ a });
+    }
+
+    public static <O> Func2<O, O, Array<O>> of2() {
+        return (a, b) -> new Array<>(new Object[]{ a, b });
+    }
+
+    public static <O> Func3<O, O, O, Array<O>> of3() {
+        return (a, b, c) -> new Array<>(new Object[]{ a, b, c });
+    }
+
+    public static <O> Func4<O, O, O, O, Array<O>> of4() {
+        return (a, b, c, d) -> new Array<>(new Object[]{ a, b, c, d });
+    }
+
+    public static <O> Func5<O, O, O, O, O, Array<O>> of5() {
+        return (a, b, c, d, e) -> new Array<>(new Object[]{ a, b, c, d, e });
+    }
+
+    public static <O> Func6<O, O, O, O, O, O, Array<O>> of6() {
+        return (a, b, c, d, e, f) -> new Array<>(new Object[]{ a, b, c, d, e, f });
+    }
+
+    public static <O> Func7<O, O, O, O, O, O, O, Array<O>> of7() {
+        return (a, b, c, d, e, f, g) -> new Array<>(new Object[]{ a, b, c, d, e, f, g });
+    }
+
+    public static <O> Func8<O, O, O, O, O, O, O, O, Array<O>> of8() {
+        return (a, b, c, d, e, f, g, h) -> new Array<>(new Object[]{ a, b, c, d, e, f, g, h });
+    }
+
     public static <R> Array<R> empty() {
         return new Array<>(new Object[0]);
     }
 
     @Override
-    public List<E> push(E elem) {
-        return null;
+    public Array<E> or(Supplier<? extends Value1<Array, ? extends E>> alternative) {
+        return isEmpty() ? Value1.Type.narrow(alternative.get()) : this;
     }
 
     @Override
-    public Option<? extends Product2<E, ? extends Seq<E>>> pop() {
-        return null;
+    public Array<E> push(E elem) {
+        var newArr = new Object[size() + 1];
+        newArr[0] = elem;
+        System.arraycopy(array, 0, newArr, 1, size());
+        return new Array<>(newArr);
+    }
+
+    @Override
+    public Option<? extends Product2<E, ? extends Seq<Array, E>>> pop() {
+        return isEmpty() ? Nothing() : Some(Tuple(get(0), takeRight(size() - 1)));
     }
 
     @Override
@@ -54,54 +103,67 @@ public class Array<E> implements Seq<E>{
 
     @Override
     public Array<E> tail() {
-        int length = size() - 1;
-        final Object[] destination = new Object[length];
-        System.arraycopy(array, 1, destination, 0, length);
-        return new Array<>(destination);
+        var length = size() - 1;
+        var newArr = new Object[length];
+        System.arraycopy(array, 1, newArr, 0, length);
+        return new Array<>(newArr);
     }
 
     @Override
     public Array<E> take(int limit) {
-        final Object[] destination = new Object[limit];
-        System.arraycopy(array, 0, destination, 0, limit);
-        return new Array<>(destination);
+        var newArr = new Object[limit];
+        System.arraycopy(array, 0, newArr, 0, limit);
+        return new Array<>(newArr);
     }
 
     @Override
     public Array<E> takeRight(int limit) {
-        final Object[] destination = new Object[limit];
-        System.arraycopy(array, size()-limit, destination, 0, limit);
-        return new Array<>(destination);
+        var newArr = new Object[limit];
+        System.arraycopy(array, size()-limit, newArr, 0, limit);
+        return new Array<>(newArr);
     }
 
     @Override
     public Array<E> subsequence(int from, int limit) {
-        final int length = limit-from;
-        final Object[] destination = new Object[length];
-        System.arraycopy(array, from, destination, 0, length);
-        return new Array<>(destination);
+        var length = limit-from;
+        var newArr = new Object[length];
+        System.arraycopy(array, from, newArr, 0, length);
+        return new Array<>(newArr);
     }
 
     @Override
     public Array<E> reverse() {
-        final int size = size();
-        final Object[] destination = new Object[size];
-        for(int i = 0; i < size; i++) {
-            destination[i] = array[size-1-i];
+        var size = size();
+        var newArr = new Object[size];
+        for(var i = 0; i < size; i++) {
+            newArr[i] = array[size-1-i];
         }
-        return new Array<>(destination);
+        return new Array<>(newArr);
+    }
+
+    @Override
+    public <O> Array<E> distinct(Function<E, O> propertyGetter) {
+        var isDistinct = PredicateFor.distinctProperty(propertyGetter);
+        var distinctElems = foldLeft(new ArrayList<>(), (xs, x) -> {
+            if (isDistinct.test(x)) {
+                xs.add(x);
+                return xs;
+            }
+            return xs;
+        });
+        return new Array<>(distinctElems.toArray());
     }
 
     @Override
     public Array<E> append(E elem) {
-        final Object[] destination = Arrays.copyOf(array, size() + 1);
-        destination[size()] = elem;
-        return new Array<>(destination);
+        var newArr = Arrays.copyOf(array, size() + 1);
+        newArr[size()] = elem;
+        return new Array<>(newArr);
     }
 
     @Override
     public Array<E> removeAll(E elem) {
-        java.util.List<E> fastList = foldLeft(new ArrayList<>(), (xs, x) -> {
+        var fastList = foldLeft(new ArrayList<>(), (xs, x) -> {
             if (!Objects.equals(elem, x)) {
                 xs.add(x);
             }
@@ -121,13 +183,26 @@ public class Array<E> implements Seq<E>{
     }
 
     @Override
-    public <R> Array<R> map(Function<? super E, ? extends R> mapper) {
-        final int size = size();
-        Object[] result = new Object[size];
-        for (int i = 0; i < size; i++) {
-            result[i] = mapper.apply(get(i));
+    public <U> Array<U> map(Function<? super E, ? extends U> mapper) {
+        var size = size();
+        var newArr = new Object[size];
+        for (var i = 0; i < size; i++) {
+            newArr[i] = mapper.apply(get(i));
         }
-        return new Array<>(result);
+        return new Array<>(newArr);
+    }
+
+    @Override
+    public <U> Array<U> flatMap(Function<? super E, Monad1<Array, ? extends U>> mapper) {
+        var resultArr = new Object[0];
+        for (var e: this) {
+            var computed = Monad1.Type.<Array<U>, Array, U>narrow(mapper.apply(e));
+            var bufferArr = new Object[resultArr.length + computed.size()];
+            System.arraycopy(resultArr, 0, bufferArr, 0, resultArr.length);
+            System.arraycopy(computed.array, 0, bufferArr, resultArr.length, computed.size());
+            resultArr = bufferArr;
+        }
+        return new Array<>(resultArr);
     }
 
     @NotNull
@@ -137,21 +212,16 @@ public class Array<E> implements Seq<E>{
     }
 
     @Override
-    public <A> A fold(A accumulator, Func2<A, E, A> mapper) {
-        return foldLeft(accumulator, mapper);
-    }
-
-    @Override
-    public <A> A foldLeft(A accumulator, Func2<A, E, A> mapper) {
-        for(int i = 0; i < size(); i++) {
+    public <A> A foldLeft(A accumulator, BiFunction<A, E, A> mapper) {
+        for(var i = 0; i < size(); i++) {
             accumulator = mapper.apply(accumulator, get(i));
         }
         return accumulator;
     }
 
     @Override
-    public <A> A foldRight(A accumulator, Func2<A, E, A> mapper) {
-        for (int i = size() - 1; i >= 0; i--) {
+    public <A> A foldRight(A accumulator, BiFunction<A, E, A> mapper) {
+        for (var i = size() - 1; i >= 0; i--) {
             accumulator = mapper.apply(accumulator, get(i));
         }
         return accumulator;
@@ -173,5 +243,34 @@ public class Array<E> implements Seq<E>{
     @Override
     public String toString() {
         return Iterables.toString('[', ']', iterator());
+    }
+
+    @Override
+    public <U> Array<U> pure(U value) {
+        return of(value);
+    }
+
+    @Override
+    public <U> Array<U> apply(Applicative1<Array, Function<? super E, ? extends U>> applicative1) {
+        return Monad1.applyImpl(this, applicative1);
+    }
+
+    @Override
+    public Array<E> identity() {
+        return empty();
+    }
+
+    @Override
+    public Array<E> mappend(Monoid1<Array, ? extends E> other) {
+        var otherArr = Monoid1.Type.<Array<E>, Array, E>narrow(other);
+        var newArr = new Object[otherArr.size() + size()];
+        System.arraycopy(array, 0, newArr, 0, size());
+        System.arraycopy(otherArr.array, 0, newArr, size(), otherArr.size());
+        return new Array<>(newArr);
+    }
+
+    @Override
+    public Array<E> mconcat(List<Monoid1<Array, ? extends E>> list) {
+        return Monoid1.Type.narrow(Seq.super.mconcat(list));
     }
 }

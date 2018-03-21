@@ -25,12 +25,12 @@ public class TupleTest {
 
     @Test
     public void lifted() {
-        Tuple2<Boolean, Boolean> tuple = Tuple(true, false);
+        Product2<Boolean, Boolean> tuple = Tuple(true, false);
         Assert.assertTrue(
-            tuple.try$(1).isPresent()
+            tuple.try$(1).isSuccess()
         );
         Assert.assertFalse(
-            tuple.try$(4).isPresent()
+            tuple.try$(4).isSuccess()
         );
     }
 }

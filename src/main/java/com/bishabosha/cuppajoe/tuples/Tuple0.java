@@ -9,28 +9,28 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class Unit implements Product0 {
+public class Tuple0 implements Product0 {
 
-    private final static Unit UNIT = new Unit();
+    private final static Tuple0 TUPLE_0 = new Tuple0();
 
-    private Unit() {
+    private Tuple0() {
     }
 
     @NotNull
     @Contract(pure = true)
-    public static Pattern ¥Unit() {
-        return x -> x == UNIT ? Pattern.PASS : Pattern.FAIL;
+    public static Pattern ¥Tuple0() {
+        return x -> x == TUPLE_0 ? Pattern.PASS : Pattern.FAIL;
     }
 
     @NotNull
     @Contract(pure = true)
-    public static Unit getInstance() {
-        return UNIT;
+    public static Tuple0 getInstance() {
+        return TUPLE_0;
     }
 
     @Override
     public boolean equals(@Nullable Object obj) {
-        return obj instanceof Unit && obj == UNIT;
+        return obj instanceof Tuple0 && obj == TUPLE_0;
     }
 
     @Override

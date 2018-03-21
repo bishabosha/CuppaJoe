@@ -8,12 +8,6 @@ import com.bishabosha.cuppajoe.control.Option;
 import com.bishabosha.cuppajoe.functions.*;
 import com.bishabosha.cuppajoe.tuples.*;
 
-import java.util.NoSuchElementException;
-import java.util.function.Function;
-
-import static com.bishabosha.cuppajoe.API.Some;
-import static com.bishabosha.cuppajoe.API.Try;
-
 public class PatternFactory<I> {
 
     public static <U extends Unapply1<?>>
@@ -32,7 +26,7 @@ public class PatternFactory<I> {
             .flatMap(
                 values -> $1.test(values.$1()).flatMap(
                     a -> $2.test(values.$2()).map(
-                        b -> PatternResult.compose(a, b))));
+                        b -> Result.compose2().apply(a, b))));
     }
 
     public static <U extends Unapply3<?, ?, ?>>
@@ -44,7 +38,7 @@ public class PatternFactory<I> {
                values -> $1.test(values.$1()).flatMap(
                    a -> $2.test(values.$2()).flatMap(
                        b -> $3.test(values.$3()).map(
-                           c -> PatternResult.compose(a, b, c)))));
+                           c -> Result.compose3().apply(a, b, c)))));
     }
 
     public static <U extends Unapply4<?, ?, ?, ?>>
@@ -57,7 +51,7 @@ public class PatternFactory<I> {
                     a -> $2.test(values.$2()).flatMap(
                         b -> $3.test(values.$3()).flatMap(
                             c -> $4.test(values.$4()).map(
-                                d -> PatternResult.compose(a, b, c, d))))));
+                                d -> Result.compose4().apply(a, b, c, d))))));
     }
 
     public static <U extends Unapply5<?, ?, ?, ?, ?>>
@@ -71,7 +65,7 @@ public class PatternFactory<I> {
                         b -> $3.test(values.$3()).flatMap(
                             c -> $4.test(values.$4()).flatMap(
                                 d -> $5.test(values.$5()).map(
-                                    e -> PatternResult.compose(a, b, c, d, e)))))));
+                                    e -> Result.compose5().apply(a, b, c, d, e)))))));
     }
 
     public static <U extends Unapply6<?, ?, ?, ?, ?, ?>>
@@ -86,7 +80,7 @@ public class PatternFactory<I> {
                             c -> $4.test(values.$4()).flatMap(
                                 d -> $5.test(values.$5()).flatMap(
                                     e -> $6.test(values.$6()).map(
-                                        f -> PatternResult.compose(a, b, c, d, e, f))))))));
+                                        f -> Result.compose6().apply(a, b, c, d, e, f))))))));
     }
 
     public static <U extends Unapply7<?, ?, ?, ?, ?, ?, ?>>
@@ -102,7 +96,7 @@ public class PatternFactory<I> {
                                 d -> $5.test(values.$5()).flatMap(
                                     e -> $6.test(values.$6()).flatMap(
                                         f -> $7.test(values.$7()).map(
-                                            g -> PatternResult.compose(a, b, c, d, e, f, g)))))))));
+                                            g -> Result.compose7().apply(a, b, c, d, e, f, g)))))))));
     }
 
     public static <U extends Unapply8<?, ?, ?, ?, ?, ?, ?, ?>>
@@ -119,6 +113,6 @@ public class PatternFactory<I> {
                                     e -> $6.test(values.$6()).flatMap(
                                         f -> $7.test(values.$7()).flatMap(
                                             g -> $8.test(values.$8()).map(
-                                                h -> PatternResult.compose(a, b, c, d, e, f, g, h))))))))));
+                                                h -> Result.compose8().apply(a, b, c, d, e, f, g, h))))))))));
     }
 }

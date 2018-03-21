@@ -4,7 +4,10 @@
 
 package com.bishabosha.cuppajoe.collections.mutable.lists;
 
-import java.util.*;
+import java.util.Deque;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Queue;
 
 public class LinkedList<E> extends AbstractLinkedList<E> implements Queue<E>, Deque<E> {
 	

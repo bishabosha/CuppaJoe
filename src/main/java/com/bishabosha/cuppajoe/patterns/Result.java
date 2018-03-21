@@ -5,7 +5,7 @@ import com.bishabosha.cuppajoe.Iterables;
 import com.bishabosha.cuppajoe.collections.immutable.Array;
 import com.bishabosha.cuppajoe.collections.immutable.List;
 import com.bishabosha.cuppajoe.control.Option;
-import com.bishabosha.cuppajoe.tuples.Product2;
+import com.bishabosha.cuppajoe.functions.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
@@ -14,17 +14,42 @@ import java.util.Objects;
 
 import static com.bishabosha.cuppajoe.API.*;
 
-public interface PatternResult<E> extends Iterable<E> {
+public interface Result<E> extends Iterable<E> {
 
-    @SafeVarargs
-    static <E> PatternResult<E> compose(PatternResult<E>... trees) {
-        return trees == null
-            ? new Leaf<>(null)
-            : new Node<>(Array.of(trees));
+    static <E> Result<E> compose(Result<E>... results) {
+        return results == null ? new Leaf<>(null) : new Node<>(Array.of(results));
+    }
+
+    static <E> Func2<Result<E>, Result<E>, Result<E>> compose2() {
+        return Array.<Result<E>>of2().andThen(Node::new);
+    }
+
+    static <E> Func3<Result<E>, Result<E>, Result<E>, Result<E>> compose3() {
+        return Array.<Result<E>>of3().andThen(Node::new);
+    }
+
+    static <E> Func4<Result<E>, Result<E>, Result<E>, Result<E>, Result<E>> compose4() {
+        return Array.<Result<E>>of4().andThen(Node::new);
+    }
+
+    static <E> Func5<Result<E>, Result<E>, Result<E>, Result<E>, Result<E>, Result<E>> compose5() {
+        return Array.<Result<E>>of5().andThen(Node::new);
+    }
+
+    static <E> Func6<Result<E>, Result<E>, Result<E>, Result<E>, Result<E>, Result<E>, Result<E>> compose6() {
+        return Array.<Result<E>>of6().andThen(Node::new);
+    }
+
+    static <E> Func7<Result<E>, Result<E>, Result<E>, Result<E>, Result<E>, Result<E>, Result<E>, Result<E>> compose7() {
+        return Array.<Result<E>>of7().andThen(Node::new);
+    }
+
+    static <E> Func8<Result<E>, Result<E>, Result<E>, Result<E>, Result<E>, Result<E>, Result<E>, Result<E>, Result<E>> compose8() {
+        return Array.<Result<E>>of8().andThen(Node::new);
     }
 
     @SafeVarargs
-    static <E> PatternResult<E> of(E... values) {
+    static <E> Result<E> of(E... values) {
         return values == null
             ? new Leaf<>(null)
             : values.length == 0
@@ -32,13 +57,13 @@ public interface PatternResult<E> extends Iterable<E> {
                 : new Node<>(Array.of(values).map(Leaf::new));
     }
 
-    static <E> PatternResult<E> of(E value) {
+    static <E> Result<E> of(E value) {
         return new Leaf<>(value);
     }
 
     @SuppressWarnings("unchecked")
-    static <E> PatternResult<E> empty() {
-        return (PatternResult<E>) Node.EMPTY;
+    static <E> Result<E> empty() {
+        return (Result<E>) Node.EMPTY;
     }
 
     boolean isEmpty();
@@ -47,7 +72,7 @@ public interface PatternResult<E> extends Iterable<E> {
 
     Option<E> get();
 
-    Array<PatternResult<E>> branches();
+    Array<Result<E>> branches();
 
     default Values values() {
         return new Values(iterator());
@@ -57,13 +82,13 @@ public interface PatternResult<E> extends Iterable<E> {
         return Foldable.foldOver(this, 0, (acc, x) -> acc = acc + 1);
     }
 
-    class Node<E> implements PatternResult<E> {
+    class Node<E> implements Result<E> {
 
-        private static final PatternResult<?> EMPTY = new Node<>(Array.empty());
+        private static final Result<?> EMPTY = new Node<>(Array.empty());
 
-        Array<PatternResult<E>> branches;
+        Array<Result<E>> branches;
 
-        private Node(Array<PatternResult<E>> branches) {
+        private Node(Array<Result<E>> branches) {
             this.branches = branches;
         }
 
@@ -82,7 +107,7 @@ public interface PatternResult<E> extends Iterable<E> {
         }
 
         @Override
-        public Array<PatternResult<E>> branches() {
+        public Array<Result<E>> branches() {
             return branches;
         }
 
@@ -90,15 +115,14 @@ public interface PatternResult<E> extends Iterable<E> {
         @Override
         public Iterator<E> iterator() {
             return new Iterables.Lockable<>() {
-                private List<Iterator<PatternResult<E>>> stack = isEmpty() ? List() : List(Node.this.branches().iterator());
+                private List<Iterator<Result<E>>> stack = isEmpty() ? List() : List(Node.this.branches().iterator());
                 private Option<E> toReturn;
 
                 @Override
                 public boolean hasNextSupplier() {
-                    final Product2<Option<E>, List<Iterator<PatternResult<E>>>> nextItem;
-                    nextItem = stack.nextItem((it, xs) -> {
+                    var nextItem = stack.nextItem((it, xs) -> {
                         if (it.hasNext()) {
-                            PatternResult<E> tree = it.next();
+                            Result<E> tree = it.next();
                             if (it.hasNext()) {
                                 xs = xs.push(it);
                             }
@@ -129,7 +153,7 @@ public interface PatternResult<E> extends Iterable<E> {
 
         @Override
         public boolean equals(Object obj) {
-            return obj == this || obj instanceof PatternResult && Iterables.equals(this, obj);
+            return obj == this || obj instanceof Result && Iterables.equals(this, obj);
         }
 
         @Override
@@ -138,7 +162,7 @@ public interface PatternResult<E> extends Iterable<E> {
         }
     }
 
-    class Leaf<E> implements PatternResult<E> {
+    class Leaf<E> implements Result<E> {
 
         private E value;
 
@@ -162,7 +186,7 @@ public interface PatternResult<E> extends Iterable<E> {
         }
 
         @Override
-        public Array<PatternResult<E>> branches() {
+        public Array<Result<E>> branches() {
             return Array.empty();
         }
 
@@ -184,16 +208,16 @@ public interface PatternResult<E> extends Iterable<E> {
 
         @Override
         public boolean equals(Object obj) {
-            return obj == this || Option(obj)
-                                    .cast(PatternResult.class)
-                                    .map(x -> {
-                                        Iterator other = x.iterator();
-                                        if (other.hasNext() && Objects.equals(other.next(), value) && !other.hasNext()) {
-                                            return true;
-                                        }
-                                        return false;
-                                    })
-                                    .orElse(false);
+            if (obj == this) {
+                return true;
+            }
+            if (obj instanceof Result) {
+                var otherVals = ((Result) obj).iterator();
+                return otherVals.hasNext()
+                    && Objects.equals(otherVals.next(), value)
+                    && !otherVals.hasNext();
+            }
+            return false;
         }
     }
 
@@ -215,7 +239,7 @@ public interface PatternResult<E> extends Iterable<E> {
                     throw new NoSuchElementException("Not enough values contained in Pattern Result.");
                 }
             } catch (ClassCastException cce) {
-                throw new ClassCastException("Pattern Result elem("+count+") is not of the type requested.");
+                throw new ClassCastException("Pattern Result elem(" + count + ") is not of the type requested.");
             }
         }
     }

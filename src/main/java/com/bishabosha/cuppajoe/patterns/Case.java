@@ -8,7 +8,9 @@ import com.bishabosha.cuppajoe.API;
 import com.bishabosha.cuppajoe.control.Option;
 import com.bishabosha.cuppajoe.functions.*;
 
-import java.util.function.*;
+import java.util.function.BooleanSupplier;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static com.bishabosha.cuppajoe.API.Nothing;
 import static com.bishabosha.cuppajoe.API.Option;
@@ -115,8 +117,8 @@ public interface Case<I, O> {
             xs -> binder.apply(xs.next(), xs.next(), xs.next(), xs.next(), xs.next(), xs.next(), xs.next(), xs.next()));
     }
 
-    static <I, O> Case<I, O> base(Pattern matcher, Function<PatternResult.Values, O> mapper) {
-        return i -> matcher.test(i).flatMap(patternResult -> Option(mapper.apply(patternResult.values())));
+    static <I, O> Case<I, O> base(Pattern matcher, Function<Result.Values, O> mapper) {
+        return i -> matcher.test(i).flatMap(patternResult -> Option.of(mapper.apply(patternResult.values())));
     }
 
     static <O> Guard<O> combine(Guard<O>... guards) {

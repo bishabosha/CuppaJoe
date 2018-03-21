@@ -5,10 +5,10 @@
 package com.bishabosha.cuppajoe.collections.mutable.trees;
 
 import com.bishabosha.cuppajoe.collections.mutable.base.AbstractSet;
-import com.bishabosha.cuppajoe.functions.Equator;
 import com.bishabosha.cuppajoe.collections.mutable.lists.LinkedList;
 
 import java.util.*;
+import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -49,10 +49,10 @@ public class SearchTree<E extends Comparable<E>> extends AbstractSet<E> {
 	@Override
 	@SuppressWarnings("unchecked")
 	public boolean contains(Object o) {
-		return contains(o, Equator::standardTest);
+		return contains(o, Objects::equals);
 	}
 
-	protected boolean contains(Object o, Equator<E> equalsTest) {
+	protected boolean contains(Object o, BiPredicate<Object, E> equalsTest) {
 		try {
 			return (o instanceof Comparable<?>) ? null != search((E)o, equalsTest) : false;
 		} catch (Exception e) {
@@ -61,10 +61,10 @@ public class SearchTree<E extends Comparable<E>> extends AbstractSet<E> {
 	}
 
 	public E search(E value) {
-		return search(value, Equator::standardTest);
+		return search(value, Objects::equals);
 	}
 	
-	protected E search(E value, Equator<E> equalsTest) {
+	protected E search(E value, BiPredicate<Object, E> equalsTest) {
         current = root;
         while (null != current) {
             if (equalsTest.test(value, current.value)) {
@@ -77,10 +77,10 @@ public class SearchTree<E extends Comparable<E>> extends AbstractSet<E> {
 
 	@Override
 	protected E replace(E e) {
-		return replace(e, Equator::standardTest);
+		return replace(e, Objects::equals);
 	}
 
-	protected E replace(E value, Equator<E> replaceTest) {
+	protected E replace(E value, BiPredicate<Object, E> replaceTest) {
 		if (null == root) {
 			root = createNode(value);
 			size++;
@@ -168,10 +168,10 @@ public class SearchTree<E extends Comparable<E>> extends AbstractSet<E> {
 
 	@Override
 	public E pull(Object entry) {
-		return pull(entry, Equator::standardTest);
+		return pull(entry, Objects::equals);
 	}
 
-	protected E pull(Object o, Equator<E> entryEntryTest) {
+	protected E pull(Object o, BiPredicate<Object, E> entryEntryTest) {
 		E element;
 		try {
 			element = (E) o;
@@ -197,9 +197,9 @@ public class SearchTree<E extends Comparable<E>> extends AbstractSet<E> {
 	private class NodeRemover {
 		private BinaryNode<E> parent;
 		private boolean removeLeft = false;
-		private Equator<E> entryEntryTest;
+		private BiPredicate<Object, E> entryEntryTest;
 
-		NodeRemover(Equator<E> entryEntryTest) {
+		NodeRemover(BiPredicate<Object, E> entryEntryTest) {
 			this.entryEntryTest = entryEntryTest;
 		}
 		

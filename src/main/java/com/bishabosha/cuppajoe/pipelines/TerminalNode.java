@@ -4,13 +4,12 @@
 
 package com.bishabosha.cuppajoe.pipelines;
 
-import java.util.*;
-
 import com.bishabosha.cuppajoe.Iterables;
-import com.bishabosha.cuppajoe.control.Option;
 import com.bishabosha.cuppajoe.collections.mutable.lists.LinkedList;
+import com.bishabosha.cuppajoe.control.Option;
 
-import static com.bishabosha.cuppajoe.API.Option;
+import java.util.Iterator;
+import java.util.Objects;
 
 class TerminalNode<I, O> extends AbstractNode<O, O> implements Iterable<O>{
 
@@ -37,7 +36,7 @@ class TerminalNode<I, O> extends AbstractNode<O, O> implements Iterable<O>{
                     public boolean hasNextSupplier() {
                         while (!willTerminate()) {
                             if (sourceHasNext = source.hasNext()) {
-                                head.accept(Option(source.next()));
+                                head.accept(Option.of(source.next()));
                             }
                             if (!buffer.isEmpty()) {
                                 current = buffer.remove();
@@ -69,6 +68,6 @@ class TerminalNode<I, O> extends AbstractNode<O, O> implements Iterable<O>{
 
     @Override
     public void accept(Option<O> option) {
-        option.ifSome(buffer::add);
+        option.peek(buffer::add);
     }
 }

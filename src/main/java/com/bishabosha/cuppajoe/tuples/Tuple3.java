@@ -4,13 +4,12 @@
 
 package com.bishabosha.cuppajoe.tuples;
 
-import com.bishabosha.cuppajoe.patterns.Pattern;
+import com.bishabosha.cuppajoe.control.Option;
 import com.bishabosha.cuppajoe.functions.Func3;
+import com.bishabosha.cuppajoe.patterns.Pattern;
 import com.bishabosha.cuppajoe.patterns.PatternFactory;
 
 import java.util.Objects;
-
-import static com.bishabosha.cuppajoe.API.Option;
 
 public final class Tuple3<A, B, C> implements Product3<A, B, C> {
 
@@ -60,10 +59,7 @@ public final class Tuple3<A, B, C> implements Product3<A, B, C> {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        return Option(obj)
+        return obj == this || Option.of(obj)
             .cast(Tuple3.class)
             .map(o -> Objects.equals($1(), o.$1()) && Objects.equals($2(), o.$2()) && Objects.equals($3(), o.$3()))
             .orElse(false);
@@ -71,14 +67,6 @@ public final class Tuple3<A, B, C> implements Product3<A, B, C> {
 
     @Override
     public String toString() {
-        return new StringBuilder()
-                .append('(')
-                .append($1())
-                .append(", ")
-                .append($2())
-                .append(", ")
-                .append($3())
-                .append(')')
-                .toString();
+        return "(" + $1() + ", " + $2() + ", " + $3() + ")";
     }
 }

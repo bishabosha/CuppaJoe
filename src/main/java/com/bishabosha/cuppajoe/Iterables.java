@@ -9,10 +9,11 @@
 package com.bishabosha.cuppajoe;
 
 import com.bishabosha.cuppajoe.collections.mutable.base.MapEntry;
-import com.bishabosha.cuppajoe.tuples.Tuple2;
 import com.bishabosha.cuppajoe.collections.mutable.hashtables.HashMap;
 import com.bishabosha.cuppajoe.collections.mutable.hashtables.HashTable;
 import com.bishabosha.cuppajoe.collections.mutable.lists.LinkedList;
+import com.bishabosha.cuppajoe.control.Option;
+import com.bishabosha.cuppajoe.tuples.Tuple2;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,7 +23,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
-import static com.bishabosha.cuppajoe.API.Option;
 import static com.bishabosha.cuppajoe.API.Some;
 
 public interface Iterables {
@@ -62,7 +62,7 @@ public interface Iterables {
     }
 
     static int hash(Iterable<?> iterable) {
-        int hash = 1;
+        var hash = 1;
         for (Object element : iterable) {
             hash = 29 * hash + (element != null ? element.hashCode() : 0);
         }
@@ -186,9 +186,9 @@ public interface Iterables {
         };
     }
 
-    static <C extends Iterable, E> boolean equals(Iterable<E> base, Object obj) {
-        Iterator it = ((Iterable) obj).iterator();
-        for (Object term: base) {
+    static <E> boolean equals(Iterable<E> base, Object obj) {
+        var it = ((Iterable) obj).iterator();
+        for (var term: base) {
             if (!it.hasNext() || !Objects.equals(term, it.next())) {
                 return false;
             }
@@ -205,24 +205,24 @@ public interface Iterables {
     }
 
     static <R> Set<R> setOf(R... values) {
-        Set<R> set = new HashTable<>();
-        for (R val: values) {
+        var set = new HashTable<R>();
+        for (var val: values) {
             set.add(val);
         }
         return set;
     }
 
     static <R> List<R> listOf(R... values) {
-        List<R> list = new LinkedList<>();
-        for (R val: values) {
+        var list = new LinkedList<R>();
+        for (var val: values) {
             list.add(val);
         }
         return list;
     }
 
     static <K, V> Map<K, V> mapOf(Tuple2<K, V>... entries) {
-        Map<K, V> map = new HashMap<>();
-        for (Tuple2<K, V> tuple: entries) {
+        var map = new HashMap<K, V>();
+        for (var tuple: entries) {
             map.put(tuple.$1(), tuple.$2());
         }
         return map;
@@ -313,29 +313,29 @@ public interface Iterables {
     static <K, V> Iterable<Map.Entry<K, V>> mapEntryIteratorSortedKeys(Map<K, V> map, List<K> keys) {
         Objects.requireNonNull(map);
         Objects.requireNonNull(keys);
-        List<Map.Entry<K, V>> sorted = new ArrayList<>();
-        Set<K> found = new HashTable<>();
-        for(K key: keys) {
-            Option(key)
+        var sorted = new ArrayList<Map.Entry<K, V>>();
+        var found = new HashTable<K>();
+        for(var key: keys) {
+            Option.of(key)
               .filter(map.keySet()::contains)
               .map(k -> {
                   found.add(k);
                   return new MapEntry<>(k, map.get(k));
               })
-              .ifSome(sorted::add);
+              .peek(sorted::add);
         }
-        for(Map.Entry<K, V> entry: map.entrySet()) {
+        for(var entry: map.entrySet()) {
             Some(entry)
               .filter(e -> !found.contains(e.getKey()))
-              .ifSome(sorted::add);
+              .peek(sorted::add);
         }
         return sorted;
     }
 
     static String toString(char start, char end, Iterator iterator) {
-        final StringBuilder builder = new StringBuilder();
+        var builder = new StringBuilder();
+        var hasNext = iterator.hasNext();
         builder.append(start);
-        boolean hasNext = iterator.hasNext();
         while (hasNext) {
             builder.append(iterator.next());
             if (hasNext = iterator.hasNext()) {
@@ -346,10 +346,10 @@ public interface Iterables {
     }
 
     static <O> String toString (char start, char end, Iterator<O> it, BiConsumer<StringBuilder, O> consumer) {
-        StringBuilder builder = new StringBuilder();
-        boolean hasNext = it.hasNext();
+        var builder = new StringBuilder();
+        var hasNext = it.hasNext();
+        var current = hasNext ? it.next() : null;
         builder.append(start);
-        O current = hasNext ? it.next() : null;
         while (hasNext) {
             consumer.accept(builder, current);
             hasNext = it.hasNext();
@@ -368,56 +368,56 @@ public interface Iterables {
     }
 
     static <O extends Collection<Integer>> O fill(O collection, int[] values) {
-        for (int i : values) {
+        for (var i : values) {
             collection.add(i);
         }
         return collection;
     }
 
     static <O extends Collection<Double>> O fill(O collection, double[] values) {
-        for (double i : values) {
+        for (var i : values) {
             collection.add(i);
         }
         return collection;
     }
 
     static <O extends Collection<Float>> O fill(O collection, float[] values) {
-        for (float i : values) {
+        for (var i : values) {
             collection.add(i);
         }
         return collection;
     }
 
     static <O extends Collection<Long>> O fill(O collection, long[] values) {
-        for (long i : values) {
+        for (var i : values) {
             collection.add(i);
         }
         return collection;
     }
 
     static <O extends Collection<Short>> O fill(O collection, short[] values) {
-        for (short i : values) {
+        for (var i : values) {
             collection.add(i);
         }
         return collection;
     }
 
     static <O extends Collection<Byte>> O fill(O collection, byte[] values) {
-        for (byte i : values) {
+        for (var i : values) {
             collection.add(i);
         }
         return collection;
     }
 
     static <O extends Collection<Boolean>> O fill(O collection, boolean[] values) {
-        for (boolean i : values) {
+        for (var i : values) {
             collection.add(i);
         }
         return collection;
     }
 
     static <O extends Collection<Character>> O fill(O collection, char[] values) {
-        for (char i : values) {
+        for (var i : values) {
             collection.add(i);
         }
         return collection;

@@ -4,6 +4,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import java.util.function.Function;
+
+import static com.bishabosha.cuppajoe.API.Some;
+import static com.bishabosha.cuppajoe.API.Tuple;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -83,10 +87,24 @@ public class ArrayTest {
     }
 
     @Test
+    public void push() {
+        assertEquals(Array.of(1), Array.empty().push(1));
+        assertEquals(Array.of(1,2,3), Array.of(3).push(2).push(1));
+        assertEquals(Array.of(1,2,3), Array.of(2,3).push(1));
+    }
+
+    @Test
     public void append() {
         assertEquals(Array.of(1), Array.empty().append(1));
         assertEquals(Array.of(1,2,3), Array.of(1).append(2).append(3));
         assertEquals(Array.of(1,2,3), Array.of(1,2).append(3));
+    }
+
+    @Test
+    public void pop() {
+        assertEquals(Some(Tuple(1, Array.empty())), Array.of(1).pop());
+        assertEquals(Some(Tuple(1, Array.of(2))), Array.of(1,2).pop());
+        assertEquals(Some(Tuple(1, Array.of(2, 3))), Array.of(1,2,3).pop());
     }
 
     @Test
@@ -95,6 +113,21 @@ public class ArrayTest {
         assertEquals(Array.of(1), Array.of(1,2).removeAll(2));
         assertEquals(Array.of(1,1,1), Array.of(1,2,1,2,2,2,1).removeAll(2));
         assertEquals(Array.of(1), Array.of(null, null, null, 1).removeAll(null));
+    }
+
+    @Test
+    public void distinct() {
+        assertEquals(Array.of(1,2,3), Array.of(1,1,2,2,3,3).distinct(Function.identity()));
+    }
+
+    @Test
+    public void flatMap() {
+        assertEquals(Array.of(1, 1, 1, 2, 4, 8, 3, 9, 27), Array.of(1, 2, 3).flatMap(x -> Array.of(x, x * x, x * x * x)));
+    }
+
+    @Test
+    public void map() {
+        assertEquals(Array.of(1, 4, 9), Array.of(1, 2, 3).map(x -> x * x));
     }
 
     @Test
@@ -120,7 +153,7 @@ public class ArrayTest {
     }
 
     @Test
-    public void map() {
-        assertEquals(Array.of(2,3,4), Array.of(1,2,3).map(x -> x + 1));
+    public void or() {
+        assertEquals(Array.of(1), Array.empty().or(() -> Array.of(1)));
     }
 }

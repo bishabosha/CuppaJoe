@@ -1,21 +1,16 @@
 package com.bishabosha.cuppajoe;
 
-import com.bishabosha.cuppajoe.functions.Func2;
+import java.util.function.BiFunction;
 
 public interface Foldable<E> extends Iterable<E> {
-
-    default <A> A foldLeft(A accumulator, Func2<A, E, A> mapper) {
+    default <O> O foldLeft(O accumulator, BiFunction<O, E, O> mapper) {
         return foldOver(this, accumulator, mapper);
     }
 
-    <A> A foldRight(A accumulator, Func2<A, E, A> mapper);
+    <O> O foldRight(O accumulator, BiFunction<O, E, O> mapper);
 
-    default <A> A fold(A accumulator, Func2<A, E, A> mapper) {
-        return foldOver(this, accumulator, mapper);
-    }
-
-    static <E, A> A foldOver(Iterable<E> that, A accumulator, Func2<A, E, A> mapper) {
-        for (E elem: that) {
+    static <E, A> A foldOver(Iterable<E> that, A accumulator, BiFunction<A, E, A> mapper) {
+        for (var elem: that) {
             accumulator = mapper.apply(accumulator, elem);
         }
         return accumulator;

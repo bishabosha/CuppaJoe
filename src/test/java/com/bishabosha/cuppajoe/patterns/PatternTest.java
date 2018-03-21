@@ -8,7 +8,7 @@ import com.bishabosha.cuppajoe.collections.immutable.List;
 import com.bishabosha.cuppajoe.collections.immutable.Tree;
 import com.bishabosha.cuppajoe.collections.mutable.trees.BinaryNode;
 import com.bishabosha.cuppajoe.control.Option;
-import com.bishabosha.cuppajoe.tuples.Tuple2;
+import com.bishabosha.cuppajoe.tuples.Product2;
 import org.junit.Test;
 
 import static com.bishabosha.cuppajoe.API.Nothing;
@@ -16,7 +16,7 @@ import static com.bishabosha.cuppajoe.API.Tuple;
 import static com.bishabosha.cuppajoe.collections.immutable.Tree.Node;
 import static com.bishabosha.cuppajoe.collections.immutable.Tree.Node.$Node;
 import static com.bishabosha.cuppajoe.collections.immutable.Tree.leaf;
-import static com.bishabosha.cuppajoe.control.Some.$Some;
+import static com.bishabosha.cuppajoe.control.Option.Some.$Some;
 import static com.bishabosha.cuppajoe.patterns.Pattern.*;
 import static com.bishabosha.cuppajoe.tuples.Tuple2.$Tuple2;
 import static org.junit.Assert.assertEquals;
@@ -30,7 +30,7 @@ public class PatternTest {
                 return node.test(binaryNode.getValue()).flatMap(
                     n -> left.test(binaryNode.getLeft()).flatMap(
                         l -> right.test(binaryNode.getRight()).map(
-                            r -> PatternResult.compose(n, l, r))));
+                            r -> Result.compose(n, l, r))));
             }
             return Nothing();
         };
@@ -53,11 +53,11 @@ public class PatternTest {
             this.tree.test(0)
         );
         assertEquals(
-            PatternResult.of(0),
+            Result.of(0),
             tree($(0), ¥_, ¥_).test(tree).get()
         );
         assertEquals(
-            PatternResult.of(0),
+            Result.of(0),
             tree($a, ¥_, ¥_).test(tree).get()
         );
         assertEquals(
@@ -65,7 +65,7 @@ public class PatternTest {
             tree($(5), ¥_, ¥_).test(tree)
         );
         assertEquals(
-            PatternResult.of(new BinaryNode<>(1)),
+            Result.of(new BinaryNode<>(1)),
             tree(¥_, ¥_, this.tree).test(tree).get()
         );
         assertEquals(
@@ -73,7 +73,7 @@ public class PatternTest {
             tree($a, ¥null, ¥null).test(tree)
         );
         assertEquals(
-            PatternResult.of(25),
+            Result.of(25),
             tree($a, ¥null, ¥null).test(leaf).get()
         );
     }
@@ -81,13 +81,13 @@ public class PatternTest {
     @Test
     public void flattenStress() {
         final Pattern patt2Test;
-        final Tuple2<Option<Tree<Integer>>, List<Tree<Integer>>> underTest;
+        final Product2<Option<Tree<Integer>>, List<Tree<Integer>>> underTest;
 
         patt2Test = $Tuple2($Some($Node($x, ¥_, $y)), $xs);
         underTest = Tuple(Option.of(Node(1, leaf(), leaf())), List.of(Tree.of(2)));
 
-        patt2Test.test(underTest).ifSome(results -> {
-            PatternResult.Values values = results.values();
+        patt2Test.test(underTest).peek(results -> {
+            Result.Values values = results.values();
             assertEquals(3, results.size());
             assertEquals(1, (int) values.next());
             assertEquals(leaf(), values.next());

@@ -11,10 +11,24 @@ package com.bishabosha.cuppajoe.math;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class PredicateFor {
+
+    public static <E, O> Predicate<E> distinctProperty(Function<E, O> propertyGetter) {
+        var distinctProperties = new HashSet<O>();
+        return object -> {
+            var property = propertyGetter.apply(object);
+            var notFound = !distinctProperties.contains(property);
+            if (notFound) {
+                distinctProperties.add(property);
+            }
+            return notFound;
+        };
+    }
 
 	@NotNull
 	@Contract(pure = true)

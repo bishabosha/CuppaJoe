@@ -4,13 +4,12 @@
 
 package com.bishabosha.cuppajoe.tuples;
 
+import com.bishabosha.cuppajoe.control.Option;
 import com.bishabosha.cuppajoe.functions.Func1;
 import com.bishabosha.cuppajoe.patterns.Pattern;
 import com.bishabosha.cuppajoe.patterns.PatternFactory;
 
 import java.util.Objects;
-
-import static com.bishabosha.cuppajoe.API.Option;
 
 public final class Tuple1<A> implements Product1<A> {
 
@@ -45,16 +44,13 @@ public final class Tuple1<A> implements Product1<A> {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        return Option(obj)
+        return obj == this || Option.of(obj)
              .cast(Product1.class)
              .map(o -> Objects.equals($1(), o.$1()))
              .orElse(false);
     }
 
     public String toString() {
-        return "("+$1()+")";
+        return "(" + $1() + ")";
     }
 }

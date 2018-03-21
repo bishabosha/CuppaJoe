@@ -4,16 +4,16 @@
 
 package com.bishabosha.cuppajoe.collections.mutable.hashtables;
 
+import com.bishabosha.cuppajoe.Iterables;
+import com.bishabosha.cuppajoe.collections.mutable.base.AbstractSet;
+import com.bishabosha.cuppajoe.collections.mutable.lists.LinkedList;
+import com.bishabosha.cuppajoe.sequences.Sequence;
+import com.bishabosha.cuppajoe.sequences.SequenceOf;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Objects;
-
-import com.bishabosha.cuppajoe.collections.mutable.base.AbstractSet;
-import com.bishabosha.cuppajoe.functions.Equator;
-import com.bishabosha.cuppajoe.Iterables;
-import com.bishabosha.cuppajoe.collections.mutable.lists.LinkedList;
-import com.bishabosha.cuppajoe.sequences.SequenceOf;
-import com.bishabosha.cuppajoe.sequences.Sequence;
+import java.util.function.BiPredicate;
 
 public class HashTable<E> extends AbstractSet<E> {
 	private Sequence<Long> primeSequence = SequenceOf.primes();
@@ -37,10 +37,10 @@ public class HashTable<E> extends AbstractSet<E> {
 	}
 
 	public E replace(E newEntry) {
-		return replace(newEntry, Equator::standardTest);
+		return replace(newEntry, Objects::equals);
 	}
 
-	protected E replace(E newEntry, Equator<E> replaceTest) {
+	protected E replace(E newEntry, BiPredicate<Object, E> replaceTest) {
 		E old = addToArrayUnguarded(newEntry, data, replaceTest);
 		if (size * LOAD_FACTOR >= data.length) {
 			ensureCapacity(size);
@@ -48,7 +48,7 @@ public class HashTable<E> extends AbstractSet<E> {
 		return old;
 	}
 
-	private E addToArrayUnguarded(E newEntry, Object[] data, Equator<E> replaceTest) {
+	private E addToArrayUnguarded(E newEntry, Object[] data, BiPredicate<Object, E> replaceTest) {
 		int index = hash(newEntry, data);
 		LinkedList<E> list = getList(data, index);
 		if (list == null) {
@@ -70,22 +70,22 @@ public class HashTable<E> extends AbstractSet<E> {
 	}
 
 	public boolean contains(Object entry) {
-		return null != get(entry, data, Equator::standardTest);
+		return null != get(entry, data, Objects::equals);
 	}
 
-	protected boolean contains(Object entry, Equator<E> containsTest) {
+	protected boolean contains(Object entry, BiPredicate<Object, E> containsTest) {
 		return null != get(entry, data, containsTest);
 	}
 
 	public E get(Object entry) {
-		return get(entry, data, Equator::standardTest);
+		return get(entry, data, Objects::equals);
 	}
 
-	protected E get(Object entry, Equator<E> getTest) {
+	protected E get(Object entry, BiPredicate<Object, E> getTest) {
 		return get(entry, data, getTest);
 	}
 
-	private E get(Object entry, Object[] data, Equator<E> getTest) {
+	private E get(Object entry, Object[] data, BiPredicate<Object, E> getTest) {
 		if (entry == null) {
 			return null;
 		}
@@ -104,10 +104,10 @@ public class HashTable<E> extends AbstractSet<E> {
 
 	@Override
 	public E pull(Object entry) {
-		return pull(entry, Equator::standardTest);
+		return pull(entry, Objects::equals);
 	}
 
-	protected E pull(Object entry, Equator<E> equalsTest) {
+	protected E pull(Object entry, BiPredicate<Object, E> equalsTest) {
 		if (data.length > size * LOAD_FACTOR * LOAD_FACTOR) {
 			ensureCapacity(size);
 		}
@@ -154,7 +154,7 @@ public class HashTable<E> extends AbstractSet<E> {
 		size = 0;
 		Object[] newData = new Object[newCapacity];
 		for (E entry: this) {
-			addToArrayUnguarded(entry, newData, Equator::standardTest);
+			addToArrayUnguarded(entry, newData, Objects::equals);
 		}
 		data = newData;
 	}

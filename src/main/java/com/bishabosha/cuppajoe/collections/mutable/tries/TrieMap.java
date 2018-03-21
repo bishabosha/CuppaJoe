@@ -4,13 +4,16 @@
 
 package com.bishabosha.cuppajoe.collections.mutable.tries;
 
-import java.util.*;
-
-import com.bishabosha.cuppajoe.collections.mutable.base.AbstractMap;
-import com.bishabosha.cuppajoe.collections.mutable.lists.LinkedList;
-import com.bishabosha.cuppajoe.collections.mutable.base.BasicSet;
 import com.bishabosha.cuppajoe.Iterables;
+import com.bishabosha.cuppajoe.collections.mutable.base.AbstractMap;
+import com.bishabosha.cuppajoe.collections.mutable.base.BasicSet;
 import com.bishabosha.cuppajoe.collections.mutable.base.MapEntry;
+import com.bishabosha.cuppajoe.collections.mutable.lists.LinkedList;
+
+import java.util.Collection;
+import java.util.Deque;
+import java.util.Iterator;
+import java.util.Set;
 
 public class TrieMap<V> extends AbstractMap<String, V> {
 	
