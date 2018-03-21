@@ -1,4 +1,0 @@
-@ParametersAreNonnullByDefault
-package com.bishabosha.cuppajoe;
-
-import javax.annotation.ParametersAreNonnullByDefault;
