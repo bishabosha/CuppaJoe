@@ -4,6 +4,8 @@
 
 package io.cuppajoe.control;
 
+import io.cuppajoe.patterns.Cases.Child;
+import io.cuppajoe.patterns.Cases.Parent;
 import io.cuppajoe.tuples.Apply1;
 import io.cuppajoe.tuples.Product1;
 import io.cuppajoe.tuples.Unapply0;
@@ -32,7 +34,7 @@ import java.util.function.Supplier;
 
 import static io.cuppajoe.API.Tuple;
 
-public interface Option<O> extends Monad1<Option, O>, Peek1<O>, Value1<Option, O> {
+public interface Option<O> extends Monad1<Option, O>, Peek1<O>, Value1<Option, O>, Parent {
 
     static <O> Option<O> from(Optional<O> optional) {
         return optional.map(Option::of).orElse(Nothing.getInstance());
@@ -107,7 +109,7 @@ public interface Option<O> extends Monad1<Option, O>, Peek1<O>, Value1<Option, O
         return Monad1.applyImpl(this, applicative1);
     }
 
-    final class Some<O> implements Option<O>, Unapply1<O> {
+    final class Some<O> implements Option<O>, Unapply1<O>, Child<Option<O>> {
 
         private O value;
 
@@ -169,7 +171,7 @@ public interface Option<O> extends Monad1<Option, O>, Peek1<O>, Value1<Option, O
         }
     }
 
-    final class Nothing<E> implements Option<E>, Unapply0 {
+    final class Nothing<O> implements Option<O>, Unapply0, Child<Option<O>> {
 
         private static final Nothing<Object> NOTHING = new Nothing<>();
 
@@ -196,7 +198,7 @@ public interface Option<O> extends Monad1<Option, O>, Peek1<O>, Value1<Option, O
 
         @Contract(" -> fail")
         @Override
-        public E get() {
+        public O get() {
             throw new NoSuchElementException("There is nothing present.");
         }
 
@@ -209,7 +211,7 @@ public interface Option<O> extends Monad1<Option, O>, Peek1<O>, Value1<Option, O
 
         @NotNull
         @Override
-        public Iterator<E> iterator() {
+        public Iterator<O> iterator() {
             return Iterables.empty();
         }
     }
