@@ -185,6 +185,12 @@ public final class API {
 
     @NotNull
     @Contract(pure = true)
+    public static <O> Cons<O> Cons(O head, List<O> tail) {
+        return List.concat(head, tail);
+    }
+
+    @NotNull
+    @Contract(pure = true)
     public static <O> List<O> List(O... elems) {
         return List.of(elems);
     }

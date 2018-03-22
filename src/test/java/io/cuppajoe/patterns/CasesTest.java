@@ -1,37 +1,37 @@
 package io.cuppajoe.patterns;
 
-import io.cuppajoe.API;
-import io.cuppajoe.control.Option;
-import io.cuppajoe.patterns.Cases.NewCase;
-import org.junit.Assert;
+import io.cuppajoe.patterns.Cases.MatchException;
 import org.junit.Test;
 
 import static io.cuppajoe.API.*;
-import static io.cuppajoe.patterns.Cases.when;
-import static org.junit.Assert.*;
+import static io.cuppajoe.patterns.Cases.caseOf;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CasesTest {
 
     @Test
     public void cases() {
 
-        var matchSome = Cases.when(Some(1), (Integer elem) -> elem + 1);
-        var matchNone = Cases.when(Nothing(), () -> "Nothing");
-
-        assertTrue(matchNone.match(Some(1)).isEmpty());
-        Assert.assertFalse(matchSome.match(Some(1)).isEmpty());
-
         var matchOption = Cases.many(
-            when(Some(1), (Integer elem) -> elem + 1),
-            when(Nothing(), () -> "Nothing")
+            caseOf(Some(1), elem -> elem + 1),
+            caseOf(Nothing(), () -> 0)
         );
 
-        assertTrue(matchOption.match(Success(1)).isEmpty());
-        assertFalse(matchOption.match(Some(1)).isEmpty());
+        var matchList = Cases.many(
+            caseOf(Cons(1, List()), (head, tail) -> head + " : " + tail),
+            caseOf(List(), () -> "[]")
+        );
 
-        assertTrue(matchOption.match(Tuple()).isEmpty());
-        assertFalse(matchOption.match(Nothing()).isEmpty());
+        assertEquals("1 : []", matchList.get(Cons(1, List())));
+        assertEquals("[]", matchList.get(List()));
+        assertEquals(Nothing(), matchList.match(List(5)));
 
+        assertEquals(2, matchOption.get(Some(1)).intValue());
+        assertEquals(0, matchOption.get(Nothing()).intValue());
+        assertEquals(Nothing(), matchOption.match(Some(2)));
+
+        assertThrows(MatchException.class, () -> matchOption.get(Some(2)), "No match found for object: Some(2)");
     }
 
 }

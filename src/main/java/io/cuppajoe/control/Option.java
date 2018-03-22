@@ -4,8 +4,8 @@
 
 package io.cuppajoe.control;
 
-import io.cuppajoe.patterns.Cases.Child;
-import io.cuppajoe.patterns.Cases.Parent;
+import io.cuppajoe.patterns.Cases.CaseOf;
+import io.cuppajoe.patterns.Cases.Root;
 import io.cuppajoe.tuples.Apply1;
 import io.cuppajoe.tuples.Product1;
 import io.cuppajoe.tuples.Unapply0;
@@ -34,7 +34,7 @@ import java.util.function.Supplier;
 
 import static io.cuppajoe.API.Tuple;
 
-public interface Option<O> extends Monad1<Option, O>, Peek1<O>, Value1<Option, O>, Parent {
+public interface Option<O> extends Root, Monad1<Option, O>, Peek1<O>, Value1<Option, O> {
 
     static <O> Option<O> from(Optional<O> optional) {
         return optional.map(Option::of).orElse(Nothing.getInstance());
@@ -109,9 +109,14 @@ public interface Option<O> extends Monad1<Option, O>, Peek1<O>, Value1<Option, O
         return Monad1.applyImpl(this, applicative1);
     }
 
-    final class Some<O> implements Option<O>, Unapply1<O>, Child<Option<O>> {
+    final class Some<O> implements CaseOf<Option<O>>, Option<O>, Unapply1<O> {
 
         private O value;
+
+        @Override
+        public Product1<O> unapply() {
+            return Tuple(get());
+        }
 
         private static final Func1<Pattern, Pattern> PATTERN = PatternFactory.gen1(Some.class);
 
@@ -126,12 +131,6 @@ public interface Option<O> extends Monad1<Option, O>, Peek1<O>, Value1<Option, O
 
         static <O> Apply1<O, Some<O>> Applied() {
             return Func1.<O, Some<O>>of(Option::some).tupled();
-        }
-
-        @NotNull
-        @Override
-        public Product1<O> unapply() {
-            return Tuple(get());
         }
 
         @Contract(pure = true)
@@ -171,7 +170,7 @@ public interface Option<O> extends Monad1<Option, O>, Peek1<O>, Value1<Option, O
         }
     }
 
-    final class Nothing<O> implements Option<O>, Unapply0, Child<Option<O>> {
+    final class Nothing<O> implements CaseOf<Option<O>>, Option<O>, Unapply0 {
 
         private static final Nothing<Object> NOTHING = new Nothing<>();
 
