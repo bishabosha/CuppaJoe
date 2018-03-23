@@ -4,11 +4,11 @@
 
 package io.cuppajoe.collections.mutable.hashtables;
 
+import io.cuppajoe.Iterables.Lockable;
 import io.cuppajoe.collections.mutable.base.AbstractSet;
 import io.cuppajoe.collections.mutable.lists.LinkedList;
 import io.cuppajoe.sequences.Sequence;
 import io.cuppajoe.sequences.SequenceOf;
-import io.cuppajoe.Iterables.Lockable;
 
 import java.util.Collection;
 import java.util.Iterator;

@@ -1,8 +1,8 @@
 package io.cuppajoe.typeclass.applicative;
 
+import io.cuppajoe.collections.immutable.Array;
 import io.cuppajoe.collections.immutable.List;
 import io.cuppajoe.control.Option;
-import io.cuppajoe.collections.immutable.Array;
 import io.cuppajoe.functions.*;
 import org.junit.Test;
 

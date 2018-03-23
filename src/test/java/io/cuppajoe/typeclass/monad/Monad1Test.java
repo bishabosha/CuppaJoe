@@ -10,7 +10,7 @@ import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 import static io.cuppajoe.API.Some;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class Monad1Test {
 

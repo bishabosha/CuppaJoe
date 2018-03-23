@@ -1,8 +1,8 @@
 package io.cuppajoe.collections.immutable;
 
 import io.cuppajoe.Foldable;
-import io.cuppajoe.tuples.Product2;
 import io.cuppajoe.control.Option;
+import io.cuppajoe.tuples.Product2;
 import io.cuppajoe.typeclass.monad.Monad1;
 import io.cuppajoe.typeclass.monoid.Monoid1;
 import io.cuppajoe.typeclass.peek.Peek1;

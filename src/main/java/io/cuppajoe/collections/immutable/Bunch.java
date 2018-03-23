@@ -1,6 +1,5 @@
 package io.cuppajoe.collections.immutable;
 
-import java.util.Iterator;
 import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;

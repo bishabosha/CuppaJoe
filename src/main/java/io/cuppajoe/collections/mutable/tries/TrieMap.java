@@ -4,11 +4,11 @@
 
 package io.cuppajoe.collections.mutable.tries;
 
+import io.cuppajoe.Iterables.Lockable;
 import io.cuppajoe.collections.mutable.base.AbstractMap;
 import io.cuppajoe.collections.mutable.base.BasicSet;
 import io.cuppajoe.collections.mutable.base.MapEntry;
 import io.cuppajoe.collections.mutable.lists.LinkedList;
-import io.cuppajoe.Iterables.Lockable;
 
 import java.util.Collection;
 import java.util.Deque;

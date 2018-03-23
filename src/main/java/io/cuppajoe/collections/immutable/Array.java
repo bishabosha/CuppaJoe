@@ -1,5 +1,6 @@
 package io.cuppajoe.collections.immutable;
 
+import io.cuppajoe.Iterables;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.functions.*;
 import io.cuppajoe.math.PredicateFor;
@@ -8,7 +9,6 @@ import io.cuppajoe.typeclass.applicative.Applicative1;
 import io.cuppajoe.typeclass.monad.Monad1;
 import io.cuppajoe.typeclass.monoid.Monoid1;
 import io.cuppajoe.typeclass.value.Value1;
-import io.cuppajoe.Iterables;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -256,7 +256,7 @@ public class Array<E> implements Seq<Array, E>, Value1<Array, E> {
     }
 
     @Override
-    public Array<E> identity() {
+    public Array<E> mempty() {
         return empty();
     }
 

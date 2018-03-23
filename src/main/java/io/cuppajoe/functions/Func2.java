@@ -5,7 +5,7 @@
 package io.cuppajoe.functions;
 
 import io.cuppajoe.control.Try;
-import io.cuppajoe.tuples.Apply2;
+import io.cuppajoe.tuples.Product2;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,7 +39,7 @@ public interface Func2<A, B, R> extends BiFunction<A, B, R> {
     }
 
     @Contract(pure = true)
-    default Apply2<A, B, R> tupled() {
+    default Func1<Product2<A, B>, R> tupled() {
         return x -> apply(x.$1(), x.$2());
     }
 

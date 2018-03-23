@@ -5,7 +5,7 @@
 package io.cuppajoe.functions;
 
 import io.cuppajoe.control.Try;
-import io.cuppajoe.tuples.Apply3;
+import io.cuppajoe.tuples.Product3;
 import org.jetbrains.annotations.Contract;
 
 import java.util.function.Function;
@@ -35,7 +35,7 @@ public interface Func3<A, B, C, R> {
     }
 
     @Contract(pure = true)
-    default Apply3<A, B, C, R> tupled() {
+    default Func1<Product3<A, B, C>, R> tupled() {
         return x -> apply(x.$1(), x.$2(), x.$3());
     }
 

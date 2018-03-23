@@ -76,7 +76,7 @@ public interface Validation<E, O> extends Monad1<Validation<E, ?>, O>, Monoid1<V
     }
 
     @Override
-    default Validation<E, O> identity() {
+    default Validation<E, O> mempty() {
         return of(value());
     }
 

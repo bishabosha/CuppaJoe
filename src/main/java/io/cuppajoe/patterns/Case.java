@@ -7,6 +7,7 @@ package io.cuppajoe.patterns;
 import io.cuppajoe.API;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.functions.*;
+import io.cuppajoe.patterns.Cases.MatchException;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
@@ -21,6 +22,7 @@ import static io.cuppajoe.API.Option;
  * @param <I> the input class being matched
  * @param <O> the output class for if a of is made.
  */
+@FunctionalInterface
 public interface Case<I, O> {
 
     /**
@@ -29,6 +31,10 @@ public interface Case<I, O> {
      * @return {@link API#Nothing()} if no of is made. Otherwise {@link Option} of the matched variable
      */
     Option<O> match(I input);
+
+    default O get(I input) throws MatchException {
+        return match(input).orElseThrow(() -> new MatchException(input));
+    }
 
     /**
      * Similar to a Case, but only has to optionally supply a value. Guards are different to Cases,

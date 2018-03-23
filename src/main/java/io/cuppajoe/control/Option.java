@@ -4,20 +4,21 @@
 
 package io.cuppajoe.control;
 
+import io.cuppajoe.API;
+import io.cuppajoe.Iterables;
+import io.cuppajoe.functions.Func1;
+import io.cuppajoe.patterns.Case;
 import io.cuppajoe.patterns.Cases.CaseOf;
-import io.cuppajoe.patterns.Cases.Root;
-import io.cuppajoe.tuples.Apply1;
+import io.cuppajoe.patterns.Cases.Root1;
+import io.cuppajoe.patterns.Pattern;
+import io.cuppajoe.patterns.PatternFactory;
+import io.cuppajoe.tuples.Applied1;
 import io.cuppajoe.tuples.Product1;
 import io.cuppajoe.tuples.Unapply0;
 import io.cuppajoe.tuples.Unapply1;
 import io.cuppajoe.typeclass.applicative.Applicative1;
 import io.cuppajoe.typeclass.monad.Monad1;
 import io.cuppajoe.typeclass.peek.Peek1;
-import io.cuppajoe.Iterables;
-import io.cuppajoe.functions.Func1;
-import io.cuppajoe.patterns.Case;
-import io.cuppajoe.patterns.Pattern;
-import io.cuppajoe.patterns.PatternFactory;
 import io.cuppajoe.typeclass.value.Value1;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +35,7 @@ import java.util.function.Supplier;
 
 import static io.cuppajoe.API.Tuple;
 
-public interface Option<O> extends Root, Monad1<Option, O>, Peek1<O>, Value1<Option, O> {
+public interface Option<O> extends Root1, Monad1<Option, O>, Peek1<O>, Value1<Option, O> {
 
     static <O> Option<O> from(Optional<O> optional) {
         return optional.map(Option::of).orElse(Nothing.getInstance());
@@ -127,10 +128,6 @@ public interface Option<O> extends Root, Monad1<Option, O>, Peek1<O>, Value1<Opt
 
         private Some(O value) {
             this.value = value;
-        }
-
-        static <O> Apply1<O, Some<O>> Applied() {
-            return Func1.<O, Some<O>>of(Option::some).tupled();
         }
 
         @Contract(pure = true)

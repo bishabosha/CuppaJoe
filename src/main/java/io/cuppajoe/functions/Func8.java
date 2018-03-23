@@ -5,7 +5,7 @@
 package io.cuppajoe.functions;
 
 import io.cuppajoe.control.Try;
-import io.cuppajoe.tuples.Apply8;
+import io.cuppajoe.tuples.Product8;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,7 +39,7 @@ public interface Func8<A, B, C, D, E, F, G, H, R> {
     }
 
     @Contract(pure = true)
-    default Apply8<A, B, C, D, E, F, G, H, R> tupled() {
+    default Func1<Product8<A, B, C, D, E, F, G, H>, R> tupled() {
         return x -> apply(x.$1(), x.$2(), x.$3(), x.$4(), x.$5(), x.$6(), x.$7(), x.$8());
     }
 

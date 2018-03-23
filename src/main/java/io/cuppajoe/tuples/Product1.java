@@ -5,6 +5,7 @@ import io.cuppajoe.functions.Func1;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public interface Product1<A> extends Product, Unapply1<A> {
@@ -34,7 +35,11 @@ public interface Product1<A> extends Product, Unapply1<A> {
         return Iterables.ofSuppliers((Supplier<Object>) this::$1).iterator();
     }
 
-    default <O> O map(Func1<A, O> mapper) {
+    default <O> O compose(Func1<A, O> mapper) {
         return mapper.apply($1());
+    }
+
+    default <O> Product1<O> map(Function<? super A, ? extends O> function) {
+        return Tuple1.of(function.apply($1()));
     }
 }

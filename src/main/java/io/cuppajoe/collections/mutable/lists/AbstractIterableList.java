@@ -4,9 +4,9 @@
 
 package io.cuppajoe.collections.mutable.lists;
 
-import io.cuppajoe.collections.mutable.base.AbstractCollection;
 import io.cuppajoe.Iterables;
 import io.cuppajoe.Iterables.Lockable;
+import io.cuppajoe.collections.mutable.base.AbstractCollection;
 
 import java.util.Collection;
 import java.util.Iterator;

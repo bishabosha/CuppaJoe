@@ -6,6 +6,8 @@ package io.cuppajoe.collections.immutable;
 
 import io.cuppajoe.API;
 import io.cuppajoe.Foldable;
+import io.cuppajoe.Iterables;
+import io.cuppajoe.Iterables.Lockable;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.functions.Func3;
 import io.cuppajoe.patterns.Pattern;
@@ -14,8 +16,6 @@ import io.cuppajoe.tuples.Apply3;
 import io.cuppajoe.tuples.Product2;
 import io.cuppajoe.tuples.Product3;
 import io.cuppajoe.tuples.Unapply3;
-import io.cuppajoe.Iterables;
-import io.cuppajoe.Iterables.Lockable;
 import org.jetbrains.annotations.Contract;
 
 import java.util.Iterator;
@@ -24,8 +24,8 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
-import static io.cuppajoe.API.*;
 import static io.cuppajoe.API.List;
+import static io.cuppajoe.API.*;
 import static io.cuppajoe.collections.immutable.Tree.Leaf.¥Leaf;
 import static io.cuppajoe.collections.immutable.Tree.Node.$Node;
 import static io.cuppajoe.patterns.Case.*;
@@ -436,7 +436,7 @@ public interface Tree<E extends Comparable<E>> {
         }
 
         static <R extends Comparable<R>> Apply3<R, Tree<R>, Tree<R>, Tree<R>> Applied() {
-            return Func3.<R, Tree<R>, Tree<R>, Tree<R>>of(Tree::Node).tupled();
+            return Func3.<R, Tree<R>, Tree<R>, Tree<R>>of(Tree::Node).tupled()::apply;
         }
 
         @Override

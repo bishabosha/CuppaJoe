@@ -1,12 +1,11 @@
 package io.cuppajoe.patterns;
 
 import io.cuppajoe.Foldable;
-import io.cuppajoe.collections.immutable.List;
-import io.cuppajoe.control.Option;
 import io.cuppajoe.Iterables;
 import io.cuppajoe.Iterables.Lockable;
 import io.cuppajoe.collections.immutable.Array;
 import io.cuppajoe.collections.immutable.List;
+import io.cuppajoe.control.Option;
 import io.cuppajoe.functions.*;
 import org.jetbrains.annotations.NotNull;
 

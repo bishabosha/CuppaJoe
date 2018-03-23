@@ -4,9 +4,9 @@
 
 package io.cuppajoe.pipelines;
 
-import io.cuppajoe.control.Option;
 import io.cuppajoe.Iterables.Lockable;
 import io.cuppajoe.collections.mutable.lists.LinkedList;
+import io.cuppajoe.control.Option;
 
 import java.util.Iterator;
 import java.util.Objects;

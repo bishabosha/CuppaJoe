@@ -4,10 +4,10 @@
 
 package io.cuppajoe.sequences;
 
-import io.cuppajoe.control.Option;
-import io.cuppajoe.pipelines.Pipeline;
 import io.cuppajoe.Iterables;
 import io.cuppajoe.collections.mutable.base.AbstractArrayHelper;
+import io.cuppajoe.control.Option;
+import io.cuppajoe.pipelines.Pipeline;
 
 import java.util.Iterator;
 import java.util.function.Consumer;

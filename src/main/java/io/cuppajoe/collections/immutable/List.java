@@ -1,23 +1,24 @@
 package io.cuppajoe.collections.immutable;
 
+import io.cuppajoe.API;
+import io.cuppajoe.Iterables;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.functions.Func2;
 import io.cuppajoe.functions.Func3;
 import io.cuppajoe.math.PredicateFor;
 import io.cuppajoe.patterns.Case;
 import io.cuppajoe.patterns.Cases.CaseOf;
-import io.cuppajoe.patterns.Cases.Root;
+import io.cuppajoe.patterns.Cases.Root1;
 import io.cuppajoe.patterns.Pattern;
 import io.cuppajoe.patterns.PatternFactory;
+import io.cuppajoe.tuples.Applied2;
 import io.cuppajoe.tuples.Apply2;
 import io.cuppajoe.tuples.Product2;
 import io.cuppajoe.tuples.Unapply0;
-import io.cuppajoe.tuples.Unapply2;
 import io.cuppajoe.typeclass.applicative.Applicative1;
 import io.cuppajoe.typeclass.monad.Monad1;
 import io.cuppajoe.typeclass.monoid.Monoid1;
 import io.cuppajoe.typeclass.value.Value1;
-import io.cuppajoe.Iterables;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,7 +31,7 @@ import java.util.function.Supplier;
 
 import static io.cuppajoe.API.*;
 
-public interface List<E> extends Root, Seq<List, E>, Value1<List, E> {
+public interface List<E> extends Root1, Seq<List, E>, Value1<List, E> {
 
     /**
      * Creates a new of instance with a head and another of for a tail.
@@ -164,7 +165,7 @@ public interface List<E> extends Root, Seq<List, E>, Value1<List, E> {
 
     @Override
     default List<E> reverse() {
-        return foldLeft(identity(), List::push);
+        return foldLeft(mempty(), List::push);
     }
 
     @Override
@@ -208,7 +209,7 @@ public interface List<E> extends Root, Seq<List, E>, Value1<List, E> {
     @Override
     default <O> List<E> distinct(Function<E, O> propertyGetter) {
         var isDistinct = PredicateFor.distinctProperty(propertyGetter);
-        return foldRight(identity(), (xs, x) -> isDistinct.test(x) ? xs.push(x) : xs);
+        return foldRight(mempty(), (xs, x) -> isDistinct.test(x) ? xs.push(x) : xs);
     }
 
     @Override
@@ -217,7 +218,7 @@ public interface List<E> extends Root, Seq<List, E>, Value1<List, E> {
     }
 
     @Override
-    default List<E> identity() {
+    default List<E> mempty() {
         return empty();
     }
 
@@ -325,7 +326,7 @@ public interface List<E> extends Root, Seq<List, E>, Value1<List, E> {
         }
     }
 
-    final class Cons<E> implements CaseOf<List<E>>, List<E>, Unapply2<E, List<E>> {
+    final class Cons<E> implements CaseOf<List<E>>, List<E>, Applied2<E, List<E>, Cons<E>> {
         private E head;
         private List<E> tail;
 
@@ -352,8 +353,8 @@ public interface List<E> extends Root, Seq<List, E>, Value1<List, E> {
             this.tail = tail;
         }
 
-        static <O> Apply2<O, List<O>, List<O>> Applied() {
-            return Func2.<O, List<O>, List<O>>of(List::concat).tupled();
+        static <O> Apply2<O, List<O>, Cons<O>> Applied() {
+            return Func2.<O, List<O>, Cons<O>>of(List::concat).tupled()::apply;
         }
 
         @Override
@@ -487,6 +488,11 @@ public interface List<E> extends Root, Seq<List, E>, Value1<List, E> {
         @Override
         public String toString() {
             return Iterables.toString('[', ']', iterator());
+        }
+
+        @Override
+        public Cons<E> apply(Product2<E, List<E>> objects) {
+            return Func2.<E, List<E>, Cons<E>>of(API::Cons).tupled().apply(objects);
         }
     }
 }

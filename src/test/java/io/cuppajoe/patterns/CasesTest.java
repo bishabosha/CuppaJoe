@@ -1,10 +1,10 @@
 package io.cuppajoe.patterns;
 
-import io.cuppajoe.patterns.Cases.MatchException;
+import io.cuppajoe.patterns.Cases.*;
 import org.junit.Test;
 
 import static io.cuppajoe.API.*;
-import static io.cuppajoe.patterns.Cases.caseOf;
+import static io.cuppajoe.patterns.Cases.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -32,6 +32,11 @@ public class CasesTest {
         assertEquals(Nothing(), matchOption.match(Some(2)));
 
         assertThrows(MatchException.class, () -> matchOption.get(Some(2)), "No match found for object: Some(2)");
-    }
 
+        var ok = casePatt(Some($()), (Integer elem) -> elem + 1);
+
+        var okMatch = ok.match(Some($(1)));
+
+        assertEquals(Some(2), okMatch);
+    }
 }
