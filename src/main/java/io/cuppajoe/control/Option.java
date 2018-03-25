@@ -4,15 +4,11 @@
 
 package io.cuppajoe.control;
 
-import io.cuppajoe.API;
 import io.cuppajoe.Iterables;
 import io.cuppajoe.functions.Func1;
 import io.cuppajoe.patterns.Case;
-import io.cuppajoe.patterns.Cases.CaseOf;
-import io.cuppajoe.patterns.Cases.Root1;
 import io.cuppajoe.patterns.Pattern;
 import io.cuppajoe.patterns.PatternFactory;
-import io.cuppajoe.tuples.Applied1;
 import io.cuppajoe.tuples.Product1;
 import io.cuppajoe.tuples.Unapply0;
 import io.cuppajoe.tuples.Unapply1;
@@ -35,7 +31,7 @@ import java.util.function.Supplier;
 
 import static io.cuppajoe.API.Tuple;
 
-public interface Option<O> extends Root1, Monad1<Option, O>, Peek1<O>, Value1<Option, O> {
+public interface Option<E> extends Monad1<Option, E>, Peek1<E>, Value1<Option, E> {
 
     static <O> Option<O> from(Optional<O> optional) {
         return optional.map(Option::of).orElse(Nothing.getInstance());
@@ -58,25 +54,25 @@ public interface Option<O> extends Root1, Monad1<Option, O>, Peek1<O>, Value1<Op
     }
 
     @Override
-    default Option<O> or(Supplier<? extends Value1<Option, ? extends O>> alternative) {
-        return isEmpty() ? Value1.Type.<Option<O>, Option, O>narrow(alternative.get()) : this;
+    default Option<E> or(Supplier<? extends Value1<Option, ? extends E>> alternative) {
+        return isEmpty() ? Value1.Type.<Option<E>, Option, E>narrow(alternative.get()) : this;
     }
 
-    default Option<O> filter(Predicate<? super O> filter) {
+    default Option<E> filter(Predicate<? super E> filter) {
         return !isEmpty() && filter.test(get()) ? this : Nothing.getInstance();
     }
 
     @Override
-    default <U> Option<U> map(Function<? super O, ? extends U> mapper) {
+    default <U> Option<U> map(Function<? super E, ? extends U> mapper) {
         return isEmpty() ? Nothing.getInstance() : some(mapper.apply(get()));
     }
 
     @Override
-    default <U> Option<U> flatMap(Function<? super O, Monad1<Option, ? extends U>> mapper) {
+    default <U> Option<U> flatMap(Function<? super E, Monad1<Option, ? extends U>> mapper) {
         return isEmpty() ? Nothing.getInstance() : Objects.requireNonNull(Monad1.Type.<Option<U>, Option, U>narrow(mapper.apply(get())));
     }
 
-    default <T> Option<T> match(Case<? super O, T> matcher) {
+    default <T> Option<T> match(Case<? super E, T> matcher) {
         return isEmpty() ? Nothing.getInstance() : matcher.match(get());
     }
 
@@ -84,19 +80,19 @@ public interface Option<O> extends Root1, Monad1<Option, O>, Peek1<O>, Value1<Op
         return !isEmpty() && clazz.isInstance(get()) ? some(clazz.cast(get())) : Nothing.getInstance();
     }
 
-    default boolean contains(O o) {
-        return !isEmpty() && Objects.equals(get(), o);
+    default boolean contains(E e) {
+        return !isEmpty() && Objects.equals(get(), e);
     }
 
     @Override
-    default void peek(Consumer<? super O> consumer) {
+    default void peek(Consumer<? super E> consumer) {
         if (!isEmpty()) {
             consumer.accept(get());
         }
     }
 
     @Override
-    default Option<O> toOption() {
+    default Option<E> toOption() {
         return this;
     }
 
@@ -106,11 +102,11 @@ public interface Option<O> extends Root1, Monad1<Option, O>, Peek1<O>, Value1<Op
     }
 
     @Override
-    default <U> Option<U> apply(Applicative1<Option, Function<? super O, ? extends U>> applicative1) {
+    default <U> Option<U> apply(Applicative1<Option, Function<? super E, ? extends U>> applicative1) {
         return Monad1.applyImpl(this, applicative1);
     }
 
-    final class Some<O> implements CaseOf<Option<O>>, Option<O>, Unapply1<O> {
+    final class Some<O> implements Option<O>, Unapply1<O> {
 
         private O value;
 
@@ -167,7 +163,7 @@ public interface Option<O> extends Root1, Monad1<Option, O>, Peek1<O>, Value1<Op
         }
     }
 
-    final class Nothing<O> implements CaseOf<Option<O>>, Option<O>, Unapply0 {
+    final class Nothing<O> implements Option<O>, Unapply0 {
 
         private static final Nothing<Object> NOTHING = new Nothing<>();
 

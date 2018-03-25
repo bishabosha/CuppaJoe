@@ -7,7 +7,6 @@ package io.cuppajoe.patterns;
 import io.cuppajoe.API;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.functions.*;
-import io.cuppajoe.patterns.Cases.MatchException;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
@@ -35,6 +34,13 @@ public interface Case<I, O> {
     default O get(I input) throws MatchException {
         return match(input).orElseThrow(() -> new MatchException(input));
     }
+
+    class MatchException extends RuntimeException {
+        public MatchException(Object input) {
+            super("No match found for " + input.getClass() + ": " + input);
+        }
+    }
+
 
     /**
      * Similar to a Case, but only has to optionally supply a value. Guards are different to Cases,

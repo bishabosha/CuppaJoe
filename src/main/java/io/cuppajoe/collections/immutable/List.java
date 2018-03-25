@@ -1,20 +1,17 @@
 package io.cuppajoe.collections.immutable;
 
-import io.cuppajoe.API;
 import io.cuppajoe.Iterables;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.functions.Func2;
 import io.cuppajoe.functions.Func3;
 import io.cuppajoe.math.PredicateFor;
 import io.cuppajoe.patterns.Case;
-import io.cuppajoe.patterns.Cases.CaseOf;
-import io.cuppajoe.patterns.Cases.Root1;
 import io.cuppajoe.patterns.Pattern;
 import io.cuppajoe.patterns.PatternFactory;
-import io.cuppajoe.tuples.Applied2;
 import io.cuppajoe.tuples.Apply2;
 import io.cuppajoe.tuples.Product2;
 import io.cuppajoe.tuples.Unapply0;
+import io.cuppajoe.tuples.Unapply2;
 import io.cuppajoe.typeclass.applicative.Applicative1;
 import io.cuppajoe.typeclass.monad.Monad1;
 import io.cuppajoe.typeclass.monoid.Monoid1;
@@ -31,7 +28,7 @@ import java.util.function.Supplier;
 
 import static io.cuppajoe.API.*;
 
-public interface List<E> extends Root1, Seq<List, E>, Value1<List, E> {
+public interface List<E> extends Seq<List, E>, Value1<List, E> {
 
     /**
      * Creates a new of instance with a head and another of for a tail.
@@ -250,7 +247,7 @@ public interface List<E> extends Root1, Seq<List, E>, Value1<List, E> {
         return Monad1.applyImpl(this, applicative1);
     }
 
-    final class Empty<E> implements CaseOf<List<E>>, List<E>, Unapply0, EmptySeq<List, E> {
+    final class Empty<E> implements List<E>, Unapply0, EmptySeq<List, E> {
 
         /**
          * Pattern to test if any object is equivalent to an empty tail element.
@@ -326,7 +323,7 @@ public interface List<E> extends Root1, Seq<List, E>, Value1<List, E> {
         }
     }
 
-    final class Cons<E> implements CaseOf<List<E>>, List<E>, Applied2<E, List<E>, Cons<E>> {
+    final class Cons<E> implements List<E>, Unapply2<E, List<E>> {
         private E head;
         private List<E> tail;
 
@@ -488,11 +485,6 @@ public interface List<E> extends Root1, Seq<List, E>, Value1<List, E> {
         @Override
         public String toString() {
             return Iterables.toString('[', ']', iterator());
-        }
-
-        @Override
-        public Cons<E> apply(Product2<E, List<E>> objects) {
-            return Func2.<E, List<E>, Cons<E>>of(API::Cons).tupled().apply(objects);
         }
     }
 }
