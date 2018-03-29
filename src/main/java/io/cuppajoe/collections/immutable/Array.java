@@ -32,38 +32,6 @@ public class Array<E> implements Seq<Array, E>, Value1<Array, E> {
         return new Array<>(elems == null ? new Object[]{null} : elems);
     }
 
-    public static <O> Func1<O, Array<O>> of1() {
-        return a -> new Array<>(new Object[]{ a });
-    }
-
-    public static <O> Func2<O, O, Array<O>> of2() {
-        return (a, b) -> new Array<>(new Object[]{ a, b });
-    }
-
-    public static <O> Func3<O, O, O, Array<O>> of3() {
-        return (a, b, c) -> new Array<>(new Object[]{ a, b, c });
-    }
-
-    public static <O> Func4<O, O, O, O, Array<O>> of4() {
-        return (a, b, c, d) -> new Array<>(new Object[]{ a, b, c, d });
-    }
-
-    public static <O> Func5<O, O, O, O, O, Array<O>> of5() {
-        return (a, b, c, d, e) -> new Array<>(new Object[]{ a, b, c, d, e });
-    }
-
-    public static <O> Func6<O, O, O, O, O, O, Array<O>> of6() {
-        return (a, b, c, d, e, f) -> new Array<>(new Object[]{ a, b, c, d, e, f });
-    }
-
-    public static <O> Func7<O, O, O, O, O, O, O, Array<O>> of7() {
-        return (a, b, c, d, e, f, g) -> new Array<>(new Object[]{ a, b, c, d, e, f, g });
-    }
-
-    public static <O> Func8<O, O, O, O, O, O, O, O, Array<O>> of8() {
-        return (a, b, c, d, e, f, g, h) -> new Array<>(new Object[]{ a, b, c, d, e, f, g, h });
-    }
-
     public static <R> Array<R> empty() {
         return new Array<>(new Object[0]);
     }

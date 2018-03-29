@@ -11,9 +11,8 @@ public class ResultTest {
 
     @Test
     public void print() {
-        assertEquals("[]", Result.of().toString());
+        assertEquals("[]", Result.empty().toString());
         assertEquals("[1]", Result.of(1).toString());
-        assertEquals("[1, 2]", Result.of(1,2).toString());
         assertEquals("[1, 2]", Result.compose(Result.of(1), Result.of(2)).toString());
         assertEquals("[1, 2, 3, 4]", Result.compose(Result.compose(Result.of(1), Result.of(2), Result.of(3)), Result.of(4)).toString());
     }
@@ -21,16 +20,12 @@ public class ResultTest {
     @Test
     public void iterating() {
         assertThat(
-            Result.of(),
+            Result.empty(),
             Matchers.emptyIterable()
         );
         assertThat(
             Result.of(1),
             Matchers.contains(1)
-        );
-        assertThat(
-            Result.of(1, 2),
-            Matchers.contains(1, 2)
         );
         assertThat(
             Result.compose(Result.of(1), Result.of(2)),

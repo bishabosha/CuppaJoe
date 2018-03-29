@@ -11,7 +11,7 @@ package io.cuppajoe;
 import io.cuppajoe.collections.mutable.base.MapEntry;
 import io.cuppajoe.collections.mutable.hashtables.HashTable;
 import io.cuppajoe.control.Option;
-import io.cuppajoe.tuples.Tuple2;
+import io.cuppajoe.tuples.*;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -248,6 +248,22 @@ public interface Iterables {
         }
     };
 
+    static <R> Iterator<R> tupleIterator(Product product) {
+        return new Iterator<>() {
+
+            private int i = 1;
+
+            @Override
+            public boolean hasNext() {
+                return i <= product.arity();
+            }
+
+            @Override
+            public R next() {
+                return (R) product.$(i++);
+            }
+        };
+    }
 
     static <R> Iterator<R> wrap(R[] values) {
         return new Lockable<>() {

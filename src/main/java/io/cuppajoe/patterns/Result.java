@@ -6,7 +6,7 @@ import io.cuppajoe.Iterables.Lockable;
 import io.cuppajoe.collections.immutable.Array;
 import io.cuppajoe.collections.immutable.List;
 import io.cuppajoe.control.Option;
-import io.cuppajoe.functions.*;
+import io.cuppajoe.tuples.Product;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
@@ -17,45 +17,32 @@ import static io.cuppajoe.API.*;
 
 public interface Result<E> extends Iterable<E> {
 
-    static <E> Result<E> compose(Result<E>... results) {
-        return results == null ? new Leaf<>(null) : new Node<>(Array.of(results));
+    static <E> Result<E> compose(Result<E> a, Result<E> b) {
+        return new Node<>(Tuple(a, b));
     }
 
-    static <E> Func2<Result<E>, Result<E>, Result<E>> compose2() {
-        return Array.<Result<E>>of2().andThen(Node::new);
+    static <E> Result<E> compose(Result<E> a, Result<E> b, Result<E> c) {
+        return new Node<>(Tuple(a, b, c));
     }
 
-    static <E> Func3<Result<E>, Result<E>, Result<E>, Result<E>> compose3() {
-        return Array.<Result<E>>of3().andThen(Node::new);
+    static <E> Result<E> compose(Result<E> a, Result<E> b, Result<E> c, Result<E> d) {
+        return new Node<>(Tuple(a, b, c, d));
     }
 
-    static <E> Func4<Result<E>, Result<E>, Result<E>, Result<E>, Result<E>> compose4() {
-        return Array.<Result<E>>of4().andThen(Node::new);
+    static <E> Result<E> compose(Result<E> a, Result<E> b, Result<E> c, Result<E> d, Result<E> e) {
+        return new Node<>(Tuple(a, b, c, d, e));
     }
 
-    static <E> Func5<Result<E>, Result<E>, Result<E>, Result<E>, Result<E>, Result<E>> compose5() {
-        return Array.<Result<E>>of5().andThen(Node::new);
+    static <E> Result<E> compose(Result<E> a, Result<E> b, Result<E> c, Result<E> d, Result<E> e, Result<E> f) {
+        return new Node<>(Tuple(a, b, c, d, e, f));
     }
 
-    static <E> Func6<Result<E>, Result<E>, Result<E>, Result<E>, Result<E>, Result<E>, Result<E>> compose6() {
-        return Array.<Result<E>>of6().andThen(Node::new);
+    static <E> Result<E> compose(Result<E> a, Result<E> b, Result<E> c, Result<E> d, Result<E> e, Result<E> f, Result<E> g) {
+        return new Node<>(Tuple(a, b, c, d, e, f, g));
     }
 
-    static <E> Func7<Result<E>, Result<E>, Result<E>, Result<E>, Result<E>, Result<E>, Result<E>, Result<E>> compose7() {
-        return Array.<Result<E>>of7().andThen(Node::new);
-    }
-
-    static <E> Func8<Result<E>, Result<E>, Result<E>, Result<E>, Result<E>, Result<E>, Result<E>, Result<E>, Result<E>> compose8() {
-        return Array.<Result<E>>of8().andThen(Node::new);
-    }
-
-    @SafeVarargs
-    static <E> Result<E> of(E... values) {
-        return values == null
-            ? new Leaf<>(null)
-            : values.length == 0
-                ? empty()
-                : new Node<>(Array.of(values).map(Leaf::new));
+    static <E> Result<E> compose(Result<E> a, Result<E> b, Result<E> c, Result<E> d, Result<E> e, Result<E> f, Result<E> g, Result<E> h) {
+        return new Node<>(Tuple(a, b, c, d, e, f, g, h));
     }
 
     static <E> Result<E> of(E value) {
@@ -73,7 +60,7 @@ public interface Result<E> extends Iterable<E> {
 
     Option<E> get();
 
-    Array<Result<E>> branches();
+    Iterable<Result<E>> branches();
 
     default Values values() {
         return new Values(iterator());
@@ -85,17 +72,17 @@ public interface Result<E> extends Iterable<E> {
 
     class Node<E> implements Result<E> {
 
-        private static final Result<?> EMPTY = new Node<>(Array.empty());
+        private static final Result<?> EMPTY = new Node<>(Tuple());
 
-        Array<Result<E>> branches;
+        Product branches;
 
-        private Node(Array<Result<E>> branches) {
+        private Node(Product branches) {
             this.branches = branches;
         }
 
         @Override
         public boolean isEmpty() {
-            return branches.isEmpty();
+            return branches.arity() == 0;
         }
 
         public boolean isLeaf() {
@@ -108,8 +95,8 @@ public interface Result<E> extends Iterable<E> {
         }
 
         @Override
-        public Array<Result<E>> branches() {
-            return branches;
+        public Iterable<Result<E>> branches() {
+            return () -> Iterables.tupleIterator(branches);
         }
 
         @NotNull
@@ -187,7 +174,7 @@ public interface Result<E> extends Iterable<E> {
         }
 
         @Override
-        public Array<Result<E>> branches() {
+        public Iterable<Result<E>> branches() {
             return Array.empty();
         }
 
