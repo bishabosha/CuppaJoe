@@ -11,7 +11,7 @@ import io.cuppajoe.control.Option;
 import io.cuppajoe.tuples.Product2;
 import org.junit.Test;
 
-import static io.cuppajoe.API.Nothing;
+import static io.cuppajoe.API.None;
 import static io.cuppajoe.API.Tuple;
 import static io.cuppajoe.collections.immutable.Tree.Node;
 import static io.cuppajoe.collections.immutable.Tree.Node.$Node;
@@ -32,7 +32,7 @@ public class PatternTest {
                         l -> right.test(binaryNode.getRight()).map(
                             r -> Result.compose(n, l, r))));
             }
-            return Nothing();
+            return None();
         };
     }
 
@@ -49,7 +49,7 @@ public class PatternTest {
         var leaf = new BinaryNode<>(25);
 
         assertEquals(
-            Nothing(),
+            None(),
             this.tree.test(0)
         );
         assertEquals(
@@ -61,7 +61,7 @@ public class PatternTest {
             tree($a, ¥_, ¥_).test(tree).get()
         );
         assertEquals(
-            Nothing(),
+            None(),
             tree($(5), ¥_, ¥_).test(tree)
         );
         assertEquals(
@@ -69,7 +69,7 @@ public class PatternTest {
             tree(¥_, ¥_, this.tree).test(tree).get()
         );
         assertEquals(
-            Nothing(),
+            None(),
             tree($a, ¥null, ¥null).test(tree)
         );
         assertEquals(

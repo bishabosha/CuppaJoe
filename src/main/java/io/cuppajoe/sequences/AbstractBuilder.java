@@ -4,7 +4,7 @@
 
 package io.cuppajoe.sequences;
 
-import io.cuppajoe.Iterables.Lockable;
+import io.cuppajoe.Iterators.Lockable;
 
 import java.util.ArrayList;
 import java.util.Iterator;

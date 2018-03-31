@@ -18,17 +18,11 @@ public final class Tuple4<A, B, C, D> implements Product4<A, B, C, D> {
     private final C $3;
     private final D $4;
 
-    private static final Func4<Pattern, Pattern, Pattern, Pattern, Pattern> PATTERN = PatternFactory.gen4(Tuple4.class);
-
     public static Pattern $Tuple4(Pattern $1, Pattern $2, Pattern $3, Pattern $4) {
-        return PATTERN.apply($1, $2, $3, $4);
+        return PatternFactory.gen4(Tuple4.class, $1, $2, $3, $4);
     }
 
-    public static <A, B, C, D> Tuple4<A, B, C, D> of(A $1, B $2, C $3, D $4) {
-        return new Tuple4<>($1, $2, $3, $4);
-    }
-
-    private Tuple4(A $1, B $2, C $3, D $4) {
+    Tuple4(A $1, B $2, C $3, D $4) {
         this.$1 = $1;
         this.$2 = $2;
         this.$3 = $3;

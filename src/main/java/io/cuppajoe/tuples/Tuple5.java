@@ -19,20 +19,11 @@ public final class Tuple5<A, B, C, D, E> implements Product5<A, B, C, D, E> {
     private final D $4;
     private final E $5;
 
-    private static final Func5<Pattern, Pattern, Pattern, Pattern, Pattern, Pattern>
-        PATTERN = PatternFactory.gen5(Tuple5.class);
-
     public static Pattern $Tuple5(Pattern $1, Pattern $2, Pattern $3, Pattern $4, Pattern $5) {
-        return PATTERN.apply($1, $2, $3, $4, $5);
+        return PatternFactory.gen5(Tuple5.class, $1, $2, $3, $4, $5);
     }
 
-    public static <A, B, C, D, E>
-    Tuple5<A, B, C, D, E>
-    of(A $1, B $2, C $3, D $4, E $5) {
-        return new Tuple5<>($1, $2, $3, $4, $5);
-    }
-
-    private Tuple5(A $1, B $2, C $3, D $4, E $5) {
+    Tuple5(A $1, B $2, C $3, D $4, E $5) {
         this.$1 = $1;
         this.$2 = $2;
         this.$3 = $3;

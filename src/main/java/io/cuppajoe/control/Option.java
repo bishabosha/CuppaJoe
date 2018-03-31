@@ -4,8 +4,7 @@
 
 package io.cuppajoe.control;
 
-import io.cuppajoe.Iterables;
-import io.cuppajoe.functions.Func1;
+import io.cuppajoe.Iterators;
 import io.cuppajoe.patterns.Case;
 import io.cuppajoe.patterns.Pattern;
 import io.cuppajoe.patterns.PatternFactory;
@@ -34,11 +33,11 @@ import static io.cuppajoe.API.Tuple;
 public interface Option<E> extends Monad1<Option, E>, Peek1<E>, Value1<Option, E> {
 
     static <O> Option<O> from(Optional<O> optional) {
-        return optional.map(Option::of).orElse(Nothing.getInstance());
+        return optional.map(Option::of).orElse(empty());
     }
 
     static <O> Option<O> of(O value) {
-        return Nothing.getInstance().pure(value);
+        return empty().pure(value);
     }
 
     @NotNull
@@ -49,8 +48,20 @@ public interface Option<E> extends Monad1<Option, E>, Peek1<E>, Value1<Option, E
 
     @NotNull
     @Contract(pure = true)
-    static <O> Nothing<O> nothing() {
-        return Nothing.getInstance();
+    static Option.None none() {
+        return None.INSTANCE;
+    }
+
+    @NotNull
+    @Contract(pure = true)
+    static <O> Option<O> empty() {
+        return Monad1.Type.<Option<O>, Option, O>castParam(None.INSTANCE);
+    }
+
+    @Contract(" -> fail")
+    @Override
+    default E get() {
+        throw new NoSuchElementException("There is nothing present.");
     }
 
     @Override
@@ -59,25 +70,25 @@ public interface Option<E> extends Monad1<Option, E>, Peek1<E>, Value1<Option, E
     }
 
     default Option<E> filter(Predicate<? super E> filter) {
-        return !isEmpty() && filter.test(get()) ? this : Nothing.getInstance();
+        return !isEmpty() && filter.test(get()) ? this : empty();
     }
 
     @Override
     default <U> Option<U> map(Function<? super E, ? extends U> mapper) {
-        return isEmpty() ? Nothing.getInstance() : some(mapper.apply(get()));
+        return isEmpty() ? empty() : some(mapper.apply(get()));
     }
 
     @Override
     default <U> Option<U> flatMap(Function<? super E, Monad1<Option, ? extends U>> mapper) {
-        return isEmpty() ? Nothing.getInstance() : Objects.requireNonNull(Monad1.Type.<Option<U>, Option, U>narrow(mapper.apply(get())));
+        return isEmpty() ? empty() : Objects.requireNonNull(Monad1.Type.<Option<U>, Option, U>narrow(mapper.apply(get())));
     }
 
     default <T> Option<T> match(Case<? super E, T> matcher) {
-        return isEmpty() ? Nothing.getInstance() : matcher.match(get());
+        return isEmpty() ? empty() : matcher.match(get());
     }
 
     default <R> Option<R> cast(Class<R> clazz) {
-        return !isEmpty() && clazz.isInstance(get()) ? some(clazz.cast(get())) : Nothing.getInstance();
+        return !isEmpty() && clazz.isInstance(get()) ? some(clazz.cast(get())) : empty();
     }
 
     default boolean contains(E e) {
@@ -98,12 +109,18 @@ public interface Option<E> extends Monad1<Option, E>, Peek1<E>, Value1<Option, E
 
     @Override
     default <U> Option<U> pure(U value) {
-        return value == null ? Nothing.getInstance() : some(value);
+        return value == null ? empty() : some(value);
     }
 
     @Override
     default <U> Option<U> apply(Applicative1<Option, Function<? super E, ? extends U>> applicative1) {
         return Monad1.applyImpl(this, applicative1);
+    }
+
+    @NotNull
+    @Override
+    default Iterator<E> iterator() {
+        return Iterators.empty();
     }
 
     final class Some<O> implements Option<O>, Unapply1<O> {
@@ -115,11 +132,9 @@ public interface Option<E> extends Monad1<Option, E>, Peek1<E>, Value1<Option, E
             return Tuple(get());
         }
 
-        private static final Func1<Pattern, Pattern> PATTERN = PatternFactory.gen1(Some.class);
-
         @NotNull
         public static Pattern $Some(Pattern pattern) {
-            return PATTERN.apply(pattern);
+            return PatternFactory.gen1(Some.class, pattern);
         }
 
         private Some(O value) {
@@ -159,27 +174,18 @@ public interface Option<E> extends Monad1<Option, E>, Peek1<E>, Value1<Option, E
         @Contract(pure = true)
         @Override
         public Iterator<O> iterator() {
-            return Iterables.singleton(this::get);
+            return Iterators.singleton(this::get);
         }
     }
 
-    final class Nothing<O> implements Option<O>, Unapply0 {
+    enum None implements Option<Void>, Unapply0 {
 
-        private static final Nothing<Object> NOTHING = new Nothing<>();
-
-        @NotNull
-        @Contract(pure = true)
-        public static final Pattern $Nothing() {
-            return x -> NOTHING.equals(x) ? Pattern.PASS : Pattern.FAIL;
-        }
+        INSTANCE;
 
         @NotNull
         @Contract(pure = true)
-        private static <O> Nothing<O> getInstance() {
-            return Monad1.Type.<Nothing<O>, Option, O>castParam(NOTHING);
-        }
-
-        private Nothing() {
+        public static final Pattern $None() {
+            return PatternFactory.gen0(INSTANCE);
         }
 
         @Contract(pure = true)
@@ -188,23 +194,11 @@ public interface Option<E> extends Monad1<Option, E>, Peek1<E>, Value1<Option, E
             return true;
         }
 
-        @Contract(" -> fail")
-        @Override
-        public O get() {
-            throw new NoSuchElementException("There is nothing present.");
-        }
-
         @NotNull
         @Contract(pure = true)
         @Override
         public String toString() {
-            return "Nothing";
-        }
-
-        @NotNull
-        @Override
-        public Iterator<O> iterator() {
-            return Iterables.empty();
+            return "None";
         }
     }
 }

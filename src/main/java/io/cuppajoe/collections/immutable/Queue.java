@@ -1,7 +1,7 @@
 package io.cuppajoe.collections.immutable;
 
 import io.cuppajoe.Foldable;
-import io.cuppajoe.Iterables;
+import io.cuppajoe.Iterators;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.patterns.Case;
 import io.cuppajoe.tuples.Product2;
@@ -106,7 +106,7 @@ public class Queue<E> implements Foldable<E>, Bunch<E>, Value1<Queue, E>, Functo
 
     @Override
     public Iterator<E> iterator() {
-        return Iterables.concat(head, tail.reverse()).iterator();
+        return Iterators.concat(head, tail.reverse());
     }
 
     @Override
@@ -129,6 +129,6 @@ public class Queue<E> implements Foldable<E>, Bunch<E>, Value1<Queue, E>, Functo
 
     @Override
     public String toString() {
-        return Iterables.toString('[', ']', iterator());
+        return Iterators.toString('[', ']', iterator());
     }
 }

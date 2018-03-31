@@ -4,7 +4,7 @@
 
 package io.cuppajoe.pipelines;
 
-import io.cuppajoe.Iterables;
+import io.cuppajoe.Iterators;
 import io.cuppajoe.collections.mutable.hashtables.HashTable;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.functions.Func1;
@@ -50,7 +50,7 @@ public class Pipeline<T> extends AbstractPipeline<T> {
     }
 
     public static <R> Pipeline<R> of(R... values) {
-        return new Pipeline<>(() -> Iterables.wrap(values));
+        return new Pipeline<>(() -> Iterators.wrap(values));
     }
 
     public static <R> Pipeline<R> of(Iterable<R> it) {
@@ -58,11 +58,11 @@ public class Pipeline<T> extends AbstractPipeline<T> {
     }
 
     public static <R> Pipeline<R> fromOptional(Optional<R> option) {
-        return new Pipeline<>(Iterables.fromOptional(option));
+        return new Pipeline<>(() -> Iterators.fromOptional(option));
     }
 
     public static <R> Pipeline<R> empty() {
-        return of(Iterables::empty);
+        return of(Iterators::empty);
     }
 
     public static <R> Pipeline<R> copy(AbstractPipeline pipeline) {
@@ -70,11 +70,11 @@ public class Pipeline<T> extends AbstractPipeline<T> {
     }
 
     public static <R> Pipeline<R> cycle(Iterable<R> source) {
-        return Pipeline.of(Iterables.cycle(source));
+        return Pipeline.of(() -> Iterators.cycle(source));
     }
 
     public static <R> Pipeline<R> cycle(R... values) {
-        return Pipeline.of(Iterables.cycle(values));
+        return Pipeline.of(() -> Iterators.cycle(values));
     }
 
     public static <R> Pipeline<R> stream(Stream<R> stream) {
@@ -83,13 +83,13 @@ public class Pipeline<T> extends AbstractPipeline<T> {
 
     public static <R> Pipeline<R> iterate(R identity,
                                           UnaryOperator<R> accumulator) {
-        return new Pipeline<>(Iterables.iterate(identity, accumulator));
+        return new Pipeline<>(() -> Iterators.iterate(identity, accumulator));
     }
 
     public static <R> Pipeline<R> iterate(R identity,
                                           Predicate<R> terminatingCondition,
                                           UnaryOperator<R> accumulator) {
-        return new Pipeline<>(Iterables.iterate(identity, terminatingCondition, accumulator));
+        return new Pipeline<>(() -> Iterators.iterate(identity, terminatingCondition, accumulator));
     }
 
     /**
@@ -167,7 +167,7 @@ public class Pipeline<T> extends AbstractPipeline<T> {
     public Pipeline<T> sorted(Comparator comparator) {
         var toSort = toArray();
         Arrays.sort(toSort, comparator);
-        return new Pipeline<>(() -> Iterables.wrap(toSort));
+        return new Pipeline<>(() -> Iterators.wrap(toSort));
     }
 
     public Pipeline<T> takeWhile(Predicate<? super T> predicate) {
@@ -236,7 +236,7 @@ public class Pipeline<T> extends AbstractPipeline<T> {
                 result = accumulator.apply(result, element);
             }
         }
-        return foundAny ? Some(result) : Nothing();
+        return foundAny ? Some(result) : None();
     }
 
     /**

@@ -63,6 +63,11 @@ public interface Seq<INSTANCE extends Seq, E> extends Bunch<E>, Foldable<E>, Mon
             return true;
         }
 
+        @Override
+        default boolean contains(E obj) {
+            return false;
+        }
+
         default E get(int i) throws IndexOutOfBoundsException {
             if (i < 0) {
                 throw new IllegalArgumentException("Index must be positive");

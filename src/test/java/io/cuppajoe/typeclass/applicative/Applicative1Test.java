@@ -77,10 +77,10 @@ public class Applicative1Test {
     @Test
     public void applyOption() {
         Option<Function<? super Integer, ? extends String>> func = Some(x -> String.valueOf(x));
-        Option<Function<? super Integer, ? extends String>> funcNo = Nothing();
+        Option<Function<? super Integer, ? extends String>> funcNo = None();
 
         assertEquals(Some("1"), Some(1).apply(func));
-        assertEquals(Nothing(), Some(1).apply(funcNo));
+        assertEquals(None(), Some(1).apply(funcNo));
     }
 
     @Test

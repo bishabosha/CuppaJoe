@@ -6,8 +6,8 @@ package io.cuppajoe.collections.immutable;
 
 import io.cuppajoe.API;
 import io.cuppajoe.Foldable;
-import io.cuppajoe.Iterables;
-import io.cuppajoe.Iterables.Lockable;
+import io.cuppajoe.Iterators;
+import io.cuppajoe.Iterators.Lockable;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.functions.Func3;
 import io.cuppajoe.patterns.Pattern;
@@ -146,11 +146,11 @@ public interface Tree<E extends Comparable<E>> {
 
     /**
      * Finds the largest value of this Tree.
-     * @return {@link API#Nothing()} if this is a leaf, otherwise {@link Option} of the largest value.
+     * @return {@link API#None()} if this is a leaf, otherwise {@link Option} of the largest value.
      */
     default Option<E> largest() {
         return guardUnsafe(
-            when(this::isEmpty,    () -> Nothing()),
+            when(this::isEmpty,    () -> None()),
             when(right()::isEmpty, () -> Some(node())),
             edge(                  () -> right().largest())
         );
@@ -325,7 +325,7 @@ public interface Tree<E extends Comparable<E>> {
             public boolean hasNextSupplier() {
                 final Product2<Option<E>, List<Object>> nextItem;
                 nextItem = stack.nextItem((x, xs) -> Match(x).of(
-                    with(¥Leaf(), () -> Nothing()),
+                    with(¥Leaf(), () -> None()),
                     with($Node($n, $l, $r), (E $n, Tree<E> $l, Tree<E> $r) -> {
                         var zs = xs;
                         zs = zs.push($n);
@@ -335,7 +335,7 @@ public interface Tree<E extends Comparable<E>> {
                         if (!$l.isEmpty()) {
                             zs = zs.push($l);
                         }
-                        return Some(Tuple(Nothing(), zs));
+                        return Some(Tuple(None(), zs));
                     }),
                     with($x, (E $x) -> Some(Tuple(Some($x), xs)))
                 ));
@@ -413,16 +413,14 @@ public interface Tree<E extends Comparable<E>> {
         private final Tree<E> left;
         private final Tree<E> right;
 
-        private static final Func3<Pattern, Pattern, Pattern, Pattern> PATTERN = PatternFactory.gen3(Node.class);
-
         /**
          * @param node The pattern to check the node
          * @param left The pattern to check the left sub tree
          * @param right The pattern to check the right sub tree
-         * @return <b>Option&lt;Result&gt;</b> if all patterns pass, otherwise {@link API#Nothing()}
+         * @return <b>Option&lt;Result&gt;</b> if all patterns pass, otherwise {@link API#None()}
          */
         public static Pattern $Node(Pattern node, Pattern left, Pattern right) {
-            return PATTERN.apply(node, left, right);
+            return PatternFactory.gen3(Node.class, node, left, right);
         }
 
         private Node(E node, Tree<E> left, Tree<E> right) {
@@ -484,7 +482,7 @@ public interface Tree<E extends Comparable<E>> {
 
         @Override
         public String toString() {
-            return Iterables.toString('[', ']', inOrder().iterator());
+            return Iterators.toString('[', ']', inOrder().iterator());
         }
     }
 }

@@ -4,7 +4,7 @@
 
 package io.cuppajoe.collections.mutable.base;
 
-import io.cuppajoe.Iterables;
+import io.cuppajoe.Iterators;
 
 public abstract class AbstractBase<E> implements Iterable<E>{
 
@@ -26,10 +26,10 @@ public abstract class AbstractBase<E> implements Iterable<E>{
 
     @Override
     public int hashCode() {
-        return Iterables.hash(this);
+        return Iterators.hash(this);
     }
 
     public String toString() {
-        return Iterables.toString('[', ']', iterator());
+        return Iterators.toString('[', ']', iterator());
     }
 }

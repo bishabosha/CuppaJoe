@@ -1,8 +1,7 @@
 package io.cuppajoe.control;
 
-import io.cuppajoe.Iterables;
+import io.cuppajoe.Iterators;
 import io.cuppajoe.functions.CheckedFunc0;
-import io.cuppajoe.functions.Func1;
 import io.cuppajoe.patterns.Pattern;
 import io.cuppajoe.patterns.PatternFactory;
 import io.cuppajoe.tuples.Product1;
@@ -21,7 +20,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static io.cuppajoe.API.Nothing;
+import static io.cuppajoe.API.None;
 import static io.cuppajoe.API.Tuple;
 
 public interface Try<E> extends Monad1<Try, E>, Peek1<E>, Value1<Try, E> {
@@ -87,7 +86,7 @@ public interface Try<E> extends Monad1<Try, E>, Peek1<E>, Value1<Try, E> {
         if (isSuccess()) {
             return Option.of(get());
         } else {
-            return Nothing();
+            return None();
         }
     }
 
@@ -135,17 +134,15 @@ public interface Try<E> extends Monad1<Try, E>, Peek1<E>, Value1<Try, E> {
     @NotNull
     @Override
     default Iterator<E> iterator() {
-       return isEmpty() ? Iterables.empty() : Iterables.singleton(this::get);
+       return isEmpty() ? Iterators.empty() : Iterators.singleton(this::get);
     }
 
     final class Success<E> implements Try<E>, Unapply1<E> {
 
-        private static final Func1<Pattern, Pattern> PATTERN = PatternFactory.gen1(Success.class);
-
         private final E value;
 
         static Pattern $Success(Pattern pattern) {
-            return PATTERN.apply(pattern);
+            return PatternFactory.gen1(Success.class, pattern);
         }
 
         private Success(E value) {
@@ -197,10 +194,8 @@ public interface Try<E> extends Monad1<Try, E>, Peek1<E>, Value1<Try, E> {
 
         private final Exception error;
 
-        private static final Func1<Pattern, Pattern> PATTERN = PatternFactory.gen1(Failure.class);
-
         static Pattern $Failure(Pattern error) {
-            return PATTERN.apply(error);
+            return PatternFactory.gen1(Failure.class, error);
         }
 
         private Failure(Exception error) {

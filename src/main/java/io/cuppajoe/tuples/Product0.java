@@ -1,6 +1,6 @@
 package io.cuppajoe.tuples;
 
-import io.cuppajoe.Iterables;
+import io.cuppajoe.Iterators;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
@@ -24,6 +24,6 @@ public interface Product0 extends Product, Unapply0 {
     @Override
     @NotNull
     default Iterator<Object> iterator() {
-        return Iterables.empty();
+        return Iterators.empty();
     }
 }

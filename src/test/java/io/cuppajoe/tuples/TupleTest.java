@@ -26,11 +26,11 @@ public class TupleTest {
     @Test
     public void lifted() {
         var tuple = Tuple(true, false);
-        Assert.assertTrue(
-            tuple.try$(1).isSuccess()
-        );
         Assert.assertFalse(
-            tuple.try$(4).isSuccess()
+            tuple.lift$(1).isEmpty()
+        );
+        Assert.assertTrue(
+            tuple.lift$(4).isEmpty()
         );
     }
 }

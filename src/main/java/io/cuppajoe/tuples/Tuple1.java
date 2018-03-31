@@ -15,17 +15,11 @@ public final class Tuple1<A> implements Product1<A> {
 
     private final A $1;
 
-    private static final Func1<Pattern, Pattern> PATTERN = PatternFactory.gen1(Tuple1.class);
-
     public static Pattern $Tuple1(Pattern $1) {
-        return PATTERN.apply($1);
+        return PatternFactory.gen1(Tuple1.class, $1);
     }
 
-    public static <A> Product1<A> of(A $1) {
-        return new Tuple1<>($1);
-    }
-
-    private Tuple1(A $1) {
+    Tuple1(A $1) {
         this.$1 = $1;
     }
 

@@ -63,8 +63,8 @@ public class MatcherTest {
             Match("spicy").of(cases)
         );
         Assert.assertEquals(
-            "Nothing Found",
-            Match("jsdkjfksj").option(cases).orElse("Nothing Found")
+            "None Found",
+            Match("jsdkjfksj").option(cases).orElse("None Found")
         );
     }
 

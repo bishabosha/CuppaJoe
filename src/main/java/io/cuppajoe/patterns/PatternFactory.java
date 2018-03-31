@@ -5,114 +5,117 @@
 package io.cuppajoe.patterns;
 
 import io.cuppajoe.control.Option;
-import io.cuppajoe.functions.*;
 import io.cuppajoe.tuples.*;
 
-public class PatternFactory<I> {
+public class PatternFactory {
 
-    public static <U extends Unapply1<?>>
-    Func1<Pattern, Pattern> gen1(Class<U> unapply1) {
-        return $1 -> x -> Option.of(x)
-            .cast(unapply1)
-            .map(Unapply1::unapply)
-            .flatMap(values -> $1.test(values.$1()));
+    public static Pattern gen0(Unapply0 target) {
+        return x -> target.equals(x) ? Pattern.PASS : Pattern.FAIL;
     }
 
-    public static <U extends Unapply2<?, ?>>
-    Func2<Pattern, Pattern, Pattern> gen2(Class<U> unapply2) {
-        return ($1, $2) -> x -> Option.of(x)
-            .cast(unapply2)
-            .map(Unapply2::unapply)
-            .flatMap(
-                values -> $1.test(values.$1()).flatMap(
-                    a -> $2.test(values.$2()).map(
-                        b -> Result.compose(a, b))));
+    public static Pattern gen1(Class<? extends Unapply1> target, Pattern p1) {
+        return x -> Option.of(x)
+          .filter(target::isInstance)
+          .map(verified -> ((Unapply1<Object>)verified).unapply())
+          .flatMap(values ->
+              values.compose(p1::test));
     }
 
-    public static <U extends Unapply3<?, ?, ?>>
-    Func3<Pattern, Pattern, Pattern, Pattern> gen3(Class<U> unapply3) {
-        return ($1, $2, $3) -> x -> Option.of(x)
-           .cast(unapply3)
-           .map(Unapply3::unapply)
-           .flatMap(
-               values -> $1.test(values.$1()).flatMap(
-                   a -> $2.test(values.$2()).flatMap(
-                       b -> $3.test(values.$3()).map(
-                           c -> Result.compose(a, b, c)))));
+    public static Pattern gen2(Class<? extends Unapply2> target, Pattern p1, Pattern p2) {
+        return x -> Option.of(x)
+            .filter(target::isInstance)
+            .map(verified -> ((Unapply2<Object, Object>)verified).unapply())
+            .flatMap(values ->
+                values.compose((v1, v2) ->
+                    p1.test(v1).flatMap(r1 ->
+                        p2.test(v2).map(r2 ->
+                            Result.compose(r1, r2)))));
     }
 
-    public static <U extends Unapply4<?, ?, ?, ?>>
-    Func4<Pattern, Pattern, Pattern, Pattern, Pattern> gen4(Class<U> unapply4) {
-        return ($1, $2, $3, $4) -> x -> Option.of(x)
-            .cast(unapply4)
-            .map(Unapply4::unapply)
-            .flatMap(
-                values -> $1.test(values.$1()).flatMap(
-                    a -> $2.test(values.$2()).flatMap(
-                        b -> $3.test(values.$3()).flatMap(
-                            c -> $4.test(values.$4()).map(
-                                d -> Result.compose(a, b, c, d))))));
+    public static Pattern gen3(Class<? extends Unapply3> target, Pattern p1, Pattern p2, Pattern p3) {
+        return x -> Option.of(x)
+           .filter(target::isInstance)
+           .map(verified -> ((Unapply3<Object, Object, Object>)verified).unapply())
+           .flatMap(values ->
+               values.compose((v1, v2, v3) ->
+                   p1.test(v1).flatMap(r1 ->
+                       p2.test(v2).flatMap(r2 ->
+                           p3.test(v3).map(r3 ->
+                               Result.compose(r1, r2, r3))))));
     }
 
-    public static <U extends Unapply5<?, ?, ?, ?, ?>>
-    Func5<Pattern, Pattern, Pattern, Pattern, Pattern, Pattern> gen5(Class<U> unapply5) {
-        return ($1, $2, $3, $4, $5) -> x -> Option.of(x)
-            .cast(unapply5)
-            .map(Unapply5::unapply)
-            .flatMap(
-                values -> $1.test(values.$1()).flatMap(
-                    a -> $2.test(values.$2()).flatMap(
-                        b -> $3.test(values.$3()).flatMap(
-                            c -> $4.test(values.$4()).flatMap(
-                                d -> $5.test(values.$5()).map(
-                                    e -> Result.compose(a, b, c, d, e)))))));
+    public static Pattern gen4(Class<? extends Unapply4> target, Pattern p1, Pattern p2, Pattern p3, Pattern p4) {
+        return x -> Option.of(x)
+            .filter(target::isInstance)
+            .map(verified -> ((Unapply4<Object, Object, Object, Object>)verified).unapply())
+            .flatMap(values ->
+                values.compose((v1, v2, v3, v4) ->
+                    p1.test(v1).flatMap(r1 ->
+                        p2.test(v2).flatMap(r2 ->
+                            p3.test(v3).flatMap(r3 ->
+                                p4.test(v4).map(r4 ->
+                                    Result.compose(r1, r2, r3, r4)))))));
     }
 
-    public static <U extends Unapply6<?, ?, ?, ?, ?, ?>>
-    Func6<Pattern, Pattern, Pattern, Pattern, Pattern, Pattern, Pattern> gen6(Class<U> unapply6) {
-        return ($1, $2, $3, $4, $5, $6) -> x -> Option.of(x)
-            .cast(unapply6)
-            .map(Unapply6::unapply)
-            .flatMap(
-                values -> $1.test(values.$1()).flatMap(
-                    a -> $2.test(values.$2()).flatMap(
-                        b -> $3.test(values.$3()).flatMap(
-                            c -> $4.test(values.$4()).flatMap(
-                                d -> $5.test(values.$5()).flatMap(
-                                    e -> $6.test(values.$6()).map(
-                                        f -> Result.compose(a, b, c, d, e, f))))))));
+    public static Pattern gen5(Class<? extends Unapply5> target, Pattern p1, Pattern p2, Pattern p3, Pattern p4, Pattern p5) {
+        return x -> Option.of(x)
+            .filter(target::isInstance)
+            .map(verified -> ((Unapply5<Object, Object, Object, Object, Object>)verified).unapply())
+            .flatMap(values ->
+                values.compose((v1, v2, v3, v4, v5) ->
+                    p1.test(v1).flatMap(r1 ->
+                        p2.test(v2).flatMap(r2 ->
+                            p3.test(v3).flatMap(r3 ->
+                                p4.test(v4).flatMap(r4 ->
+                                    p5.test(v5).map(r5 ->
+                                        Result.compose(r1, r2, r3, r4, r5))))))));
     }
 
-    public static <U extends Unapply7<?, ?, ?, ?, ?, ?, ?>>
-    Func7<Pattern, Pattern, Pattern, Pattern, Pattern, Pattern, Pattern, Pattern> gen7(Class<U> unapply7) {
-        return ($1, $2, $3, $4, $5, $6, $7) -> x -> Option.of(x)
-            .cast(unapply7)
-            .map(Unapply7::unapply)
-            .flatMap(
-                values -> $1.test(values.$1()).flatMap(
-                    a -> $2.test(values.$2()).flatMap(
-                        b -> $3.test(values.$3()).flatMap(
-                            c -> $4.test(values.$4()).flatMap(
-                                d -> $5.test(values.$5()).flatMap(
-                                    e -> $6.test(values.$6()).flatMap(
-                                        f -> $7.test(values.$7()).map(
-                                            g -> Result.compose(a, b, c, d, e, f, g)))))))));
+    public static Pattern gen6(Class<? extends Unapply6> target, Pattern p1, Pattern p2, Pattern p3, Pattern p4, Pattern p5, Pattern p6) {
+        return x -> Option.of(x)
+            .filter(target::isInstance)
+            .map(verified -> ((Unapply6<Object, Object, Object, Object, Object, Object>)verified).unapply())
+            .flatMap(values ->
+                values.compose((v1, v2, v3, v4, v5, v6) ->
+                    p1.test(v1).flatMap(r1 ->
+                        p2.test(v2).flatMap(r2 ->
+                            p3.test(v3).flatMap(r3 ->
+                                p4.test(v4).flatMap(r4 ->
+                                    p5.test(v5).flatMap(r5 ->
+                                        p6.test(v6).map(r6 ->
+                                            Result.compose(r1, r2, r3, r4, r5, r6)))))))));
     }
 
-    public static <U extends Unapply8<?, ?, ?, ?, ?, ?, ?, ?>>
-    Func8<Pattern, Pattern, Pattern, Pattern, Pattern, Pattern, Pattern, Pattern, Pattern> gen8(Class<U> unapply8) {
-        return ($1, $2, $3, $4, $5, $6, $7, $8) -> x -> Option.of(x)
-            .cast(unapply8)
-            .map(Unapply8::unapply)
-            .flatMap(
-                values -> $1.test(values.$1()).flatMap(
-                    a -> $2.test(values.$2()).flatMap(
-                        b -> $3.test(values.$3()).flatMap(
-                            c -> $4.test(values.$4()).flatMap(
-                                d -> $5.test(values.$5()).flatMap(
-                                    e -> $6.test(values.$6()).flatMap(
-                                        f -> $7.test(values.$7()).flatMap(
-                                            g -> $8.test(values.$8()).map(
-                                                h -> Result.compose(a, b, c, d, e, f, g, h))))))))));
+    public static Pattern gen7(Class<? extends Unapply7> target, Pattern p1, Pattern p2, Pattern p3, Pattern p4, Pattern p5, Pattern p6, Pattern p7) {
+        return x -> Option.of(x)
+            .filter(target::isInstance)
+            .map(verified -> ((Unapply7<Object, Object, Object, Object, Object, Object, Object>)verified).unapply())
+            .flatMap(values ->
+                values.compose((v1, v2, v3, v4, v5, v6, v7) ->
+                    p1.test(v1).flatMap(r1 ->
+                        p2.test(v2).flatMap(r2 ->
+                            p3.test(v3).flatMap(r3 ->
+                                p4.test(v4).flatMap(r4 ->
+                                    p5.test(v5).flatMap(r5 ->
+                                        p6.test(v6).flatMap(r6 ->
+                                            p7.test(v7).map(r7 ->
+                                                Result.compose(r1, r2, r3, r4, r5, r6, r7))))))))));
+    }
+
+    public static Pattern gen8(Class<? extends Unapply8> target, Pattern p1, Pattern p2, Pattern p3, Pattern p4, Pattern p5, Pattern p6, Pattern p7, Pattern p8) {
+        return x -> Option.of(x)
+            .filter(target::isInstance)
+            .map(verified -> ((Unapply8<Object, Object, Object, Object, Object, Object, Object, Object>)verified).unapply())
+            .flatMap(values ->
+                values.compose((v1, v2, v3, v4, v5, v6, v7, v8) ->
+                    p1.test(v1).flatMap(r1 ->
+                        p2.test(v2).flatMap(r2 ->
+                            p3.test(v3).flatMap(r3 ->
+                                p4.test(v4).flatMap(r4 ->
+                                    p5.test(v5).flatMap(r5 ->
+                                        p6.test(v6).flatMap(r6 ->
+                                            p7.test(v7).flatMap(r7 ->
+                                                p8.test(v8).map(r8 ->
+                                                    Result.compose(r1, r2, r3, r4, r5, r6, r7, r8)))))))))));
     }
 }

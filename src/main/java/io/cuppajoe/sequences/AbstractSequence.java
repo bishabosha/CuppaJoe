@@ -4,7 +4,7 @@
 
 package io.cuppajoe.sequences;
 
-import io.cuppajoe.Iterables;
+import io.cuppajoe.Iterators;
 import io.cuppajoe.collections.mutable.base.AbstractArrayHelper;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.pipelines.Pipeline;
@@ -13,7 +13,7 @@ import java.util.Iterator;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import static io.cuppajoe.API.Nothing;
+import static io.cuppajoe.API.None;
 
 public abstract class AbstractSequence<T> extends AbstractArrayHelper<T> implements Sequence<T> {
     int initialTerm = 0;
@@ -52,7 +52,7 @@ public abstract class AbstractSequence<T> extends AbstractArrayHelper<T> impleme
                 return Option.of(val);
             }
         }
-        return Nothing();
+        return None();
     }
 
     @Override
@@ -126,7 +126,7 @@ public abstract class AbstractSequence<T> extends AbstractArrayHelper<T> impleme
 
     @Override
     public boolean equals(Object obj) {
-        return obj == this || obj instanceof Sequence && Iterables.equals(this, obj);
+        return obj == this || obj instanceof Sequence && Iterators.equals(this, obj);
     }
 
     @Override

@@ -7,7 +7,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import static io.cuppajoe.API.Nothing;
+import static io.cuppajoe.API.None;
 import static io.cuppajoe.API.Some;
 
 public interface Value1<INSTANCE extends Value1, E> extends Iterable<E> {
@@ -52,7 +52,7 @@ public interface Value1<INSTANCE extends Value1, E> extends Iterable<E> {
     }
 
     default Option<E> toOption() {
-        return isEmpty() ? Nothing() : Some(get());
+        return isEmpty() ? None() : Some(get());
     }
 
     default Optional<E> toJavaOptional() {

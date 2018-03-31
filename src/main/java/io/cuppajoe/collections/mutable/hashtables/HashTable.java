@@ -4,7 +4,7 @@
 
 package io.cuppajoe.collections.mutable.hashtables;
 
-import io.cuppajoe.Iterables.Lockable;
+import io.cuppajoe.Iterators.Lockable;
 import io.cuppajoe.collections.mutable.base.AbstractSet;
 import io.cuppajoe.collections.mutable.lists.LinkedList;
 import io.cuppajoe.sequences.Sequence;

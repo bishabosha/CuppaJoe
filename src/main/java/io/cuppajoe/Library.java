@@ -23,10 +23,10 @@ public final class Library {
             if (!breaker.isEmpty() && breaker.get()) {
                 return Some(acc);
             } else {
-                return Nothing();
+                return None();
             }
         }
-        return Nothing();
+        return None();
     }
 
     /**

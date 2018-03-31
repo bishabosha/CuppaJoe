@@ -4,7 +4,7 @@
 
 package io.cuppajoe.collections.mutable.hashtables;
 
-import io.cuppajoe.Iterables;
+import io.cuppajoe.Iterators;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -34,18 +34,18 @@ public class HashTableTest {
     public void testRetainAll() {
         var intersection = getGreetings();
         intersection.retainAll(getTwoLetterWords());
-        Assert.assertTrue(Iterables.equalElements(intersection, "Hi", "Yo"));
+        Assert.assertTrue(Iterators.equalElements(intersection, "Hi", "Yo"));
     }
 
     @Test
     public void testRemoveAll() {
         var difference = getGreetings();
         difference.removeAll(getTwoLetterWords());
-        Assert.assertTrue(Iterables.equalElements(difference, "Hello", "Bonjour", "Ciao", "Waddup"));
+        Assert.assertTrue(Iterators.equalElements(difference, "Hello", "Bonjour", "Ciao", "Waddup"));
     }
 
     @Test
     public void testContainsAll() {
-        Assert.assertTrue(getGreetings().containsAll(Iterables.setOf("Hi", "Hello")));
+        Assert.assertTrue(getGreetings().containsAll(Iterators.setOf("Hi", "Hello")));
     }
 }

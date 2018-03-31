@@ -4,7 +4,7 @@
 
 package io.cuppajoe.collections.mutable.tries;
 
-import io.cuppajoe.Iterables;
+import io.cuppajoe.Iterators;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -52,11 +52,11 @@ public class TrieSetTest {
     @Test
     public void testCompletions() {
         var trie = getTrieSet();
-        Assert.assertTrue(Iterables.equalElements(trie.getCompletions("red"), "red", "reddit"));
-        Assert.assertTrue(Iterables.equalElements(trie.getCompletions("ren"), "rent", "render"));
-        Assert.assertTrue(Iterables.equalElements(trie.getCompletions("ro"), "road", "row"));
-        Assert.assertTrue(Iterables.equalElements(trie.getCompletions("rea"), "real", "read"));
-        Assert.assertTrue(Iterables.equalElements(trie.getCompletions("he")));
+        Assert.assertTrue(Iterators.equalElements(trie.getCompletions("red"), "red", "reddit"));
+        Assert.assertTrue(Iterators.equalElements(trie.getCompletions("ren"), "rent", "render"));
+        Assert.assertTrue(Iterators.equalElements(trie.getCompletions("ro"), "road", "row"));
+        Assert.assertTrue(Iterators.equalElements(trie.getCompletions("rea"), "real", "read"));
+        Assert.assertTrue(Iterators.equalElements(trie.getCompletions("he")));
     }
 
     @Test

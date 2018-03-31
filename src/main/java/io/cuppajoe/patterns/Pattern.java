@@ -8,7 +8,7 @@ import io.cuppajoe.control.Option;
 
 import java.util.Objects;
 
-import static io.cuppajoe.API.Nothing;
+import static io.cuppajoe.API.None;
 import static io.cuppajoe.API.Some;
 
 public interface Pattern {
@@ -17,7 +17,7 @@ public interface Pattern {
 
     Option<Result<Object>> PASS = Some(Result.empty());
 
-    Option<Result<Object>> FAIL = Nothing();
+    Option<Result<Object>> FAIL = None();
 
     static Option<Result<Object>> bind(Object x) {
         return Option.of(Result.of(x));

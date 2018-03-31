@@ -11,7 +11,8 @@ package io.cuppajoe;
 import io.cuppajoe.collections.mutable.base.MapEntry;
 import io.cuppajoe.collections.mutable.hashtables.HashTable;
 import io.cuppajoe.control.Option;
-import io.cuppajoe.tuples.*;
+import io.cuppajoe.tuples.Product;
+import io.cuppajoe.tuples.Tuple2;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,7 +24,7 @@ import java.util.function.UnaryOperator;
 
 import static io.cuppajoe.API.Some;
 
-public interface Iterables {
+public interface Iterators {
 
     abstract class Lockable<E> implements Iterator<E> {
         private boolean hasNext = false;
@@ -90,8 +91,8 @@ public interface Iterables {
     @NotNull
     @Contract(pure = true)
     @SafeVarargs
-    static <E> Iterable<E> ofSuppliers(Supplier<E>... suppliers) {
-        return () -> new Lockable<>() {
+    static <E> Iterator<E> ofSuppliers(Supplier<E>... suppliers) {
+        return new Lockable<>() {
             private int i = 0;
 
             @Override
@@ -109,8 +110,8 @@ public interface Iterables {
     @NotNull
     @Contract(pure = true)
     @SafeVarargs
-    static <E> Iterable<E> concat(Iterable<E>... iterables) {
-        return () -> new Lockable<>() {
+    static <E> Iterator<E> concat(Iterable<E>... iterables) {
+        return new Lockable<>() {
             Iterator<E> current;
             int i = 0;
 
@@ -138,16 +139,16 @@ public interface Iterables {
 
     @NotNull
     @Contract(pure = true)
-    static <R> Iterable<R> iterate(R identity, UnaryOperator<R> accumulator) {
+    static <R> Iterator<R> iterate(R identity, UnaryOperator<R> accumulator) {
         return iterate(identity, x -> false, accumulator);
     }
 
     @NotNull
     @Contract(pure = true)
-    static <R> Iterable<R> iterate(R identity,
+    static <R> Iterator<R> iterate(R identity,
             Predicate<R> terminatingCondition,
             UnaryOperator<R> accumulator) {
-        return () -> new Lockable<>() {
+        return new Lockable<>() {
             private R current = identity;
 
             @Override
@@ -163,8 +164,8 @@ public interface Iterables {
         };
     }
 
-    static <R> Iterable<R> fromOptional(Optional<R> optional) {
-        return () -> new Iterator<>() {
+    static <R> Iterator<R> fromOptional(Optional<R> optional) {
+        return new Iterator<>() {
 
             private boolean unWrapped = false;
 
@@ -299,12 +300,12 @@ public interface Iterables {
         };
     }
 
-    static <R> Iterable<R> cycle(R... values) {
+    static <R> Iterator<R> cycle(R... values) {
         return cycle(() -> of(values));
     }
 
-    static <R> Iterable<R> cycle(Iterable<R> source) {
-        return () -> new Lockable<>() {
+    static <R> Iterator<R> cycle(Iterable<R> source) {
+        return new Lockable<>() {
 
             Iterator<R> it = getIt();
 

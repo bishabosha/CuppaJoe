@@ -7,7 +7,7 @@ package io.cuppajoe.patterns;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.patterns.Case.Guard;
 
-import static io.cuppajoe.API.Nothing;
+import static io.cuppajoe.API.None;
 
 public class Matcher<I> {
 
@@ -18,7 +18,7 @@ public class Matcher<I> {
     }
 
     public static <I, O> Option<O> create(Option<I> toMatch, Case<I, O> options) {
-        return toMatch.isEmpty() ? Nothing() : options.match(toMatch.get());
+        return toMatch.isEmpty() ? None() : options.match(toMatch.get());
     }
 
     @SafeVarargs
@@ -48,10 +48,10 @@ public class Matcher<I> {
     public final <O> Option<Option<O>> wrap(Case<I, Option<O>>... cases) {
         Option<Option<O>> result;
         if ((result = option(cases)).isEmpty()) {
-            return Nothing();
+            return None();
         }
         var temp = result.get();
-        return temp.isEmpty() ? Nothing() : result;
+        return temp.isEmpty() ? None() : result;
     }
 
     @SafeVarargs

@@ -1,6 +1,6 @@
 package io.cuppajoe.collections.immutable;
 
-import io.cuppajoe.Iterables;
+import io.cuppajoe.Iterators;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.functions.Func2;
 import io.cuppajoe.functions.Func3;
@@ -30,6 +30,11 @@ import static io.cuppajoe.API.*;
 
 public interface List<E> extends Seq<List, E>, Value1<List, E> {
 
+    @Override
+    default E head() {
+        throw new NoSuchElementException();
+    }
+
     /**
      * Creates a new of instance with a head and another of for a tail.
      * @param x the head of the new of.
@@ -45,11 +50,10 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
 
     /**
      * Returns the singleton instance of the empty list
-     * @param <R> the type encapsulated by the of
      */
     @Contract(pure = true)
-    static <R> Empty<R> empty() {
-        return Empty.getInstance();
+    static <E> List<E> empty() {
+        return Monad1.Type.<List<E>, List, E>castParam(Nil.INSTANCE);
     }
 
     @NotNull
@@ -67,7 +71,7 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
     @SafeVarargs
     static <R> List<R> of(R... elems) {
         if (Objects.isNull(elems)) {
-            return new Cons<>(null, Empty.getInstance());
+            return new Cons<>(null, List.empty());
         }
         List<R> list = List.empty();
         for (var x = elems.length - 1; x >= 0; x--) {
@@ -97,16 +101,23 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
     }
 
     @Override
-    List<E> tail();
+    default List<E> tail() {
+        throw new NoSuchElementException();
+    }
 
     @Override
-    default List<E> take(int limit) {
-        return bufferElementsReversed(limit).reverse();
+    default Seq<List, E> take(int limit) {
+        if (limit > 0) {
+            throw new IndexOutOfBoundsException("limit exceeds size.");
+        } else if (limit < 0) {
+            throw new IllegalArgumentException("index must be positive");
+        }
+        return empty();
     }
 
     @Override
     default List<E> takeRight(int limit) {
-        return reverse().bufferElementsReversed(limit);
+        return empty();
     }
 
     @Override
@@ -115,7 +126,9 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
     }
 
     @Override
-    Option<Product2<E, List<E>>> pop();
+    default Option<Product2<E, List<E>>> pop() {
+        return None();
+    }
 
     default <U> Option<U> pop(Case<Product2<E, List<E>>, U> matcher) {
         return pop().match(matcher);
@@ -150,14 +163,14 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
     }
 
     default <O> Product2<Option<O>, List<E>> nextItem(Func2<E, List<E>, Option<Product2<Option<O>, List<E>>>> mapper) {
-        Option<Product2<Option<O>, List<E>>> loopCond = Some(Tuple(Option.<O>nothing(), this));
+        Option<Product2<Option<O>, List<E>>> loopCond = Some(Tuple(None(), this));
         while (!loopCond.isEmpty() && loopCond.get().$1().isEmpty()) {
             loopCond = loopCond.get()
                                .$2()
                                .pop()
                                .flatMap(t -> t.compose(mapper));
         }
-        return loopCond.orElseSupply(() -> Tuple(Nothing(), empty()));
+        return loopCond.orElseSupply(() -> Tuple(None(), empty()));
     }
 
     @Override
@@ -167,40 +180,7 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
 
     @Override
     default List<E> subsequence(int from, int limit) {
-        if (from < 0) {
-            throw new IllegalArgumentException("from can't be less than zero.");
-        } else if (limit < 0) {
-            throw new IllegalArgumentException("limit can't be less than zero.");
-        } else if (limit < from) {
-            throw new IllegalArgumentException("limit must be greater than or equal to from.");
-        }
-        var it = this;
-        var count = 0;
-        while (count < from) {
-            count = count + 1;
-            if (it.isEmpty()) {
-                throw new IndexOutOfBoundsException("from is larger than size");
-            }
-            it = it.tail();
-        }
-        return it.bufferElementsReversed(limit - from).reverse();
-    }
-
-    private List<E> bufferElementsReversed(int limit) {
-        if (limit < 0) {
-            throw new IllegalArgumentException("limit can't be less than zero.");
-        }
-        var it = this;
-        List<E> buffer = List.empty();
-        while (limit > 0) {
-            limit = limit - 1;
-            if (it.isEmpty()) {
-                throw new IndexOutOfBoundsException("limit exceeds size.");
-            }
-            buffer = buffer.push(it.head());
-            it = it.tail();
-        }
-        return buffer;
+        return empty();
     }
 
     @Override
@@ -247,87 +227,26 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
         return Monad1.applyImpl(this, applicative1);
     }
 
-    final class Empty<E> implements List<E>, Unapply0, EmptySeq<List, E> {
-
-        /**
-         * Pattern to test if any object is equivalent to an empty tail element.
-         */
-        public static Pattern ¥Empty() {
-            return x -> x instanceof Empty<?> ? Pattern.PASS : Pattern.FAIL;
+    private List<E> bufferElementsReversed(int limit) {
+        if (limit < 0) {
+            throw new IllegalArgumentException("limit can't be less than zero.");
         }
-
-        private static final Empty<?> EMPTY_LIST = new List.Empty<>();
-
-        @SuppressWarnings("unchecked")
-        private static <O> Empty<O> getInstance() {
-            return (Empty<O>) EMPTY_LIST;
-        }
-
-        private Empty() {
-        }
-
-        @Override
-        public Option<Product2<E, List<E>>> pop() {
-            return Nothing();
-        }
-
-        @Override
-        public E head() {
-            throw new NoSuchElementException();
-        }
-
-        @Override
-        public List<E> tail() {
-            throw new NoSuchElementException();
-        }
-
-        @Override
-        public List<E> take(int limit) {
-            if (limit > 0) {
+        List<E> it = this;
+        List<E> buffer = List.empty();
+        while (limit > 0) {
+            limit = limit - 1;
+            if (it.isEmpty()) {
                 throw new IndexOutOfBoundsException("limit exceeds size.");
-            } else if (limit < 0) {
-                throw new IllegalArgumentException("index must be positive");
             }
-            return empty();
+            buffer = buffer.push(it.head());
+            it = it.tail();
         }
-
-        @Override
-        public List<E> takeRight(int limit) {
-            return take(limit);
-        }
-
-        @Override
-        public boolean isEmpty() {
-            return true;
-        }
-
-        @Override
-        public boolean contains(E obj) {
-            return false;
-        }
-
-        @Override
-        public <R> List<R> map(@NotNull Function<? super E, ? extends R> mapper) {
-            return empty();
-        }
-
-        @NotNull
-        @Override
-        public Iterator<E> iterator() {
-            return Iterables.empty();
-        }
-
-        @Override
-        public String toString() {
-            return "[]";
-        }
+        return buffer;
     }
 
     final class Cons<E> implements List<E>, Unapply2<E, List<E>> {
         private E head;
         private List<E> tail;
-
-        private static final Func2<Pattern, Pattern, Pattern> PATTERN = PatternFactory.gen2(Cons.class);
 
         /**
          * Composes patterns for the head and tail and checks that the element is a of.
@@ -336,7 +255,7 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
          * @return The composed pattern
          */
         public static Pattern $Cons(Pattern $x, Pattern $xs) {
-            return PATTERN.apply($x, $xs);
+            return PatternFactory.gen2(Cons.class, $x, $xs);
         }
 
         /**
@@ -377,11 +296,6 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
         @Override
         public boolean isEmpty() {
             return false;
-        }
-
-        @Override
-        public <R> List<R> map(Function<? super E, ? extends R> mapper) {
-            return foldRight(empty(), (List<R> xs, E x) -> xs.push(mapper.apply(x)));
         }
 
         /**
@@ -442,6 +356,38 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
         }
 
         @Override
+        public List<E> take(int limit) {
+            List<E> it = this;
+            return it.bufferElementsReversed(limit).reverse();
+        }
+
+        @Override
+        public List<E> takeRight(int limit) {
+            return reverse().bufferElementsReversed(limit);
+        }
+
+        @Override
+        public List<E> subsequence(int from, int limit) {
+            if (from < 0) {
+                throw new IllegalArgumentException("from can't be less than zero.");
+            } else if (limit < 0) {
+                throw new IllegalArgumentException("limit can't be less than zero.");
+            } else if (limit < from) {
+                throw new IllegalArgumentException("limit must be greater than or equal to from.");
+            }
+            List<E> it = this;
+            var count = 0;
+            while (count < from) {
+                count = count + 1;
+                if (it.isEmpty()) {
+                    throw new IndexOutOfBoundsException("from is larger than size");
+                }
+                it = it.tail();
+            }
+            return it.bufferElementsReversed(limit - from).reverse();
+        }
+
+        @Override
         public int hashCode() {
             return foldLeft(1, (hash, x) -> 31*hash + (x == null ? 0 : Objects.hashCode(x)));
         }
@@ -460,7 +406,7 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
         @Override
         @NotNull
         public Iterator<E> iterator() {
-            return new Iterables.Lockable<>() {
+            return new Iterators.Lockable<>() {
 
                 E current = null;
                 List<E> cons = Cons.this;
@@ -484,7 +430,29 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
 
         @Override
         public String toString() {
-            return Iterables.toString('[', ']', iterator());
+            return Iterators.toString('[', ']', iterator());
+        }
+    }
+
+    enum Nil implements List<Void>, Unapply0, EmptySeq<List, Void> {
+
+        INSTANCE;
+
+        /**
+         * Pattern to test if any object is equivalent to an empty tail element.
+         */
+        public static Pattern ¥Empty() {
+            return PatternFactory.gen0(INSTANCE);
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return true;
+        }
+
+        @Override
+        public String toString() {
+            return "[]";
         }
     }
 }

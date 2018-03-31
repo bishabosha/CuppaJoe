@@ -17,17 +17,11 @@ public final class Tuple3<A, B, C> implements Product3<A, B, C> {
     private final B $2;
     private final C $3;
 
-    private static final Func3<Pattern, Pattern, Pattern, Pattern> PATTERN = PatternFactory.gen3(Tuple3.class);
-
     public static Pattern $Tuple3(Pattern $1, Pattern $2, Pattern $3) {
-        return PATTERN.apply($1, $2, $3);
+        return PatternFactory.gen3(Tuple3.class, $1, $2, $3);
     }
 
-    public static <A, B, C> Tuple3<A, B, C> of(A $1, B $2, C $3) {
-        return new Tuple3<>($1, $2, $3);
-    }
-
-    private Tuple3(A $1, B $2, C $3) {
+    Tuple3(A $1, B $2, C $3) {
         this.$1 = $1;
         this.$2 = $2;
         this.$3 = $3;

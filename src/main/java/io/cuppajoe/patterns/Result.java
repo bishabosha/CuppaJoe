@@ -1,8 +1,8 @@
 package io.cuppajoe.patterns;
 
 import io.cuppajoe.Foldable;
-import io.cuppajoe.Iterables;
-import io.cuppajoe.Iterables.Lockable;
+import io.cuppajoe.Iterators;
+import io.cuppajoe.Iterators.Lockable;
 import io.cuppajoe.collections.immutable.Array;
 import io.cuppajoe.collections.immutable.List;
 import io.cuppajoe.control.Option;
@@ -18,31 +18,31 @@ import static io.cuppajoe.API.*;
 public interface Result<E> extends Iterable<E> {
 
     static <E> Result<E> compose(Result<E> a, Result<E> b) {
-        return new Node<>(Tuple(a, b));
+        return new Node<>(Product.of(a, b));
     }
 
     static <E> Result<E> compose(Result<E> a, Result<E> b, Result<E> c) {
-        return new Node<>(Tuple(a, b, c));
+        return new Node<>(Product.of(a, b, c));
     }
 
     static <E> Result<E> compose(Result<E> a, Result<E> b, Result<E> c, Result<E> d) {
-        return new Node<>(Tuple(a, b, c, d));
+        return new Node<>(Product.of(a, b, c, d));
     }
 
     static <E> Result<E> compose(Result<E> a, Result<E> b, Result<E> c, Result<E> d, Result<E> e) {
-        return new Node<>(Tuple(a, b, c, d, e));
+        return new Node<>(Product.of(a, b, c, d, e));
     }
 
     static <E> Result<E> compose(Result<E> a, Result<E> b, Result<E> c, Result<E> d, Result<E> e, Result<E> f) {
-        return new Node<>(Tuple(a, b, c, d, e, f));
+        return new Node<>(Product.of(a, b, c, d, e, f));
     }
 
     static <E> Result<E> compose(Result<E> a, Result<E> b, Result<E> c, Result<E> d, Result<E> e, Result<E> f, Result<E> g) {
-        return new Node<>(Tuple(a, b, c, d, e, f, g));
+        return new Node<>(Product.of(a, b, c, d, e, f, g));
     }
 
     static <E> Result<E> compose(Result<E> a, Result<E> b, Result<E> c, Result<E> d, Result<E> e, Result<E> f, Result<E> g, Result<E> h) {
-        return new Node<>(Tuple(a, b, c, d, e, f, g, h));
+        return new Node<>(Product.of(a, b, c, d, e, f, g, h));
     }
 
     static <E> Result<E> of(E value) {
@@ -91,12 +91,12 @@ public interface Result<E> extends Iterable<E> {
 
         @Override
         public Option<E> get() {
-            return Nothing();
+            return None();
         }
 
         @Override
         public Iterable<Result<E>> branches() {
-            return () -> Iterables.tupleIterator(branches);
+            return () -> Iterators.tupleIterator(branches);
         }
 
         @NotNull
@@ -117,10 +117,10 @@ public interface Result<E> extends Iterable<E> {
                             if (tree.isLeaf()) {
                                 return Some(Tuple(tree.get(), xs));
                             } else {
-                                return Some(Tuple(Nothing(), tree.isEmpty() ? xs : xs.push(tree.branches().iterator())));
+                                return Some(Tuple(None(), tree.isEmpty() ? xs : xs.push(tree.branches().iterator())));
                             }
                         }
-                        return Nothing();
+                        return None();
                     });
                     toReturn = nextItem.$1();
                     stack = nextItem.$2();
@@ -136,17 +136,17 @@ public interface Result<E> extends Iterable<E> {
 
         @Override
         public int hashCode() {
-            return Iterables.hash(this);
+            return Iterators.hash(this);
         }
 
         @Override
         public boolean equals(Object obj) {
-            return obj == this || obj instanceof Result && Iterables.equals(this, obj);
+            return obj == this || obj instanceof Result && Iterators.equals(this, obj);
         }
 
         @Override
         public String toString() {
-            return Iterables.toString('[', ']', iterator());
+            return Iterators.toString('[', ']', iterator());
         }
     }
 
@@ -181,7 +181,7 @@ public interface Result<E> extends Iterable<E> {
         @NotNull
         @Override
         public Iterator<E> iterator() {
-            return Iterables.singleton(() -> value);
+            return Iterators.singleton(() -> value);
         }
 
         @Override

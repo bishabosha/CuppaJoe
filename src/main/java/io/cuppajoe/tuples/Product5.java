@@ -1,12 +1,13 @@
 package io.cuppajoe.tuples;
 
-import io.cuppajoe.Iterables;
+import io.cuppajoe.Iterators;
 import io.cuppajoe.functions.Func5;
+import io.cuppajoe.typeclass.compose.Compose5;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 
-public interface Product5<A, B, C, D, E> extends Product, Unapply5<A, B, C, D, E> {
+public interface Product5<A, B, C, D, E> extends Product, Unapply5<A, B, C, D, E>, Compose5<A, B, C, D, E> {
 
     A $1();
     B $2();
@@ -35,13 +36,14 @@ public interface Product5<A, B, C, D, E> extends Product, Unapply5<A, B, C, D, E
         }
     }
 
-    default <O> O map(Func5<A, B, C, D, E, O> mapper) {
+    @Override
+    default <O> O compose(Func5<? super A, ? super B, ? super C, ? super D, ? super E, ? extends O> mapper) {
         return mapper.apply($1(), $2(), $3(), $4(), $5());
     }
 
     @NotNull
     @Override
     default Iterator<Object> iterator() {
-        return Iterables.ofSuppliers(this::$1, this::$2, this::$3, this::$4, this::$5).iterator();
+        return Iterators.ofSuppliers(this::$1, this::$2, this::$3, this::$4, this::$5);
     }
 }

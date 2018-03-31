@@ -5,7 +5,6 @@
 package io.cuppajoe.tuples;
 
 import io.cuppajoe.control.Option;
-import io.cuppajoe.functions.Func2;
 import io.cuppajoe.patterns.Pattern;
 import io.cuppajoe.patterns.PatternFactory;
 import org.jetbrains.annotations.Contract;
@@ -17,17 +16,11 @@ public final class Tuple2<A, B> implements Product2<A, B> {
     private final A $1;
     private final B $2;
 
-    private static final Func2<Pattern, Pattern, Pattern> PATTERN = PatternFactory.gen2(Tuple2.class);
-
     public static Pattern $Tuple2(Pattern $1, Pattern $2) {
-        return PATTERN.apply($1, $2);
+        return PatternFactory.gen2(Product2.class, $1, $2);
     }
 
-    public static <A, B> Product2<A, B> of(A $1, B $2) {
-        return new Tuple2<>($1, $2);
-    }
-
-    private Tuple2(A $1, B $2) {
+    Tuple2(A $1, B $2) {
         this.$1 = $1;
         this.$2 = $2;
     }

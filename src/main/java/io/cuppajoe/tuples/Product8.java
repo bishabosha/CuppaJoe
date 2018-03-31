@@ -1,12 +1,13 @@
 package io.cuppajoe.tuples;
 
-import io.cuppajoe.Iterables;
+import io.cuppajoe.Iterators;
 import io.cuppajoe.functions.Func8;
+import io.cuppajoe.typeclass.compose.Compose8;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 
-public interface Product8<A, B, C, D, E, F, G, H> extends Product, Unapply8<A, B, C, D, E, F, G, H> {
+public interface Product8<A, B, C, D, E, F, G, H> extends Product, Unapply8<A, B, C, D, E, F, G, H>, Compose8<A, B, C, D, E, F, G, H> {
 
     A $1();
     B $2();
@@ -41,13 +42,14 @@ public interface Product8<A, B, C, D, E, F, G, H> extends Product, Unapply8<A, B
         }
     }
 
-    default <O> O map(Func8<A, B, C, D, E, F, G, H, O> mapper) {
+    @Override
+    default <O> O compose(Func8<? super A, ? super B, ? super C, ? super D, ? super E, ? super F, ? super G, ? super H, ? extends O> mapper) {
         return mapper.apply($1(), $2(), $3(), $4(), $5(), $6(), $7(), $8());
     }
 
     @NotNull
     @Override
     default Iterator<Object> iterator() {
-        return Iterables.ofSuppliers(this::$1, this::$2, this::$3, this::$4, this::$5, this::$6, this::$7, this::$8).iterator();
+        return Iterators.ofSuppliers(this::$1, this::$2, this::$3, this::$4, this::$5, this::$6, this::$7, this::$8);
     }
 }

@@ -1,8 +1,7 @@
 package io.cuppajoe.collections.immutable;
 
-import io.cuppajoe.Iterables;
+import io.cuppajoe.Iterators;
 import io.cuppajoe.control.Option;
-import io.cuppajoe.functions.*;
 import io.cuppajoe.math.PredicateFor;
 import io.cuppajoe.tuples.Product2;
 import io.cuppajoe.typeclass.applicative.Applicative1;
@@ -51,7 +50,7 @@ public class Array<E> implements Seq<Array, E>, Value1<Array, E> {
 
     @Override
     public Option<? extends Product2<E, ? extends Seq<Array, E>>> pop() {
-        return isEmpty() ? Nothing() : Some(Tuple(get(0), takeRight(size() - 1)));
+        return isEmpty() ? None() : Some(Tuple(get(0), takeRight(size() - 1)));
     }
 
     @Override
@@ -176,7 +175,7 @@ public class Array<E> implements Seq<Array, E>, Value1<Array, E> {
     @NotNull
     @Override
     public Iterator<E> iterator() {
-        return Iterables.cast(array);
+        return Iterators.cast(array);
     }
 
     @Override
@@ -210,7 +209,7 @@ public class Array<E> implements Seq<Array, E>, Value1<Array, E> {
 
     @Override
     public String toString() {
-        return Iterables.toString('[', ']', iterator());
+        return Iterators.toString('[', ']', iterator());
     }
 
     @Override

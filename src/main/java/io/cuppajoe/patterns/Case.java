@@ -12,7 +12,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static io.cuppajoe.API.Nothing;
+import static io.cuppajoe.API.None;
 import static io.cuppajoe.API.Option;
 
 /**
@@ -27,7 +27,7 @@ public interface Case<I, O> {
     /**
      * Attempts to of the Object and Map it
      * @param input the Object being matched
-     * @return {@link API#Nothing()} if no of is made. Otherwise {@link Option} of the matched variable
+     * @return {@link API#None()} if no of is made. Otherwise {@link Option} of the matched variable
      */
     Option<O> match(I input);
 
@@ -59,7 +59,7 @@ public interface Case<I, O> {
      * @param test Supply any test to check, for example comparing for equality
      * @param valueSupplier The value to supply if the test is a success.
      * @param <O> The type of the output variable
-     * @return A Guard that will supply {@link API#Nothing()} if the test fails. Otherwise {@link Option} of the supplied variable
+     * @return A Guard that will supply {@link API#None()} if the test fails. Otherwise {@link Option} of the supplied variable
      */
     static <O> Guard<O> when(BooleanSupplier test, Func0<O> valueSupplier) {
         return () -> Option(test, valueSupplier);
@@ -135,7 +135,7 @@ public interface Case<I, O> {
 
     static <O> Guard<O> combine(Guard<O>... guards) {
         return () -> {
-            Option<O> result = Nothing();
+            Option<O> result = None();
             for (var guard: guards) {
                 result = guard.match();
                 if (!result.isEmpty()) {
@@ -148,7 +148,7 @@ public interface Case<I, O> {
 
     static <I, O> Case<I, O> combine(Case<I, O>... cases) {
         return i -> {
-            Option<O> result = Nothing();
+            Option<O> result = None();
             for (var c: cases) {
                 result = c.match(i);
                 if (!result.isEmpty()) {
