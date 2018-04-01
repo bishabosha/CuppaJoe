@@ -203,6 +203,10 @@ public final class API {
         return Queue.of(elems);
     }
 
+    public static <O> TailCall<O> Rec(TailCall<O> tailCall) {
+        return TailCall.rec(tailCall);
+    }
+
     public static <O> TailCall<O> Yield(O result) {
         return TailCall.yield(result);
     }

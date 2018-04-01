@@ -222,7 +222,8 @@ public interface Tree<E extends Comparable<E>> {
                     }
 
                     private Option<Unit> extract(Tree<E> tree, List<Tree<E>> list) {
-                        return tree.isEmpty() ? None() : Some(processPopped(tree.node(), extractor.apply(tree), list));
+                        return tree.isEmpty() ? None()
+                                              : Some(processPopped(tree.node(), extractor.apply(tree), list));
                     }
 
                     private Unit processPopped(E head, Tree<E> nextTree, List<Tree<E>> tail) {
@@ -250,7 +251,7 @@ public interface Tree<E extends Comparable<E>> {
             @Override
             public boolean hasNextSupplier() {
                 return stack.pop()
-                            .map(this::match)
+                            .flatMap(this::match)
                             .containsValue();
             }
 
@@ -259,7 +260,8 @@ public interface Tree<E extends Comparable<E>> {
             }
 
             private Option<Unit> extract(Tree<E> tree, List<Tree<E>> list) {
-                return tree.isEmpty() ? None() : Some(processPopped(tree.node(), tree.left(), tree.right(), list));
+                return tree.isEmpty() ? None()
+                                      : Some(processPopped(tree.node(), tree.left(), tree.right(), list));
             }
 
             private Unit processPopped(E node, Tree<E> left, Tree<E> right, List<Tree<E>> tail) {
@@ -290,7 +292,7 @@ public interface Tree<E extends Comparable<E>> {
             @Override
             public boolean hasNextSupplier() {
                 return queue.dequeue()
-                            .map(this::match)
+                            .flatMap(this::match)
                             .containsValue();
             }
 
@@ -299,7 +301,8 @@ public interface Tree<E extends Comparable<E>> {
             }
 
             private Option<Unit> extract(Tree<E> tree, Queue<Tree<E>> list) {
-                return tree.isEmpty() ? None() : Some(processPopped(tree.node(), tree.left(), tree.right(), list));
+                return tree.isEmpty() ? None()
+                                      : Some(processPopped(tree.node(), tree.left(), tree.right(), list));
             }
 
             private Unit processPopped(E node, Tree<E> left, Tree<E> right, Queue<Tree<E>> remaining) {

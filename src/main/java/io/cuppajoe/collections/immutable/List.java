@@ -5,12 +5,10 @@ import io.cuppajoe.Unit;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.functions.Func2;
 import io.cuppajoe.functions.Func3;
+import io.cuppajoe.functions.TailCall;
 import io.cuppajoe.match.Case;
 import io.cuppajoe.math.PredicateFor;
-import io.cuppajoe.tuples.Apply2;
-import io.cuppajoe.tuples.Product2;
-import io.cuppajoe.tuples.Unapply0;
-import io.cuppajoe.tuples.Unapply2;
+import io.cuppajoe.tuples.*;
 import io.cuppajoe.typeclass.applicative.Applicative1;
 import io.cuppajoe.typeclass.monad.Monad1;
 import io.cuppajoe.typeclass.monoid.Monoid1;
@@ -162,14 +160,19 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
     }
 
     default <O> Product2<Option<O>, List<E>> nextItem(Func2<E, List<E>, Option<Product2<Option<O>, List<E>>>> mapper) {
-        Option<Product2<Option<O>, List<E>>> loopCond = Some(Tuple(None(), this));
-        while (!loopCond.isEmpty() && loopCond.get().$1().isEmpty()) {
-            loopCond = loopCond.get()
-                               .$2()
-                               .pop()
-                               .flatMap(t -> t.compose(mapper));
-        }
-        return loopCond.orElseSupply(() -> Tuple(None(), empty()));
+        return nextItemRec(Some(Tuple(None(), this)), mapper).invoke();
+    }
+
+    private <O> TailCall<Product2<Option<O>, List<E>>> nextItemRec(Option<Product2<Option<O>, List<E>>> loopCond, Func2<E, List<E>, Option<Product2<Option<O>, List<E>>>> mapper) {
+        return loopCond
+            .flatMap(t -> t.$1().isEmpty()
+                ? t.$2()
+                   .pop()
+                   .map(popped -> Rec(() ->
+                       nextItemRec(popped.compose(mapper), mapper)))
+                : Some(Yield(t))
+            )
+            .orElseSupply(() -> Yield(Tuple(None(), empty())));
     }
 
     @Override

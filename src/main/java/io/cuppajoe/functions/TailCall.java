@@ -11,6 +11,10 @@ import java.util.stream.Stream;
 @FunctionalInterface
 public interface TailCall<E> {
 
+    static <U> TailCall<U> rec(TailCall<U> call) {
+        return call;
+    }
+
     static <U> TailCall<U> yield(U result) {
         return new Terminal<>(result);
     }
