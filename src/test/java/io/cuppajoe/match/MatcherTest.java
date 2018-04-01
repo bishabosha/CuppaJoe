@@ -2,7 +2,7 @@
  * Copyright (c) 2017. Jamie Thompson <bishbashboshjt@gmail.com>
  */
 
-package io.cuppajoe.patterns;
+package io.cuppajoe.match;
 
 import io.cuppajoe.collections.immutable.Tree;
 import io.cuppajoe.control.Option;
@@ -14,14 +14,11 @@ import java.math.BigInteger;
 
 import static io.cuppajoe.API.Match;
 import static io.cuppajoe.API.Tuple;
-import static io.cuppajoe.collections.immutable.Tree.Leaf.¥Leaf;
 import static io.cuppajoe.collections.immutable.Tree.Node;
-import static io.cuppajoe.collections.immutable.Tree.Node.$Node;
 import static io.cuppajoe.collections.immutable.Tree.leaf;
-import static io.cuppajoe.control.Option.Some.$Some;
-import static io.cuppajoe.patterns.Case.*;
-import static io.cuppajoe.patterns.Matcher.guardUnsafe;
-import static io.cuppajoe.patterns.Pattern.*;
+import static io.cuppajoe.match.Case.*;
+import static io.cuppajoe.match.Matcher.guardUnsafe;
+import static io.cuppajoe.match.Pattern.*;
 import static io.cuppajoe.tuples.Tuple2.$Tuple2;
 
 public class MatcherTest {
@@ -139,19 +136,19 @@ public class MatcherTest {
         Assert.assertEquals(
             Option.of(1),
             Match(tree).option(
-                with($Node($x, ¥_, ¥_), (Integer $x) -> $x + 1)
+                with($Node($x, $_, $_), (Integer $x) -> $x + 1)
             )
         );
         Assert.assertEquals(
             Node(1, leaf(), leaf()),
             Match(tree).option(
-                with($Node(¥_, ¥_, $r), $r -> $r)
+                with($Node($_, $_, $r), $r -> $r)
             ).get()
         );
         Assert.assertEquals(
             Option.of(0),
             Match(tree).option(
-                with($Node(¥_, $x, $y), this::sumNodes)
+                with($Node($_, $x, $y), this::sumNodes)
             )
         );
         Assert.assertEquals(
@@ -163,7 +160,7 @@ public class MatcherTest {
         Assert.assertEquals(
             Option.of(25),
             Match(leaf).option(
-                with($Node($x, ¥Leaf(), ¥Leaf()), $x -> $x)
+                with($Node($x, $Leaf, $Leaf), $x -> $x)
             )
         );
     }
@@ -195,10 +192,10 @@ public class MatcherTest {
 
     int sumNodes(Tree<Integer> x, Tree<Integer> y) {
         return Match(Tuple(x, y)).of(
-            with($Tuple2(¥Leaf(), ¥Leaf()),                                             () -> 0),
-            with($Tuple2($Node($n, ¥_, ¥_), $Node($n, ¥_, ¥_)), (Integer $n1, Integer $n2) -> $n1 + $n2),
-            with($Tuple2(¥Leaf(), $Node($n, ¥_, ¥_)),                         (Integer $n) -> $n),
-            with($Tuple2($Node($n, ¥_, ¥_), ¥Leaf()),                         (Integer $n) -> $n)
+            with($Tuple2($Leaf, $Leaf),                                             () -> 0),
+            with($Tuple2($Node($n, $_, $_), $Node($n, $_, $_)), (Integer $n1, Integer $n2) -> $n1 + $n2),
+            with($Tuple2($Leaf, $Node($n, $_, $_)),                         (Integer $n) -> $n),
+            with($Tuple2($Node($n, $_, $_), $Leaf),                         (Integer $n) -> $n)
         );
     }
 

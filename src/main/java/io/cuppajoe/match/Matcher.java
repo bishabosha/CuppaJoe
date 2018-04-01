@@ -2,10 +2,10 @@
  * Copyright (c) 2017. Jamie Thompson <bishbashboshjt@gmail.com>
  */
 
-package io.cuppajoe.patterns;
+package io.cuppajoe.match;
 
 import io.cuppajoe.control.Option;
-import io.cuppajoe.patterns.Case.Guard;
+import io.cuppajoe.match.Case.Guard;
 
 import static io.cuppajoe.API.None;
 

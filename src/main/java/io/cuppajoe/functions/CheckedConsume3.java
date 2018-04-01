@@ -4,6 +4,7 @@
 
 package io.cuppajoe.functions;
 
+import io.cuppajoe.Unit;
 import io.cuppajoe.control.Try;
 import io.cuppajoe.tuples.Product3;
 import org.jetbrains.annotations.Contract;
@@ -29,10 +30,10 @@ public interface CheckedConsume3<A, B, C> {
     }
 
     @Contract(pure = true)
-    static <X, Y, Z> Func3<X, Y, Z, Try<Void>> lift(CheckedConsume3<? super X, ? super Y, ? super Z> func) {
+    static <X, Y, Z> Func3<X, Y, Z, Try<Unit>> lift(CheckedConsume3<? super X, ? super Y, ? super Z> func) {
         return (x, y, z) -> Try.of(() -> {
             func.apply(x, y, z);
-            return null;
+            return Unit.INSTANCE;
         });
     }
 

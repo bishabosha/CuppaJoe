@@ -2,7 +2,7 @@
  * Copyright (c) 2017. Jamie Thompson <bishbashboshjt@gmail.com>
  */
 
-package io.cuppajoe.patterns;
+package io.cuppajoe.match;
 
 import io.cuppajoe.collections.immutable.List;
 import io.cuppajoe.collections.immutable.Tree;
@@ -14,10 +14,8 @@ import org.junit.Test;
 import static io.cuppajoe.API.None;
 import static io.cuppajoe.API.Tuple;
 import static io.cuppajoe.collections.immutable.Tree.Node;
-import static io.cuppajoe.collections.immutable.Tree.Node.$Node;
 import static io.cuppajoe.collections.immutable.Tree.leaf;
-import static io.cuppajoe.control.Option.Some.$Some;
-import static io.cuppajoe.patterns.Pattern.*;
+import static io.cuppajoe.match.Pattern.*;
 import static io.cuppajoe.tuples.Tuple2.$Tuple2;
 import static org.junit.Assert.assertEquals;
 
@@ -54,27 +52,27 @@ public class PatternTest {
         );
         assertEquals(
             Result.of(0),
-            tree($(0), ¥_, ¥_).test(tree).get()
+            tree($(0), $_, $_).test(tree).get()
         );
         assertEquals(
             Result.of(0),
-            tree($a, ¥_, ¥_).test(tree).get()
+            tree($a, $_, $_).test(tree).get()
         );
         assertEquals(
             None(),
-            tree($(5), ¥_, ¥_).test(tree)
+            tree($(5), $_, $_).test(tree)
         );
         assertEquals(
             Result.of(new BinaryNode<>(1)),
-            tree(¥_, ¥_, this.tree).test(tree).get()
+            tree($_, $_, this.tree).test(tree).get()
         );
         assertEquals(
             None(),
-            tree($a, ¥null, ¥null).test(tree)
+            tree($a, $_(null), $_(null)).test(tree)
         );
         assertEquals(
             Result.of(25),
-            tree($a, ¥null, ¥null).test(leaf).get()
+            tree($a, $_(null), $_(null)).test(leaf).get()
         );
     }
 
@@ -83,7 +81,7 @@ public class PatternTest {
         final Pattern patt2Test;
         final Product2<Option<Tree<Integer>>, List<Tree<Integer>>> underTest;
 
-        patt2Test = $Tuple2($Some($Node($x, ¥_, $y)), $xs);
+        patt2Test = $Tuple2($Some($Node($x, $_, $y)), $xs);
         underTest = Tuple(Option.of(Node(1, leaf(), leaf())), List.of(Tree.of(2)));
 
         patt2Test.test(underTest).peek(results -> {

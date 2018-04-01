@@ -4,8 +4,8 @@
 
 package io.cuppajoe.tuples;
 
-import io.cuppajoe.patterns.Pattern;
-import io.cuppajoe.patterns.PatternFactory;
+import io.cuppajoe.match.Pattern;
+import io.cuppajoe.match.PatternFactory;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,7 +15,7 @@ public enum Tuple0 implements Product0 {
 
     @NotNull
     @Contract(pure = true)
-    public static Pattern ¥Tuple0() {
+    public static Pattern _Tuple0() {
         return PatternFactory.gen0(INSTANCE);
     }
 

@@ -3,7 +3,7 @@ package io.cuppajoe.collections.immutable;
 import io.cuppajoe.Foldable;
 import io.cuppajoe.Iterators;
 import io.cuppajoe.control.Option;
-import io.cuppajoe.patterns.Case;
+import io.cuppajoe.match.Case;
 import io.cuppajoe.tuples.Product2;
 import io.cuppajoe.typeclass.functor.Functor1;
 import io.cuppajoe.typeclass.value.Value1;

@@ -1,13 +1,12 @@
 package io.cuppajoe.collections.immutable;
 
 import io.cuppajoe.Iterators;
+import io.cuppajoe.Unit;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.functions.Func2;
 import io.cuppajoe.functions.Func3;
+import io.cuppajoe.match.Case;
 import io.cuppajoe.math.PredicateFor;
-import io.cuppajoe.patterns.Case;
-import io.cuppajoe.patterns.Pattern;
-import io.cuppajoe.patterns.PatternFactory;
 import io.cuppajoe.tuples.Apply2;
 import io.cuppajoe.tuples.Product2;
 import io.cuppajoe.tuples.Unapply0;
@@ -249,16 +248,6 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
         private List<E> tail;
 
         /**
-         * Composes patterns for the head and tail and checks that the element is a of.
-         * @param $x The pattern for the head
-         * @param $xs The pattern for the tail
-         * @return The composed pattern
-         */
-        public static Pattern $Cons(Pattern $x, Pattern $xs) {
-            return PatternFactory.gen2(Cons.class, $x, $xs);
-        }
-
-        /**
          * Private constructor to compose a new of from head element and another of for a tail.
          * @param head The element to sit at the head.
          * @param tail The of that will act as the tail after the head.
@@ -434,16 +423,9 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
         }
     }
 
-    enum Nil implements List<Void>, Unapply0, EmptySeq<List, Void> {
+    enum Nil implements List<Unit>, Unapply0, EmptySeq<List, Unit> {
 
         INSTANCE;
-
-        /**
-         * Pattern to test if any object is equivalent to an empty tail element.
-         */
-        public static Pattern ¥Empty() {
-            return PatternFactory.gen0(INSTANCE);
-        }
 
         @Override
         public boolean isEmpty() {

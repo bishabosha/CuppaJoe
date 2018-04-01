@@ -4,6 +4,7 @@
 
 package io.cuppajoe.functions;
 
+import io.cuppajoe.Unit;
 import io.cuppajoe.control.Try;
 import io.cuppajoe.tuples.Product0;
 import org.jetbrains.annotations.Contract;
@@ -19,10 +20,10 @@ public interface CheckedConsume0 {
     }
 
     @Contract(pure = true)
-    static Func0<Try<Void>> lift(CheckedConsume0 func) {
+    static Func0<Try<Unit>> lift(CheckedConsume0 func) {
         return () -> Try.of(() -> {
             func.apply();
-            return null;
+            return Unit.INSTANCE;
         });
     }
 

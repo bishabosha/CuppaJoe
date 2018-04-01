@@ -4,8 +4,6 @@
 
 package io.cuppajoe;
 
-import io.cuppajoe.patterns.Pattern;
-import io.cuppajoe.patterns.PatternFactory;
 import io.cuppajoe.tuples.Product1;
 import io.cuppajoe.tuples.Unapply1;
 
@@ -15,10 +13,6 @@ import java.util.function.Supplier;
 import static io.cuppajoe.API.Tuple;
 
 public class Lazy<E> implements Supplier<E>, Unapply1<E> {
-
-    public static Pattern $Lazy(Pattern pattern) {
-        return PatternFactory.gen1(Lazy.class, pattern);
-    }
 
     private boolean isComputed = false;
     private E value = null;

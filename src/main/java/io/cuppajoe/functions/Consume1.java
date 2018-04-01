@@ -4,6 +4,7 @@
 
 package io.cuppajoe.functions;
 
+import io.cuppajoe.Unit;
 import io.cuppajoe.control.Try;
 import io.cuppajoe.tuples.Product1;
 import org.jetbrains.annotations.Contract;
@@ -31,7 +32,7 @@ public interface Consume1<A> extends Consumer<A> {
     }
 
     @Contract(pure = true)
-    static <X> Func1<X, Try<Void>> lift(Consumer<? super X> func) {
+    static <X> Func1<X, Try<Unit>> lift(Consumer<? super X> func) {
         return CheckedConsume1.lift(func::accept);
     }
 

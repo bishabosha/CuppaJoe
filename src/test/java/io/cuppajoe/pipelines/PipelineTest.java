@@ -6,8 +6,8 @@ package io.cuppajoe.pipelines;
 
 import io.cuppajoe.collections.mutable.base.MapEntry;
 import io.cuppajoe.control.Option;
+import io.cuppajoe.match.Case;
 import io.cuppajoe.math.Arithmetic;
-import io.cuppajoe.patterns.Case;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -16,8 +16,8 @@ import java.math.BigInteger;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static io.cuppajoe.patterns.Case.with;
-import static io.cuppajoe.patterns.Pattern.$any;
+import static io.cuppajoe.match.Case.with;
+import static io.cuppajoe.match.Pattern.$any;
 import static org.hamcrest.Matchers.contains;
 
 public class PipelineTest {

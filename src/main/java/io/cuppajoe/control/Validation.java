@@ -1,5 +1,6 @@
 package io.cuppajoe.control;
 
+import io.cuppajoe.Unit;
 import io.cuppajoe.collections.immutable.List;
 import io.cuppajoe.typeclass.applicative.Applicative1;
 import io.cuppajoe.typeclass.monad.Monad1;
@@ -28,8 +29,8 @@ public interface Validation<E, O> extends Monad1<Validation<E, ?>, O>, Monoid1<V
     List<E> errorStack();
     boolean isSink();
 
-    default Either<List<E>, Void> evaluate() {
-        return errorStack().isEmpty() ? Either.right(null) : Either.left(errorStack().reverse());
+    default Either<List<E>, Unit> evaluate() {
+        return errorStack().isEmpty() ? Either.right(Unit.INSTANCE) : Either.left(errorStack().reverse());
     }
 
     default Validation<E, O> accumulate(Predicate<O> test, Function<O, E> ifFail) {

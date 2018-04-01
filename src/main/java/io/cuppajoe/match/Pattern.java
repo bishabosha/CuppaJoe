@@ -2,9 +2,18 @@
  * Copyright (c) 2017. Jamie Thompson <bishbashboshjt@gmail.com>
  */
 
-package io.cuppajoe.patterns;
+package io.cuppajoe.match;
 
+import io.cuppajoe.Lazy;
+import io.cuppajoe.Unit;
+import io.cuppajoe.collections.immutable.List;
+import io.cuppajoe.collections.immutable.List.Cons;
+import io.cuppajoe.collections.immutable.Tree;
+import io.cuppajoe.collections.immutable.Tree.Node;
 import io.cuppajoe.control.Option;
+import io.cuppajoe.control.Option.Some;
+import io.cuppajoe.control.Try.Failure;
+import io.cuppajoe.control.Try.Success;
 
 import java.util.Objects;
 
@@ -23,19 +32,45 @@ public interface Pattern {
         return Option.of(Result.of(x));
     }
 
-    Pattern ¥LT = x -> x instanceof Integer && ((Integer)x) < 0 ? PASS : FAIL;
+    static Pattern $Node(Pattern node, Pattern left, Pattern right) {
+        return PatternFactory.gen3(Node.class, node, left, right);
+    }
 
-    Pattern ¥GT = x -> x instanceof Integer && ((Integer)x) > 0 ? PASS : FAIL;
+    Pattern $Leaf = PatternFactory.gen0(Tree.Leaf.INSTANCE);
 
-    Pattern ¥EQ = x -> x instanceof Integer && ((Integer)x) == 0 ? PASS : FAIL;
+    static Pattern $Cons(Pattern $x, Pattern $xs) {
+        return PatternFactory.gen2(Cons.class, $x, $xs);
+    }
 
-    Pattern ¥true = x -> Objects.equals(x, true) ? PASS : FAIL;
+    Pattern $Nil = PatternFactory.gen0(List.Nil.INSTANCE);
 
-    Pattern ¥false = x -> Objects.equals(x, false) ? PASS : FAIL;
+    static Pattern $Success(Pattern pattern) {
+        return PatternFactory.gen1(Success.class, pattern);
+    }
 
-    Pattern ¥null = x -> x == null ? PASS : FAIL;
+    static Pattern $Failure(Pattern error) {
+        return PatternFactory.gen1(Failure.class, error);
+    }
 
-    Pattern ¥_ = x -> PASS;
+    static Pattern $Lazy(Pattern pattern) {
+        return PatternFactory.gen1(Lazy.class, pattern);
+    }
+
+    static Pattern $Some(Pattern pattern) {
+        return PatternFactory.gen1(Some.class, pattern);
+    }
+
+    Pattern $None = PatternFactory.gen0(Option.None.INSTANCE);
+
+    Pattern $Unit = PatternFactory.gen0(Unit.INSTANCE);
+
+    Pattern $LT = x -> x instanceof Integer && ((Integer)x) < 0 ? PASS : FAIL;
+
+    Pattern $GT = x -> x instanceof Integer && ((Integer)x) > 0 ? PASS : FAIL;
+
+    Pattern $EQ = x -> x instanceof Integer && ((Integer)x) == 0 ? PASS : FAIL;
+
+    Pattern $_ = x -> PASS;
 
     Pattern $a = x -> bind(x);
     Pattern $b = $a;
@@ -80,8 +115,8 @@ public interface Pattern {
         return x -> Objects.equals(x, toMatch) ? bind(x) : FAIL;
     }
 
-    static Pattern $NOT(Object toMatch) {
-        return x -> !Objects.equals(x, toMatch) ? bind(x) : FAIL;
+    static Pattern $_(Object toMatch) {
+        return x -> Objects.equals(x, toMatch) ? PASS : FAIL;
     }
 
     static <R> Pattern $any(R... values) {

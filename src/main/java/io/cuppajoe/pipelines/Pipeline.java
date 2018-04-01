@@ -8,7 +8,7 @@ import io.cuppajoe.Iterators;
 import io.cuppajoe.collections.mutable.hashtables.HashTable;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.functions.Func1;
-import io.cuppajoe.patterns.Case;
+import io.cuppajoe.match.Case;
 
 import java.util.Arrays;
 import java.util.Comparator;

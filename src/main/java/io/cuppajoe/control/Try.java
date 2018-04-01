@@ -2,8 +2,6 @@ package io.cuppajoe.control;
 
 import io.cuppajoe.Iterators;
 import io.cuppajoe.functions.CheckedFunc0;
-import io.cuppajoe.patterns.Pattern;
-import io.cuppajoe.patterns.PatternFactory;
 import io.cuppajoe.tuples.Product1;
 import io.cuppajoe.tuples.Unapply1;
 import io.cuppajoe.typeclass.applicative.Applicative1;
@@ -141,10 +139,6 @@ public interface Try<E> extends Monad1<Try, E>, Peek1<E>, Value1<Try, E> {
 
         private final E value;
 
-        static Pattern $Success(Pattern pattern) {
-            return PatternFactory.gen1(Success.class, pattern);
-        }
-
         private Success(E value) {
             this.value = value;
         }
@@ -193,10 +187,6 @@ public interface Try<E> extends Monad1<Try, E>, Peek1<E>, Value1<Try, E> {
     final class Failure<E> implements Try<E>, Unapply1<Exception> {
 
         private final Exception error;
-
-        static Pattern $Failure(Pattern error) {
-            return PatternFactory.gen1(Failure.class, error);
-        }
 
         private Failure(Exception error) {
             this.error = error;

@@ -14,6 +14,10 @@ public interface Value1<INSTANCE extends Value1, E> extends Iterable<E> {
     boolean isEmpty();
     E get();
 
+    default boolean containsValue() {
+        return !isEmpty();
+    }
+
     Value1<INSTANCE, E> or(Supplier<? extends Value1<INSTANCE, ? extends E>> alternative);
 
     default E orElse(E alternative) {

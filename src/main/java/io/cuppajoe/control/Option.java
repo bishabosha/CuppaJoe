@@ -5,9 +5,8 @@
 package io.cuppajoe.control;
 
 import io.cuppajoe.Iterators;
-import io.cuppajoe.patterns.Case;
-import io.cuppajoe.patterns.Pattern;
-import io.cuppajoe.patterns.PatternFactory;
+import io.cuppajoe.Unit;
+import io.cuppajoe.match.Case;
 import io.cuppajoe.tuples.Product1;
 import io.cuppajoe.tuples.Unapply0;
 import io.cuppajoe.tuples.Unapply1;
@@ -132,11 +131,6 @@ public interface Option<E> extends Monad1<Option, E>, Peek1<E>, Value1<Option, E
             return Tuple(get());
         }
 
-        @NotNull
-        public static Pattern $Some(Pattern pattern) {
-            return PatternFactory.gen1(Some.class, pattern);
-        }
-
         private Some(O value) {
             this.value = value;
         }
@@ -178,15 +172,9 @@ public interface Option<E> extends Monad1<Option, E>, Peek1<E>, Value1<Option, E
         }
     }
 
-    enum None implements Option<Void>, Unapply0 {
+    enum None implements Option<Unit>, Unapply0 {
 
         INSTANCE;
-
-        @NotNull
-        @Contract(pure = true)
-        public static final Pattern $None() {
-            return PatternFactory.gen0(INSTANCE);
-        }
 
         @Contract(pure = true)
         @Override

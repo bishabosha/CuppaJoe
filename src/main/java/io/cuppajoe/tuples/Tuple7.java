@@ -6,8 +6,8 @@ package io.cuppajoe.tuples;
 
 import io.cuppajoe.control.Option;
 import io.cuppajoe.functions.Func7;
-import io.cuppajoe.patterns.Pattern;
-import io.cuppajoe.patterns.PatternFactory;
+import io.cuppajoe.match.Pattern;
+import io.cuppajoe.match.PatternFactory;
 
 import java.util.Objects;
 

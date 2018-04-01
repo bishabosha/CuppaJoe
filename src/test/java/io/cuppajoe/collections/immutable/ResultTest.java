@@ -1,6 +1,6 @@
 package io.cuppajoe.collections.immutable;
 
-import io.cuppajoe.patterns.Result;
+import io.cuppajoe.match.Result;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 

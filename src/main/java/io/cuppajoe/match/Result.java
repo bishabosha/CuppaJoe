@@ -1,4 +1,4 @@
-package io.cuppajoe.patterns;
+package io.cuppajoe.match;
 
 import io.cuppajoe.Foldable;
 import io.cuppajoe.Iterators;

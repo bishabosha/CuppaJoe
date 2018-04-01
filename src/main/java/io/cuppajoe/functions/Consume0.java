@@ -4,6 +4,7 @@
 
 package io.cuppajoe.functions;
 
+import io.cuppajoe.Unit;
 import io.cuppajoe.control.Try;
 import io.cuppajoe.tuples.Product0;
 import org.jetbrains.annotations.Contract;
@@ -23,7 +24,7 @@ public interface Consume0 extends Runnable {
     }
 
     @Contract(pure = true)
-    static Func0<Try<Void>> lift(Runnable func) {
+    static Func0<Try<Unit>> lift(Runnable func) {
         return CheckedConsume0.lift(func::run);
     }
 

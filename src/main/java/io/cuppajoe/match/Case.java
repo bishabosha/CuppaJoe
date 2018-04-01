@@ -2,7 +2,7 @@
  * Copyright (c) 2017. Jamie Thompson <bishbashboshjt@gmail.com>
  */
 
-package io.cuppajoe.patterns;
+package io.cuppajoe.match;
 
 import io.cuppajoe.API;
 import io.cuppajoe.control.Option;

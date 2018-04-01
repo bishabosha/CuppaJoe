@@ -4,6 +4,7 @@
 
 package io.cuppajoe.functions;
 
+import io.cuppajoe.Unit;
 import io.cuppajoe.control.Try;
 import io.cuppajoe.tuples.Product7;
 import org.jetbrains.annotations.Contract;
@@ -29,7 +30,7 @@ public interface Consume7<A, B, C, D, E, F, G> {
     }
 
     @Contract(pure = true)
-    static <T, U, V, W, X, Y, Z> Func7<T, U, V, W, X, Y, Z, Try<Void>> lift(Consume7<? super T, ? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z> func) {
+    static <T, U, V, W, X, Y, Z> Func7<T, U, V, W, X, Y, Z, Try<Unit>> lift(Consume7<? super T, ? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z> func) {
         return CheckedConsume7.lift(func::apply);
     }
 
