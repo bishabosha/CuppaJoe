@@ -18,61 +18,62 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
 public final class API {
 
     public static
-    Product0
+    Unit
     Tuple() {
-        return Product.of();
+        return Tuple.of();
     }
 
     public static <A>
-    Product1<A>
+    Tuple1<A>
     Tuple(A $1) {
-        return Product.of($1);
+        return Tuple.of($1);
     }
 
     public static <A, B>
-    Product2<A, B>
+    Tuple2<A, B>
     Tuple(A $1, B $2) {
-        return Product.of($1, $2);
+        return Tuple.of($1, $2);
     }
 
     public static <A, B, C>
-    Product3<A, B, C>
+    Tuple3<A, B, C>
     Tuple(A $1, B $2, C $3) {
-        return Product.of($1, $2, $3);
+        return Tuple.of($1, $2, $3);
     }
 
     public static <A, B, C, D>
-    Product4<A, B, C, D>
+    Tuple4<A, B, C, D>
     Tuple(A $1, B $2, C $3, D $4) {
-        return Product.of($1, $2, $3, $4);
+        return Tuple.of($1, $2, $3, $4);
     }
 
     public static <A, B, C, D, E>
-    Product5<A, B, C, D, E>
+    Tuple5<A, B, C, D, E>
     Tuple(A $1, B $2, C $3, D $4, E $5) {
-        return Product.of($1, $2, $3, $4, $5);
+        return Tuple.of($1, $2, $3, $4, $5);
     }
 
     public static <A, B, C, D, E, F>
-    Product6<A, B, C, D, E, F>
+    Tuple6<A, B, C, D, E, F>
     Tuple(A $1, B $2, C $3, D $4, E $5, F $6) {
-        return Product.of($1, $2, $3, $4, $5, $6);
+        return Tuple.of($1, $2, $3, $4, $5, $6);
     }
 
     public static <A, B, C, D, E, F, G>
-    Product7<A, B, C, D, E, F, G>
+    Tuple7<A, B, C, D, E, F, G>
     Tuple(A $1, B $2, C $3, D $4, E $5, F $6, G $7) {
-        return Product.of($1, $2, $3, $4, $5, $6, $7);
+        return Tuple.of($1, $2, $3, $4, $5, $6, $7);
     }
 
     public static <A, B, C, D, E, F, G, H>
-    Product8<A, B, C, D, E, F, G, H>
+    Tuple8<A, B, C, D, E, F, G, H>
     Tuple(A $1, B $2, C $3, D $4, E $5, F $6, G $7, H $8) {
-        return Product.of($1, $2, $3, $4, $5, $6, $7, $8);
+        return Tuple.of($1, $2, $3, $4, $5, $6, $7, $8);
     }
 
     public static <L, R> Left<L, R> Left(L left) {
@@ -203,8 +204,8 @@ public final class API {
         return Queue.of(elems);
     }
 
-    public static <O> TailCall<O> Rec(TailCall<O> tailCall) {
-        return TailCall.rec(tailCall);
+    public static <O> TailCall<O> Call(Supplier<TailCall<O>> tailCall) {
+        return TailCall.call(tailCall);
     }
 
     public static <O> TailCall<O> Yield(O result) {

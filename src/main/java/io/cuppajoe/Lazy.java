@@ -4,7 +4,7 @@
 
 package io.cuppajoe;
 
-import io.cuppajoe.tuples.Product1;
+import io.cuppajoe.tuples.Tuple1;
 import io.cuppajoe.tuples.Unapply1;
 
 import java.util.Objects;
@@ -51,7 +51,7 @@ public class Lazy<E> implements Supplier<E>, Unapply1<E> {
     }
 
     @Override
-    public Product1<E> unapply() {
+    public Tuple1<E> unapply() {
         return Tuple(get());
     }
 }

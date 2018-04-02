@@ -1,6 +1,7 @@
 package io.cuppajoe.functions;
 
 import java.util.NoSuchElementException;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 /**
@@ -8,28 +9,21 @@ import java.util.stream.Stream;
  * Implemented following "Lazy Java" presentation by Mario Fusco at Devoxx Belgium November 2017
  * @param <E> the type of the return value
  */
-@FunctionalInterface
-public interface TailCall<E> {
+public abstract class TailCall<E> implements Func0<E> {
 
-    static <U> TailCall<U> rec(TailCall<U> call) {
-        return call;
+    public static <U> TailCall<U> call(Supplier<TailCall<U>> call) {
+        return new Call<>(call);
     }
 
-    static <U> TailCall<U> yield(U result) {
-        return new Terminal<>(result);
+    public static <U> TailCall<U> yield(U result) {
+        return new Yield<>(result);
     }
 
-    TailCall<E> next();
-
-    default boolean isComplete() {
-        return false;
+    private TailCall() {
     }
 
-    default E result() {
-        throw new NoSuchElementException("The operation is not complete.");
-    }
-
-    default E invoke() {
+    @Override
+    public final E get() {
         return Stream.iterate(this, TailCall::next)
             .filter(TailCall::isComplete)
             .findFirst()
@@ -37,10 +31,33 @@ public interface TailCall<E> {
             .result();
     }
 
-    class Terminal<E> implements TailCall<E> {
+    protected abstract TailCall<E> next();
+
+    protected boolean isComplete() {
+        return false;
+    }
+
+    protected E result() {
+        throw new NoSuchElementException("The operation is not complete.");
+    }
+
+    private static final class Call<E> extends TailCall<E> {
+        private final Supplier<TailCall<E>> call;
+
+        private Call(Supplier<TailCall<E>> callSupplier) {
+            call = callSupplier;
+        }
+
+        @Override
+        public TailCall<E> next() {
+            return call.get();
+        }
+    }
+
+    private static final class Yield<E> extends TailCall<E> {
         private final E val;
 
-        private Terminal(E val) {
+        private Yield(E val) {
             this.val = val;
         }
 

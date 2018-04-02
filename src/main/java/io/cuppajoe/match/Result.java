@@ -6,7 +6,7 @@ import io.cuppajoe.Iterators.Lockable;
 import io.cuppajoe.collections.immutable.Array;
 import io.cuppajoe.collections.immutable.List;
 import io.cuppajoe.control.Option;
-import io.cuppajoe.tuples.Product;
+import io.cuppajoe.tuples.Tuple;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
@@ -18,31 +18,31 @@ import static io.cuppajoe.API.*;
 public interface Result<E> extends Iterable<E> {
 
     static <E> Result<E> compose(Result<E> a, Result<E> b) {
-        return new Node<>(Product.of(a, b));
+        return new Node<>(Tuple.of(a, b));
     }
 
     static <E> Result<E> compose(Result<E> a, Result<E> b, Result<E> c) {
-        return new Node<>(Product.of(a, b, c));
+        return new Node<>(Tuple.of(a, b, c));
     }
 
     static <E> Result<E> compose(Result<E> a, Result<E> b, Result<E> c, Result<E> d) {
-        return new Node<>(Product.of(a, b, c, d));
+        return new Node<>(Tuple.of(a, b, c, d));
     }
 
     static <E> Result<E> compose(Result<E> a, Result<E> b, Result<E> c, Result<E> d, Result<E> e) {
-        return new Node<>(Product.of(a, b, c, d, e));
+        return new Node<>(Tuple.of(a, b, c, d, e));
     }
 
     static <E> Result<E> compose(Result<E> a, Result<E> b, Result<E> c, Result<E> d, Result<E> e, Result<E> f) {
-        return new Node<>(Product.of(a, b, c, d, e, f));
+        return new Node<>(Tuple.of(a, b, c, d, e, f));
     }
 
     static <E> Result<E> compose(Result<E> a, Result<E> b, Result<E> c, Result<E> d, Result<E> e, Result<E> f, Result<E> g) {
-        return new Node<>(Product.of(a, b, c, d, e, f, g));
+        return new Node<>(Tuple.of(a, b, c, d, e, f, g));
     }
 
     static <E> Result<E> compose(Result<E> a, Result<E> b, Result<E> c, Result<E> d, Result<E> e, Result<E> f, Result<E> g, Result<E> h) {
-        return new Node<>(Product.of(a, b, c, d, e, f, g, h));
+        return new Node<>(Tuple.of(a, b, c, d, e, f, g, h));
     }
 
     static <E> Result<E> of(E value) {
@@ -74,9 +74,9 @@ public interface Result<E> extends Iterable<E> {
 
         private static final Result<?> EMPTY = new Node<>(Tuple());
 
-        Product branches;
+        Tuple branches;
 
-        private Node(Product branches) {
+        private Node(Tuple branches) {
             this.branches = branches;
         }
 
@@ -108,23 +108,28 @@ public interface Result<E> extends Iterable<E> {
 
                 @Override
                 public boolean hasNextSupplier() {
-                    var nextItem = stack.nextItem((it, xs) -> {
+                    toReturn = stack.nextItem((it, xs) -> {
                         if (it.hasNext()) {
                             var tree = it.next();
                             if (it.hasNext()) {
                                 xs = xs.push(it);
                             }
                             if (tree.isLeaf()) {
-                                return Some(Tuple(tree.get(), xs));
+                                return Right(Tuple(tree.get(), xs));
                             } else {
-                                return Some(Tuple(None(), tree.isEmpty() ? xs : xs.push(tree.branches().iterator())));
+                                return Left(tree.isEmpty() ? xs : xs.push(tree.branches().iterator()));
                             }
                         }
+                        return Left(List());
+                    })
+                    .flatMap(tuple -> tuple.compose((elem, xs) -> {
+                        stack = xs;
+                        return elem;
+                    })).or(() -> {
+                        stack = List();
                         return None();
                     });
-                    toReturn = nextItem.$1();
-                    stack = nextItem.$2();
-                    return !toReturn.isEmpty();
+                    return toReturn.containsValue();
                 }
 
                 @Override
@@ -181,7 +186,7 @@ public interface Result<E> extends Iterable<E> {
         @NotNull
         @Override
         public Iterator<E> iterator() {
-            return Iterators.singleton(() -> value);
+            return Iterators.singletonSupplier(() -> value);
         }
 
         @Override

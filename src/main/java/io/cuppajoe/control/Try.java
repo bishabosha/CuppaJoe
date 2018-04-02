@@ -2,7 +2,7 @@ package io.cuppajoe.control;
 
 import io.cuppajoe.Iterators;
 import io.cuppajoe.functions.CheckedFunc0;
-import io.cuppajoe.tuples.Product1;
+import io.cuppajoe.tuples.Tuple1;
 import io.cuppajoe.tuples.Unapply1;
 import io.cuppajoe.typeclass.applicative.Applicative1;
 import io.cuppajoe.typeclass.monad.Monad1;
@@ -132,7 +132,7 @@ public interface Try<E> extends Monad1<Try, E>, Peek1<E>, Value1<Try, E> {
     @NotNull
     @Override
     default Iterator<E> iterator() {
-       return isEmpty() ? Iterators.empty() : Iterators.singleton(this::get);
+       return isEmpty() ? Iterators.empty() : Iterators.singletonSupplier(this::get);
     }
 
     final class Success<E> implements Try<E>, Unapply1<E> {
@@ -179,7 +179,7 @@ public interface Try<E> extends Monad1<Try, E>, Peek1<E>, Value1<Try, E> {
         }
 
         @Override
-        public Product1<E> unapply() {
+        public Tuple1<E> unapply() {
             return Tuple(value);
         }
     }
@@ -223,7 +223,7 @@ public interface Try<E> extends Monad1<Try, E>, Peek1<E>, Value1<Try, E> {
         }
 
         @Override
-        public Product1<Exception> unapply() {
+        public Tuple1<Exception> unapply() {
             return Tuple(error);
         }
     }

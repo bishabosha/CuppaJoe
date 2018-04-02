@@ -19,7 +19,6 @@ import static io.cuppajoe.collections.immutable.Tree.leaf;
 import static io.cuppajoe.match.Case.*;
 import static io.cuppajoe.match.Matcher.guardUnsafe;
 import static io.cuppajoe.match.Pattern.*;
-import static io.cuppajoe.tuples.Tuple2.$Tuple2;
 
 public class MatcherTest {
 

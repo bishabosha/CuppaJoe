@@ -4,9 +4,9 @@
 
 package io.cuppajoe.functions;
 
-import io.cuppajoe.Unit;
 import io.cuppajoe.control.Try;
-import io.cuppajoe.tuples.Product4;
+import io.cuppajoe.tuples.Tuple4;
+import io.cuppajoe.tuples.Unit;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,8 +40,8 @@ public interface Consume4<A, B, C, D> {
     }
 
     @Contract(pure = true)
-    default Consume1<Product4<A, B, C, D>> tupled() {
-        return x -> apply(x.$1(), x.$2(), x.$3(), x.$4());
+    default Consume1<Tuple4<A, B, C, D>> tupled() {
+        return x -> apply(x.$1, x.$2, x.$3, x.$4);
     }
 
     default Consume4<Supplier<A>, Supplier<B>, Supplier<C>, Supplier<D>> lazyInput() {

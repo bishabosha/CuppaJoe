@@ -1,50 +1,69 @@
-/*
- * Copyright (c) 2017. Jamie Thompson <bishbashboshjt@gmail.com>
- */
-
 package io.cuppajoe.tuples;
 
-import io.cuppajoe.control.Option;
+import io.cuppajoe.Iterators;
 import io.cuppajoe.functions.Func1;
-import io.cuppajoe.match.Pattern;
-import io.cuppajoe.match.PatternFactory;
+import io.cuppajoe.typeclass.compose.Compose1;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Iterator;
 import java.util.Objects;
+import java.util.function.Function;
 
-public final class Tuple1<A> implements Product1<A> {
+public final class Tuple1<A> implements Tuple, Unapply1<A>, Compose1<A> {
 
-    private final A $1;
-
-    public static Pattern $Tuple1(Pattern $1) {
-        return PatternFactory.gen1(Tuple1.class, $1);
-    }
+    public final A $1;
 
     Tuple1(A $1) {
         this.$1 = $1;
     }
 
-    public <AA> Tuple1<AA> flatMap(Func1<A, Tuple1<AA>> mapper) {
-        return mapper.apply($1());
+    public Tuple1<A> unapply() {
+        return this;
     }
 
-    public A $1() {
-        return $1;
+    @Override
+    public int arity() {
+        return 1;
+    }
+
+    @Override
+    public Object $(int index) {
+        switch (index) {
+            case 1: return $1;
+            default: throw new IndexOutOfBoundsException();
+        }
+    }
+
+    @NotNull
+    @Override
+    public Iterator<Object> iterator() {
+        return Iterators.singleton($1);
+    }
+
+    @Override
+    public <O> O compose(Function<? super A, ? extends O> mapper) {
+        return Func1.<A, O>narrow(mapper).tupled().apply(this);
+    }
+
+    public <O> Tuple1<O> map(Function<? super A, ? extends O> function) {
+        return Tuple.of(function.apply($1));
+    }
+
+    public <AA> Tuple1<AA> flatMap(Func1<A, Tuple1<AA>> mapper) {
+        return mapper.apply($1);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode($1());
+        return Objects.hashCode($1);
     }
 
     @Override
     public boolean equals(Object obj) {
-        return obj == this || Option.of(obj)
-             .cast(Product1.class)
-             .map(o -> Objects.equals($1(), o.$1()))
-             .orElse(false);
+        return obj == this || obj instanceof Tuple1 && Objects.equals($1, ((Tuple1) obj).$1);
     }
 
     public String toString() {
-        return "(" + $1() + ")";
+        return "(" + $1 + ")";
     }
 }

@@ -5,11 +5,11 @@
 package io.cuppajoe.control;
 
 import io.cuppajoe.Iterators;
-import io.cuppajoe.Unit;
 import io.cuppajoe.match.Case;
-import io.cuppajoe.tuples.Product1;
+import io.cuppajoe.tuples.Tuple1;
 import io.cuppajoe.tuples.Unapply0;
 import io.cuppajoe.tuples.Unapply1;
+import io.cuppajoe.tuples.Unit;
 import io.cuppajoe.typeclass.applicative.Applicative1;
 import io.cuppajoe.typeclass.monad.Monad1;
 import io.cuppajoe.typeclass.peek.Peek1;
@@ -127,7 +127,7 @@ public interface Option<E> extends Monad1<Option, E>, Peek1<E>, Value1<Option, E
         private O value;
 
         @Override
-        public Product1<O> unapply() {
+        public Tuple1<O> unapply() {
             return Tuple(get());
         }
 
@@ -168,7 +168,7 @@ public interface Option<E> extends Monad1<Option, E>, Peek1<E>, Value1<Option, E
         @Contract(pure = true)
         @Override
         public Iterator<O> iterator() {
-            return Iterators.singleton(this::get);
+            return Iterators.singletonSupplier(this::get);
         }
     }
 

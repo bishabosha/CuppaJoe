@@ -4,9 +4,9 @@
 
 package io.cuppajoe.functions;
 
-import io.cuppajoe.Unit;
 import io.cuppajoe.control.Try;
-import io.cuppajoe.tuples.Product1;
+import io.cuppajoe.tuples.Tuple1;
+import io.cuppajoe.tuples.Unit;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,7 +40,7 @@ public interface Consume1<A> extends Consumer<A> {
         return x -> accept(x.get());
     }
 
-    default Consume1<Product1<A>> tupled() {
-        return x -> accept(x.$1());
+    default Consume1<Tuple1<A>> tupled() {
+        return x -> accept(x.$1);
     }
 }

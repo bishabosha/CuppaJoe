@@ -11,7 +11,7 @@ package io.cuppajoe;
 import io.cuppajoe.collections.mutable.base.MapEntry;
 import io.cuppajoe.collections.mutable.hashtables.HashTable;
 import io.cuppajoe.control.Option;
-import io.cuppajoe.tuples.Product;
+import io.cuppajoe.tuples.Tuple;
 import io.cuppajoe.tuples.Tuple2;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -68,7 +68,7 @@ public interface Iterators {
         return hash;
     }
 
-    static <E> Iterator<E> singleton(Supplier<? extends E> supplier) {
+    static <E> Iterator<E> singletonSupplier(Supplier<? extends E> supplier) {
         return new Iterator<>() {
             boolean unwrapped = false;
 
@@ -86,6 +86,10 @@ public interface Iterators {
                 return supplier.get();
             }
         };
+    }
+
+    static <E> Iterator<E> singleton(E value) {
+        return singletonSupplier(() -> value);
     }
 
     @NotNull
@@ -222,7 +226,7 @@ public interface Iterators {
     static <K, V> Map<K, V> mapOf(Tuple2<K, V>... entries) {
         var map = new HashMap<K, V>();
         for (var tuple: entries) {
-            map.put(tuple.$1(), tuple.$2());
+            map.put(tuple.$1, tuple.$2);
         }
         return map;
     }
@@ -249,19 +253,19 @@ public interface Iterators {
         }
     };
 
-    static <R> Iterator<R> tupleIterator(Product product) {
+    static <R> Iterator<R> tupleIterator(Tuple tuple) {
         return new Iterator<>() {
 
             private int i = 1;
 
             @Override
             public boolean hasNext() {
-                return i <= product.arity();
+                return i <= tuple.arity();
             }
 
             @Override
             public R next() {
-                return (R) product.$(i++);
+                return (R) tuple.$(i++);
             }
         };
     }

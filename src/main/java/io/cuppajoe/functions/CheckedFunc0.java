@@ -5,7 +5,7 @@
 package io.cuppajoe.functions;
 
 import io.cuppajoe.control.Try;
-import io.cuppajoe.tuples.Product0;
+import io.cuppajoe.tuples.Unit;
 import org.jetbrains.annotations.Contract;
 
 import java.util.concurrent.Callable;
@@ -33,7 +33,7 @@ public interface CheckedFunc0<R> extends Callable<R> {
     }
 
     @Contract(pure = true)
-    default CheckedFunc1<Product0, R> tupled() {
+    default CheckedFunc1<Unit, R> tupled() {
         return t -> call();
     }
 }

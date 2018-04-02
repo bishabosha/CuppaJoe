@@ -1,7 +1,7 @@
 package io.cuppajoe.collections.immutable;
 
 import io.cuppajoe.Iterators;
-import io.cuppajoe.Unit;
+import io.cuppajoe.control.Either;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.functions.Func2;
 import io.cuppajoe.functions.Func3;
@@ -123,11 +123,11 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
     }
 
     @Override
-    default Option<Product2<E, List<E>>> pop() {
+    default Option<Tuple2<E, List<E>>> pop() {
         return None();
     }
 
-    default <U> Option<U> pop(Case<Product2<E, List<E>>, U> matcher) {
+    default <U> Option<U> pop(Case<Tuple2<E, List<E>>, U> matcher) {
         return pop().match(matcher);
     }
 
@@ -148,31 +148,35 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
      * @param <O> the type of the accumulator.
      * @return The accumulator with whatever modifications have been applied.
      */
-    default <O> O loop(Supplier<O> identity, Func3<O, List<E>, E, Product2<O, List<E>>> consumer) {
-        Option<Product2<O, List<E>>> accStackOp = Some(Tuple(identity.get(), this));
-        while (!accStackOp.isEmpty() && !accStackOp.get().$2().isEmpty()) {
-            accStackOp = accStackOp.get().compose((acc, stack) ->
-                stack.pop()
-                     .map(headTail -> headTail.compose((head, tail) ->
-                         consumer.apply(acc, tail, head))));
-        }
-        return accStackOp.map(Product2::$1).orElseSupply(identity);
+    default <O> O loop(O identity, Func3<E, O, List<E>, Tuple2<O, List<E>>> consumer) {
+        return loopRec(Tuple(identity, this), consumer).get();
     }
 
-    default <O> Product2<Option<O>, List<E>> nextItem(Func2<E, List<E>, Option<Product2<Option<O>, List<E>>>> mapper) {
-        return nextItemRec(Some(Tuple(None(), this)), mapper).invoke();
+    default <O> TailCall<O> loopRec(Tuple2<O, List<E>> loop, Func3<E, O, List<E>, Tuple2<O, List<E>>> consumer) {
+        return loop.compose((acc, stack) ->
+            stack.pop()
+                 .map(headTail ->
+                     headTail.compose((head, tail) ->
+                         Call(() -> loopRec(consumer.apply(head, acc, tail), consumer))
+                     )
+                 )
+                 .orElseSupply(() ->
+                     Yield(acc)
+                 )
+        );
     }
 
-    private <O> TailCall<Product2<Option<O>, List<E>>> nextItemRec(Option<Product2<Option<O>, List<E>>> loopCond, Func2<E, List<E>, Option<Product2<Option<O>, List<E>>>> mapper) {
-        return loopCond
-            .flatMap(t -> t.$1().isEmpty()
-                ? t.$2()
-                   .pop()
-                   .map(popped -> Rec(() ->
-                       nextItemRec(popped.compose(mapper), mapper)))
-                : Some(Yield(t))
-            )
-            .orElseSupply(() -> Yield(Tuple(None(), empty())));
+    default <O> Option<Tuple2<O, List<E>>> nextItem(Func2<E, List<E>, Either<List<E>, Tuple2<O, List<E>>>> mapper) {
+        return nextItemRec(Left(this), mapper).get();
+    }
+
+    private <O> TailCall<Option<Tuple2<O, List<E>>>> nextItemRec(Either<List<E>, Tuple2<O, List<E>>> loop, Func2<E, List<E>, Either<List<E>, Tuple2<O, List<E>>>> mapper) {
+        return loop.transform(
+            xs     -> xs.pop()
+                        .map(popped -> Call(() -> nextItemRec(popped.compose(mapper), mapper)))
+                        .orElseSupply(() -> Yield(None())),
+            result -> Yield(Some(result))
+        );
     }
 
     @Override
@@ -266,12 +270,12 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
         }
 
         @Override
-        public Option<Product2<E, List<E>>> pop() {
+        public Option<Tuple2<E, List<E>>> pop() {
             return Some(unapply());
         }
 
         @Override
-        public Product2<E, List<E>> unapply() {
+        public Tuple2<E, List<E>> unapply() {
             return Tuple(head(), tail());
         }
 

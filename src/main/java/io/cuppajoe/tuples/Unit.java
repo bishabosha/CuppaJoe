@@ -5,25 +5,27 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 
-public interface Product0 extends Product, Unapply0 {
-
-    default Product0 unapply() {
-        return this;
-    }
+public enum Unit implements Tuple, Unapply0 {
+    INSTANCE;
 
     @Override
-    default int arity() {
+    public int arity() {
         return 0;
     }
 
     @Override
-    default Object $(int index) {
+    public Object $(int index) {
         throw new IndexOutOfBoundsException();
     }
 
     @Override
     @NotNull
-    default Iterator<Object> iterator() {
+    public Iterator<Object> iterator() {
         return Iterators.empty();
+    }
+
+    @Override
+    public String toString() {
+        return "()";
     }
 }

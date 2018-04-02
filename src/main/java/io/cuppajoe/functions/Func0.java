@@ -5,7 +5,7 @@
 package io.cuppajoe.functions;
 
 import io.cuppajoe.control.Try;
-import io.cuppajoe.tuples.Product0;
+import io.cuppajoe.tuples.Unit;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,7 +35,7 @@ public interface Func0<R> extends Supplier<R> {
     }
 
     @Contract(pure = true)
-    default Func1<Product0, R> tupled() {
+    default Func1<Unit, R> tupled() {
         return x -> get();
     }
 }

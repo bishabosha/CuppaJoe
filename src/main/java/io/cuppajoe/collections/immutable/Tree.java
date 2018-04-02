@@ -8,11 +8,12 @@ import io.cuppajoe.API;
 import io.cuppajoe.Foldable;
 import io.cuppajoe.Iterators;
 import io.cuppajoe.Iterators.Lockable;
-import io.cuppajoe.Unit;
+import io.cuppajoe.control.Either;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.functions.Func1;
 import io.cuppajoe.functions.Func3;
 import io.cuppajoe.tuples.*;
+import io.cuppajoe.typeclass.value.Value1;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -20,8 +21,8 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
-import static io.cuppajoe.API.List;
 import static io.cuppajoe.API.*;
+import static io.cuppajoe.API.List;
 
 /**
  * Immutable tree
@@ -84,10 +85,10 @@ public interface Tree<E extends Comparable<E>> {
      */
     default boolean contains(E elem) {
         int comparison;
-        return (elem == null || isEmpty())               ? false
-            : (comparison = elem.compareTo(node())) == 0 ? true
-            : comparison < 0                             ? left().contains(elem)
-                                                         : right().contains(elem);
+        return (elem == null || isEmpty())                ? false
+             : (comparison = elem.compareTo(node())) == 0 ? true
+             : comparison < 0                             ? left().contains(elem)
+                                                          : right().contains(elem);
     }
 
     /**
@@ -128,9 +129,9 @@ public interface Tree<E extends Comparable<E>> {
      * @return a new Tree instance with the largest element removed
      */
     default Tree<E> deleteLargest() {
-        return isEmpty()        ? leaf()
-            : right().isEmpty() ? left()
-                                : Node(node(), left(), right().deleteLargest());
+        return isEmpty()         ? leaf()
+             : right().isEmpty() ? left()
+                                 : Node(node(), left(), right().deleteLargest());
     }
 
     /**
@@ -138,9 +139,9 @@ public interface Tree<E extends Comparable<E>> {
      * @return {@link API#None()} if this is a leaf, otherwise {@link Option} of the largest value.
      */
     default Option<E> largest() {
-        return isEmpty()        ? None()
-            : right().isEmpty() ? Some(node())
-                                : right().largest();
+        return isEmpty()         ? None()
+             : right().isEmpty() ? Some(node())
+                                 : right().largest();
     }
 
     /**
@@ -151,10 +152,10 @@ public interface Tree<E extends Comparable<E>> {
     default Tree<E> add(E elem) {
         Objects.requireNonNull(elem);
         int comparison;
-        return isEmpty()                                 ? Node(elem, leaf(), leaf())
-            : (comparison = elem.compareTo(node())) == 0 ? this
-            : comparison < 0                             ? Node(node(), left().add(elem), right())
-                                                         : Node(node(), left(), right().add(elem));
+        return isEmpty()                                  ? Node(elem, leaf(), leaf())
+             : (comparison = elem.compareTo(node())) == 0 ? this
+             : comparison < 0                             ? Node(node(), left().add(elem), right())
+                                                          : Node(node(), left(), right().add(elem));
     }
 
     /**
@@ -164,12 +165,12 @@ public interface Tree<E extends Comparable<E>> {
      */
     default Tree<E> remove(E elem) {
         int comparison;
-        return Objects.isNull(elem)                     ? this
-            : isEmpty()                                 ? leaf()
-            : (comparison = elem.compareTo(node())) < 0 ? Node(node(), left().remove(elem), right())
-            : comparison > 0                            ? Node(node(), left(), right().remove(elem))
-            : left().isEmpty()                          ? right()
-                                                        : Node(left().largest().get(), left().deleteLargest(), right());
+        return Objects.isNull(elem)                      ? this
+             : isEmpty()                                 ? leaf()
+             : (comparison = elem.compareTo(node())) < 0 ? Node(node(), left().remove(elem), right())
+             : comparison > 0                            ? Node(node(), left(), right().remove(elem))
+             : left().isEmpty()                          ? right()
+                                                         : Node(left().largest().get(), left().deleteLargest(), right());
     }
 
     default List<E> toList() {
@@ -185,12 +186,12 @@ public interface Tree<E extends Comparable<E>> {
             }
 
             private Iterable<E> reverse() {
-                return () -> inOrderTraversal(Tree::left, Tree::right);
+                return () -> inOrderTraversal(Tree::right, Tree::left);
             }
 
             @Override
             public Iterator<E> iterator() {
-                return inOrderTraversal(Tree::right, Tree::left);
+                return inOrderTraversal(Tree::left, Tree::right);
             }
 
             /**
@@ -199,7 +200,7 @@ public interface Tree<E extends Comparable<E>> {
              * @return an Iterator that will do in order traversal
              */
             @SuppressWarnings("unchecked")
-            private Iterator<E> inOrderTraversal(Func1<Tree<E>, Tree<E>> extractor, UnaryOperator<Tree<E>> brancher) {
+            private Iterator<E> inOrderTraversal(UnaryOperator<Tree<E>> brancher, Func1<Tree<E>, Tree<E>> extractor) {
                 return new Lockable<>() {
 
                     private List<Tree<E>> stack = List.empty();
@@ -217,7 +218,7 @@ public interface Tree<E extends Comparable<E>> {
                                     .containsValue();
                     }
 
-                    private Option<Unit> match(Product2<Tree<E>, List<Tree<E>>> tuple) {
+                    private Option<Unit> match(Tuple2<Tree<E>, List<Tree<E>>> tuple) {
                         return tuple.compose(this::extract);
                     }
 
@@ -246,39 +247,49 @@ public interface Tree<E extends Comparable<E>> {
         return () -> new Lockable<>() {
 
             private List<Tree<E>> stack = List.of(Tree.this);
-            private E toReturn;
+            private Option<E> toReturn;
 
             @Override
             public boolean hasNextSupplier() {
-                return stack.pop()
-                            .flatMap(this::match)
-                            .containsValue();
+                return (
+                    toReturn = stack.nextItem(this::stackAlgorithm)
+                        .map(this::foundNext)
+                        .or(this::noItem)
+                )
+                .containsValue();
             }
 
-            private Option<Unit> match(Product2<Tree<E>, List<Tree<E>>> tuple) {
-                return tuple.compose(this::extract);
+            private Either<List<Tree<E>>, Tuple2<E, List<Tree<E>>>> stackAlgorithm(Tree<E> head, List<Tree<E>> tail) {
+                return head.isEmpty() ? Left(List())
+                                      : Right(Tuple(head.node(), processNode(head.left(), head.right(), tail)));
             }
 
-            private Option<Unit> extract(Tree<E> tree, List<Tree<E>> list) {
-                return tree.isEmpty() ? None()
-                                      : Some(processPopped(tree.node(), tree.left(), tree.right(), list));
+            private List<Tree<E>> processNode(Tree<E> left, Tree<E> right, List<Tree<E>> list) {
+                var rightEmpty = right.isEmpty();
+                var leftEmpty = left.isEmpty();
+                return leftEmpty ? rightEmpty
+                                     ? list
+                                     : list.push(right)
+                                 : rightEmpty
+                                     ? list.push(left)
+                                     : list.push(right).push(left);
             }
 
-            private Unit processPopped(E node, Tree<E> left, Tree<E> right, List<Tree<E>> tail) {
-                toReturn = node;
-                if (!right.isEmpty()) {
-                    tail = tail.push(right);
-                }
-                if (!left.isEmpty()) {
-                    tail = tail.push(left);
-                }
-                stack = tail;
-                return Unit.INSTANCE;
+            private E foundNext(Tuple2<E, List<Tree<E>>> headTail) {
+                return headTail.compose((head, tail) -> {
+                    stack = tail;
+                    return head;
+                });
+            }
+
+            private Option<E> noItem() {
+                stack = List();
+                return None();
             }
 
             @Override
             public E nextSupplier() {
-                return toReturn;
+                return toReturn.get();
             }
         };
     }
@@ -296,16 +307,16 @@ public interface Tree<E extends Comparable<E>> {
                             .containsValue();
             }
 
-            private Option<Unit> match(Product2<Tree<E>, Queue<Tree<E>>> tuple) {
+            private Option<Unit> match(Tuple2<Tree<E>, Queue<Tree<E>>> tuple) {
                 return tuple.compose(this::extract);
             }
 
             private Option<Unit> extract(Tree<E> tree, Queue<Tree<E>> list) {
                 return tree.isEmpty() ? None()
-                                      : Some(processPopped(tree.node(), tree.left(), tree.right(), list));
+                                      : Some(processTree(tree.node(), tree.left(), tree.right(), list));
             }
 
-            private Unit processPopped(E node, Tree<E> left, Tree<E> right, Queue<Tree<E>> remaining) {
+            private Unit processTree(E node, Tree<E> left, Tree<E> right, Queue<Tree<E>> remaining) {
                 toReturn = node;
                 if (!left.isEmpty()) {
                     remaining = remaining.enqueue(left);
@@ -328,37 +339,51 @@ public interface Tree<E extends Comparable<E>> {
     default Iterable<E> postOrder() {
         return () -> new Lockable<>() {
 
-            private List<Object> stack = List.of(Tree.this);
-            private Option<E> toReturn;
+            private List<Object> stack = List(Tree.this);
+            private Option<E> current;
 
             @Override
             public boolean hasNextSupplier() {
-                final Product2<Option<E>, List<Object>> nextItem;
-                nextItem = stack.nextItem((x, xs) -> {
-                    if (x instanceof Node) {
-                        var tree = (Node<E>) x;
-                        xs = xs.push(tree.node);
-                        if (!tree.right.isEmpty()) {
-                            xs = xs.push(tree.right);
-                        }
-                        if (!tree.left.isEmpty()) {
-                            xs = xs.push(tree.left);
-                        }
-                        return Some(Tuple(None(), xs));
-                    } else if (x == leaf()) {
-                        return None();
-                    } else {
-                        return Some(Tuple(Some((E)x), xs));
-                    }
+                return (
+                    current = stack.nextItem(this::stackAlgorithm)
+                        .map(this::foundNext)
+                        .or(this::foundNone)
+                )
+                .containsValue();
+            }
+
+            private Either<List<Object>, Tuple2<E, List<Object>>> stackAlgorithm(Object head, List<Object> tail) {
+                return head instanceof Node ? Left(processNode((Node<E>) head, tail))
+                     : head == leaf()       ? Left(List())
+                                            : Right(Tuple((E) head, tail));
+            }
+
+            private List<Object> processNode(Node<E> node, List<Object> list) {
+                var rightEmpty = node.right.isEmpty();
+                var leftEmpty = node.left.isEmpty();
+                return leftEmpty ? rightEmpty
+                                     ? list.push(node.node)
+                                     : list.push(node.node).push(node.right)
+                                 : rightEmpty
+                                     ? list.push(node.node).push(node.left)
+                                     : list.push(node.node).push(node.right).push(node.left);
+            }
+
+            private E foundNext(Tuple2<E, List<Object>> tuple) {
+                return tuple.compose((elem, xs) -> {
+                    stack = xs;
+                    return elem;
                 });
-                stack = nextItem.$2();
-                toReturn = nextItem.$1();
-                return !nextItem.$1().isEmpty();
+            }
+
+            private Option<E> foundNone() {
+                stack = List();
+                return None();
             }
 
             @Override
             public E nextSupplier() {
-                return toReturn.get();
+                return current.get();
             }
         };
     }
@@ -399,7 +424,7 @@ public interface Tree<E extends Comparable<E>> {
         }
 
         @Override
-        public Product3<E, Tree<E>, Tree<E>> unapply() {
+        public Tuple3<E, Tree<E>, Tree<E>> unapply() {
             return Tuple(node(), left(), right());
         }
 

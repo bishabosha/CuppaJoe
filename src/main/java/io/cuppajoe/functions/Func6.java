@@ -5,7 +5,7 @@
 package io.cuppajoe.functions;
 
 import io.cuppajoe.control.Try;
-import io.cuppajoe.tuples.Product6;
+import io.cuppajoe.tuples.Tuple6;
 import org.jetbrains.annotations.Contract;
 
 import java.util.function.Function;
@@ -35,8 +35,8 @@ public interface Func6<A, B, C, D, E, F, R> {
     }
 
     @Contract(pure = true)
-    default Func1<Product6<A, B, C, D, E, F>, R> tupled() {
-        return x -> apply(x.$1(), x.$2(), x.$3(), x.$4(), x.$5(), x.$6());
+    default Func1<Tuple6<A, B, C, D, E, F>, R> tupled() {
+        return x -> apply(x.$1, x.$2, x.$3, x.$4, x.$5, x.$6);
     }
 
     default <U> Func6<A, B, C, D, E, F, U> andThen(Function<? super R, ? extends U> next) {

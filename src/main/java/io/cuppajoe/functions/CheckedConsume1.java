@@ -4,9 +4,9 @@
 
 package io.cuppajoe.functions;
 
-import io.cuppajoe.Unit;
 import io.cuppajoe.control.Try;
-import io.cuppajoe.tuples.Product1;
+import io.cuppajoe.tuples.Tuple1;
+import io.cuppajoe.tuples.Unit;
 import org.jetbrains.annotations.Contract;
 
 @FunctionalInterface
@@ -28,7 +28,7 @@ public interface CheckedConsume1<R> {
     }
 
     @Contract(pure = true)
-    default CheckedConsume1<Product1<R>> tupled() {
-        return t -> apply(t.$1());
+    default CheckedConsume1<Tuple1<R>> tupled() {
+        return t -> apply(t.$1);
     }
 }

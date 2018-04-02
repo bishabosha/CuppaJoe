@@ -2,7 +2,7 @@ package io.cuppajoe.collections.immutable;
 
 import io.cuppajoe.Foldable;
 import io.cuppajoe.control.Option;
-import io.cuppajoe.tuples.Product2;
+import io.cuppajoe.tuples.Tuple2;
 import io.cuppajoe.typeclass.monad.Monad1;
 import io.cuppajoe.typeclass.monoid.Monoid1;
 import io.cuppajoe.typeclass.peek.Peek1;
@@ -21,7 +21,7 @@ public interface Seq<INSTANCE extends Seq, E> extends Bunch<E>, Foldable<E>, Mon
     E get(int i);
     E head();
     Seq<INSTANCE, E> tail();
-    Option<? extends Product2<E, ? extends Seq<INSTANCE, E>>> pop();
+    Option<? extends Tuple2<E, ? extends Seq<INSTANCE, E>>> pop();
     Seq<INSTANCE, E> take(int limit);
     Seq<INSTANCE, E> takeRight(int limit);
     Seq<INSTANCE, E> subsequence(int from, int limit);

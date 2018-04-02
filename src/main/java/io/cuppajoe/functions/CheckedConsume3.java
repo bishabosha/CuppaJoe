@@ -4,9 +4,9 @@
 
 package io.cuppajoe.functions;
 
-import io.cuppajoe.Unit;
 import io.cuppajoe.control.Try;
-import io.cuppajoe.tuples.Product3;
+import io.cuppajoe.tuples.Tuple3;
+import io.cuppajoe.tuples.Unit;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -43,8 +43,8 @@ public interface CheckedConsume3<A, B, C> {
     }
 
     @Contract(pure = true)
-    default CheckedConsume1<Product3<A, B, C>> tupled() {
-        return x -> apply(x.$1(), x.$2(), x.$3());
+    default CheckedConsume1<Tuple3<A, B, C>> tupled() {
+        return x -> apply(x.$1, x.$2, x.$3);
     }
 
     default CheckedConsume3<Supplier<A>, Supplier<B>, Supplier<C>> lazyInput() {

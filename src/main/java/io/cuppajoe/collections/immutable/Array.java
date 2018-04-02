@@ -3,7 +3,7 @@ package io.cuppajoe.collections.immutable;
 import io.cuppajoe.Iterators;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.math.PredicateFor;
-import io.cuppajoe.tuples.Product2;
+import io.cuppajoe.tuples.Tuple2;
 import io.cuppajoe.typeclass.applicative.Applicative1;
 import io.cuppajoe.typeclass.monad.Monad1;
 import io.cuppajoe.typeclass.monoid.Monoid1;
@@ -49,7 +49,7 @@ public class Array<E> implements Seq<Array, E>, Value1<Array, E> {
     }
 
     @Override
-    public Option<? extends Product2<E, ? extends Seq<Array, E>>> pop() {
+    public Option<? extends Tuple2<E, ? extends Seq<Array, E>>> pop() {
         return isEmpty() ? None() : Some(Tuple(get(0), takeRight(size() - 1)));
     }
 

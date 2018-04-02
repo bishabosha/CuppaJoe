@@ -4,7 +4,7 @@ import io.cuppajoe.Foldable;
 import io.cuppajoe.Iterators;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.match.Case;
-import io.cuppajoe.tuples.Product2;
+import io.cuppajoe.tuples.Tuple2;
 import io.cuppajoe.typeclass.functor.Functor1;
 import io.cuppajoe.typeclass.value.Value1;
 import org.jetbrains.annotations.NotNull;
@@ -82,7 +82,7 @@ public class Queue<E> implements Foldable<E>, Bunch<E>, Value1<Queue, E>, Functo
         return new Queue<>(head, newTail);
     }
 
-    public Option<Product2<E, Queue<E>>> dequeue() {
+    public Option<Tuple2<E, Queue<E>>> dequeue() {
         final List<E> newHead;
         final List<E> newTail;
         if (head.isEmpty()) {
@@ -93,10 +93,12 @@ public class Queue<E> implements Foldable<E>, Bunch<E>, Value1<Queue, E>, Functo
             newTail = tail;
         }
         return newHead.pop()
-                      .map(t -> Tuple(t.$1(), new Queue<>(t.$2(), newTail)));
+                      .map(t ->
+                          t.flatMap((head, tail) ->
+                              Tuple(head, new Queue<>(tail, newTail))));
     }
 
-    public <U> Option<U> dequeue(Case<Product2<E, Queue<E>>, U> matcher) {
+    public <U> Option<U> dequeue(Case<Tuple2<E, Queue<E>>, U> matcher) {
         return dequeue().match(matcher);
     }
 

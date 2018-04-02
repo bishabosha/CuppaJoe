@@ -21,8 +21,8 @@ public class QueueTest {
             Queue.<Integer>empty()
                  .enqueue(1)
                  .dequeue()
-                 .map(t -> t.$1() == 1)
-                 .orElse(false)
+                 .filter(t -> t.compose((head, __) -> head == 1))
+                 .containsValue()
         );
     }
 

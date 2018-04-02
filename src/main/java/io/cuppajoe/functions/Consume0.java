@@ -4,9 +4,8 @@
 
 package io.cuppajoe.functions;
 
-import io.cuppajoe.Unit;
 import io.cuppajoe.control.Try;
-import io.cuppajoe.tuples.Product0;
+import io.cuppajoe.tuples.Unit;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,7 +28,7 @@ public interface Consume0 extends Runnable {
     }
 
     @Contract(pure = true)
-    default Consume1<Product0> tupled() {
+    default Consume1<Unit> tupled() {
         return x -> apply();
     }
 }

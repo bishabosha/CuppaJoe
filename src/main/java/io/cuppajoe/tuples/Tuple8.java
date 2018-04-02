@@ -1,30 +1,24 @@
-/*
- * Copyright (c) 2017. Jamie Thompson <bishbashboshjt@gmail.com>
- */
-
 package io.cuppajoe.tuples;
 
+import io.cuppajoe.Iterators;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.functions.Func8;
-import io.cuppajoe.match.Pattern;
-import io.cuppajoe.match.PatternFactory;
+import io.cuppajoe.typeclass.compose.Compose8;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Iterator;
 import java.util.Objects;
 
-public class Tuple8<A, B, C, D, E, F, G, H> implements Product8<A, B, C, D, E, F, G, H> {
+public final class Tuple8<A, B, C, D, E, F, G, H> implements Tuple, Unapply8<A, B, C, D, E, F, G, H>, Compose8<A, B, C, D, E, F, G, H> {
 
-    private final A $1;
-    private final B $2;
-    private final C $3;
-    private final D $4;
-    private final E $5;
-    private final F $6;
-    private final G $7;
-    private final H $8;
-
-    public static Pattern $Tuple8(Pattern $1, Pattern $2, Pattern $3, Pattern $4, Pattern $5, Pattern $6, Pattern $7, Pattern $8) {
-        return PatternFactory.gen8(Tuple8.class, $1, $2, $3, $4, $5, $6, $7, $8);
-    }
+    public final A $1;
+    public final B $2;
+    public final C $3;
+    public final D $4;
+    public final E $5;
+    public final F $6;
+    public final G $7;
+    public final H $8;
 
     Tuple8(A $1, B $2, C $3, D $4, E $5, F $6, G $7, H $8) {
         this.$1 = $1;
@@ -37,68 +31,64 @@ public class Tuple8<A, B, C, D, E, F, G, H> implements Product8<A, B, C, D, E, F
         this.$8 = $8;
     }
 
+    public Tuple8<A, B, C, D, E, F, G, H> unapply() {
+        return this;
+    }
+
+    @Override
+    public int arity() {
+        return 8;
+    }
+
+    @Override
+    public Object $(int index) {
+        switch (index) {
+            case 1: return $1;
+            case 2: return $2;
+            case 3: return $3;
+            case 4: return $4;
+            case 5: return $5;
+            case 6: return $6;
+            case 7: return $7;
+            case 8: return $8;
+            default: throw new IndexOutOfBoundsException();
+        }
+    }
+
+    @Override
+    public <O> O compose(Func8<? super A, ? super B, ? super C, ? super D, ? super E, ? super F, ? super G, ? super H, ? extends O> mapper) {
+        return mapper.apply($1, $2, $3, $4, $5, $6, $7, $8);
+    }
+
+    @NotNull
+    @Override
+    public Iterator<Object> iterator() {
+        return Iterators.of($1, $2, $3, $4, $5, $6, $7, $8);
+    }
+
+
     public <AA, BB, CC, DD, EE, FF, GG, HH> Tuple8<AA, BB, CC, DD, EE, FF, GG, HH>
     flatMap(Func8<A, B, C, D, E, F, G, H, Tuple8<AA, BB, CC, DD, EE, FF, GG, HH>> mapper) {
-        return mapper.apply($1(), $2(), $3(), $4(), $5(), $6(), $7(), $8());
-    }
-
-    @Override
-    public A $1() {
-        return $1;
-    }
-
-    @Override
-    public B $2() {
-        return $2;
-    }
-
-    @Override
-    public C $3() {
-        return $3;
-    }
-
-    @Override
-    public D $4() {
-        return $4;
-    }
-
-    @Override
-    public E $5() {
-        return $5;
-    }
-
-    @Override
-    public F $6() {
-        return $6;
-    }
-
-    @Override
-    public G $7() {
-        return $7;
-    }
-
-    @Override
-    public H $8() {
-        return $8;
+        return mapper.apply($1, $2, $3, $4, $5, $6, $7, $8);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash($1(), $2(), $3(), $4(), $5(), $6(), $7(), $8());
+        return Objects.hash($1, $2, $3, $4, $5, $6, $7, $8);
     }
 
     @Override
     public boolean equals(Object obj) {
         return obj == this || Option.of(obj)
                 .cast(Tuple8.class)
-                .map(o -> Objects.equals($1(), o.$1()) && Objects.equals($2(), o.$2()) && Objects.equals($3(), o.$3())
-                        && Objects.equals($4(), o.$4()) && Objects.equals($5(), o.$5()) && Objects.equals($6(), o.$6())
-                        && Objects.equals($7(), o.$7()) && Objects.equals($8(), o.$8()))
+                .map(o -> Objects.equals($1, o.$1) && Objects.equals($2, o.$2) && Objects.equals($3, o.$3)
+                        && Objects.equals($4, o.$4) && Objects.equals($5, o.$5) && Objects.equals($6, o.$6)
+                        && Objects.equals($7, o.$7) && Objects.equals($8, o.$8))
                 .orElse(false);
     }
 
     @Override
     public String toString() {
-        return "(" + $1() + ", " + $2() + ", " + $3() + ", " + $4() + ", " + $5() + ", " + $6() + ", " + $7() + ", " + $8() + ")";
+        return "(" + $1 + ", " + $2 + ", " + $3 + ", " + $4 + ", " + $5 + ", " + $6 + ", " + $7 + ", " + $8 + ")";
     }
 }

@@ -10,7 +10,6 @@ import io.cuppajoe.functions.Func2;
 import java.util.Objects;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import static io.cuppajoe.API.*;
 
@@ -32,10 +31,10 @@ public final class Library {
     /**
      * A depth first search algorithm using any nested
      */
-    public static <A, O extends Iterable> A foldLeft(Class<O> branchClass, O tree, Supplier<A> accumulator, Func2<A, Object, A> mapper) {
+    public static <A, O extends Iterable> A foldLeft(Class<O> branchClass, O tree, A accumulator, Func2<A, Object, A> mapper) {
         return List(tree.iterator()).loop(
             accumulator,
-            (acc, stack, it) -> {
+            (it, acc, stack) -> {
                 if (Objects.nonNull(it)) {
                     final Object current;
                     if (it.hasNext()) {

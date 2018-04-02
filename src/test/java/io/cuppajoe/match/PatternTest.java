@@ -8,7 +8,7 @@ import io.cuppajoe.collections.immutable.List;
 import io.cuppajoe.collections.immutable.Tree;
 import io.cuppajoe.collections.mutable.trees.BinaryNode;
 import io.cuppajoe.control.Option;
-import io.cuppajoe.tuples.Product2;
+import io.cuppajoe.tuples.Tuple2;
 import org.junit.Test;
 
 import static io.cuppajoe.API.None;
@@ -16,7 +16,6 @@ import static io.cuppajoe.API.Tuple;
 import static io.cuppajoe.collections.immutable.Tree.Node;
 import static io.cuppajoe.collections.immutable.Tree.leaf;
 import static io.cuppajoe.match.Pattern.*;
-import static io.cuppajoe.tuples.Tuple2.$Tuple2;
 import static org.junit.Assert.assertEquals;
 
 public class PatternTest {
@@ -79,7 +78,7 @@ public class PatternTest {
     @Test
     public void flattenStress() {
         final Pattern patt2Test;
-        final Product2<Option<Tree<Integer>>, List<Tree<Integer>>> underTest;
+        final Tuple2<Option<Tree<Integer>>, List<Tree<Integer>>> underTest;
 
         patt2Test = $Tuple2($Some($Node($x, $_, $y)), $xs);
         underTest = Tuple(Option.of(Node(1, leaf(), leaf())), List.of(Tree.of(2)));

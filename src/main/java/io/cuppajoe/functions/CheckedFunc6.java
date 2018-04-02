@@ -5,7 +5,7 @@
 package io.cuppajoe.functions;
 
 import io.cuppajoe.control.Try;
-import io.cuppajoe.tuples.Product6;
+import io.cuppajoe.tuples.Tuple6;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,8 +29,8 @@ public interface CheckedFunc6<A, B, C, D, E, F, R> {
     }
 
     @Contract(pure = true)
-    default CheckedFunc1<Product6<A, B, C, D, E, F>, R> tupled() {
-        return x -> apply(x.$1(), x.$2(), x.$3(), x.$4(), x.$5(), x.$6());
+    default CheckedFunc1<Tuple6<A, B, C, D, E, F>, R> tupled() {
+        return x -> apply(x.$1, x.$2, x.$3, x.$4, x.$5, x.$6);
     }
 
     R apply(A a, B b, C c, D d, E e, F f) throws Exception;

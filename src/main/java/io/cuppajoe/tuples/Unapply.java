@@ -1,6 +1,6 @@
 package io.cuppajoe.tuples;
 
 @FunctionalInterface
-public interface Unapply<P extends Product> {
-    P unapply();
+public interface Unapply<T extends Tuple> {
+    T unapply();
 }

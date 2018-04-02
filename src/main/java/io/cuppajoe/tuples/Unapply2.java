@@ -1,4 +1,4 @@
 package io.cuppajoe.tuples;
 
-public interface Unapply2<A, B> extends Unapply<Product2<A, B>> {
+public interface Unapply2<A, B> extends Unapply<Tuple2<A, B>> {
 }

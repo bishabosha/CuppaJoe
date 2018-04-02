@@ -5,7 +5,7 @@
 package io.cuppajoe.functions;
 
 import io.cuppajoe.control.Try;
-import io.cuppajoe.tuples.Product1;
+import io.cuppajoe.tuples.Tuple1;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,8 +35,8 @@ public interface Func1<A, R> extends Function<A, R> {
         return x -> apply(x.get());
     }
 
-    default Func1<Product1<A>, R> tupled() {
-        return x -> apply(x.$1());
+    default Func1<Tuple1<A>, R> tupled() {
+        return x -> apply(x.$1);
     }
 
     @Override

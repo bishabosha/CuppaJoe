@@ -4,9 +4,9 @@
 
 package io.cuppajoe.functions;
 
-import io.cuppajoe.Unit;
 import io.cuppajoe.control.Try;
-import io.cuppajoe.tuples.Product2;
+import io.cuppajoe.tuples.Tuple2;
+import io.cuppajoe.tuples.Unit;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -43,8 +43,8 @@ public interface Consume2<A, B> extends BiConsumer<A, B> {
     }
 
     @Contract(pure = true)
-    default Consume1<Product2<A, B>> tupled() {
-        return x -> accept(x.$1(), x.$2());
+    default Consume1<Tuple2<A, B>> tupled() {
+        return x -> accept(x.$1, x.$2);
     }
 
     default Consume2<Supplier<A>, Supplier<B>> lazyInput() {

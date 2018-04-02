@@ -1,7 +1,7 @@
 package io.cuppajoe.control;
 
-import io.cuppajoe.Unit;
 import io.cuppajoe.collections.immutable.List;
+import io.cuppajoe.tuples.Unit;
 import io.cuppajoe.typeclass.applicative.Applicative1;
 import io.cuppajoe.typeclass.monad.Monad1;
 import io.cuppajoe.typeclass.monoid.Monoid1;

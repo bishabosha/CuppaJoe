@@ -4,7 +4,6 @@
 
 package io.cuppajoe.tuples;
 
-import io.cuppajoe.API;
 import io.cuppajoe.collections.immutable.Queue;
 import org.junit.Assert;
 import org.junit.Test;
@@ -16,10 +15,10 @@ public class TupleTest {
 
     @Test
     public void testFlatten() {
-        final Product toFlatten = Tuple(Tuple(Tuple(Tuple("One"), Tuple("Two", Tuple()), Tuple()), "Three"));
+        final Tuple toFlatten = Tuple(Tuple(Tuple(Tuple("One"), Tuple("Two", Tuple()), Tuple()), "Three"));
         Assert.assertEquals(
             Queue("One", "Two", "Three"),
-            toFlatten.flatten(API::Queue, Queue::enqueue)
+            toFlatten.flatten(Queue(), Queue::enqueue)
         );
     }
 
