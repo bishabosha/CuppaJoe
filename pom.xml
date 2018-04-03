@@ -3,9 +3,13 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.cuppajoe</groupId>
   <artifactId>cuppajoe</artifactId>
-  <packaging>jar</packaging>
+  <packaging>pom</packaging>
   <version>1.0-SNAPSHOT</version>
-  <name>cuppajoe</name>
+    <modules>
+      <module>cuppajoe-match</module>
+      <module>cuppajoe-core</module>
+    </modules>
+    <name>cuppajoe</name>
   <url>http://maven.apache.org</url>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
