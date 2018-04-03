@@ -5,7 +5,7 @@
 package io.cuppajoe.collections.mutable.lists;
 
 import io.cuppajoe.Iterators;
-import io.cuppajoe.Iterators.Lockable;
+import io.cuppajoe.Iterators.IdempotentIterator;
 import io.cuppajoe.collections.mutable.base.AbstractCollection;
 
 import java.util.Collection;
@@ -211,7 +211,7 @@ public abstract class AbstractIterableList<E> extends AbstractCollection<E> impl
 	@Override
 	public Iterator<E> iterator() {
 		resetCurrentTop();
-		return new Lockable<>() {
+		return new IdempotentIterator<>() {
             boolean returnHead = true;
 
             @Override
@@ -238,7 +238,7 @@ public abstract class AbstractIterableList<E> extends AbstractCollection<E> impl
 	@Override
 	public Iterable<E> reversed() {
 		resetCurrentTail();
-		return () -> new Lockable<>() {
+		return () -> new IdempotentIterator<>() {
             boolean returnTail = true;
 
             @Override
@@ -259,6 +259,6 @@ public abstract class AbstractIterableList<E> extends AbstractCollection<E> impl
 
 	@Override
 	public boolean equals(Object obj) {
-		return obj == this || obj instanceof List && Iterators.equals(this, obj);
+		return obj == this || obj instanceof List && Iterators.equals(this.iterator(), ((List) obj).iterator());
 	}
 }

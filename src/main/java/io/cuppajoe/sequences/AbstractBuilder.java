@@ -4,7 +4,7 @@
 
 package io.cuppajoe.sequences;
 
-import io.cuppajoe.Iterators.Lockable;
+import io.cuppajoe.Iterators.IdempotentIterator;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -17,7 +17,7 @@ abstract class AbstractBuilder<E> implements Iterable<E> {
 
     @Override
     public Iterator<E> iterator() {
-        return new Lockable<>() {
+        return new IdempotentIterator<>() {
             boolean generateNewTerm = true;
             boolean lastHasNext = false;
 

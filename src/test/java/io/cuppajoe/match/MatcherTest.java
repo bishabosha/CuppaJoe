@@ -18,7 +18,8 @@ import static io.cuppajoe.collections.immutable.Tree.Node;
 import static io.cuppajoe.collections.immutable.Tree.leaf;
 import static io.cuppajoe.match.Case.*;
 import static io.cuppajoe.match.Matcher.guardUnsafe;
-import static io.cuppajoe.match.Pattern.*;
+import static io.cuppajoe.match.patterns.Collections.*;
+import static io.cuppajoe.match.patterns.Standard.*;
 
 public class MatcherTest {
 
@@ -191,10 +192,10 @@ public class MatcherTest {
 
     int sumNodes(Tree<Integer> x, Tree<Integer> y) {
         return Match(Tuple(x, y)).of(
-            with($Tuple2($Leaf, $Leaf),                                             () -> 0),
+            with($Tuple2($Leaf, $Leaf),                                                 () -> 0),
             with($Tuple2($Node($n, $_, $_), $Node($n, $_, $_)), (Integer $n1, Integer $n2) -> $n1 + $n2),
-            with($Tuple2($Leaf, $Node($n, $_, $_)),                         (Integer $n) -> $n),
-            with($Tuple2($Node($n, $_, $_), $Leaf),                         (Integer $n) -> $n)
+            with($Tuple2($Leaf, $Node($n, $_, $_)),                           (Integer $n) -> $n),
+            with($Tuple2($Node($n, $_, $_), $Leaf),                           (Integer $n) -> $n)
         );
     }
 

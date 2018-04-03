@@ -1,14 +1,11 @@
 package io.cuppajoe.tuples;
 
-import io.cuppajoe.Iterators;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.typeclass.applicative.Applicative2;
 import io.cuppajoe.typeclass.compose.Compose2;
 import io.cuppajoe.typeclass.monad.Monad2;
 import io.cuppajoe.typeclass.peek.Peek2;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.Iterator;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -34,7 +31,7 @@ public final class Tuple2<A, B> implements Tuple, Unapply2<A, B>, Monad2<Tuple2,
     }
 
     @Override
-    public Object $(int index) {
+    public Object get(int index) {
         switch (index) {
             case 1: return $1;
             case 2: return $2;
@@ -75,12 +72,6 @@ public final class Tuple2<A, B> implements Tuple, Unapply2<A, B>, Monad2<Tuple2,
 
     static <A, B> Tuple2<A, B> narrowA(Applicative2<Tuple2, A, B> applicative2) {
         return Monad2.Type.narrowA(applicative2);
-    }
-
-    @NotNull
-    @Override
-    public Iterator<Object> iterator() {
-        return Iterators.of($1, $2);
     }
 
     @Override

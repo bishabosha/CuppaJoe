@@ -1,30 +1,32 @@
 package io.cuppajoe.tuples;
 
-import io.cuppajoe.Library;
 import io.cuppajoe.control.Try;
-import io.cuppajoe.functions.Func2;
 
-public interface Tuple extends Iterable<Object> {
+import java.util.Iterator;
+import java.util.Objects;
+
+public interface Tuple {
 
     int arity();
 
-    Object $(int index);
+    Object get(int index);
 
-    default Try<Object> lift$(int index) {
-        return Try.of(() -> $(index));
-    }
-
-    default <A> A flatten(A accumulator, Func2<A, Object, A> mapper) {
-        return Library.foldLeft(Tuple.class, this, accumulator, mapper);
+    default Try<Object> tryGet(int index) {
+        return Try.of(() -> get(index));
     }
 
     default boolean contains(Object o) {
-        for (var elem: this) {
-            if (elem.equals(o)) {
+        var count = 1;
+        while (count <= arity()) {
+            if (Objects.equals(get(count++), o)) {
                 return true;
             }
         }
         return false;
+    }
+
+    default <R> Iterator<R> iterator() {
+        return new TupleIterator<>(this);
     }
 
     static

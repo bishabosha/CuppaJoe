@@ -4,7 +4,7 @@
 
 package io.cuppajoe.pipelines;
 
-import io.cuppajoe.Iterators.Lockable;
+import io.cuppajoe.Iterators.IdempotentIterator;
 import io.cuppajoe.collections.mutable.lists.LinkedList;
 import io.cuppajoe.control.Option;
 
@@ -27,7 +27,7 @@ class TerminalNode<I, O> extends AbstractNode<O, O> implements Iterable<O>{
     public Iterator<O> iterator() {
         return (head == null) ?
                 (Iterator<O>) sourceIterable.iterator() :
-                new Lockable<>() {
+                new IdempotentIterator<>() {
                     Iterator<I> source = sourceIterable.iterator();
                     boolean sourceHasNext = false;
                     O current;

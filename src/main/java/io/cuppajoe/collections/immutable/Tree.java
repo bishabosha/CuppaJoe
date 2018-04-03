@@ -7,13 +7,12 @@ package io.cuppajoe.collections.immutable;
 import io.cuppajoe.API;
 import io.cuppajoe.Foldable;
 import io.cuppajoe.Iterators;
-import io.cuppajoe.Iterators.Lockable;
+import io.cuppajoe.Iterators.IdempotentIterator;
 import io.cuppajoe.control.Either;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.functions.Func1;
 import io.cuppajoe.functions.Func3;
 import io.cuppajoe.tuples.*;
-import io.cuppajoe.typeclass.value.Value1;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -201,7 +200,7 @@ public interface Tree<E extends Comparable<E>> {
              */
             @SuppressWarnings("unchecked")
             private Iterator<E> inOrderTraversal(UnaryOperator<Tree<E>> brancher, Func1<Tree<E>, Tree<E>> extractor) {
-                return new Lockable<>() {
+                return new IdempotentIterator<>() {
 
                     private List<Tree<E>> stack = List.empty();
                     private Tree<E> current = Tree.this;
@@ -244,19 +243,16 @@ public interface Tree<E extends Comparable<E>> {
     }
 
     default Iterable<E> preOrder() {
-        return () -> new Lockable<>() {
+        return () -> new IdempotentIterator<>() {
 
             private List<Tree<E>> stack = List.of(Tree.this);
-            private Option<E> toReturn;
+            private E toReturn;
 
             @Override
             public boolean hasNextSupplier() {
-                return (
-                    toReturn = stack.nextItem(this::stackAlgorithm)
-                        .map(this::foundNext)
-                        .or(this::noItem)
-                )
-                .containsValue();
+                return stack.nextItem(this::stackAlgorithm)
+                    .map(this::foundNext)
+                    .containsValue();
             }
 
             private Either<List<Tree<E>>, Tuple2<E, List<Tree<E>>>> stackAlgorithm(Tree<E> head, List<Tree<E>> tail) {
@@ -275,27 +271,23 @@ public interface Tree<E extends Comparable<E>> {
                                      : list.push(right).push(left);
             }
 
-            private E foundNext(Tuple2<E, List<Tree<E>>> headTail) {
+            private Unit foundNext(Tuple2<E, List<Tree<E>>> headTail) {
                 return headTail.compose((head, tail) -> {
                     stack = tail;
-                    return head;
+                    toReturn = head;
+                    return Unit.INSTANCE;
                 });
-            }
-
-            private Option<E> noItem() {
-                stack = List();
-                return None();
             }
 
             @Override
             public E nextSupplier() {
-                return toReturn.get();
+                return toReturn;
             }
         };
     }
 
     default Iterable<E> levelOrder() {
-        return () -> new Lockable<>() {
+        return () -> new IdempotentIterator<>() {
 
             private Queue<Tree<E>> queue = Queue.of(Tree.this);
             private E toReturn;
@@ -337,19 +329,16 @@ public interface Tree<E extends Comparable<E>> {
 
     @SuppressWarnings("unchecked")
     default Iterable<E> postOrder() {
-        return () -> new Lockable<>() {
+        return () -> new IdempotentIterator<>() {
 
             private List<Object> stack = List(Tree.this);
-            private Option<E> current;
+            private E current;
 
             @Override
             public boolean hasNextSupplier() {
-                return (
-                    current = stack.nextItem(this::stackAlgorithm)
-                        .map(this::foundNext)
-                        .or(this::foundNone)
-                )
-                .containsValue();
+                return stack.nextItem(this::stackAlgorithm)
+                    .map(this::foundNext)
+                    .containsValue();
             }
 
             private Either<List<Object>, Tuple2<E, List<Object>>> stackAlgorithm(Object head, List<Object> tail) {
@@ -369,21 +358,17 @@ public interface Tree<E extends Comparable<E>> {
                                      : list.push(node.node).push(node.right).push(node.left);
             }
 
-            private E foundNext(Tuple2<E, List<Object>> tuple) {
+            private Unit foundNext(Tuple2<E, List<Object>> tuple) {
                 return tuple.compose((elem, xs) -> {
                     stack = xs;
-                    return elem;
+                    current = elem;
+                    return Unit.INSTANCE;
                 });
-            }
-
-            private Option<E> foundNone() {
-                stack = List();
-                return None();
             }
 
             @Override
             public E nextSupplier() {
-                return current.get();
+                return current;
             }
         };
     }

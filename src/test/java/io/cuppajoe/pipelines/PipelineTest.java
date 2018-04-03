@@ -17,7 +17,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static io.cuppajoe.match.Case.with;
-import static io.cuppajoe.match.Pattern.$any;
+import static io.cuppajoe.match.patterns.Standard.$any;
 import static org.hamcrest.Matchers.contains;
 
 public class PipelineTest {

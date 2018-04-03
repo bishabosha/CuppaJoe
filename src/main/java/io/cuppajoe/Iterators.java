@@ -11,7 +11,6 @@ package io.cuppajoe;
 import io.cuppajoe.collections.mutable.base.MapEntry;
 import io.cuppajoe.collections.mutable.hashtables.HashTable;
 import io.cuppajoe.control.Option;
-import io.cuppajoe.tuples.Tuple;
 import io.cuppajoe.tuples.Tuple2;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +25,7 @@ import static io.cuppajoe.API.Some;
 
 public interface Iterators {
 
-    abstract class Lockable<E> implements Iterator<E> {
+    abstract class IdempotentIterator<E> implements Iterator<E> {
         private boolean hasNext = false;
         private boolean update = true;
 
@@ -60,9 +59,10 @@ public interface Iterators {
         public abstract E nextSupplier();
     }
 
-    static int hash(Iterable<?> iterable) {
+    static int hash(Iterator<?> it) {
         var hash = 1;
-        for (var element : iterable) {
+        while (it.hasNext()) {
+            var element = it.next();
             hash = 29 * hash + (element != null ? element.hashCode() : 0);
         }
         return hash;
@@ -96,16 +96,16 @@ public interface Iterators {
     @Contract(pure = true)
     @SafeVarargs
     static <E> Iterator<E> ofSuppliers(Supplier<E>... suppliers) {
-        return new Lockable<>() {
+        return new Iterator<>() {
             private int i = 0;
 
             @Override
-            public boolean hasNextSupplier() {
+            public boolean hasNext() {
                 return i < suppliers.length;
             }
 
             @Override
-            public E nextSupplier() {
+            public E next() {
                 return suppliers[i++].get();
             }
         };
@@ -115,7 +115,7 @@ public interface Iterators {
     @Contract(pure = true)
     @SafeVarargs
     static <E> Iterator<E> concat(Iterable<E>... iterables) {
-        return new Lockable<>() {
+        return new IdempotentIterator<>() {
             Iterator<E> current;
             int i = 0;
 
@@ -152,7 +152,7 @@ public interface Iterators {
     static <R> Iterator<R> iterate(R identity,
             Predicate<R> terminatingCondition,
             UnaryOperator<R> accumulator) {
-        return new Lockable<>() {
+        return new IdempotentIterator<>() {
             private R current = identity;
 
             @Override
@@ -189,9 +189,9 @@ public interface Iterators {
         };
     }
 
-    static <E> boolean equals(Iterable<E> base, Object obj) {
-        var it = ((Iterable) obj).iterator();
-        for (var term: base) {
+    static <E> boolean equals(Iterator<E> base, Iterator it) {
+        while (base.hasNext()) {
+            var term = base.next();
             if (!it.hasNext() || !Objects.equals(term, it.next())) {
                 return false;
             }
@@ -253,52 +253,35 @@ public interface Iterators {
         }
     };
 
-    static <R> Iterator<R> tupleIterator(Tuple tuple) {
-        return new Iterator<>() {
-
-            private int i = 1;
-
-            @Override
-            public boolean hasNext() {
-                return i <= tuple.arity();
-            }
-
-            @Override
-            public R next() {
-                return (R) tuple.$(i++);
-            }
-        };
-    }
-
     static <R> Iterator<R> wrap(R[] values) {
-        return new Lockable<>() {
+        return new Iterator<>() {
 
             private int i = 0;
 
             @Override
-            public boolean hasNextSupplier() {
+            public boolean hasNext() {
                 return i < values.length;
             }
 
             @Override
-            public R nextSupplier() {
+            public R next() {
                 return values[i++];
             }
         };
     }
 
     static <R> Iterator<R> cast(Object[] values) {
-        return new Lockable<>() {
+        return new Iterator<>() {
 
             private int i = 0;
 
             @Override
-            public boolean hasNextSupplier() {
+            public boolean hasNext() {
                 return i < values.length;
             }
 
             @Override
-            public R nextSupplier() {
+            public R next() {
                 return (R) values[i++];
             }
         };
@@ -309,7 +292,7 @@ public interface Iterators {
     }
 
     static <R> Iterator<R> cycle(Iterable<R> source) {
-        return new Lockable<>() {
+        return new IdempotentIterator<>() {
 
             Iterator<R> it = getIt();
 

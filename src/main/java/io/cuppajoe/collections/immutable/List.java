@@ -1,6 +1,7 @@
 package io.cuppajoe.collections.immutable;
 
 import io.cuppajoe.Iterators;
+import io.cuppajoe.Iterators.IdempotentIterator;
 import io.cuppajoe.control.Either;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.functions.Func2;
@@ -402,7 +403,7 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
         @Override
         @NotNull
         public Iterator<E> iterator() {
-            return new Iterators.Lockable<>() {
+            return new IdempotentIterator<>() {
 
                 E current = null;
                 List<E> cons = Cons.this;

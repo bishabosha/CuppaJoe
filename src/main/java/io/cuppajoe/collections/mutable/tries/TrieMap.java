@@ -4,16 +4,13 @@
 
 package io.cuppajoe.collections.mutable.tries;
 
-import io.cuppajoe.Iterators.Lockable;
+import io.cuppajoe.Iterators.IdempotentIterator;
 import io.cuppajoe.collections.mutable.base.AbstractMap;
 import io.cuppajoe.collections.mutable.base.BasicSet;
 import io.cuppajoe.collections.mutable.base.MapEntry;
 import io.cuppajoe.collections.mutable.lists.LinkedList;
 
-import java.util.Collection;
-import java.util.Deque;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 public class TrieMap<V> extends AbstractMap<String, V> {
 	
@@ -218,8 +215,8 @@ public class TrieMap<V> extends AbstractMap<String, V> {
 
             @Override
             public Iterator<V> iterator() {
-                return new Lockable<>() {
-                    private Deque<TrieNode<V>> nodeStack = new LinkedList<>();
+                return new IdempotentIterator<>() {
+                    private Deque<TrieNode<V>> nodeStack = new ArrayDeque<>();
                     private TrieNode<V> currentNode = root;
 
                     {
@@ -280,10 +277,10 @@ public class TrieMap<V> extends AbstractMap<String, V> {
 
             @Override
             public Iterator<Entry<String, V>> iterator() {
-                return new Lockable<>() {
+                return new IdempotentIterator<>() {
 
-                    private Deque<TrieNode<V>> nodeStack = new LinkedList<>();
-                    private Deque<String> stringStack = new LinkedList<>();
+                    private Deque<TrieNode<V>> nodeStack = new ArrayDeque<>();
+                    private Deque<String> stringStack = new ArrayDeque<>();
                     private Entry<String, V> currentEntry;
                     private String currentString = "";
                     private TrieNode<V> currentNode = root;

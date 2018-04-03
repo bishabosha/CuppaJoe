@@ -4,7 +4,7 @@
 
 package io.cuppajoe.collections.mutable.hashtables;
 
-import io.cuppajoe.Iterators.Lockable;
+import io.cuppajoe.Iterators.IdempotentIterator;
 import io.cuppajoe.collections.mutable.base.AbstractSet;
 import io.cuppajoe.collections.mutable.lists.LinkedList;
 import io.cuppajoe.sequences.Sequence;
@@ -191,7 +191,7 @@ public class HashTable<E> extends AbstractSet<E> {
 
 	@Override
 	public Iterator<E> iterator() {
-		return new Lockable<>() {
+		return new IdempotentIterator<>() {
 
             private int index = 0;
             private Iterator<E> it = null;

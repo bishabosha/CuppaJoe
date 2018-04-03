@@ -1,11 +1,8 @@
 package io.cuppajoe.tuples;
 
-import io.cuppajoe.Iterators;
 import io.cuppajoe.functions.Func1;
 import io.cuppajoe.typeclass.compose.Compose1;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.Iterator;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -27,17 +24,12 @@ public final class Tuple1<A> implements Tuple, Unapply1<A>, Compose1<A> {
     }
 
     @Override
-    public Object $(int index) {
-        switch (index) {
-            case 1: return $1;
-            default: throw new IndexOutOfBoundsException();
+    public Object get(int index) {
+        if (index == 1) {
+            return $1;
+        } else {
+            throw new IndexOutOfBoundsException();
         }
-    }
-
-    @NotNull
-    @Override
-    public Iterator<Object> iterator() {
-        return Iterators.singleton($1);
     }
 
     @Override

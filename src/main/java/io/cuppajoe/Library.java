@@ -5,13 +5,13 @@
 package io.cuppajoe;
 
 import io.cuppajoe.control.Option;
-import io.cuppajoe.functions.Func2;
 
 import java.util.Objects;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
-import static io.cuppajoe.API.*;
+import static io.cuppajoe.API.None;
+import static io.cuppajoe.API.Some;
 
 public final class Library {
 
@@ -26,29 +26,5 @@ public final class Library {
             }
         }
         return None();
-    }
-
-    /**
-     * A depth first search algorithm using any nested
-     */
-    public static <A, O extends Iterable> A foldLeft(Class<O> branchClass, O tree, A accumulator, Func2<A, Object, A> mapper) {
-        return List(tree.iterator()).loop(
-            accumulator,
-            (it, acc, stack) -> {
-                if (Objects.nonNull(it)) {
-                    final Object current;
-                    if (it.hasNext()) {
-                        current = it.next();
-                        stack = stack.push(it);
-                        if (!branchClass.isInstance(current)) {
-                            acc = mapper.apply(acc, current);
-                        } else {
-                            stack = stack.push(branchClass.cast(current).iterator());
-                        }
-                    }
-                }
-                return Tuple(acc, stack);
-            }
-        );
     }
 }

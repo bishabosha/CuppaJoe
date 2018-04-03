@@ -26,7 +26,7 @@ public abstract class AbstractBase<E> implements Iterable<E>{
 
     @Override
     public int hashCode() {
-        return Iterators.hash(this);
+        return Iterators.hash(iterator());
     }
 
     public String toString() {

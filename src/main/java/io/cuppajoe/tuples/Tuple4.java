@@ -1,12 +1,9 @@
 package io.cuppajoe.tuples;
 
-import io.cuppajoe.Iterators;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.functions.Func4;
 import io.cuppajoe.typeclass.compose.Compose4;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.Iterator;
 import java.util.Objects;
 
 public final class Tuple4<A, B, C, D> implements Tuple, Unapply4<A, B, C, D>, Compose4<A, B, C, D> {
@@ -33,7 +30,7 @@ public final class Tuple4<A, B, C, D> implements Tuple, Unapply4<A, B, C, D>, Co
     }
 
     @Override
-    public Object $(int index) {
+    public Object get(int index) {
         switch (index) {
             case 1: return $1;
             case 2: return $2;
@@ -46,12 +43,6 @@ public final class Tuple4<A, B, C, D> implements Tuple, Unapply4<A, B, C, D>, Co
     @Override
     public <O> O compose(Func4<? super A, ? super B, ? super C, ? super D, ? extends O> mapper) {
         return mapper.apply($1, $2, $3, $4);
-    }
-
-    @NotNull
-    @Override
-    public Iterator<Object> iterator() {
-        return Iterators.of($1, $2, $3, $4);
     }
 
     public <AA, BB, CC, DD> Tuple4<AA, BB, CC, DD> flatMap(Func4<A, B, C, D, Tuple4<AA, BB, CC, DD>> mapper) {

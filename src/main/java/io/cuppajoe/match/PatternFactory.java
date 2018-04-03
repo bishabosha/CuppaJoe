@@ -5,12 +5,14 @@
 package io.cuppajoe.match;
 
 import io.cuppajoe.control.Option;
+import io.cuppajoe.match.patterns.Pattern;
+import io.cuppajoe.match.patterns.Standard;
 import io.cuppajoe.tuples.*;
 
 public class PatternFactory {
 
     public static Pattern gen0(Unapply0 target) {
-        return x -> target.equals(x) ? Pattern.PASS : Pattern.FAIL;
+        return x -> target.equals(x) ? Standard.PASS : Standard.FAIL;
     }
 
     public static Pattern gen1(Class<? extends Unapply1> target, Pattern p1) {

@@ -7,6 +7,7 @@ package io.cuppajoe.match;
 import io.cuppajoe.API;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.functions.*;
+import io.cuppajoe.match.patterns.Pattern;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
@@ -84,53 +85,53 @@ public interface Case<I, O> {
     static <I, O, A> Case<I, O>
     with(Pattern matcher, Func1<A, O> binder) {
         return base(matcher,
-            xs -> binder.apply(xs.next()));
+            xs -> binder.apply(xs.nextVal()));
     }
 
     static <I, O, A, B> Case<I, O>
     with(Pattern matcher, Func2<A, B, O> binder) {
         return base(matcher,
-            xs -> binder.apply(xs.next(), xs.next()));
+            xs -> binder.apply(xs.nextVal(), xs.nextVal()));
     }
 
     static <I, O, A, B, C> Case<I, O>
     with(Pattern matcher, Func3<A, B, C, O> binder) {
         return base(matcher,
-            xs -> binder.apply(xs.next(), xs.next(), xs.next()));
+            xs -> binder.apply(xs.nextVal(), xs.nextVal(), xs.nextVal()));
     }
 
     static <I, O, A, B, C, D> Case<I, O>
     with(Pattern matcher, Func4<A, B, C, D, O> binder) {
         return base(matcher,
-            xs -> binder.apply(xs.next(), xs.next(), xs.next(), xs.next()));
+            xs -> binder.apply(xs.nextVal(), xs.nextVal(), xs.nextVal(), xs.nextVal()));
     }
 
     static <I, O, A, B, C, D, E> Case<I, O>
     with(Pattern matcher, Func5<A, B, C, D, E, O> binder) {
         return base(matcher,
-            xs -> binder.apply(xs.next(), xs.next(), xs.next(), xs.next(), xs.next()));
+            xs -> binder.apply(xs.nextVal(), xs.nextVal(), xs.nextVal(), xs.nextVal(), xs.nextVal()));
     }
 
     static <I, O, A, B, C, D, E, F> Case<I, O>
     with(Pattern matcher, Func6<A, B, C, D, E, F, O> binder) {
         return base(matcher,
-            xs -> binder.apply(xs.next(), xs.next(), xs.next(), xs.next(), xs.next(), xs.next()));
+            xs -> binder.apply(xs.nextVal(), xs.nextVal(), xs.nextVal(), xs.nextVal(), xs.nextVal(), xs.nextVal()));
     }
 
     static <I, O, A, B, C, D, E, F, G> Case<I, O>
     with(Pattern matcher, Func7<A, B, C, D, E, F, G, O> binder) {
         return base(matcher,
-            xs -> binder.apply(xs.next(), xs.next(), xs.next(), xs.next(), xs.next(), xs.next(), xs.next()));
+            xs -> binder.apply(xs.nextVal(), xs.nextVal(), xs.nextVal(), xs.nextVal(), xs.nextVal(), xs.nextVal(), xs.nextVal()));
     }
 
     static <I, O, A, B, C, D, E, F, G, H> Case<I, O>
     with(Pattern matcher, Func8<A, B, C, D, E, F, G, H, O> binder) {
         return base(matcher,
-            xs -> binder.apply(xs.next(), xs.next(), xs.next(), xs.next(), xs.next(), xs.next(), xs.next(), xs.next()));
+            xs -> binder.apply(xs.nextVal(), xs.nextVal(), xs.nextVal(), xs.nextVal(), xs.nextVal(), xs.nextVal(), xs.nextVal(), xs.nextVal()));
     }
 
     static <I, O> Case<I, O> base(Pattern matcher, Function<Result.Values, O> mapper) {
-        return i -> matcher.test(i).flatMap(patternResult -> Option.of(mapper.apply(patternResult.values())));
+        return i -> matcher.test(i).map(result -> mapper.apply(result.values()));
     }
 
     static <O> Guard<O> combine(Guard<O>... guards) {

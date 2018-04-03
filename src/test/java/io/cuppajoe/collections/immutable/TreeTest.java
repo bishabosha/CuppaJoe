@@ -3,7 +3,6 @@ package io.cuppajoe.collections.immutable;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.emptyIterable;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 

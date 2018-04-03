@@ -1,12 +1,9 @@
 package io.cuppajoe.tuples;
 
-import io.cuppajoe.Iterators;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.functions.Func8;
 import io.cuppajoe.typeclass.compose.Compose8;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.Iterator;
 import java.util.Objects;
 
 public final class Tuple8<A, B, C, D, E, F, G, H> implements Tuple, Unapply8<A, B, C, D, E, F, G, H>, Compose8<A, B, C, D, E, F, G, H> {
@@ -41,7 +38,7 @@ public final class Tuple8<A, B, C, D, E, F, G, H> implements Tuple, Unapply8<A, 
     }
 
     @Override
-    public Object $(int index) {
+    public Object get(int index) {
         switch (index) {
             case 1: return $1;
             case 2: return $2;
@@ -59,13 +56,6 @@ public final class Tuple8<A, B, C, D, E, F, G, H> implements Tuple, Unapply8<A, 
     public <O> O compose(Func8<? super A, ? super B, ? super C, ? super D, ? super E, ? super F, ? super G, ? super H, ? extends O> mapper) {
         return mapper.apply($1, $2, $3, $4, $5, $6, $7, $8);
     }
-
-    @NotNull
-    @Override
-    public Iterator<Object> iterator() {
-        return Iterators.of($1, $2, $3, $4, $5, $6, $7, $8);
-    }
-
 
     public <AA, BB, CC, DD, EE, FF, GG, HH> Tuple8<AA, BB, CC, DD, EE, FF, GG, HH>
     flatMap(Func8<A, B, C, D, E, F, G, H, Tuple8<AA, BB, CC, DD, EE, FF, GG, HH>> mapper) {

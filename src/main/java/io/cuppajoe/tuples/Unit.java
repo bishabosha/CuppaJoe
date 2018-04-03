@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 
-public enum Unit implements Tuple, Unapply0 {
+public enum Unit implements Tuple, Unapply0, Iterable<Unit> {
     INSTANCE;
 
     @Override
@@ -14,13 +14,12 @@ public enum Unit implements Tuple, Unapply0 {
     }
 
     @Override
-    public Object $(int index) {
+    public Object get(int index) {
         throw new IndexOutOfBoundsException();
     }
 
-    @Override
     @NotNull
-    public Iterator<Object> iterator() {
+    public Iterator<Unit> iterator() {
         return Iterators.empty();
     }
 
