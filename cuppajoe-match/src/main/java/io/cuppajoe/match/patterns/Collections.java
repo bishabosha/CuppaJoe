@@ -7,39 +7,46 @@ import io.cuppajoe.collections.immutable.Tree;
 import io.cuppajoe.collections.immutable.Tree.Node;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.control.Option.Some;
+import io.cuppajoe.control.Try;
 import io.cuppajoe.control.Try.Failure;
 import io.cuppajoe.control.Try.Success;
 import io.cuppajoe.match.PatternFactory;
 
 public final class Collections {
 
-    public static Pattern $Node(Pattern $node, Pattern $left, Pattern $right) {
-        return PatternFactory.gen3(Node.class, $node, $left, $right);
+    public static <O extends Comparable<O>> Pattern<Tree<O>> $Node(Pattern<O> $node, Pattern<Tree<O>> $left, Pattern<Tree<O>> $right) {
+        return PatternFactory.unapply3(Node.class, $node, $left, $right);
     }
 
-    public static final Pattern $Leaf = PatternFactory.gen0(Tree.Leaf.INSTANCE);
-
-    public static Pattern $Cons(Pattern $x, Pattern $xs) {
-        return PatternFactory.gen2(Cons.class, $x, $xs);
+    public static <O extends Comparable<O>> Pattern<Tree<O>> $Leaf() {
+        return PatternFactory.unapply0(Tree.Leaf.INSTANCE);
     }
 
-    public static final Pattern $Nil = PatternFactory.gen0(List.Nil.INSTANCE);
-
-    public static Pattern $Success(Pattern $value) {
-        return PatternFactory.gen1(Success.class, $value);
+    public static <O> Pattern<List<O>> $Cons(Pattern<O> $x, Pattern<List<O>> $xs) {
+        return PatternFactory.unapply2(Cons.class, $x, $xs);
     }
 
-    public static Pattern $Failure(Pattern $error) {
-        return PatternFactory.gen1(Failure.class, $error);
+    public static <O> Pattern<List<O>> $Nil() {
+        return PatternFactory.unapply0(List.Nil.INSTANCE);
     }
 
-    public static Pattern $Lazy(Pattern $value) {
-        return PatternFactory.gen1(Lazy.class, $value);
+    public static <O> Pattern<Try<O>> $Success(Pattern<O> $value) {
+        return PatternFactory.unapply1(Success.class, $value);
     }
 
-    public static Pattern $Some(Pattern $value) {
-        return PatternFactory.gen1(Some.class, $value);
+    public static <O> Pattern<Try<O>> $Failure(Pattern<Exception> $error) {
+        return PatternFactory.unapply1(Failure.class, $error);
     }
 
-    public static final Pattern $None = PatternFactory.gen0(Option.None.INSTANCE);
+    public static <O> Pattern<Lazy<O>> $Lazy(Pattern<O> $value) {
+        return PatternFactory.unapply1(Lazy.class, $value);
+    }
+
+    public static <O> Pattern<Option<O>> $Some(Pattern<O> $value) {
+        return PatternFactory.unapply1(Some.class, $value);
+    }
+
+    public static <O> Pattern<Option<O>> $None() {
+        return PatternFactory.unapply0(Option.None.INSTANCE);
+    }
 }

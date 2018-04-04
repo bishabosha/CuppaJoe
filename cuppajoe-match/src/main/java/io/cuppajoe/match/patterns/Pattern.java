@@ -7,7 +7,7 @@ package io.cuppajoe.match.patterns;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.match.Result;
 
-public interface Pattern {
-    Option<Result> test(Object obj);
+public interface Pattern<A> {
+    Option<Result> test(A obj);
 }
 

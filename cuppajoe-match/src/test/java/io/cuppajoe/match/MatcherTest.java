@@ -6,6 +6,8 @@ package io.cuppajoe.match;
 
 import io.cuppajoe.collections.immutable.Tree;
 import io.cuppajoe.control.Option;
+import io.cuppajoe.match.patterns.Collections;
+import io.cuppajoe.match.patterns.Pattern;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -18,38 +20,43 @@ import static io.cuppajoe.collections.immutable.Tree.leaf;
 import static io.cuppajoe.match.API.Match;
 import static io.cuppajoe.match.Case.*;
 import static io.cuppajoe.match.Matcher.guardUnsafe;
-import static io.cuppajoe.match.patterns.Collections.*;
+import static io.cuppajoe.match.patterns.Collections.$Leaf;
+import static io.cuppajoe.match.patterns.Collections.$Some;
 import static io.cuppajoe.match.patterns.Standard.*;
 
 public class MatcherTest {
+
+    private <O> Pattern<Tree<Integer>> $INode(Pattern<Integer> node, Pattern<Tree<Integer>> left, Pattern<Tree<Integer>> right) {
+        return Collections.$Node(node, left, right); // ensure comparable is inferred to wildcards
+    }
 
     @Test
     public void testBasic() {
         Assert.assertEquals(
             Option.of(6.28),
             Match(3.14).option(
-                with($(3.14), (Double x) -> x * 2.0),
-                with($(2.72), (Double x) -> x / 2.0)
+                with($varEq(3.14), (Double x) -> x * 2.0),
+                with($varEq(2.72), (Double x) -> x / 2.0)
             )
         );
         Assert.assertEquals(
             Option.of(3.25),
             Match(6.5).option(
-                with($(3.14), (Double x) -> x * 2.0),
-                with($x,     (Double $x) -> $x / 2.0)
+                with($varEq(3.14), (Double x) -> x * 2.0),
+                with($x(),     (Double $x) -> $x / 2.0)
             )
         );
         Assert.assertEquals(
             Option.of(Math.PI),
             Match(3.14).option(
-                with($(3.14), () -> Math.PI),
-                with($(2.72), () -> Math.E),
-                with($x, $x -> $x)
+                with($varEq(3.14), () -> Math.PI),
+                with($varEq(2.72), () -> Math.E),
+                with($x(), $x -> $x)
             )
         );
         Case cases = Case.combine(
-            with($("spicy"), x -> "Thats one " + x + " meme"),
-            with($("hw"), x -> "Hello World")
+            with($varEq("spicy"), x -> "Thats one " + x + " meme"),
+            with($varEq("hw"), x -> "Hello World")
         );
         Assert.assertEquals(
             "Hello World",
@@ -136,31 +143,31 @@ public class MatcherTest {
         Assert.assertEquals(
             Option.of(1),
             Match(tree).option(
-                with($Node($x, $_, $_), (Integer $x) -> $x + 1)
+                with($INode($x(), $_(), $_()), (Integer $x) -> $x + 1)
             )
         );
         Assert.assertEquals(
             Node(1, leaf(), leaf()),
             Match(tree).option(
-                with($Node($_, $_, $r), $r -> $r)
+                with($INode($_(), $_(), $x()), $r -> $r)
             ).get()
         );
         Assert.assertEquals(
             Option.of(0),
             Match(tree).option(
-                with($Node($_, $x, $y), this::sumNodes)
+                with($INode($_(), $x(), $x()), this::sumNodes)
             )
         );
         Assert.assertEquals(
             tree,
             Match(tree).of(
-                with($Node($x, $y, $z), this::makeTree)
+                with($INode($x(), $x(), $x()), this::makeTree)
             )
         );
         Assert.assertEquals(
             Option.of(25),
             Match(leaf).option(
-                with($Node($x, $Leaf, $Leaf), $x -> $x)
+                with($INode($instance(Integer.class), $Leaf(), $Leaf()), $x -> $x)
             )
         );
     }
@@ -192,10 +199,10 @@ public class MatcherTest {
 
     int sumNodes(Tree<Integer> x, Tree<Integer> y) {
         return Match(Tuple(x, y)).of(
-            with($Tuple2($Leaf, $Leaf),                                                 () -> 0),
-            with($Tuple2($Node($n, $_, $_), $Node($n, $_, $_)), (Integer $n1, Integer $n2) -> $n1 + $n2),
-            with($Tuple2($Leaf, $Node($n, $_, $_)),                           (Integer $n) -> $n),
-            with($Tuple2($Node($n, $_, $_), $Leaf),                           (Integer $n) -> $n)
+            with($Tuple2($Leaf(), $Leaf()),                                                           () -> 0),
+            with($Tuple2($INode($x(), $_(), $_()), $INode($x(), $_(), $_())), (Integer $n1, Integer $n2) -> $n1 + $n2),
+            with($Tuple2($Leaf(), $INode($x(), $_(), $_())),                                (Integer $n) -> $n),
+            with($Tuple2($INode($x(), $_(), $_()), $Leaf()),                                (Integer $n) -> $n)
         );
     }
 
@@ -224,7 +231,7 @@ public class MatcherTest {
         Assert.assertEquals(
             10,
                 (int) Match(option).of(
-                with($Some($x), (Integer $x) -> guardUnsafe(
+                with($Some($x()), (Integer $x) -> guardUnsafe(
                     when(() -> $x > 5, () -> $x)
                 ))
             )

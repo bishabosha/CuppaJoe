@@ -18,7 +18,7 @@ public class Lazy<E> implements Supplier<E>, Unapply1<E> {
     private E value = null;
     private Supplier<E> getter;
 
-    static <R> Lazy<R> of(Supplier<R> getter) {
+    public static <R> Lazy<R> of(Supplier<R> getter) {
         return new Lazy<>(getter);
     }
 

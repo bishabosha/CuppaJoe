@@ -16,95 +16,80 @@ public final class Standard {
 
     public static final Option<Result> FAIL = None();
 
-    public static final Pattern $LT = x -> x instanceof Integer && ((Integer)x) < 0 ? PASS : FAIL;
-    public static final Pattern $GT = x -> x instanceof Integer && ((Integer)x) > 0 ? PASS : FAIL;
-    public static final Pattern $EQ = x -> x instanceof Integer && ((Integer)x) == 0 ? PASS : FAIL;
+    public static final Pattern<Integer> $LT = x -> x.intValue() < 0 ? PASS : FAIL;
+    public static final Pattern<Integer> $GT = x -> x.intValue() > 0 ? PASS : FAIL;
+    public static final Pattern<Integer> $EQ = x -> x.intValue() == 0 ? PASS : FAIL;
 
-    public static final Pattern $_ = x -> PASS;
-
-    public static final Pattern $a = x -> bind(x);
-    public static final Pattern $b = $a;
-    public static final Pattern $c = $a;
-    public static final Pattern $d = $a;
-    public static final Pattern $e = $a;
-    public static final Pattern $f = $a;
-    public static final Pattern $g = $a;
-    public static final Pattern $h = $a;
-    public static final Pattern $n = $a;
-    public static final Pattern $l = $a;
-    public static final Pattern $r = $a;
-    public static final Pattern $x = $a;
-    public static final Pattern $y = $a;
-    public static final Pattern $z = $a;
-    public static final Pattern $xs = $a;
-    public static final Pattern $ys = $a;
-    public static final Pattern $zs = $a;
-
-    public static final Pattern $Unit = PatternFactory.gen0(Unit.INSTANCE);
-
-    public static Pattern $Tuple1(Pattern $1) {
-        return PatternFactory.gen1(Tuple1.class, $1);
+    public static <O> Pattern<O> $_() {
+        return x -> PASS;
     }
 
-    public static Pattern $Tuple2(Pattern $1, Pattern $2) {
-        return PatternFactory.gen2(Tuple2.class, $1, $2);
+    public static <O> Pattern<O> $x() {
+        return x -> bind(x);
     }
 
-    public static Pattern $Tuple3(Pattern $1, Pattern $2, Pattern $3) {
-        return PatternFactory.gen3(Tuple3.class, $1, $2, $3);
+    public static final Pattern<Unit> $Unit = PatternFactory.unapply0(Unit.INSTANCE);
+
+    public static <A> Pattern<Tuple1<A>> $Tuple1(Pattern<A> $1) {
+        return PatternFactory.unapply1(Tuple1.class, $1);
     }
 
-    public static Pattern $Tuple4(Pattern $1, Pattern $2, Pattern $3, Pattern $4) {
-        return PatternFactory.gen4(Tuple4.class, $1, $2, $3, $4);
+    public static <A, B> Pattern<Tuple2<A, B>> $Tuple2(Pattern<A> $1, Pattern<B> $2) {
+        return PatternFactory.unapply2(Tuple2.class, $1, $2);
     }
 
-    public static Pattern $Tuple5(Pattern $1, Pattern $2, Pattern $3, Pattern $4, Pattern $5) {
-        return PatternFactory.gen5(Tuple5.class, $1, $2, $3, $4, $5);
+    public static <A, B, C> Pattern<Tuple3<A, B, C>> $Tuple3(Pattern<A> $1, Pattern<B> $2, Pattern<C> $3) {
+        return PatternFactory.unapply3(Tuple3.class, $1, $2, $3);
     }
 
-    public static Pattern $Tuple6(Pattern $1, Pattern $2, Pattern $3, Pattern $4, Pattern $5, Pattern $6) {
-        return PatternFactory.gen6(Tuple6.class, $1, $2, $3, $4, $5, $6);
+    public static <A, B, C, D> Pattern<Tuple4<A, B, C, D>> $Tuple4(Pattern<A> $1, Pattern<B> $2, Pattern<C> $3, Pattern<D> $4) {
+        return PatternFactory.unapply4(Tuple4.class, $1, $2, $3, $4);
     }
 
-    public static Pattern $Tuple7(Pattern $1, Pattern $2, Pattern $3, Pattern $4, Pattern $5, Pattern $6, Pattern $7) {
-        return PatternFactory.gen7(Tuple7.class, $1, $2, $3, $4, $5, $6, $7);
+    public static <A, B, C, D, E> Pattern<Tuple5<A, B, C, D, E>> $Tuple5(Pattern<A> $1, Pattern<B> $2, Pattern<C> $3, Pattern<D> $4, Pattern<E> $5) {
+        return PatternFactory.unapply5(Tuple5.class, $1, $2, $3, $4, $5);
     }
 
-    public static Pattern $Tuple8(Pattern $1, Pattern $2, Pattern $3, Pattern $4, Pattern $5, Pattern $6, Pattern $7, Pattern $8) {
-        return PatternFactory.gen8(Tuple8.class, $1, $2, $3, $4, $5, $6, $7, $8);
+    public static <A, B, C, D, E, F> Pattern<Tuple6<A, B, C, D, E, F>> $Tuple6(Pattern<A> $1, Pattern<B> $2, Pattern<C> $3, Pattern<D> $4, Pattern<E> $5, Pattern<F> $6) {
+        return PatternFactory.unapply6(Tuple6.class, $1, $2, $3, $4, $5, $6);
+    }
+
+    public static <A, B, C, D, E, F, G> Pattern<Tuple7<A, B, C, D, E, F, G>> $Tuple7(Pattern<A> $1, Pattern<B> $2, Pattern<C> $3, Pattern<D> $4, Pattern<E> $5, Pattern<F> $6, Pattern<G> $7) {
+        return PatternFactory.unapply7(Tuple7.class, $1, $2, $3, $4, $5, $6, $7);
+    }
+
+    public static <A, B, C, D, E, F, G, H> Pattern<Tuple8<A, B, C, D, E, F, G, H>> $Tuple8(Pattern<A> $1, Pattern<B> $2, Pattern<C> $3, Pattern<D> $4, Pattern<E> $5, Pattern<F> $6, Pattern<G> $7, Pattern<H> $8) {
+        return PatternFactory.unapply8(Tuple8.class, $1, $2, $3, $4, $5, $6, $7, $8);
     }
 
     public static Option<Result> bind(Object $x) {
         return Option.of(Result.of($x));
     }
 
-    public static Pattern $RegEx(String regex) {
+    public static Pattern<String> $RegEx(String regex) {
         return $RegEx(java.util.regex.Pattern.compile(regex));
     }
 
-    public static Pattern $RegEx(java.util.regex.Pattern pattern) {
+    public static Pattern<String> $RegEx(java.util.regex.Pattern pattern) {
         return x -> {
-            if (x instanceof CharSequence) {
-                var matcher = pattern.matcher((CharSequence) x);
-                return matcher.matches() ? bind(x) : FAIL;
-            }
-            return FAIL;
+            var matcher = pattern.matcher(x);
+            return matcher.matches() ? bind(x) : FAIL;
         };
     }
 
-    public static Pattern $class(Class<?> clazz) {
+    public static <O> Pattern<O> $instance(Class<? super O> clazz) {
         return x -> clazz.isInstance(x) ? bind(x) : FAIL;
     }
 
-    public static Pattern $(Object toMatch) {
+    public static <O> Pattern<O> $varEq(O toMatch) {
         return x -> Objects.equals(x, toMatch) ? bind(x) : FAIL;
     }
 
-    public static Pattern $_(Object toMatch) {
+    public static <O> Pattern<O> $eq(O toMatch) {
         return x -> Objects.equals(x, toMatch) ? PASS : FAIL;
     }
 
-    public static <R> Pattern $any(R... values) {
+    public static <R> Pattern<R> $any(R... values) {
         return x -> {
             for (var val: values) {
                 if (Objects.equals(x, val)) {

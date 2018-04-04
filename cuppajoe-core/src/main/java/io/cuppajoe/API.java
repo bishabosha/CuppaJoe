@@ -2,6 +2,7 @@ package io.cuppajoe;
 
 import io.cuppajoe.collections.immutable.List;
 import io.cuppajoe.collections.immutable.Queue;
+import io.cuppajoe.collections.immutable.Tree;
 import io.cuppajoe.control.Either;
 import io.cuppajoe.control.Either.Left;
 import io.cuppajoe.control.Either.Right;
@@ -99,6 +100,13 @@ public final class API {
     }
 
     @NotNull
+    @Contract(pure = true)
+    public static <O> Lazy<O> Lazy(Supplier<O> getter) {
+        return Lazy.of(getter);
+    }
+
+    @NotNull
+    @Contract(pure = true)
     public static <O> Try<O> Try(CheckedFunc0<O> getter) {
         return Try.of(getter);
     }
@@ -113,6 +121,12 @@ public final class API {
     @Contract(pure = true)
     public static <O> Try<O> Failure(Exception error) {
         return Try.failure(error);
+    }
+
+    @NotNull
+    @Contract(pure = true)
+    public static <O extends Comparable<O>> Tree<O> Tree(O... values) {
+        return Tree.of(values);
     }
 
     @NotNull

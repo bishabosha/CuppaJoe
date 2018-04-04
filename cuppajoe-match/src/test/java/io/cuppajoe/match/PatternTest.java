@@ -8,6 +8,7 @@ import io.cuppajoe.collections.immutable.List;
 import io.cuppajoe.collections.immutable.Tree;
 import io.cuppajoe.collections.mutable.trees.BinaryNode;
 import io.cuppajoe.control.Option;
+import io.cuppajoe.match.patterns.Collections;
 import io.cuppajoe.match.patterns.Pattern;
 import io.cuppajoe.match.patterns.Standard;
 import io.cuppajoe.tuples.Tuple2;
@@ -15,31 +16,27 @@ import org.junit.Test;
 
 import java.util.Objects;
 
-import static io.cuppajoe.API.None;
-import static io.cuppajoe.API.Tuple;
+import static io.cuppajoe.API.*;
 import static io.cuppajoe.collections.immutable.Tree.Node;
 import static io.cuppajoe.collections.immutable.Tree.leaf;
-import static io.cuppajoe.match.patterns.Collections.$Node;
+import static io.cuppajoe.match.Case.with;
+import static io.cuppajoe.match.patterns.Collections.$None;
 import static io.cuppajoe.match.patterns.Collections.$Some;
 import static io.cuppajoe.match.patterns.Standard.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PatternTest {
 
-    static Pattern tree(Pattern node, Pattern left, Pattern right) {
-        return x -> {
-            if (x instanceof BinaryNode) {
-                var binaryNode = (BinaryNode) x;
-                return node.test(binaryNode.getValue()).flatMap(
-                    n -> left.test(binaryNode.getLeft()).flatMap(
-                        l -> right.test(binaryNode.getRight()).map(
-                            r -> Result.compose(n, l, r))));
-            }
-            return None();
-        };
+    static Pattern<BinaryNode<Integer>> tree(Pattern<Integer> node, Pattern<BinaryNode<Integer>> left, Pattern<BinaryNode<Integer>> right) {
+        return binaryNode ->
+            node.test(binaryNode.getValue()).flatMap(n ->
+                left.test(binaryNode.getLeft()).flatMap(l ->
+                    right.test(binaryNode.getRight()).map(r ->
+                        Result.compose(n, l, r))));
     }
 
-    Pattern tree = x -> x instanceof BinaryNode ? Standard.bind(x) : Standard.FAIL;
+    static final Pattern<BinaryNode<Integer>> $BinaryNode = x -> Standard.bind(x);
 
     @Test
     public void testTree() {
@@ -52,41 +49,42 @@ public class PatternTest {
         var leaf = new BinaryNode<>(25);
 
         assertEquals(
-            None(),
-            this.tree.test(0)
+            Result.of(0),
+            tree($varEq(0), $_(), $_()).test(tree).get()
         );
         assertEquals(
             Result.of(0),
-            tree($(0), $_, $_).test(tree).get()
-        );
-        assertEquals(
-            Result.of(0),
-            tree($a, $_, $_).test(tree).get()
+            tree($x(), $_(), $_()).test(tree).get()
         );
         assertEquals(
             None(),
-            tree($(5), $_, $_).test(tree)
+            tree($varEq(5), $_(), $_()).test(tree)
         );
         assertEquals(
             Result.of(new BinaryNode<>(1)),
-            tree($_, $_, this.tree).test(tree).get()
+            tree($_(), $_(), this.$BinaryNode).test(tree).get()
         );
         assertEquals(
             None(),
-            tree($a, $_(null), $_(null)).test(tree)
+            tree($x(), $eq(null), $eq(null)).test(tree)
         );
         assertTrue(
-            Objects.equals(25, tree($a, $_(null), $_(null)).test(leaf).get().values().nextVal())
+            Objects.equals(25, tree($x(), $eq(null), $eq(null)).test(leaf).get().values().nextVal())
         );
+    }
+
+    private static Pattern<Tree<Integer>> $INode(Pattern<Integer> node, Pattern<Tree<Integer>> left, Pattern<Tree<Integer>> right) {
+        return Collections.$Node(node, left, right);
     }
 
     @Test
     public void flattenStress() {
-        final Pattern patt2Test;
+        final Pattern<Tuple2<Option<Tree<Integer>>, List<Tree<Integer>>>> patt2Test;
         final Tuple2<Option<Tree<Integer>>, List<Tree<Integer>>> underTest;
 
-        patt2Test = $Tuple2($Some($Node($x, $_, $y)), $xs);
-        underTest = Tuple(Option.of(Node(1, leaf(), leaf())), List.of(Tree.of(2)));
+        patt2Test = $Tuple2($Some($INode($x(), $_(), $x())), $x());
+
+        underTest = Tuple(Option.of(Node(1, leaf(), leaf())), List(Tree(2)));
 
         patt2Test.test(underTest).peek(results -> {
             var values = results.values();
@@ -95,5 +93,18 @@ public class PatternTest {
             assertEquals(leaf(), values.nextVal());
             assertEquals(List.of(Tree.of(2)), values.nextVal());
         });
+    }
+
+    @Test
+    public void typeSafety() {
+        var cases = Case.combine(
+            with($Some($Tuple2($x(), $x())), (x, y) -> "Some(Tuple(" + x + ", " + y + "))"),
+            with($None(), () -> "None")/*,
+            with($Lazy($_()), () -> "will not compile") */
+        );
+
+        assertEquals("Some(Tuple(1, 2))", cases.get(Some(Tuple(1, 2))));
+        assertEquals("None", cases.get(None()));
+//      assertEquals("will not compile", cases.get(Lazy(() -> 0)));
     }
 }
