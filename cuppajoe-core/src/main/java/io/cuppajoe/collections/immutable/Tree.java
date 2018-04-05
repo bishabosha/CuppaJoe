@@ -12,6 +12,7 @@ import io.cuppajoe.tuples.*;
 import io.cuppajoe.typeclass.foldable.Foldable;
 import io.cuppajoe.util.Iterators;
 import io.cuppajoe.util.Iterators.IdempotentIterator;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -87,10 +88,9 @@ public interface Tree<E extends Comparable<E>> {
      */
     default boolean contains(E elem) {
         int comparison;
-        return (elem == null || isEmpty()) ? false
-                : (comparison = elem.compareTo(node())) == 0 ? true
-                : comparison < 0 ? left().contains(elem)
-                : right().contains(elem);
+        return elem != null && !isEmpty()
+            && ((comparison = elem.compareTo(node())) == 0
+                    || comparison < 0 ? left().contains(elem) : right().contains(elem));
     }
 
     /**
@@ -183,7 +183,7 @@ public interface Tree<E extends Comparable<E>> {
     }
 
     default List<E> toList() {
-        return inOrder().foldRight(List(), (List<E> xs, E x) -> xs.push(x));
+        return inOrder().foldRight(List(), List::push);
     }
 
     default Foldable<E> inOrder() {
@@ -198,6 +198,7 @@ public interface Tree<E extends Comparable<E>> {
                 return () -> inOrderTraversal(Tree::right, Tree::left);
             }
 
+            @NotNull
             @Override
             public Iterator<E> iterator() {
                 return inOrderTraversal(Tree::left, Tree::right);
@@ -438,9 +439,6 @@ public interface Tree<E extends Comparable<E>> {
 
         /**
          * Checks if an object is the same instance, and if not, checks for the same elements in order.
-         *
-         * @param obj
-         * @return
          */
         @Override
         public boolean equals(Object obj) {
