@@ -15,10 +15,10 @@ public class TupleTest {
     public void lifted() {
         var tuple = Tuple(true, false);
         Assert.assertFalse(
-            tuple.tryGet(1).isEmpty()
+                tuple.tryGet(1).isEmpty()
         );
         Assert.assertTrue(
-            tuple.tryGet(4).isEmpty()
+                tuple.tryGet(4).isEmpty()
         );
     }
 

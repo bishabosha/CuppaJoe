@@ -19,7 +19,7 @@ public class ArrayTest {
     @Test
     public void factoryMethodsEquivalent() {
         assertEquals(Array.empty(), Array.of());
-        assertEquals(Array.of(1, 2).size(), Array.of(new Integer[]{1,2}).size());
+        assertEquals(Array.of(1, 2).size(), Array.of(new Integer[]{1, 2}).size());
     }
 
     @Test
@@ -35,32 +35,32 @@ public class ArrayTest {
 
     @Test
     public void takeFiveFromArray10_noError() {
-        final var list = Array.of(1,2,3,4,5,6,7,8,9,10);
-        assertEquals(Array.of(1,2,3,4,5), list.take(5));
+        final var list = Array.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        assertEquals(Array.of(1, 2, 3, 4, 5), list.take(5));
     }
 
     @Test
     public void takeRightFiveFromArray10_noError() {
-        final var list = Array.of(1,2,3,4,5,6,7,8,9,10);
-        assertEquals(Array.of(6,7,8,9,10), list.takeRight(5));
+        final var list = Array.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        assertEquals(Array.of(6, 7, 8, 9, 10), list.takeRight(5));
     }
 
     @Test
     public void subsequence4To10OnArray10_noError() {
-        final var cons = Array.of(1,2,3,4,5,6,7,8,9,10);
-        assertEquals(Array.of(5,6,7,8,9,10), cons.subsequence(4,10));
+        final var cons = Array.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        assertEquals(Array.of(5, 6, 7, 8, 9, 10), cons.subsequence(4, 10));
     }
 
     @Test
     public void subsequence4To5OnArray10_noError() {
-        final var cons = Array.of(1,2,3,4,5,6,7,8,9,10);
-        assertEquals(Array.of(5), cons.subsequence(4,5));
+        final var cons = Array.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        assertEquals(Array.of(5), cons.subsequence(4, 5));
     }
 
     @Test
     public void subsequence4To4OnArray10_noError() {
-        final var cons = Array.of(1,2,3,4,5,6,7,8,9,10);
-        assertEquals(Array.empty(), cons.subsequence(4,4));
+        final var cons = Array.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        assertEquals(Array.empty(), cons.subsequence(4, 4));
     }
 
     @Test
@@ -70,7 +70,7 @@ public class ArrayTest {
 
     @Test
     public void longArray_contains10() {
-        assertTrue(Array.of(1,2,3,4,5,6,7,8,9,10).contains(10));
+        assertTrue(Array.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).contains(10));
     }
 
     @Test
@@ -81,7 +81,7 @@ public class ArrayTest {
 
     @Test
     public void reverse() {
-        assertEquals(Array.of(3,2,1), Array.of(1,2,3).reverse());
+        assertEquals(Array.of(3, 2, 1), Array.of(1, 2, 3).reverse());
         assertEquals(Array.empty(), Array.empty().reverse());
         assertEquals(Array.of(1), Array.of(1).reverse());
     }
@@ -89,35 +89,35 @@ public class ArrayTest {
     @Test
     public void push() {
         assertEquals(Array.of(1), Array.empty().push(1));
-        assertEquals(Array.of(1,2,3), Array.of(3).push(2).push(1));
-        assertEquals(Array.of(1,2,3), Array.of(2,3).push(1));
+        assertEquals(Array.of(1, 2, 3), Array.of(3).push(2).push(1));
+        assertEquals(Array.of(1, 2, 3), Array.of(2, 3).push(1));
     }
 
     @Test
     public void append() {
         assertEquals(Array.of(1), Array.empty().append(1));
-        assertEquals(Array.of(1,2,3), Array.of(1).append(2).append(3));
-        assertEquals(Array.of(1,2,3), Array.of(1,2).append(3));
+        assertEquals(Array.of(1, 2, 3), Array.of(1).append(2).append(3));
+        assertEquals(Array.of(1, 2, 3), Array.of(1, 2).append(3));
     }
 
     @Test
     public void pop() {
         assertEquals(Some(Tuple(1, Array.empty())), Array.of(1).pop());
-        assertEquals(Some(Tuple(1, Array.of(2))), Array.of(1,2).pop());
-        assertEquals(Some(Tuple(1, Array.of(2, 3))), Array.of(1,2,3).pop());
+        assertEquals(Some(Tuple(1, Array.of(2))), Array.of(1, 2).pop());
+        assertEquals(Some(Tuple(1, Array.of(2, 3))), Array.of(1, 2, 3).pop());
     }
 
     @Test
     public void remove() {
         assertEquals(Array.empty(), Array.of(1).removeAll(1));
-        assertEquals(Array.of(1), Array.of(1,2).removeAll(2));
-        assertEquals(Array.of(1,1,1), Array.of(1,2,1,2,2,2,1).removeAll(2));
+        assertEquals(Array.of(1), Array.of(1, 2).removeAll(2));
+        assertEquals(Array.of(1, 1, 1), Array.of(1, 2, 1, 2, 2, 2, 1).removeAll(2));
         assertEquals(Array.of(1), Array.of(null, null, null, 1).removeAll(null));
     }
 
     @Test
     public void distinct() {
-        assertEquals(Array.of(1,2,3), Array.of(1,1,2,2,3,3).distinct(Function.identity()));
+        assertEquals(Array.of(1, 2, 3), Array.of(1, 1, 2, 2, 3, 3).distinct(Function.identity()));
     }
 
     @Test
@@ -132,13 +132,13 @@ public class ArrayTest {
 
     @Test
     public void print() {
-        assertEquals("[1, 2, 3]", Array.of(1,2,3).toString());
-        assertEquals("[1, 2, null]", Array.of(1,2,null).toString());
+        assertEquals("[1, 2, 3]", Array.of(1, 2, 3).toString());
+        assertEquals("[1, 2, null]", Array.of(1, 2, null).toString());
     }
 
     @Test
     public void get() {
-        final var list = Array.of(1,2,3);
+        final var list = Array.of(1, 2, 3);
         assertEquals(1, list.get(0).intValue());
         assertEquals(2, list.get(1).intValue());
         assertEquals(3, list.get(2).intValue());
@@ -148,8 +148,8 @@ public class ArrayTest {
     public void size() {
         assertEquals(0, Array.empty().size());
         assertEquals(1, Array.of(1).size());
-        assertEquals(2, Array.of(1,2).size());
-        assertEquals(3, Array.of(1,2,3).size());
+        assertEquals(2, Array.of(1, 2).size());
+        assertEquals(3, Array.of(1, 2, 3).size());
     }
 
     @Test

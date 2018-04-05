@@ -15,7 +15,9 @@ import java.util.function.Function;
 public interface Either<L, R> extends Functor2<Either, L, R>, Peek2<L, R> {
 
     boolean isLeft();
+
     L left();
+
     R right();
 
     default <U1, U2> Either<U1, U2> map(Function<? super L, ? extends U1> ifLeft, Function<? super R, ? extends U2> ifRight) {
@@ -97,8 +99,8 @@ public interface Either<L, R> extends Functor2<Either, L, R>, Peek2<L, R> {
         public <U> LeftProjection<U, R> flatMap(Function<? super L, Monad1<LeftProjection, ? extends U>> mapper) {
             Objects.requireNonNull(mapper);
             return restore().isLeft()
-                ? Monad1.Type.<LeftProjection<U, R>, LeftProjection, U>narrow(mapper.apply(restore().left()))
-                : Monad1.Type.<LeftProjection<U, R>, LeftProjection, U>castParam(this);
+                    ? Monad1.Type.<LeftProjection<U, R>, LeftProjection, U>narrow(mapper.apply(restore().left()))
+                    : Monad1.Type.<LeftProjection<U, R>, LeftProjection, U>castParam(this);
         }
 
         @Override
@@ -148,8 +150,8 @@ public interface Either<L, R> extends Functor2<Either, L, R>, Peek2<L, R> {
         public <U> RightProjection<L, U> flatMap(Function<? super R, Monad1<RightProjection, ? extends U>> mapper) {
             Objects.requireNonNull(mapper);
             return restore().isLeft()
-                ? Monad1.Type.<RightProjection<L, U>, RightProjection, U>castParam(this)
-                : Monad1.Type.<RightProjection<L, U>, RightProjection, U>narrow(mapper.apply(restore().right()));
+                    ? Monad1.Type.<RightProjection<L, U>, RightProjection, U>castParam(this)
+                    : Monad1.Type.<RightProjection<L, U>, RightProjection, U>narrow(mapper.apply(restore().right()));
         }
 
         @Override
@@ -181,7 +183,7 @@ public interface Either<L, R> extends Functor2<Either, L, R>, Peek2<L, R> {
         }
 
         @Override
-        public L left(){
+        public L left() {
             return value;
         }
 

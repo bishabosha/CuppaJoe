@@ -15,12 +15,12 @@ import java.util.function.Supplier;
 public interface Func3<A, B, C, R> {
 
     @Contract(pure = true)
-    static <X,Y,Z,R> Func3<X,Y,Z,R> of(Func3<X, Y, Z, R> reference) {
+    static <X, Y, Z, R> Func3<X, Y, Z, R> of(Func3<X, Y, Z, R> reference) {
         return reference;
     }
 
     @Contract(pure = true)
-    static <X,Y,Z,R> Func3<X,Y,Z,R> narrow(Func3<? super X, ? super Y, ? super Z, ? extends R> func) {
+    static <X, Y, Z, R> Func3<X, Y, Z, R> narrow(Func3<? super X, ? super Y, ? super Z, ? extends R> func) {
         return func::apply;
     }
 

@@ -9,7 +9,9 @@ import org.junit.Test;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import static io.cuppajoe.API.*;
+import static io.cuppajoe.API.None;
+import static io.cuppajoe.API.Some;
+import static io.cuppajoe.collections.immutable.API.List;
 import static org.junit.Assert.assertEquals;
 
 public class Applicative1Test {
@@ -65,13 +67,13 @@ public class Applicative1Test {
     @Test
     public void applyList() {
         List<Function<? super Integer, ? extends String>> funcs = List(
-            x -> String.valueOf(x),
-            x -> String.valueOf(x * x),
-            x -> String.valueOf(x * x * x)
+                x -> String.valueOf(x),
+                x -> String.valueOf(x * x),
+                x -> String.valueOf(x * x * x)
         );
         List<Function<? super Integer, ? extends String>> funcsNo = List();
-        assertEquals(List("1", "2", "3", "1", "4", "9", "1", "8", "27"), List(1,2,3).apply(funcs));
-        assertEquals(List(), List(1,2,3).apply(funcsNo));
+        assertEquals(List("1", "2", "3", "1", "4", "9", "1", "8", "27"), List(1, 2, 3).apply(funcs));
+        assertEquals(List(), List(1, 2, 3).apply(funcsNo));
     }
 
     @Test
@@ -86,12 +88,12 @@ public class Applicative1Test {
     @Test
     public void applyArray() {
         Array<Function<? super Integer, ? extends String>> funcs = Array.of(
-            x -> String.valueOf(x),
-            x -> String.valueOf(x * x),
-            x -> String.valueOf(x * x * x)
+                x -> String.valueOf(x),
+                x -> String.valueOf(x * x),
+                x -> String.valueOf(x * x * x)
         );
         Array<Function<? super Integer, ? extends String>> funcsNo = Array.empty();
-        assertEquals(Array.of("1", "2", "3", "1", "4", "9", "1", "8", "27"), Array.of(1,2,3).apply(funcs));
-        assertEquals(Array.empty(), Array.of(1,2,3).apply(funcsNo));
+        assertEquals(Array.of("1", "2", "3", "1", "4", "9", "1", "8", "27"), Array.of(1, 2, 3).apply(funcs));
+        assertEquals(Array.empty(), Array.of(1, 2, 3).apply(funcsNo));
     }
 }

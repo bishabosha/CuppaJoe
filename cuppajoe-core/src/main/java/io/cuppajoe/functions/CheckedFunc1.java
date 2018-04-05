@@ -13,12 +13,12 @@ import org.jetbrains.annotations.NotNull;
 public interface CheckedFunc1<A, R> {
 
     @Contract(pure = true)
-    static <X,R> CheckedFunc1<X,R> of(CheckedFunc1<X, R> reference) {
+    static <X, R> CheckedFunc1<X, R> of(CheckedFunc1<X, R> reference) {
         return reference;
     }
 
     @Contract(pure = true)
-    static <X,R> CheckedFunc1<X,R> narrow(CheckedFunc1<? super X, ? extends R> func) {
+    static <X, R> CheckedFunc1<X, R> narrow(CheckedFunc1<? super X, ? extends R> func) {
         return func::apply;
     }
 

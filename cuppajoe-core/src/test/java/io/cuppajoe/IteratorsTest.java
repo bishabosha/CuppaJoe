@@ -10,7 +10,7 @@ public class IteratorsTest {
 
     @Test
     public void javaUtilListIteratorIdempotency() {
-        var javaList = Arrays.asList(1,2,3,4,5);
+        var javaList = Arrays.asList(1, 2, 3, 4, 5);
         var javaListIt = javaList.iterator();
 
         assertTrue(javaListIt.next() == 1);

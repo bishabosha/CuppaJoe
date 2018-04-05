@@ -1,6 +1,6 @@
 package io.cuppajoe.tuples;
 
-import io.cuppajoe.functions.Func1;
+import io.cuppajoe.functions.Func0;
 
-public interface Apply0<R> extends Func1<Unit, R> {
+public interface Apply0<R> extends Func0<R> {
 }

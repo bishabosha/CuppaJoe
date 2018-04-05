@@ -18,13 +18,13 @@ public interface Func2<A, B, R> extends BiFunction<A, B, R> {
 
     @NotNull
     @Contract(pure = true)
-    static <X,Y,R> Func2<X,Y,R> of(BiFunction<X, Y, R> reference) {
+    static <X, Y, R> Func2<X, Y, R> of(BiFunction<X, Y, R> reference) {
         return reference::apply;
     }
 
     @NotNull
     @Contract(pure = true)
-    static <X,Y,R> Func2<X,Y,R> narrow(BiFunction<? super X, ? super Y, ? extends R> func) {
+    static <X, Y, R> Func2<X, Y, R> narrow(BiFunction<? super X, ? super Y, ? extends R> func) {
         return func::apply;
     }
 

@@ -5,6 +5,7 @@ import io.cuppajoe.collections.immutable.List;
 public interface Monoid1<INSTANCE extends Monoid1, T> {
 
     Monoid1<INSTANCE, T> mempty();
+
     Monoid1<INSTANCE, T> mappend(Monoid1<INSTANCE, ? extends T> other);
 
     default Monoid1<INSTANCE, T> mconcat(List<Monoid1<INSTANCE, ? extends T>> list) {

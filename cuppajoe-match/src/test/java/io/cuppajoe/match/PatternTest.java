@@ -6,75 +6,70 @@ package io.cuppajoe.match;
 
 import io.cuppajoe.collections.immutable.List;
 import io.cuppajoe.collections.immutable.Tree;
-import io.cuppajoe.collections.mutable.trees.BinaryNode;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.match.patterns.Collections;
 import io.cuppajoe.match.patterns.Pattern;
-import io.cuppajoe.match.patterns.Standard;
+import io.cuppajoe.match.patterns.Result;
 import io.cuppajoe.tuples.Tuple2;
 import org.junit.Test;
 
-import java.util.Objects;
-
 import static io.cuppajoe.API.*;
+import static io.cuppajoe.collections.immutable.API.List;
+import static io.cuppajoe.collections.immutable.API.Tree;
 import static io.cuppajoe.collections.immutable.Tree.Node;
 import static io.cuppajoe.collections.immutable.Tree.leaf;
 import static io.cuppajoe.match.Case.with;
-import static io.cuppajoe.match.patterns.Collections.$None;
-import static io.cuppajoe.match.patterns.Collections.$Some;
 import static io.cuppajoe.match.patterns.Standard.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PatternTest {
 
-    static Pattern<BinaryNode<Integer>> tree(Pattern<Integer> node, Pattern<BinaryNode<Integer>> left, Pattern<BinaryNode<Integer>> right) {
-        return binaryNode ->
-            node.test(binaryNode.getValue()).flatMap(n ->
-                left.test(binaryNode.getLeft()).flatMap(l ->
-                    right.test(binaryNode.getRight()).map(r ->
-                        Result.compose(n, l, r))));
+    Tree<Integer> getTree() {
+        return Node(
+                0,
+                Node(
+                        -1,
+                        Node(
+                                -2,
+                                leaf(),
+                                leaf()),
+                        leaf()),
+                Node(
+                        1,
+                        leaf(),
+                        leaf())
+        );
     }
-
-    static final Pattern<BinaryNode<Integer>> $BinaryNode = x -> Standard.bind(x);
 
     @Test
     public void testTree() {
 
-        var tree = new BinaryNode<>(0);
-        tree.addLeft(new BinaryNode<>(-1));
-        tree.addRight(new BinaryNode<>(1));
-        tree.getLeft().addLeft(new BinaryNode<>(-2));
-
-        var leaf = new BinaryNode<>(25);
+        var tree = getTree();
 
         assertEquals(
-            Result.of(0),
-            tree($varEq(0), $_(), $_()).test(tree).get()
+                Some(Result.of(0)),
+                INode_(eq(0), __(), __()).test(tree)
         );
         assertEquals(
-            Result.of(0),
-            tree($x(), $_(), $_()).test(tree).get()
+                Some(Result.of(0)),
+                INode_($(), __(), __()).test(tree)
         );
         assertEquals(
-            None(),
-            tree($varEq(5), $_(), $_()).test(tree)
+                None(),
+                INode_(eq(5), __(), __()).test(tree)
         );
         assertEquals(
-            Result.of(new BinaryNode<>(1)),
-            tree($_(), $_(), this.$BinaryNode).test(tree).get()
+                Some(Result.of(Tree(1))),
+                INode_(__(), __(), $()).test(tree)
         );
         assertEquals(
-            None(),
-            tree($x(), $eq(null), $eq(null)).test(tree)
-        );
-        assertTrue(
-            Objects.equals(25, tree($x(), $eq(null), $eq(null)).test(leaf).get().values().nextVal())
+                None(),
+                INode_($(), $eq(null), $eq(null)).test(tree)
         );
     }
 
-    private static Pattern<Tree<Integer>> $INode(Pattern<Integer> node, Pattern<Tree<Integer>> left, Pattern<Tree<Integer>> right) {
-        return Collections.$Node(node, left, right);
+    private static Pattern<Tree<Integer>> INode_(Pattern<Integer> node, Pattern<Tree<Integer>> left, Pattern<Tree<Integer>> right) {
+        return Collections.Node$(node, left, right);
     }
 
     @Test
@@ -82,7 +77,7 @@ public class PatternTest {
         final Pattern<Tuple2<Option<Tree<Integer>>, List<Tree<Integer>>>> patt2Test;
         final Tuple2<Option<Tree<Integer>>, List<Tree<Integer>>> underTest;
 
-        patt2Test = $Tuple2($Some($INode($x(), $_(), $x())), $x());
+        patt2Test = Tuple2$(Some_(INode_($(), __(), $())), $());
 
         underTest = Tuple(Option.of(Node(1, leaf(), leaf())), List(Tree(2)));
 
@@ -98,8 +93,8 @@ public class PatternTest {
     @Test
     public void typeSafety() {
         var cases = Case.combine(
-            with($Some($Tuple2($x(), $x())), (x, y) -> "Some(Tuple(" + x + ", " + y + "))"),
-            with($None(), () -> "None")/*,
+                with(Some_(Tuple2$($(), $())), (x, y) -> "Some(Tuple(" + x + ", " + y + "))"),
+                with(None_(), () -> "None")/*,
             with($Lazy($_()), () -> "will not compile") */
         );
 

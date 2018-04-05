@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 /**
  * Allows simulation of tail call operations by lifting the call site
  * Implemented following "Lazy Java" presentation by Mario Fusco at Devoxx Belgium November 2017
+ *
  * @param <E> the type of the return value
  */
 public abstract class TailCall<E> implements Func0<E> {
@@ -25,10 +26,10 @@ public abstract class TailCall<E> implements Func0<E> {
     @Override
     public final E get() {
         return Stream.iterate(this, TailCall::next)
-            .filter(TailCall::isComplete)
-            .findFirst()
-            .get()
-            .result();
+                .filter(TailCall::isComplete)
+                .findFirst()
+                .get()
+                .result();
     }
 
     protected abstract TailCall<E> next();

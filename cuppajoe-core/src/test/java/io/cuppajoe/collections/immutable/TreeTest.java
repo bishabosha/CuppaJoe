@@ -3,6 +3,7 @@ package io.cuppajoe.collections.immutable;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.emptyIterable;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
@@ -25,18 +26,18 @@ public class TreeTest {
             Tree.of(4, 3, 6, 1, 2, 5).inOrder(),
             contains(1, 2, 3, 4, 5, 6)
         );
-//        assertThat(
-//            Tree.of(4, 3, 6, 1, 2, 5).inOrder().foldRight(Queue.empty(), (xs, x) -> xs.enqueue(x)),
-//            contains(6, 5, 4, 3, 2, 1)
-//        );
-//        assertThat(
-//            Tree.leaf().inOrder(),
-//            emptyIterable()
-//        );
-//        assertThat(
-//            Tree.of(1).inOrder(),
-//            contains(1)
-//        );
+        assertThat(
+            Tree.of(4, 3, 6, 1, 2, 5).inOrder().foldRight(Queue.empty(), (xs, x) -> xs.enqueue(x)),
+            contains(6, 5, 4, 3, 2, 1)
+        );
+        assertThat(
+            Tree.leaf().inOrder(),
+            emptyIterable()
+        );
+        assertThat(
+            Tree.of(1).inOrder(),
+            contains(1)
+        );
     }
 
     @Test

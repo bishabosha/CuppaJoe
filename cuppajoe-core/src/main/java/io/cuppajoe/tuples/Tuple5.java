@@ -34,16 +34,22 @@ public final class Tuple5<A, B, C, D, E> implements Tuple, Unapply5<A, B, C, D, 
     @Override
     public Object get(int index) {
         switch (index) {
-            case 1: return $1;
-            case 2: return $2;
-            case 3: return $3;
-            case 4: return $4;
-            case 5: return $5;
-            default: throw new IndexOutOfBoundsException();
+            case 1:
+                return $1;
+            case 2:
+                return $2;
+            case 3:
+                return $3;
+            case 4:
+                return $4;
+            case 5:
+                return $5;
+            default:
+                throw new IndexOutOfBoundsException();
         }
     }
 
-    
+
     public <O> O compose(Func5<? super A, ? super B, ? super C, ? super D, ? super E, ? extends O> mapper) {
         return mapper.apply($1, $2, $3, $4, $5);
     }

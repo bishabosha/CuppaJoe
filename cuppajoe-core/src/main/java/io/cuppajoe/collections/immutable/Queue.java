@@ -1,11 +1,11 @@
 package io.cuppajoe.collections.immutable;
 
-import io.cuppajoe.Foldable;
-import io.cuppajoe.Iterators;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.tuples.Tuple2;
+import io.cuppajoe.typeclass.foldable.Foldable;
 import io.cuppajoe.typeclass.functor.Functor1;
 import io.cuppajoe.typeclass.value.Value1;
+import io.cuppajoe.util.Iterators;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
@@ -75,7 +75,7 @@ public class Queue<E> implements Foldable<E>, Bunch<E>, Value1<Queue, E>, Functo
     @SafeVarargs
     public final Queue<E> enqueueAll(E... elements) {
         var newTail = tail;
-        for (var elem: elements) {
+        for (var elem : elements) {
             newTail = newTail.push(elem);
         }
         return new Queue<>(head, newTail);
@@ -92,9 +92,9 @@ public class Queue<E> implements Foldable<E>, Bunch<E>, Value1<Queue, E>, Functo
             newTail = tail;
         }
         return newHead.pop()
-                      .map(t ->
-                          t.flatMap((head, tail) ->
-                              Tuple(head, new Queue<>(tail, newTail))));
+                .map(t ->
+                        t.flatMap((head, tail) ->
+                                Tuple(head, new Queue<>(tail, newTail))));
     }
 
     public Queue<E> reverse() {
@@ -113,15 +113,15 @@ public class Queue<E> implements Foldable<E>, Bunch<E>, Value1<Queue, E>, Functo
 
     @Override
     public int hashCode() {
-        return foldLeft(1, (hash, x) -> 31*hash + (x == null ? 0 : Objects.hashCode(x)));
+        return foldLeft(1, (hash, x) -> 31 * hash + (x == null ? 0 : Objects.hashCode(x)));
     }
 
     @Override
     public boolean equals(Object obj) {
         return obj == this || !Option.of(obj)
-            .cast(Queue.class)
-            .filter(q -> allMatchExhaustive(q, Objects::equals))
-            .isEmpty();
+                .cast(Queue.class)
+                .filter(q -> allMatchExhaustive(q, Objects::equals))
+                .isEmpty();
     }
 
     @Override

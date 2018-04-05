@@ -1,8 +1,8 @@
 package io.cuppajoe.collections.immutable;
 
-import io.cuppajoe.Foldable;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.tuples.Tuple2;
+import io.cuppajoe.typeclass.foldable.Foldable;
 import io.cuppajoe.typeclass.monad.Monad1;
 import io.cuppajoe.typeclass.monoid.Monoid1;
 import io.cuppajoe.typeclass.peek.Peek1;
@@ -17,19 +17,31 @@ import java.util.stream.StreamSupport;
 public interface Seq<INSTANCE extends Seq, E> extends Bunch<E>, Foldable<E>, Monoid1<INSTANCE, E>, Monad1<INSTANCE, E>, Peek1<E> {
 
     int size();
+
     boolean isEmpty();
+
     E get(int i);
+
     E head();
+
     Seq<INSTANCE, E> tail();
+
     Option<? extends Tuple2<E, ? extends Seq<INSTANCE, E>>> pop();
+
     Seq<INSTANCE, E> take(int limit);
+
     Seq<INSTANCE, E> takeRight(int limit);
+
     Seq<INSTANCE, E> subsequence(int from, int limit);
+
     Seq<INSTANCE, E> push(E elem);
+
     Seq<INSTANCE, E> append(E elem);
+
     Seq<INSTANCE, E> removeAll(E elem);
 
     Seq<INSTANCE, E> reverse();
+
     <O> Seq<INSTANCE, E> distinct(Function<E, O> propertyGetter);
 
     @Override

@@ -19,13 +19,13 @@ public interface CheckedConsume2<A, B> {
 
     @NotNull
     @Contract(pure = true)
-    static <X,Y> CheckedConsume2<X,Y> of(CheckedConsume2<X, Y> reference) {
+    static <X, Y> CheckedConsume2<X, Y> of(CheckedConsume2<X, Y> reference) {
         return reference;
     }
 
     @NotNull
     @Contract(pure = true)
-    static <X,Y> CheckedConsume2<X,Y> narrow(CheckedConsume2<? super X, ? super Y> func) {
+    static <X, Y> CheckedConsume2<X, Y> narrow(CheckedConsume2<? super X, ? super Y> func) {
         return func::apply;
     }
 

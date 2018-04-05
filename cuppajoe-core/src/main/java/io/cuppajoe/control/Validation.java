@@ -26,7 +26,9 @@ public interface Validation<E, O> extends Monad1<Validation<E, ?>, O>, Monoid1<V
     }
 
     O value();
+
     List<E> errorStack();
+
     boolean isSink();
 
     default Either<List<E>, Unit> evaluate() {
@@ -54,8 +56,8 @@ public interface Validation<E, O> extends Monad1<Validation<E, ?>, O>, Monoid1<V
     default <U> Validation<E, U> map(Function<? super O, ? extends U> mapper) {
         Objects.requireNonNull(mapper);
         return isSink()
-            ? Monad1.Type.<Validation<E, U>, Validation<E, ?>, U>castParam(this)
-            : new Accumulate<>(mapper.apply(value()), errorStack());
+                ? Monad1.Type.<Validation<E, U>, Validation<E, ?>, U>castParam(this)
+                : new Accumulate<>(mapper.apply(value()), errorStack());
     }
 
     @Override
@@ -67,8 +69,8 @@ public interface Validation<E, O> extends Monad1<Validation<E, ?>, O>, Monoid1<V
         var next = Monad1.Type.<Validation<E, U>, Validation<E, ?>, U>narrow(mapper.apply(value()));
         var accumulated = next.errorStack().mappend(errorStack());
         return next.isSink()
-            ? new Sink<>(accumulated)
-            : new Accumulate<>(next.value(), accumulated);
+                ? new Sink<>(accumulated)
+                : new Accumulate<>(next.value(), accumulated);
     }
 
     @Override
@@ -94,7 +96,7 @@ public interface Validation<E, O> extends Monad1<Validation<E, ?>, O>, Monoid1<V
     @Override
     default <U> Validation<E, U> apply(Applicative1<Validation<E, ?>, Function<? super O, ? extends U>> applicative1) {
         return Monad1.Type.<Validation<E, U>, Validation<E, ?>, U>narrow(
-            Monad1.Type.lA(applicative1).flatMap(f -> map(x -> f.apply(x))));
+                Monad1.Type.lA(applicative1).flatMap(f -> map(x -> f.apply(x))));
     }
 
     class Accumulate<E, O> implements Validation<E, O> {

@@ -11,7 +11,7 @@ public interface Bunch<E> extends Iterable<E> {
     }
 
     default boolean anyMatch(Predicate<? super E> test) {
-        for (var elem: this) {
+        for (var elem : this) {
             if (test.test(elem)) {
                 return true;
             }
@@ -21,7 +21,7 @@ public interface Bunch<E> extends Iterable<E> {
 
     default <R> boolean anyMatch(Iterable<R> other, BiPredicate<? super E, ? super R> test) {
         var otherVals = other.iterator();
-        for (var elem: this) {
+        for (var elem : this) {
             if (!otherVals.hasNext()) {
                 return false;
             }
@@ -33,7 +33,7 @@ public interface Bunch<E> extends Iterable<E> {
     }
 
     default boolean allMatch(Predicate<? super E> test) {
-        for (var elem: this) {
+        for (var elem : this) {
             if (!test.test(elem)) {
                 return false;
             }
@@ -51,7 +51,7 @@ public interface Bunch<E> extends Iterable<E> {
 
     private <R> boolean allMatch(boolean checkExhaustion, Iterable<R> other, BiPredicate<? super E, ? super R> test) {
         var otherVals = other.iterator();
-        for (var elem: this) {
+        for (var elem : this) {
             if (!otherVals.hasNext() || !test.test(elem, otherVals.next())) {
                 return false;
             }

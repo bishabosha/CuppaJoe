@@ -1,30 +1,27 @@
 package io.cuppajoe.control;
 
-import io.cuppajoe.Iterators;
 import io.cuppajoe.functions.CheckedFunc0;
-import io.cuppajoe.tuples.Tuple1;
 import io.cuppajoe.tuples.Unapply1;
 import io.cuppajoe.typeclass.applicative.Applicative1;
 import io.cuppajoe.typeclass.monad.Monad1;
 import io.cuppajoe.typeclass.peek.Peek1;
 import io.cuppajoe.typeclass.value.Value1;
+import io.cuppajoe.util.Iterators;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static io.cuppajoe.API.None;
-import static io.cuppajoe.API.Tuple;
 
 public interface Try<E> extends Monad1<Try, E>, Peek1<E>, Value1<Try, E> {
 
     boolean isSuccess();
+
     boolean isFailure();
+
     Exception getError();
 
     static <O> Try<O> of(CheckedFunc0<O> supplier) {
@@ -132,7 +129,7 @@ public interface Try<E> extends Monad1<Try, E>, Peek1<E>, Value1<Try, E> {
     @NotNull
     @Override
     default Iterator<E> iterator() {
-       return isEmpty() ? Iterators.empty() : Iterators.singletonSupplier(this::get);
+        return isEmpty() ? Collections.emptyIterator() : Iterators.singletonSupplier(this::get);
     }
 
     final class Success<E> implements Try<E>, Unapply1<E> {
@@ -144,43 +141,43 @@ public interface Try<E> extends Monad1<Try, E>, Peek1<E>, Value1<Try, E> {
         }
 
         @Override
-        public boolean isSuccess() {
+        public final boolean isSuccess() {
             return true;
         }
 
         @Override
-        public boolean isFailure() {
+        public final boolean isFailure() {
             return false;
         }
 
         @Override
-        public E get() {
-            return value;
+        public final E get() {
+            return unapply();
         }
 
         @Override
-        public Exception getError() {
+        public final Exception getError() {
             throw new NoSuchElementException();
         }
 
         @Override
-        public int hashCode() {
+        public final int hashCode() {
             return Objects.hashCode(get());
         }
 
         @Override
-        public boolean equals(Object obj) {
+        public final boolean equals(Object obj) {
             return obj == this || obj instanceof Success && Objects.equals(get(), ((Success) obj).get());
         }
 
         @Override
-        public String toString() {
+        public final String toString() {
             return "Success(" + get() + ")";
         }
 
         @Override
-        public Tuple1<E> unapply() {
-            return Tuple(value);
+        public final E unapply() {
+            return value;
         }
     }
 
@@ -193,38 +190,37 @@ public interface Try<E> extends Monad1<Try, E>, Peek1<E>, Value1<Try, E> {
         }
 
         @Override
-        public boolean isSuccess() {
+        public final boolean isSuccess() {
             return false;
         }
 
         @Override
-        public boolean isFailure() {
+        public final boolean isFailure() {
             return true;
         }
 
         @Override
-        public E get() {
+        public final E get() {
             throw new RuntimeException("Error triggered by operation: " + error.getMessage(), error);
         }
 
         @Override
-        public Exception getError() {
-            return error;
+        public final Exception getError() {
+            return unapply();
         }
 
-        @SuppressWarnings("unchecked")
-        private static <O, U> Failure<U> cast(Try<O> toCast) {
-            return (Failure<U>) toCast;
+        private static <O, U> Try<U> cast(Try<O> toCast) {
+            return Monad1.Type.<Try<U>, Try, U>castParam(toCast);
         }
 
         @Override
-        public String toString() {
+        public final String toString() {
             return "Failure(" + getError().getMessage() + ")";
         }
 
         @Override
-        public Tuple1<Exception> unapply() {
-            return Tuple(error);
+        public final Exception unapply() {
+            return error;
         }
     }
 }

@@ -30,10 +30,14 @@ public final class Tuple3<A, B, C> implements Tuple, Unapply3<A, B, C>, Compose3
     @Override
     public Object get(int index) {
         switch (index) {
-            case 1: return $1;
-            case 2: return $2;
-            case 3: return $3;
-            default: throw new IndexOutOfBoundsException();
+            case 1:
+                return $1;
+            case 2:
+                return $2;
+            case 3:
+                return $3;
+            default:
+                throw new IndexOutOfBoundsException();
         }
     }
 

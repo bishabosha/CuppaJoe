@@ -33,9 +33,12 @@ public final class Tuple2<A, B> implements Tuple, Unapply2<A, B>, Monad2<Tuple2,
     @Override
     public Object get(int index) {
         switch (index) {
-            case 1: return $1;
-            case 2: return $2;
-            default: throw new IndexOutOfBoundsException();
+            case 1:
+                return $1;
+            case 2:
+                return $2;
+            default:
+                throw new IndexOutOfBoundsException();
         }
     }
 
@@ -45,7 +48,7 @@ public final class Tuple2<A, B> implements Tuple, Unapply2<A, B>, Monad2<Tuple2,
     }
 
     @Override
-    public  <U1, U2> Tuple2<U1, U2> map(Function<? super A, ? extends U1> m1, Function<? super B, ? extends U2> m2) {
+    public <U1, U2> Tuple2<U1, U2> map(Function<? super A, ? extends U1> m1, Function<? super B, ? extends U2> m2) {
         return Tuple.of(m1.apply($1), m2.apply($2));
     }
 

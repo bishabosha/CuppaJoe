@@ -1,13 +1,13 @@
 package io.cuppajoe.collections.immutable;
 
-import io.cuppajoe.Iterators;
 import io.cuppajoe.control.Option;
-import io.cuppajoe.math.PredicateFor;
 import io.cuppajoe.tuples.Tuple2;
 import io.cuppajoe.typeclass.applicative.Applicative1;
 import io.cuppajoe.typeclass.monad.Monad1;
 import io.cuppajoe.typeclass.monoid.Monoid1;
 import io.cuppajoe.typeclass.value.Value1;
+import io.cuppajoe.util.Iterators;
+import io.cuppajoe.util.Predicates;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -49,7 +49,7 @@ public class Array<E> implements Seq<Array, E>, Value1<Array, E> {
     }
 
     @Override
-    public Option<? extends Tuple2<E, ? extends Seq<Array, E>>> pop() {
+    public Option<Tuple2<E, Array<E>>> pop() {
         return isEmpty() ? None() : Some(Tuple(get(0), takeRight(size() - 1)));
     }
 
@@ -86,13 +86,13 @@ public class Array<E> implements Seq<Array, E>, Value1<Array, E> {
     @Override
     public Array<E> takeRight(int limit) {
         var newArr = new Object[limit];
-        System.arraycopy(array, size()-limit, newArr, 0, limit);
+        System.arraycopy(array, size() - limit, newArr, 0, limit);
         return new Array<>(newArr);
     }
 
     @Override
     public Array<E> subsequence(int from, int limit) {
-        var length = limit-from;
+        var length = limit - from;
         var newArr = new Object[length];
         System.arraycopy(array, from, newArr, 0, length);
         return new Array<>(newArr);
@@ -102,15 +102,15 @@ public class Array<E> implements Seq<Array, E>, Value1<Array, E> {
     public Array<E> reverse() {
         var size = size();
         var newArr = new Object[size];
-        for(var i = 0; i < size; i++) {
-            newArr[i] = array[size-1-i];
+        for (var i = 0; i < size; i++) {
+            newArr[i] = array[size - 1 - i];
         }
         return new Array<>(newArr);
     }
 
     @Override
     public <O> Array<E> distinct(Function<E, O> propertyGetter) {
-        var isDistinct = PredicateFor.distinctProperty(propertyGetter);
+        var isDistinct = Predicates.distinctProperty(propertyGetter);
         var distinctElems = foldLeft(new ArrayList<>(), (xs, x) -> {
             if (isDistinct.test(x)) {
                 xs.add(x);
@@ -162,7 +162,7 @@ public class Array<E> implements Seq<Array, E>, Value1<Array, E> {
     @Override
     public <U> Array<U> flatMap(Function<? super E, Monad1<Array, ? extends U>> mapper) {
         var resultArr = new Object[0];
-        for (var e: this) {
+        for (var e : this) {
             var computed = Monad1.Type.<Array<U>, Array, U>narrow(mapper.apply(e));
             var bufferArr = new Object[resultArr.length + computed.size()];
             System.arraycopy(resultArr, 0, bufferArr, 0, resultArr.length);
@@ -175,12 +175,12 @@ public class Array<E> implements Seq<Array, E>, Value1<Array, E> {
     @NotNull
     @Override
     public Iterator<E> iterator() {
-        return Iterators.cast(array);
+        return Iterators.castArray(array);
     }
 
     @Override
     public <A> A foldLeft(A accumulator, BiFunction<A, E, A> mapper) {
-        for(var i = 0; i < size(); i++) {
+        for (var i = 0; i < size(); i++) {
             accumulator = mapper.apply(accumulator, get(i));
         }
         return accumulator;
@@ -202,9 +202,9 @@ public class Array<E> implements Seq<Array, E>, Value1<Array, E> {
     @Override
     public boolean equals(Object obj) {
         return obj == this || Option.of(obj)
-                                    .cast(Array.class)
-                                    .map(x -> allMatchExhaustive(x, Objects::equals))
-                                    .orElse(false);
+                .cast(Array.class)
+                .map(x -> allMatchExhaustive(x, Objects::equals))
+                .orElse(false);
     }
 
     @Override

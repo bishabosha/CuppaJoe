@@ -22,13 +22,13 @@ public interface Consume2<A, B> extends BiConsumer<A, B> {
 
     @NotNull
     @Contract(pure = true)
-    static <X,Y> Consume2<X,Y> of(BiConsumer<X, Y> reference) {
+    static <X, Y> Consume2<X, Y> of(BiConsumer<X, Y> reference) {
         return reference::accept;
     }
 
     @NotNull
     @Contract(pure = true)
-    static <X,Y> Consume2<X,Y> narrow(BiConsumer<? super X, ? super Y> func) {
+    static <X, Y> Consume2<X, Y> narrow(BiConsumer<? super X, ? super Y> func) {
         return func::accept;
     }
 

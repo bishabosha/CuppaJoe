@@ -1,18 +1,21 @@
 package io.cuppajoe.collections.immutable;
 
-import io.cuppajoe.Iterators;
-import io.cuppajoe.Iterators.IdempotentIterator;
 import io.cuppajoe.control.Either;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.functions.Func2;
 import io.cuppajoe.functions.Func3;
 import io.cuppajoe.functions.TailCall;
-import io.cuppajoe.math.PredicateFor;
-import io.cuppajoe.tuples.*;
+import io.cuppajoe.tuples.Tuple2;
+import io.cuppajoe.tuples.Unapply0;
+import io.cuppajoe.tuples.Unapply2;
+import io.cuppajoe.tuples.Unit;
 import io.cuppajoe.typeclass.applicative.Applicative1;
 import io.cuppajoe.typeclass.monad.Monad1;
 import io.cuppajoe.typeclass.monoid.Monoid1;
 import io.cuppajoe.typeclass.value.Value1;
+import io.cuppajoe.util.Iterators;
+import io.cuppajoe.util.Iterators.IdempotentIterator;
+import io.cuppajoe.util.Predicates;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,8 +37,9 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
 
     /**
      * Creates a new of instance with a head and another of for a tail.
-     * @param x the head of the new of.
-     * @param xs the tail of the new of.
+     *
+     * @param x   the head of the new of.
+     * @param xs  the tail of the new of.
      * @param <R> the type encapsulated by the of
      * @return the new of instance
      */
@@ -61,8 +65,9 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
 
     /**
      * Creates a new of instance with all the elements passed.
+     *
      * @param elems the elements to add, in order of precedence from the head.
-     * @param <R> the type encapsulated by the of
+     * @param <R>   the type encapsulated by the of
      * @return The new of instance.
      */
     @SafeVarargs
@@ -79,6 +84,7 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
 
     /**
      * Creates a new of instance with this as its tail and elem as its head.
+     *
      * @param elem the new element to push to the head.
      * @return A new of instance.
      */
@@ -129,6 +135,7 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
 
     /**
      * Removes all instances of the element from the of
+     *
      * @param elem the element to remove
      * @return a new of instance with the element removed.
      */
@@ -139,9 +146,10 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
 
     /**
      * Iterates through the elements of the of, passing an accumulator, the next element and the tail.
+     *
      * @param identity Supplies the accumulator that may be modified by the consumer.
      * @param consumer A function taking the accumulator, the head of the of, and the tail of the of
-     * @param <O> the type of the accumulator.
+     * @param <O>      the type of the accumulator.
      * @return The accumulator with whatever modifications have been applied.
      */
     default <O> O loop(O identity, Func3<E, O, List<E>, Tuple2<O, List<E>>> consumer) {
@@ -150,15 +158,15 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
 
     default <O> TailCall<O> loopRec(Tuple2<O, List<E>> loop, Func3<E, O, List<E>, Tuple2<O, List<E>>> consumer) {
         return loop.compose((acc, stack) ->
-            stack.pop()
-                 .map(headTail ->
-                     headTail.compose((head, tail) ->
-                         Call(() -> loopRec(consumer.apply(head, acc, tail), consumer))
+                stack.pop()
+                     .map(headTail ->
+                         headTail.compose((head, tail) ->
+                             Call(() -> loopRec(consumer.apply(head, acc, tail), consumer))
+                         )
                      )
-                 )
-                 .orElseSupply(() ->
-                     Yield(acc)
-                 )
+                     .orElseSupply(() ->
+                        Yield(acc)
+                     )
         );
     }
 
@@ -168,11 +176,10 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
 
     private <O> TailCall<Option<Tuple2<O, List<E>>>> nextItemRec(Either<List<E>, Tuple2<O, List<E>>> loop, Func2<E, List<E>, Either<List<E>, Tuple2<O, List<E>>>> mapper) {
         return loop.transform(
-            xs     -> xs.pop()
+                xs -> xs.pop()
                         .map(popped -> Call(() -> nextItemRec(popped.compose(mapper), mapper)))
                         .orElseSupply(() -> Yield(None())),
-            result -> Yield(Some(result))
-        );
+                result -> Yield(Some(result)));
     }
 
     @Override
@@ -187,7 +194,7 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
 
     @Override
     default <O> List<E> distinct(Function<E, O> propertyGetter) {
-        var isDistinct = PredicateFor.distinctProperty(propertyGetter);
+        var isDistinct = Predicates.distinctProperty(propertyGetter);
         return foldRight(mempty(), (xs, x) -> isDistinct.test(x) ? xs.push(x) : xs);
     }
 
@@ -214,7 +221,7 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
     @Override
     default <U> List<U> map(Function<? super E, ? extends U> mapper) {
         Objects.requireNonNull(mapper);
-        return !isEmpty() ? foldRight((List)List.<U>empty(), (xs, x) -> xs.push(mapper.apply(x))) : empty();
+        return !isEmpty() ? foldRight((List) List.<U>empty(), (xs, x) -> xs.push(mapper.apply(x))) : empty();
     }
 
     @Override
@@ -252,6 +259,7 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
 
         /**
          * Private constructor to compose a new of from head element and another of for a tail.
+         *
          * @param head The element to sit at the head.
          * @param tail The of that will act as the tail after the head.
          */
@@ -259,10 +267,6 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
             Objects.requireNonNull(tail, "tail must be a non null Cons.");
             this.head = head;
             this.tail = tail;
-        }
-
-        static <O> Apply2<O, List<O>, Cons<O>> Applied() {
-            return Func2.<O, List<O>, Cons<O>>of(List::concat).tupled()::apply;
         }
 
         @Override
@@ -292,6 +296,7 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
 
         /**
          * Checks if the of contains any instances of elem.
+         *
          * @param elem the element to check for.
          * @return true if any instances were found. Otherwise false.
          */
@@ -381,15 +386,12 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
 
         @Override
         public int hashCode() {
-            return foldLeft(1, (hash, x) -> 31*hash + (x == null ? 0 : Objects.hashCode(x)));
+            return foldLeft(1, (hash, x) -> 31 * hash + (x == null ? 0 : Objects.hashCode(x)));
         }
 
         @Override
         public boolean equals(Object obj) {
-            return obj == this || Option.of(obj)
-                .cast(Cons.class)
-                .map(l -> allMatchExhaustive(l, Objects::equals))
-                .orElse(false);
+            return obj == this || obj instanceof Cons && Iterators.equals(iterator(), ((Cons) obj).iterator());
         }
 
         /**

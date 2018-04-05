@@ -32,11 +32,16 @@ public final class Tuple4<A, B, C, D> implements Tuple, Unapply4<A, B, C, D>, Co
     @Override
     public Object get(int index) {
         switch (index) {
-            case 1: return $1;
-            case 2: return $2;
-            case 3: return $3;
-            case 4: return $4;
-            default: throw new IndexOutOfBoundsException();
+            case 1:
+                return $1;
+            case 2:
+                return $2;
+            case 3:
+                return $3;
+            case 4:
+                return $4;
+            default:
+                throw new IndexOutOfBoundsException();
         }
     }
 

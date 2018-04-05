@@ -12,6 +12,7 @@ import static io.cuppajoe.API.Some;
 
 public interface Value1<INSTANCE extends Value1, E> extends Iterable<E> {
     boolean isEmpty();
+
     E get();
 
     default boolean containsValue() {

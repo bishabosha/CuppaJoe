@@ -19,7 +19,7 @@ public interface Monad1<INSTANCE extends Monad1, T> extends Applicative1<INSTANC
     }
 
     static <X, R, INSTANCE extends Monad1, RA extends Monad1<INSTANCE, R>> RA applyImpl(Monad1<INSTANCE, X> m,
-            Applicative1<INSTANCE, Function<? super X, ? extends R>> applicative) {
+                                                                                        Applicative1<INSTANCE, Function<? super X, ? extends R>> applicative) {
         Objects.requireNonNull(applicative);
         return Type.narrow(Type.lA(applicative).flatMap(xM -> Type.<INSTANCE, R>lF(m.map(y -> xM.apply(y)))));
     }
@@ -43,7 +43,7 @@ public interface Monad1<INSTANCE extends Monad1, T> extends Applicative1<INSTANC
             Function<? super X, ? extends R> function) {
         Objects.requireNonNull(function);
         return xM -> Type.narrow(Type.lF(xM.map(
-            x -> (R) function.apply(x))));
+                x -> (R) function.apply(x))));
     }
 
     static <X, Y, R, INSTANCE extends Monad1, XM extends Monad1<INSTANCE, X>, YM extends Monad1<INSTANCE, Y>, RM extends Monad1<INSTANCE, R>>
@@ -51,8 +51,8 @@ public interface Monad1<INSTANCE extends Monad1, T> extends Applicative1<INSTANC
             BiFunction<? super X, ? super Y, ? extends R> function) {
         Objects.requireNonNull(function);
         return (xM, yM) -> Type.narrow(xM.flatMap(
-            x -> Type.lF(yM.map(
-                y -> (R) function.apply(x, y)))));
+                x -> Type.lF(yM.map(
+                        y -> (R) function.apply(x, y)))));
     }
 
     static <X, Y, Z, R, INSTANCE extends Monad1, XM extends Monad1<INSTANCE, X>, YM extends Monad1<INSTANCE, Y>, ZM extends Monad1<INSTANCE, Z>, RM extends Monad1<INSTANCE, R>>
@@ -60,9 +60,9 @@ public interface Monad1<INSTANCE extends Monad1, T> extends Applicative1<INSTANC
             Func3<? super X, ? super Y, ? super Z, ? extends R> function) {
         Objects.requireNonNull(function);
         return (xM, yM, zM) -> Type.narrow(xM.flatMap(
-            x -> yM.flatMap(
-                y -> Type.lF(zM.map(
-                    z -> (R) function.apply(x, y, z))))));
+                x -> yM.flatMap(
+                        y -> Type.lF(zM.map(
+                                z -> (R) function.apply(x, y, z))))));
     }
 
     static <W, X, Y, Z, R, INSTANCE extends Monad1, WM extends Monad1<INSTANCE, W>, XM extends Monad1<INSTANCE, X>, YM extends Monad1<INSTANCE, Y>, ZM extends Monad1<INSTANCE, Z>, RM extends Monad1<INSTANCE, R>>
@@ -70,10 +70,10 @@ public interface Monad1<INSTANCE extends Monad1, T> extends Applicative1<INSTANC
             Func4<? super W, ? super X, ? super Y, ? super Z, ? extends R> function) {
         Objects.requireNonNull(function);
         return (wM, xM, yM, zM) -> Type.narrow(wM.flatMap(
-            w -> xM.flatMap(
-                x -> yM.flatMap(
-                    y -> Type.lF(zM.map(
-                        z -> (R) function.apply(w, x, y, z)))))));
+                w -> xM.flatMap(
+                        x -> yM.flatMap(
+                                y -> Type.lF(zM.map(
+                                        z -> (R) function.apply(w, x, y, z)))))));
     }
 
     static <V, W, X, Y, Z, R, INSTANCE extends Monad1, VM extends Monad1<INSTANCE, V>, WM extends Monad1<INSTANCE, W>, XM extends Monad1<INSTANCE, X>, YM extends Monad1<INSTANCE, Y>, ZM extends Monad1<INSTANCE, Z>, RM extends Monad1<INSTANCE, R>>
@@ -81,11 +81,11 @@ public interface Monad1<INSTANCE extends Monad1, T> extends Applicative1<INSTANC
             Func5<? super V, ? super W, ? super X, ? super Y, ? super Z, ? extends R> function) {
         Objects.requireNonNull(function);
         return (vM, wM, xM, yM, zM) -> Type.narrow(vM.flatMap(
-            v -> wM.flatMap(
-                w -> xM.flatMap(
-                    x -> yM.flatMap(
-                        y -> Type.lF(zM.map(
-                            z -> (R) function.apply(v, w, x, y, z))))))));
+                v -> wM.flatMap(
+                        w -> xM.flatMap(
+                                x -> yM.flatMap(
+                                        y -> Type.lF(zM.map(
+                                                z -> (R) function.apply(v, w, x, y, z))))))));
     }
 
     static <U, V, W, X, Y, Z, R, INSTANCE extends Monad1, UM extends Monad1<INSTANCE, U>, VM extends Monad1<INSTANCE, V>, WM extends Monad1<INSTANCE, W>, XM extends Monad1<INSTANCE, X>, YM extends Monad1<INSTANCE, Y>, ZM extends Monad1<INSTANCE, Z>, RM extends Monad1<INSTANCE, R>>
@@ -93,12 +93,12 @@ public interface Monad1<INSTANCE extends Monad1, T> extends Applicative1<INSTANC
             Func6<? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z, ? extends R> function) {
         Objects.requireNonNull(function);
         return (uM, vM, wM, xM, yM, zM) -> Type.narrow(uM.flatMap(
-            u -> vM.flatMap(
-                v -> wM.flatMap(
-                    w -> xM.flatMap(
-                        x -> yM.flatMap(
-                            y -> Type.lF(zM.map(
-                                z -> (R) function.apply(u, v, w, x, y, z)))))))));
+                u -> vM.flatMap(
+                        v -> wM.flatMap(
+                                w -> xM.flatMap(
+                                        x -> yM.flatMap(
+                                                y -> Type.lF(zM.map(
+                                                        z -> (R) function.apply(u, v, w, x, y, z)))))))));
     }
 
     static <T, U, V, W, X, Y, Z, R, INSTANCE extends Monad1, TM extends Monad1<INSTANCE, T>, UM extends Monad1<INSTANCE, U>, VM extends Monad1<INSTANCE, V>, WM extends Monad1<INSTANCE, W>, XM extends Monad1<INSTANCE, X>, YM extends Monad1<INSTANCE, Y>, ZM extends Monad1<INSTANCE, Z>, RM extends Monad1<INSTANCE, R>>
@@ -106,13 +106,13 @@ public interface Monad1<INSTANCE extends Monad1, T> extends Applicative1<INSTANC
             Func7<? super T, ? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z, ? extends R> function) {
         Objects.requireNonNull(function);
         return (tM, uM, vM, wM, xM, yM, zM) -> Type.narrow(tM.flatMap(
-            t -> uM.flatMap(
-                u -> vM.flatMap(
-                    v -> wM.flatMap(
-                        w -> xM.flatMap(
-                            x -> yM.flatMap(
-                                y -> Type.lF(zM.map(
-                                    z -> (R) function.apply(t, u, v, w, x, y, z))))))))));
+                t -> uM.flatMap(
+                        u -> vM.flatMap(
+                                v -> wM.flatMap(
+                                        w -> xM.flatMap(
+                                                x -> yM.flatMap(
+                                                        y -> Type.lF(zM.map(
+                                                                z -> (R) function.apply(t, u, v, w, x, y, z))))))))));
     }
 
     static <S, T, U, V, W, X, Y, Z, R, INSTANCE extends Monad1, SM extends Monad1<INSTANCE, S>, TM extends Monad1<INSTANCE, T>, UM extends Monad1<INSTANCE, U>, VM extends Monad1<INSTANCE, V>, WM extends Monad1<INSTANCE, W>, XM extends Monad1<INSTANCE, X>, YM extends Monad1<INSTANCE, Y>, ZM extends Monad1<INSTANCE, Z>, RM extends Monad1<INSTANCE, R>>
@@ -120,14 +120,14 @@ public interface Monad1<INSTANCE extends Monad1, T> extends Applicative1<INSTANC
             Func8<? super S, ? super T, ? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z, ? extends R> function) {
         Objects.requireNonNull(function);
         return (sM, tM, uM, vM, wM, xM, yM, zM) -> Type.narrow(sM.flatMap(
-            s -> tM.flatMap(
-                t -> uM.flatMap(
-                    u -> vM.flatMap(
-                        v -> wM.flatMap(
-                            w -> xM.flatMap(
-                                x -> yM.flatMap(
-                                    y -> Type.lF(zM.map(
-                                        z -> (R) function.apply(s, t, u, v, w, x, y, z)))))))))));
+                s -> tM.flatMap(
+                        t -> uM.flatMap(
+                                u -> vM.flatMap(
+                                        v -> wM.flatMap(
+                                                w -> xM.flatMap(
+                                                        x -> yM.flatMap(
+                                                                y -> Type.lF(zM.map(
+                                                                        z -> (R) function.apply(s, t, u, v, w, x, y, z)))))))))));
     }
 
     interface Type {

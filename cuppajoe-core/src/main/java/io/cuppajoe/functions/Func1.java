@@ -22,7 +22,7 @@ public interface Func1<A, R> extends Function<A, R> {
     }
 
     @Contract(pure = true)
-    static <X,R> Func1<X,R> narrow(Function<? super X, ? extends R> func) {
+    static <X, R> Func1<X, R> narrow(Function<? super X, ? extends R> func) {
         return func::apply;
     }
 

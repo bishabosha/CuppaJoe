@@ -35,7 +35,7 @@ public interface Monad2<INSTANCE extends Monad2, T1, T2> extends Applicative2<IN
     Function<IM, OM> m1(Function<? super X, ? extends U1> function1, Function<? super Y, ? extends U2> function2) {
         Objects.requireNonNull(function1);
         Objects.requireNonNull(function2);
-        return x -> Monad2.Type.narrow(x.flatMap((x1, y1) -> x.bless((U1)function1.apply(x1), (U2)function2.apply(y1))));
+        return x -> Monad2.Type.narrow(x.flatMap((x1, y1) -> x.bless((U1) function1.apply(x1), (U2) function2.apply(y1))));
     }
 
 
@@ -43,7 +43,7 @@ public interface Monad2<INSTANCE extends Monad2, T1, T2> extends Applicative2<IN
     BiFunction<IM1, IM2, OM> m2(BiFunction<? super X1, ? super X2, ? extends U1> function1, BiFunction<? super Y1, ? super Y2, ? extends U2> function2) {
         Objects.requireNonNull(function1);
         Objects.requireNonNull(function2);
-        return (x, y) -> Monad2.Type.narrow(x.flatMap((x1, y1) -> y.flatMap((x2, y2) -> y.bless((U1)function1.apply(x1, x2), (U2)function2.apply(y1, y2)))));
+        return (x, y) -> Monad2.Type.narrow(x.flatMap((x1, y1) -> y.flatMap((x2, y2) -> y.bless((U1) function1.apply(x1, x2), (U2) function2.apply(y1, y2)))));
     }
 
     interface Type {

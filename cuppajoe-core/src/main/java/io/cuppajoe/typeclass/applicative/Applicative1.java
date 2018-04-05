@@ -9,6 +9,7 @@ import java.util.function.Function;
 
 public interface Applicative1<INSTANCE extends Applicative1, T> extends Functor1<INSTANCE, T> {
     <U> Applicative1<INSTANCE, U> pure(U value);
+
     <U> Applicative1<INSTANCE, U> apply(Applicative1<INSTANCE, Function<? super T, ? extends U>> applicative1);
 
     static <X, R, INSTANCE extends Applicative1, XA extends Applicative1<INSTANCE, X>, RA extends Applicative1<INSTANCE, R>>
@@ -27,7 +28,7 @@ public interface Applicative1<INSTANCE extends Applicative1, T> extends Functor1
         Objects.requireNonNull(function);
         return (xA, yA) -> {
             Applicative1<INSTANCE, Function<? super X, ? extends Function<? super Y, ? extends R>>> curried =
-                xA.pure(Func2.of(function).curried());
+                    xA.pure(Func2.of(function).curried());
             return Type.narrow(yA.apply(xA.apply(curried)));
         };
     }
@@ -38,7 +39,7 @@ public interface Applicative1<INSTANCE extends Applicative1, T> extends Functor1
         Objects.requireNonNull(function);
         return (xA, yA, zA) -> {
             Applicative1<INSTANCE, Function<? super X, ? extends Function<? super Y, ? extends Function<? super Z, ? extends R>>>> curried =
-                xA.pure(function.curried());
+                    xA.pure(function.curried());
             return Type.narrow(zA.apply(yA.apply(xA.apply(curried))));
         };
     }
@@ -49,7 +50,7 @@ public interface Applicative1<INSTANCE extends Applicative1, T> extends Functor1
         Objects.requireNonNull(function);
         return (wA, xA, yA, zA) -> {
             Applicative1<INSTANCE, Function<? super W, ? extends Function<? super X, ? extends Function<? super Y, ? extends Function<? super Z, ? extends R>>>>> curried =
-                wA.pure(function.curried());
+                    wA.pure(function.curried());
             return Type.narrow(zA.apply(yA.apply(xA.apply(wA.apply(curried)))));
         };
     }

@@ -6,8 +6,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import static io.cuppajoe.API.List;
 import static io.cuppajoe.API.Tuple;
+import static io.cuppajoe.collections.immutable.API.List;
 import static org.junit.Assert.*;
 
 public class ListTest {
@@ -47,32 +47,32 @@ public class ListTest {
 
     @Test
     public void takeFiveFromList10_noError() {
-        final var list = List(1,2,3,4,5,6,7,8);
-        assertEquals(List.of(1,2,3,4,5), list.take(5));
+        final var list = List(1, 2, 3, 4, 5, 6, 7, 8);
+        assertEquals(List.of(1, 2, 3, 4, 5), list.take(5));
     }
 
     @Test
     public void takeRightFiveFromList10_noError() {
-        final var list = List(1,2,3,4,5,6,7,8);
+        final var list = List(1, 2, 3, 4, 5, 6, 7, 8);
         assertEquals(List.of(4, 5, 6, 7, 8), list.takeRight(5));
     }
 
     @Test
     public void subsequence4To10OnList10_noError() {
-        final var cons = List(1,2,3,4,5,6,7,8);
-        assertEquals(List.of(5,6,7,8), cons.subsequence(4,8));
+        final var cons = List(1, 2, 3, 4, 5, 6, 7, 8);
+        assertEquals(List.of(5, 6, 7, 8), cons.subsequence(4, 8));
     }
 
     @Test
     public void subsequence4To5OnList10_noError() {
-        final var cons = List(1,2,3,4,5,6,7,8);
-        assertEquals(List.of(5), cons.subsequence(4,5));
+        final var cons = List(1, 2, 3, 4, 5, 6, 7, 8);
+        assertEquals(List.of(5), cons.subsequence(4, 5));
     }
 
     @Test
     public void subsequence4To4OnList10_noError() {
-        final var cons = List(1,2,3,4,5,6,7,8);
-        assertEquals(List.empty(), cons.subsequence(4,4));
+        final var cons = List(1, 2, 3, 4, 5, 6, 7, 8);
+        assertEquals(List.empty(), cons.subsequence(4, 4));
     }
 
     @Test
@@ -82,7 +82,7 @@ public class ListTest {
 
     @Test
     public void longList_contains10() {
-        assertTrue(List(1,2,3,4,5,6,7,8).contains(5));
+        assertTrue(List(1, 2, 3, 4, 5, 6, 7, 8).contains(5));
     }
 
     @Test
@@ -93,30 +93,30 @@ public class ListTest {
 
     @Test
     public void reverse() {
-        assertEquals(List(3,2,1), List(1,2,3).reverse());
+        assertEquals(List(3, 2, 1), List(1, 2, 3).reverse());
         assertEquals(List(), List().reverse());
         assertEquals(List(1), List(1).reverse());
     }
 
     @Test
     public void append() {
-        assertEquals(List(1,2,3), List().append(1).append(2).append(3));
-        assertEquals(List(1,2,3), List(1).append(2).append(3));
-        assertEquals(List(1,2,3), List(1,2).append(3));
+        assertEquals(List(1, 2, 3), List().append(1).append(2).append(3));
+        assertEquals(List(1, 2, 3), List(1).append(2).append(3));
+        assertEquals(List(1, 2, 3), List(1, 2).append(3));
     }
 
     @Test
     public void remove() {
         assertEquals(List(), List(1).removeAll(1));
-        assertEquals(List(1), List(1,2).removeAll(2));
-        assertEquals(List(1,1,1), List(1,2,1,2,2,2,1).removeAll(2));
+        assertEquals(List(1), List(1, 2).removeAll(2));
+        assertEquals(List(1, 1, 1), List(1, 2, 1, 2, 2, 2, 1).removeAll(2));
         assertEquals(List(1), List(null, null, null, 1).removeAll(null));
     }
 
     @Test
     public void print() {
-        assertEquals("[1, 2, 3]", List(1,2,3).toString());
-        assertEquals("[1, 2, null]", List(1,2,null).toString());
+        assertEquals("[1, 2, 3]", List(1, 2, 3).toString());
+        assertEquals("[1, 2, null]", List(1, 2, null).toString());
         assertEquals("[null]", List(null).toString());
         assertEquals("[1]", List(1).toString());
     }
@@ -126,22 +126,14 @@ public class ListTest {
         final var list = List.concat(1, List.concat(2, List.empty()));
         assertThat(list, CoreMatchers.instanceOf(Cons.class));
         assertEquals(
-            Tuple(1, List.of(2)),
-            list.unapply()
-        );
-    }
-
-    @Test
-    public void apply() {
-        assertEquals(
-            List.of(1,2),
-            Cons.<Integer>Applied().apply(List.concat(1, List.concat(2, List.empty())).unapply())
+                Tuple(1, List.of(2)),
+                list.unapply()
         );
     }
 
     @Test
     public void get() {
-        final var list = List(1,2,3);
+        final var list = List(1, 2, 3);
         assertEquals(1, list.get(0).intValue());
         assertEquals(2, list.get(1).intValue());
         assertEquals(3, list.get(2).intValue());
@@ -151,12 +143,12 @@ public class ListTest {
     public void size() {
         assertEquals(0, List().size());
         assertEquals(1, List(1).size());
-        assertEquals(2, List(1,2).size());
-        assertEquals(3, List(1,2,3).size());
+        assertEquals(2, List(1, 2).size());
+        assertEquals(3, List(1, 2, 3).size());
     }
 
     @Test
     public void map() {
-        assertEquals(List(2,3,4), List(1,2,3).map(x -> x + 1));
+        assertEquals(List(2, 3, 4), List(1, 2, 3).map(x -> x + 1));
     }
 }

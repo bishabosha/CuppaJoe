@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 public interface CheckedFunc6<A, B, C, D, E, F, R> {
 
     @Contract(pure = true)
-    static <U,V,W,X,Y,Z,R> CheckedFunc6<U,V,W,X,Y,Z,R> of(CheckedFunc6<U, V, W, X, Y, Z, R> reference) {
+    static <U, V, W, X, Y, Z, R> CheckedFunc6<U, V, W, X, Y, Z, R> of(CheckedFunc6<U, V, W, X, Y, Z, R> reference) {
         return reference;
     }
 

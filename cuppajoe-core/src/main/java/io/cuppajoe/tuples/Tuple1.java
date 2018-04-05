@@ -14,8 +14,8 @@ public final class Tuple1<A> implements Tuple, Unapply1<A>, Compose1<A> {
         this.$1 = $1;
     }
 
-    public Tuple1<A> unapply() {
-        return this;
+    public A unapply() {
+        return $1;
     }
 
     @Override

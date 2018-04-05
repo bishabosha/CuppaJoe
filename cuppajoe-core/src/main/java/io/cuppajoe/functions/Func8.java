@@ -17,13 +17,13 @@ public interface Func8<A, B, C, D, E, F, G, H, R> {
 
     @Contract(pure = true)
     @NotNull
-    static <S,T,U,V,W,X,Y,Z,R> Func8<S,T,U,V,W,X,Y,Z,R> of(Func8<S,T,U,V,W,X,Y,Z,R> func) {
+    static <S, T, U, V, W, X, Y, Z, R> Func8<S, T, U, V, W, X, Y, Z, R> of(Func8<S, T, U, V, W, X, Y, Z, R> func) {
         return func;
     }
 
     @Contract(pure = true)
     @NotNull
-    static <S,T,U,V,W,X,Y,Z,R> Func8<S,T,U,V,W,X,Y,Z,R> narrow(Func8<? super S, ? super T, ? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z, ? extends R> func) {
+    static <S, T, U, V, W, X, Y, Z, R> Func8<S, T, U, V, W, X, Y, Z, R> narrow(Func8<? super S, ? super T, ? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z, ? extends R> func) {
         return func::apply;
     }
 

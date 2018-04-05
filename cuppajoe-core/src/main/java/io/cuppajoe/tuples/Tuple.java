@@ -29,8 +29,7 @@ public interface Tuple {
         return new TupleIterator<>(this);
     }
 
-    static
-    Unit
+    static Unit
     of() {
         return Unit.INSTANCE;
     }

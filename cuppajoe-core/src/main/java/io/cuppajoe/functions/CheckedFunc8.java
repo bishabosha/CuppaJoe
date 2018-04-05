@@ -13,12 +13,12 @@ import org.jetbrains.annotations.NotNull;
 public interface CheckedFunc8<A, B, C, D, E, F, G, H, R> {
 
     @Contract(pure = true)
-    static <S,T,U,V,W,X,Y,Z,R> CheckedFunc8<S,T,U,V,W,X,Y,Z,R> of(CheckedFunc8<S, T, U, V, W, X, Y, Z, R> reference) {
+    static <S, T, U, V, W, X, Y, Z, R> CheckedFunc8<S, T, U, V, W, X, Y, Z, R> of(CheckedFunc8<S, T, U, V, W, X, Y, Z, R> reference) {
         return reference;
     }
 
     @Contract(pure = true)
-    static <S,T,U,V,W,X,Y,Z,R> CheckedFunc8<S,T,U,V,W,X,Y,Z,R> narrow(CheckedFunc8<? super S, ? super T, ? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z, ? extends R> func) {
+    static <S, T, U, V, W, X, Y, Z, R> CheckedFunc8<S, T, U, V, W, X, Y, Z, R> narrow(CheckedFunc8<? super S, ? super T, ? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z, ? extends R> func) {
         return func::apply;
     }
 

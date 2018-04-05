@@ -4,8 +4,6 @@
 
 package io.cuppajoe.control;
 
-import io.cuppajoe.Iterators;
-import io.cuppajoe.tuples.Tuple1;
 import io.cuppajoe.tuples.Unapply0;
 import io.cuppajoe.tuples.Unapply1;
 import io.cuppajoe.tuples.Unit;
@@ -13,20 +11,16 @@ import io.cuppajoe.typeclass.applicative.Applicative1;
 import io.cuppajoe.typeclass.monad.Monad1;
 import io.cuppajoe.typeclass.peek.Peek1;
 import io.cuppajoe.typeclass.value.Value1;
+import io.cuppajoe.util.Iterators;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-
-import static io.cuppajoe.API.Tuple;
 
 public interface Option<E> extends Monad1<Option, E>, Peek1<E>, Value1<Option, E> {
 
@@ -114,7 +108,7 @@ public interface Option<E> extends Monad1<Option, E>, Peek1<E>, Value1<Option, E
     @NotNull
     @Override
     default Iterator<E> iterator() {
-        return Iterators.empty();
+        return Collections.emptyIterator();
     }
 
     final class Some<O> implements Option<O>, Unapply1<O> {
@@ -122,8 +116,8 @@ public interface Option<E> extends Monad1<Option, E>, Peek1<E>, Value1<Option, E
         private O value;
 
         @Override
-        public Tuple1<O> unapply() {
-            return Tuple(get());
+        public O unapply() {
+            return get();
         }
 
         private Some(O value) {
