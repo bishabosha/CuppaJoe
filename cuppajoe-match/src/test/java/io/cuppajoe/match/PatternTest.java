@@ -10,6 +10,7 @@ import io.cuppajoe.control.Option;
 import io.cuppajoe.match.patterns.Collections;
 import io.cuppajoe.match.patterns.Pattern;
 import io.cuppajoe.match.patterns.Result;
+import io.cuppajoe.match.patterns.Standard;
 import io.cuppajoe.tuples.Tuple2;
 import org.junit.Test;
 
@@ -48,7 +49,7 @@ public class PatternTest {
 
         assertEquals(
                 Some(Result.of(0)),
-                INode_(eq(0), __(), __()).test(tree)
+                INode_($(0), __(), __()).test(tree)
         );
         assertEquals(
                 Some(Result.of(0)),
@@ -56,7 +57,7 @@ public class PatternTest {
         );
         assertEquals(
                 None(),
-                INode_(eq(5), __(), __()).test(tree)
+                INode_($(5), __(), __()).test(tree)
         );
         assertEquals(
                 Some(Result.of(Tree(1))),
@@ -64,7 +65,7 @@ public class PatternTest {
         );
         assertEquals(
                 None(),
-                INode_($(), $eq(null), $eq(null)).test(tree)
+                INode_($(), $(null), $(null)).test(tree)
         );
     }
 
