@@ -16,7 +16,7 @@ public class TreeTest {
 
     @Test
     public void size() {
-        assertEquals(0, Tree.leaf().size());
+        assertEquals(0, Tree.Leaf().size());
         assertEquals(5, Tree.of(4, 3, 6, 1, 2).size());
     }
 
@@ -31,7 +31,7 @@ public class TreeTest {
             contains(6, 5, 4, 3, 2, 1)
         );
         assertThat(
-            Tree.leaf().inOrder(),
+            Tree.Leaf().inOrder(),
             emptyIterable()
         );
         assertThat(

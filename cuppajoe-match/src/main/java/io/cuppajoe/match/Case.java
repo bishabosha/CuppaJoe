@@ -40,7 +40,7 @@ public interface Case<I, O> {
     }
 
     class MatchException extends RuntimeException {
-        public MatchException(Object input) {
+        MatchException(Object input) {
             super("No match found for " + input.getClass() + ": " + input);
         }
     }
@@ -140,6 +140,7 @@ public interface Case<I, O> {
         return i -> matcher.test(i).map(result -> mapper.apply(result.values()));
     }
 
+    @SafeVarargs
     static <O> Guard<O> combine(Guard<O>... guards) {
         return () -> {
             Option<O> result = None();
@@ -153,6 +154,7 @@ public interface Case<I, O> {
         };
     }
 
+    @SafeVarargs
     static <I, O> Case<I, O> combine(Case<I, O>... cases) {
         return i -> {
             Option<O> result = None();

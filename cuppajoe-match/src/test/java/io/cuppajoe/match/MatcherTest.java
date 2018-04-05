@@ -16,7 +16,7 @@ import java.math.BigInteger;
 
 import static io.cuppajoe.API.Tuple;
 import static io.cuppajoe.collections.immutable.Tree.Node;
-import static io.cuppajoe.collections.immutable.Tree.leaf;
+import static io.cuppajoe.collections.immutable.Tree.Leaf;
 import static io.cuppajoe.match.API.Match;
 import static io.cuppajoe.match.Case.*;
 import static io.cuppajoe.match.Matcher.guardUnsafe;
@@ -123,13 +123,13 @@ public class MatcherTest {
                         -1,
                         Node(
                                 -2,
-                                leaf(),
-                                leaf()),
-                        leaf()),
+                                Leaf(),
+                                Leaf()),
+                        Leaf()),
                 Node(
                         1,
-                        leaf(),
-                        leaf())
+                        Leaf(),
+                        Leaf())
         );
     }
 
@@ -137,7 +137,7 @@ public class MatcherTest {
     public void testPatterns() {
 
         var tree = getTree();
-        var leaf = Node(25, leaf(), leaf());
+        var leaf = Node(25, Leaf(), Leaf());
 
         Assert.assertEquals(
                 Option.of(1),
@@ -146,7 +146,7 @@ public class MatcherTest {
                 )
         );
         Assert.assertEquals(
-                Node(1, leaf(), leaf()),
+                Node(1, Leaf(), Leaf()),
                 Match(tree).option(
                         with(INode$(__(), __(), $()), $r -> $r)
                 ).get()
@@ -178,16 +178,16 @@ public class MatcherTest {
                 getTree().height()
         );
         Assert.assertEquals(
-                leaf(),
-                ((Tree<Integer>) leaf()).remove(78)
+                Leaf(),
+                ((Tree<Integer>) Leaf()).remove(78)
         );
         Assert.assertEquals(
                 getTree(),
                 getTree()
         );
-        var hello = ((Tree<String>) leaf()).add("Hello");
+        var hello = ((Tree<String>) Leaf()).add("Hello");
         Assert.assertEquals(
-                Node("Hello", leaf(), leaf()),
+                Node("Hello", Leaf(), Leaf()),
                 hello
         );
     }

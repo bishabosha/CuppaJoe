@@ -43,7 +43,7 @@ public interface Tree<E extends Comparable<E>> {
 
     @SafeVarargs
     static <R extends Comparable<R>> Tree<R> of(R... elems) {
-        Tree<R> tree = leaf();
+        Tree<R> tree = Leaf();
         for (var elem : elems) {
             tree = tree.add(elem);
         }
@@ -56,7 +56,7 @@ public interface Tree<E extends Comparable<E>> {
      * @param <R> The type that the tree encapsulates.
      */
     @SuppressWarnings("unchecked")
-    static <R extends Comparable<R>> Tree<R> leaf() {
+    static <R extends Comparable<R>> Tree<R> Leaf() {
         return (Tree<R>) Leaf.INSTANCE;
     }
 
@@ -135,7 +135,7 @@ public interface Tree<E extends Comparable<E>> {
      * @return a new Tree instance with the largest element removed
      */
     default Tree<E> deleteLargest() {
-        return isEmpty() ? leaf()
+        return isEmpty() ? Leaf()
                 : right().isEmpty() ? left()
                 : Node(node(), left(), right().deleteLargest());
     }
@@ -160,7 +160,7 @@ public interface Tree<E extends Comparable<E>> {
     default Tree<E> add(E elem) {
         Objects.requireNonNull(elem);
         int comparison;
-        return isEmpty() ? Node(elem, leaf(), leaf())
+        return isEmpty() ? Node(elem, Leaf(), Leaf())
                 : (comparison = elem.compareTo(node())) == 0 ? this
                 : comparison < 0 ? Node(node(), left().add(elem), right())
                 : Node(node(), left(), right().add(elem));
@@ -175,7 +175,7 @@ public interface Tree<E extends Comparable<E>> {
     default Tree<E> remove(E elem) {
         int comparison;
         return Objects.isNull(elem) ? this
-                : isEmpty() ? leaf()
+                : isEmpty() ? Leaf()
                 : (comparison = elem.compareTo(node())) < 0 ? Node(node(), left().remove(elem), right())
                 : comparison > 0 ? Node(node(), left(), right().remove(elem))
                 : left().isEmpty() ? right()
@@ -353,7 +353,7 @@ public interface Tree<E extends Comparable<E>> {
 
             private Either<List<Object>, Tuple2<E, List<Object>>> stackAlgorithm(Object head, List<Object> tail) {
                 return head instanceof Node ? Left(processNode((Node<E>) head, tail))
-                        : head == leaf() ? Left(List())
+                        : head == Leaf() ? Left(List())
                         : Right(Tuple((E) head, tail));
             }
 

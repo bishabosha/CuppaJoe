@@ -17,7 +17,7 @@ import static io.cuppajoe.API.*;
 import static io.cuppajoe.collections.immutable.API.List;
 import static io.cuppajoe.collections.immutable.API.Tree;
 import static io.cuppajoe.collections.immutable.Tree.Node;
-import static io.cuppajoe.collections.immutable.Tree.leaf;
+import static io.cuppajoe.collections.immutable.Tree.Leaf;
 import static io.cuppajoe.match.Case.with;
 import static io.cuppajoe.match.patterns.Standard.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,18 +26,18 @@ public class PatternTest {
 
     Tree<Integer> getTree() {
         return Node(
-                0,
+            0,
+            Node(
+                -1,
                 Node(
-                        -1,
-                        Node(
-                                -2,
-                                leaf(),
-                                leaf()),
-                        leaf()),
-                Node(
-                        1,
-                        leaf(),
-                        leaf())
+                    -2,
+                    Leaf(),
+                    Leaf()),
+                Leaf()),
+            Node(
+                1,
+                Leaf(),
+                Leaf())
         );
     }
 
@@ -79,13 +79,13 @@ public class PatternTest {
 
         patt2Test = Tuple2$(Some_(INode_($(), __(), $())), $());
 
-        underTest = Tuple(Option.of(Node(1, leaf(), leaf())), List(Tree(2)));
+        underTest = Tuple(Option.of(Node(1, Leaf(), Leaf())), List(Tree(2)));
 
         patt2Test.test(underTest).peek(results -> {
             var values = results.values();
             assertEquals(3, results.size());
             assertEquals(1, (int) values.nextVal());
-            assertEquals(leaf(), values.nextVal());
+            assertEquals(Leaf(), values.nextVal());
             assertEquals(List.of(Tree.of(2)), values.nextVal());
         });
     }
