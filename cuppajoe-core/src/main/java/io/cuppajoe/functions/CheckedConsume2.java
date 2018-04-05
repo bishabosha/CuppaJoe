@@ -7,8 +7,6 @@ package io.cuppajoe.functions;
 import io.cuppajoe.control.Try;
 import io.cuppajoe.tuples.Tuple2;
 import io.cuppajoe.tuples.Unit;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
@@ -17,19 +15,14 @@ public interface CheckedConsume2<A, B> {
 
     void apply(A a, B b) throws Exception;
 
-    @NotNull
-    @Contract(pure = true)
     static <X, Y> CheckedConsume2<X, Y> of(CheckedConsume2<X, Y> reference) {
         return reference;
     }
 
-    @NotNull
-    @Contract(pure = true)
     static <X, Y> CheckedConsume2<X, Y> narrow(CheckedConsume2<? super X, ? super Y> func) {
         return func::apply;
     }
 
-    @Contract(pure = true)
     static <X, Y> Func2<X, Y, Try<Unit>> lift(CheckedConsume2<? super X, ? super Y> func) {
         return (x, y) -> Try.of(() -> {
             func.apply(x, y);
@@ -37,12 +30,10 @@ public interface CheckedConsume2<A, B> {
         });
     }
 
-    @Contract(pure = true)
     default Func1<A, CheckedConsume1<B>> curried() {
         return x -> y -> apply(x, y);
     }
 
-    @Contract(pure = true)
     default CheckedConsume1<Tuple2<A, B>> tupled() {
         return x -> apply(x.$1, x.$2);
     }

@@ -6,34 +6,26 @@ package io.cuppajoe.functions;
 
 import io.cuppajoe.control.Try;
 import io.cuppajoe.tuples.Tuple7;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 @FunctionalInterface
 public interface CheckedFunc7<A, B, C, D, E, F, G, R> {
 
-    @Contract(pure = true)
     static <T, U, V, W, X, Y, Z, R> CheckedFunc7<T, U, V, W, X, Y, Z, R> of(CheckedFunc7<T, U, V, W, X, Y, Z, R> reference) {
         return reference;
     }
 
-    @Contract(pure = true)
     static <T, U, V, W, X, Y, Z, R> CheckedFunc7<T, U, V, W, X, Y, Z, R> narrow(CheckedFunc7<? super T, ? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z, ? extends R> func) {
         return func::apply;
     }
 
-    @NotNull
-    @Contract(pure = true)
     static <T, U, V, W, X, Y, Z, R> Func7<T, U, V, W, X, Y, Z, Try<R>> lift(CheckedFunc7<? super T, ? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z, ? extends R> func) {
         return (t, u, v, w, x, y, z) -> Try.of(() -> func.apply(t, u, v, w, x, y, z));
     }
 
-    @Contract(pure = true)
     default CheckedFunc1<A, CheckedFunc1<B, CheckedFunc1<C, CheckedFunc1<D, CheckedFunc1<E, CheckedFunc1<F, CheckedFunc1<G, R>>>>>>> curried() {
         return t -> u -> v -> w -> x -> y -> z -> apply(t, u, v, w, x, y, z);
     }
 
-    @Contract(pure = true)
     default CheckedFunc1<Tuple7<A, B, C, D, E, F, G>, R> tupled() {
         return x -> apply(x.$1, x.$2, x.$3, x.$4, x.$5, x.$6, x.$7);
     }

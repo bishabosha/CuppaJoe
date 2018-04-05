@@ -7,8 +7,6 @@ package io.cuppajoe.functions;
 import io.cuppajoe.control.Try;
 import io.cuppajoe.tuples.Tuple1;
 import io.cuppajoe.tuples.Unit;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -20,18 +18,14 @@ public interface Consume1<A> extends Consumer<A> {
         accept(a);
     }
 
-    @NotNull
-    @Contract(pure = true)
     static <X> Consume1<X> of(Consumer<X> reference) {
         return reference::accept;
     }
 
-    @Contract(pure = true)
     static <X> Consume1<X> narrow(Consumer<? super X> func) {
         return func::accept;
     }
 
-    @Contract(pure = true)
     static <X> Func1<X, Try<Unit>> lift(Consumer<? super X> func) {
         return CheckedConsume1.lift(func::accept);
     }

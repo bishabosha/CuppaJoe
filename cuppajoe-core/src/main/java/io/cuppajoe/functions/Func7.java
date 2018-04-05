@@ -6,7 +6,6 @@ package io.cuppajoe.functions;
 
 import io.cuppajoe.control.Try;
 import io.cuppajoe.tuples.Tuple7;
-import org.jetbrains.annotations.Contract;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -14,27 +13,22 @@ import java.util.function.Supplier;
 @FunctionalInterface
 public interface Func7<A, B, C, D, E, F, G, R> {
 
-    @Contract(pure = true)
     static <T, U, V, W, X, Y, Z, R> Func7<T, U, V, W, X, Y, Z, R> of(Func7<T, U, V, W, X, Y, Z, R> reference) {
         return reference;
     }
 
-    @Contract(pure = true)
     static <T, U, V, W, X, Y, Z, R> Func7<T, U, V, W, X, Y, Z, R> narrow(Func7<? super T, ? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z, ? extends R> func) {
         return func::apply;
     }
 
-    @Contract(pure = true)
     static <T, U, V, W, X, Y, Z, R> Func7<T, U, V, W, X, Y, Z, Try<R>> lift(Func7<? super T, ? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z, ? extends R> func) {
         return CheckedFunc7.lift(func::apply);
     }
 
-    @Contract(pure = true)
     default Func1<A, Func1<B, Func1<C, Func1<D, Func1<E, Func1<F, Func1<G, R>>>>>>> curried() {
         return t -> u -> v -> w -> x -> y -> z -> apply(t, u, v, w, x, y, z);
     }
 
-    @Contract(pure = true)
     default Func1<Tuple7<A, B, C, D, E, F, G>, R> tupled() {
         return x -> apply(x.$1, x.$2, x.$3, x.$4, x.$5, x.$6, x.$7);
     }

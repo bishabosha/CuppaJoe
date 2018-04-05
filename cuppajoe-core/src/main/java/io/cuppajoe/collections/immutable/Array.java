@@ -8,7 +8,6 @@ import io.cuppajoe.typeclass.monoid.Monoid1;
 import io.cuppajoe.typeclass.value.Value1;
 import io.cuppajoe.util.Iterators;
 import io.cuppajoe.util.Predicates;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -172,7 +171,6 @@ public class Array<E> implements Seq<Array, E>, Value1<Array, E> {
         return new Array<>(resultArr);
     }
 
-    @NotNull
     @Override
     public Iterator<E> iterator() {
         return Iterators.castArray(array);

@@ -16,8 +16,6 @@ import io.cuppajoe.typeclass.value.Value1;
 import io.cuppajoe.util.Iterators;
 import io.cuppajoe.util.Iterators.IdempotentIterator;
 import io.cuppajoe.util.Predicates;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -43,8 +41,6 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
      * @param <R> the type encapsulated by the of
      * @return the new of instance
      */
-    @NotNull
-    @Contract(pure = true)
     static <R> Cons<R> concat(R x, List<R> xs) {
         return new Cons<>(x, xs);
     }
@@ -52,13 +48,10 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
     /**
      * Returns the singleton instance of the empty list
      */
-    @Contract(pure = true)
     static <E> List<E> empty() {
         return Monad1.Type.<List<E>, List, E>castParam(Nil.INSTANCE);
     }
 
-    @NotNull
-    @Contract(pure = true)
     static <R> List<R> of(R elem) {
         return concat(elem, empty());
     }
@@ -225,7 +218,6 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     default <U> List<U> flatMap(Function<? super E, Monad1<List, ? extends U>> mapper) {
         Objects.requireNonNull(mapper);
         return !isEmpty() ? List.<U>empty().mconcat(map(mapper.andThen(Monad1.Type::<List<U>, List, U>narrow))) : empty();
@@ -398,7 +390,6 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
          * @return an Iterator through each element of the of. The calling of is immutable.
          */
         @Override
-        @NotNull
         public Iterator<E> iterator() {
             return new IdempotentIterator<>() {
 

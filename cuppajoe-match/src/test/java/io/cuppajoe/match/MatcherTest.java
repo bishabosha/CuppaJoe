@@ -8,7 +8,6 @@ import io.cuppajoe.collections.immutable.Tree;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.match.patterns.Collections;
 import io.cuppajoe.match.patterns.Pattern;
-import io.cuppajoe.match.patterns.Standard;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -16,8 +15,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import static io.cuppajoe.API.Tuple;
-import static io.cuppajoe.collections.immutable.Tree.Node;
 import static io.cuppajoe.collections.immutable.Tree.Leaf;
+import static io.cuppajoe.collections.immutable.Tree.Node;
 import static io.cuppajoe.match.API.Match;
 import static io.cuppajoe.match.Case.*;
 import static io.cuppajoe.match.Matcher.guardUnsafe;

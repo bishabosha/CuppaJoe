@@ -8,9 +8,6 @@
 
 package io.cuppajoe.util;
 
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
@@ -89,8 +86,6 @@ public final class Iterators {
         return singletonSupplier(() -> value);
     }
 
-    @NotNull
-    @Contract(pure = true)
     @SafeVarargs
     public static <E> Iterator<E> ofSuppliers(Supplier<E>... suppliers) {
         return new Iterator<>() {
@@ -108,8 +103,6 @@ public final class Iterators {
         };
     }
 
-    @NotNull
-    @Contract(pure = true)
     @SafeVarargs
     public static <E> Iterator<E> concat(Iterable<E>... iterables) {
         return new IdempotentIterator<>() {
@@ -138,14 +131,10 @@ public final class Iterators {
         };
     }
 
-    @NotNull
-    @Contract(pure = true)
     public static <R> Iterator<R> iterate(R identity, UnaryOperator<R> accumulator) {
         return iterate(identity, x -> false, accumulator);
     }
 
-    @NotNull
-    @Contract(pure = true)
     public static <R> Iterator<R> iterate(R identity,
                                           Predicate<R> terminatingCondition,
                                           UnaryOperator<R> accumulator) {

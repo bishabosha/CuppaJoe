@@ -7,7 +7,6 @@ import io.cuppajoe.typeclass.monad.Monad1;
 import io.cuppajoe.typeclass.peek.Peek1;
 import io.cuppajoe.typeclass.value.Value1;
 import io.cuppajoe.util.Iterators;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -126,7 +125,6 @@ public interface Try<E> extends Monad1<Try, E>, Peek1<E>, Value1<Try, E> {
         return Monad1.applyImpl(this, applicative1);
     }
 
-    @NotNull
     @Override
     default Iterator<E> iterator() {
         return isEmpty() ? Collections.emptyIterator() : Iterators.singletonSupplier(this::get);

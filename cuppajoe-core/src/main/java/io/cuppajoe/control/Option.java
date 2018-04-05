@@ -12,9 +12,6 @@ import io.cuppajoe.typeclass.monad.Monad1;
 import io.cuppajoe.typeclass.peek.Peek1;
 import io.cuppajoe.typeclass.value.Value1;
 import io.cuppajoe.util.Iterators;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -32,25 +29,18 @@ public interface Option<E> extends Monad1<Option, E>, Peek1<E>, Value1<Option, E
         return empty().pure(value);
     }
 
-    @NotNull
-    @Contract(pure = true)
-    static <O> Some<O> some(@Nullable O value) {
+    static <O> Some<O> some(O value) {
         return new Some<>(value);
     }
 
-    @NotNull
-    @Contract(pure = true)
     static Option.None none() {
         return None.INSTANCE;
     }
 
-    @NotNull
-    @Contract(pure = true)
     static <O> Option<O> empty() {
         return Monad1.Type.<Option<O>, Option, O>castParam(None.INSTANCE);
     }
 
-    @Contract(" -> fail")
     @Override
     default E get() {
         throw new NoSuchElementException("There is nothing present.");
@@ -105,7 +95,6 @@ public interface Option<E> extends Monad1<Option, E>, Peek1<E>, Value1<Option, E
         return Monad1.applyImpl(this, applicative1);
     }
 
-    @NotNull
     @Override
     default Iterator<E> iterator() {
         return Collections.emptyIterator();
@@ -124,13 +113,11 @@ public interface Option<E> extends Monad1<Option, E>, Peek1<E>, Value1<Option, E
             this.value = value;
         }
 
-        @Contract(pure = true)
         @Override
         public boolean isEmpty() {
             return false;
         }
 
-        @Contract(pure = true)
         @Override
         public O get() {
             return value;
@@ -146,15 +133,11 @@ public interface Option<E> extends Monad1<Option, E>, Peek1<E>, Value1<Option, E
             return this == obj || obj instanceof Some && Objects.equals(((Some) obj).get(), get());
         }
 
-        @NotNull
-        @Contract(pure = true)
         @Override
         public String toString() {
             return "Some(" + get() + ")";
         }
 
-        @NotNull
-        @Contract(pure = true)
         @Override
         public Iterator<O> iterator() {
             return Iterators.singletonSupplier(this::get);
@@ -165,14 +148,11 @@ public interface Option<E> extends Monad1<Option, E>, Peek1<E>, Value1<Option, E
 
         INSTANCE;
 
-        @Contract(pure = true)
         @Override
         public boolean isEmpty() {
             return true;
         }
 
-        @NotNull
-        @Contract(pure = true)
         @Override
         public String toString() {
             return "None";

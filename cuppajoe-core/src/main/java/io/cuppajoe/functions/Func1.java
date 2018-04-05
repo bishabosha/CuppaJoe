@@ -6,8 +6,6 @@ package io.cuppajoe.functions;
 
 import io.cuppajoe.control.Try;
 import io.cuppajoe.tuples.Tuple1;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -15,18 +13,14 @@ import java.util.function.Supplier;
 @FunctionalInterface
 public interface Func1<A, R> extends Function<A, R> {
 
-    @NotNull
-    @Contract(pure = true)
     static <X, R> Func1<X, R> of(Function<X, R> reference) {
         return reference::apply;
     }
 
-    @Contract(pure = true)
     static <X, R> Func1<X, R> narrow(Function<? super X, ? extends R> func) {
         return func::apply;
     }
 
-    @Contract(pure = true)
     static <X, R> Func1<X, Try<R>> lift(Function<? super X, ? extends R> func) {
         return CheckedFunc1.lift(func::apply);
     }

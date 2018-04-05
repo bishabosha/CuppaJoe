@@ -6,7 +6,6 @@ import io.cuppajoe.typeclass.foldable.Foldable;
 import io.cuppajoe.typeclass.functor.Functor1;
 import io.cuppajoe.typeclass.value.Value1;
 import io.cuppajoe.util.Iterators;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.Objects;
@@ -27,17 +26,14 @@ public class Queue<E> implements Foldable<E>, Bunch<E>, Value1<Queue, E>, Functo
         this.tail = tail;
     }
 
-    @NotNull
     public static <T> Queue<T> empty() {
         return new Queue<>(List.empty(), List.empty());
     }
 
-    @NotNull
     public static <T> Queue<T> of(T elem) {
         return new Queue<>(List.of(elem), List.empty());
     }
 
-    @NotNull
     @SafeVarargs
     public static <T> Queue<T> of(T... elems) {
         return new Queue<>(List.of(elems), List.empty());
@@ -66,12 +62,10 @@ public class Queue<E> implements Foldable<E>, Bunch<E>, Value1<Queue, E>, Functo
         return foldLeft(empty(), (xs, x) -> xs.enqueue(mapper.apply(x)));
     }
 
-    @NotNull
     public final Queue<E> enqueue(E element) {
         return new Queue<>(head, tail.push(element));
     }
 
-    @NotNull
     @SafeVarargs
     public final Queue<E> enqueueAll(E... elements) {
         var newTail = tail;

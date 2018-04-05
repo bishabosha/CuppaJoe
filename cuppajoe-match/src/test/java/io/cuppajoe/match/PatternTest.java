@@ -10,15 +10,14 @@ import io.cuppajoe.control.Option;
 import io.cuppajoe.match.patterns.Collections;
 import io.cuppajoe.match.patterns.Pattern;
 import io.cuppajoe.match.patterns.Result;
-import io.cuppajoe.match.patterns.Standard;
 import io.cuppajoe.tuples.Tuple2;
 import org.junit.Test;
 
 import static io.cuppajoe.API.*;
 import static io.cuppajoe.collections.immutable.API.List;
 import static io.cuppajoe.collections.immutable.API.Tree;
-import static io.cuppajoe.collections.immutable.Tree.Node;
 import static io.cuppajoe.collections.immutable.Tree.Leaf;
+import static io.cuppajoe.collections.immutable.Tree.Node;
 import static io.cuppajoe.match.Case.with;
 import static io.cuppajoe.match.patterns.Standard.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;

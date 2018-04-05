@@ -6,7 +6,6 @@ package io.cuppajoe.functions;
 
 import io.cuppajoe.control.Try;
 import io.cuppajoe.tuples.Tuple5;
-import org.jetbrains.annotations.Contract;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -14,27 +13,22 @@ import java.util.function.Supplier;
 @FunctionalInterface
 public interface Func5<A, B, C, D, E, R> {
 
-    @Contract(pure = true)
     static <V, W, X, Y, Z, R> Func5<V, W, X, Y, Z, R> of(Func5<V, W, X, Y, Z, R> reference) {
         return reference;
     }
 
-    @Contract(pure = true)
     static <V, W, X, Y, Z, R> Func5<V, W, X, Y, Z, R> narrow(Func5<? super V, ? super W, ? super X, ? super Y, ? super Z, ? extends R> func) {
         return func::apply;
     }
 
-    @Contract(pure = true)
     static <V, W, X, Y, Z, R> Func5<V, W, X, Y, Z, Try<R>> lift(Func5<? super V, ? super W, ? super X, ? super Y, ? super Z, ? extends R> func) {
         return CheckedFunc5.lift(func::apply);
     }
 
-    @Contract(pure = true)
     default Func1<A, Func1<B, Func1<C, Func1<D, Func1<E, R>>>>> curried() {
         return v -> w -> x -> y -> z -> apply(v, w, x, y, z);
     }
 
-    @Contract(pure = true)
     default Func1<Tuple5<A, B, C, D, E>, R> tupled() {
         return x -> apply(x.$1, x.$2, x.$3, x.$4, x.$5);
     }

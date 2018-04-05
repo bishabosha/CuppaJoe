@@ -6,8 +6,6 @@ package io.cuppajoe.functions;
 
 import io.cuppajoe.control.Try;
 import io.cuppajoe.tuples.Tuple2;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -16,29 +14,22 @@ import java.util.function.Supplier;
 @FunctionalInterface
 public interface Func2<A, B, R> extends BiFunction<A, B, R> {
 
-    @NotNull
-    @Contract(pure = true)
     static <X, Y, R> Func2<X, Y, R> of(BiFunction<X, Y, R> reference) {
         return reference::apply;
     }
 
-    @NotNull
-    @Contract(pure = true)
     static <X, Y, R> Func2<X, Y, R> narrow(BiFunction<? super X, ? super Y, ? extends R> func) {
         return func::apply;
     }
 
-    @Contract(pure = true)
     static <X, Y, R> Func2<X, Y, Try<R>> lift(BiFunction<? super X, ? super Y, ? extends R> func) {
         return CheckedFunc2.lift(func::apply);
     }
 
-    @Contract(pure = true)
     default Func1<A, Func1<B, R>> curried() {
         return x -> y -> apply(x, y);
     }
 
-    @Contract(pure = true)
     default Func1<Tuple2<A, B>, R> tupled() {
         return x -> apply(x.$1, x.$2);
     }

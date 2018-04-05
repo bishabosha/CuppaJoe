@@ -6,7 +6,6 @@ package io.cuppajoe.functions;
 
 import io.cuppajoe.control.Try;
 import io.cuppajoe.tuples.Tuple3;
-import org.jetbrains.annotations.Contract;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -14,27 +13,22 @@ import java.util.function.Supplier;
 @FunctionalInterface
 public interface Func3<A, B, C, R> {
 
-    @Contract(pure = true)
     static <X, Y, Z, R> Func3<X, Y, Z, R> of(Func3<X, Y, Z, R> reference) {
         return reference;
     }
 
-    @Contract(pure = true)
     static <X, Y, Z, R> Func3<X, Y, Z, R> narrow(Func3<? super X, ? super Y, ? super Z, ? extends R> func) {
         return func::apply;
     }
 
-    @Contract(pure = true)
     static <X, Y, Z, R> Func3<X, Y, Z, Try<R>> lift(Func3<? super X, ? super Y, ? super Z, ? extends R> func) {
         return CheckedFunc3.lift(func::apply);
     }
 
-    @Contract(pure = true)
     default Func1<A, Func1<B, Func1<C, R>>> curried() {
         return x -> y -> z -> apply(x, y, z);
     }
 
-    @Contract(pure = true)
     default Func1<Tuple3<A, B, C>, R> tupled() {
         return x -> apply(x.$1, x.$2, x.$3);
     }

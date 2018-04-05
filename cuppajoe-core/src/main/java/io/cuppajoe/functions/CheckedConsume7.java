@@ -7,8 +7,6 @@ package io.cuppajoe.functions;
 import io.cuppajoe.control.Try;
 import io.cuppajoe.tuples.Tuple7;
 import io.cuppajoe.tuples.Unit;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
@@ -17,19 +15,14 @@ public interface CheckedConsume7<A, B, C, D, E, F, G> {
 
     void apply(A a, B b, C c, D d, E e, F f, G g) throws Exception;
 
-    @NotNull
-    @Contract(pure = true)
     static <T, U, V, W, X, Y, Z> CheckedConsume7<T, U, V, W, X, Y, Z> of(CheckedConsume7<T, U, V, W, X, Y, Z> reference) {
         return reference;
     }
 
-    @NotNull
-    @Contract(pure = true)
     static <T, U, V, W, X, Y, Z> CheckedConsume7<T, U, V, W, X, Y, Z> narrow(CheckedConsume7<? super T, ? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z> func) {
         return func::apply;
     }
 
-    @Contract(pure = true)
     static <T, U, V, W, X, Y, Z> Func7<T, U, V, W, X, Y, Z, Try<Unit>> lift(CheckedConsume7<? super T, ? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z> func) {
         return (t, u, v, w, x, y, z) -> Try.of(() -> {
             func.apply(t, u, v, w, x, y, z);
@@ -37,12 +30,10 @@ public interface CheckedConsume7<A, B, C, D, E, F, G> {
         });
     }
 
-    @Contract(pure = true)
     default Func1<A, Func1<B, Func1<C, Func1<D, Func1<E, Func1<F, CheckedConsume1<G>>>>>>> curried() {
         return t -> u -> v -> w -> x -> y -> z -> apply(t, u, v, w, x, y, z);
     }
 
-    @Contract(pure = true)
     default CheckedConsume1<Tuple7<A, B, C, D, E, F, G>> tupled() {
         return x -> apply(x.$1, x.$2, x.$3, x.$4, x.$5, x.$6, x.$7);
     }

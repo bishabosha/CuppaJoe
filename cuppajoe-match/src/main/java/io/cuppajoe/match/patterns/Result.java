@@ -7,7 +7,6 @@ import io.cuppajoe.tuples.Tuple2;
 import io.cuppajoe.tuples.Unit;
 import io.cuppajoe.util.Iterators;
 import io.cuppajoe.util.Iterators.IdempotentIterator;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -105,7 +104,6 @@ public interface Result {
         }
 
         @Override
-        @NotNull
         public Values values() {
             return new Values() {
 
@@ -115,8 +113,8 @@ public interface Result {
                 @Override
                 public boolean hasNextSupplier() {
                     return stack.nextItem(this::stackAlgorithm)
-                            .map(this::foundItem)
-                            .containsValue();
+                        .map(this::foundItem)
+                        .containsValue();
                 }
 
                 private Either<List<Iterator<Result>>, Tuple2<Object, List<Iterator<Result>>>> stackAlgorithm(Iterator<Result> it, List<Iterator<Result>> xs) {

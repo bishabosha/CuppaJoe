@@ -10,9 +10,6 @@ import io.cuppajoe.functions.CheckedFunc0;
 import io.cuppajoe.functions.Func0;
 import io.cuppajoe.functions.TailCall;
 import io.cuppajoe.tuples.*;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
@@ -84,38 +81,26 @@ public final class API {
         return condition.getAsBoolean() ? Option.of(elem.get()) : None();
     }
 
-    @NotNull
-    @Contract(pure = true)
-    public static <O> Option<O> Some(@Nullable O elem) {
+    public static <O> Option<O> Some(O elem) {
         return Option.some(elem);
     }
 
-    @NotNull
-    @Contract(pure = true)
     public static <O> Option<O> None() {
         return Option.empty();
     }
 
-    @NotNull
-    @Contract(pure = true)
     public static <O> Lazy<O> Lazy(Supplier<O> getter) {
         return Lazy.of(getter);
     }
 
-    @NotNull
-    @Contract(pure = true)
     public static <O> Try<O> Try(CheckedFunc0<O> getter) {
         return Try.of(getter);
     }
 
-    @NotNull
-    @Contract(pure = true)
-    public static <O> Try<O> Success(@Nullable O value) {
+    public static <O> Try<O> Success(O value) {
         return Try.success(value);
     }
 
-    @NotNull
-    @Contract(pure = true)
     public static <O> Try<O> Failure(Exception error) {
         return Try.failure(error);
     }

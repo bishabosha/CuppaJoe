@@ -12,7 +12,6 @@ import io.cuppajoe.tuples.*;
 import io.cuppajoe.typeclass.foldable.Foldable;
 import io.cuppajoe.util.Iterators;
 import io.cuppajoe.util.Iterators.IdempotentIterator;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -198,7 +197,6 @@ public interface Tree<E extends Comparable<E>> {
                 return () -> inOrderTraversal(Tree::right, Tree::left);
             }
 
-            @NotNull
             @Override
             public Iterator<E> iterator() {
                 return inOrderTraversal(Tree::left, Tree::right);
