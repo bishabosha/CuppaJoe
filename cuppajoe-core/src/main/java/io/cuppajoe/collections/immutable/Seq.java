@@ -1,5 +1,6 @@
 package io.cuppajoe.collections.immutable;
 
+import io.cuppajoe.annotation.NonNull;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.tuples.Tuple2;
 import io.cuppajoe.typeclass.foldable.Foldable;
@@ -45,12 +46,13 @@ public interface Seq<INSTANCE extends Seq, E> extends Bunch<E>, Foldable<E>, Mon
     <O> Seq<INSTANCE, E> distinct(Function<E, O> propertyGetter);
 
     @Override
-    default <O> O foldRight(O accumulator, BiFunction<O, E, O> mapper) {
+    default <O> O foldRight(O accumulator, @NonNull BiFunction<O, E, O> mapper) {
+        Objects.requireNonNull(mapper, "mapper");
         return reverse().foldLeft(accumulator, mapper);
     }
 
     @Override
-    default void peek(Consumer<? super E> consumer) {
+    default void peek(@NonNull Consumer<? super E> consumer) {
         forEach(consumer);
     }
 
@@ -87,13 +89,13 @@ public interface Seq<INSTANCE extends Seq, E> extends Bunch<E>, Foldable<E>, Mon
             throw new IndexOutOfBoundsException("List is empty");
         }
 
-        default <O> O foldLeft(O accumulator, BiFunction<O, E, O> mapper) {
-            Objects.requireNonNull(mapper);
+        default <O> O foldLeft(O accumulator, @NonNull BiFunction<O, E, O> mapper) {
+            Objects.requireNonNull(mapper, "mapper");
             return accumulator;
         }
 
-        default <O> O foldRight(O accumulator, BiFunction<O, E, O> mapper) {
-            Objects.requireNonNull(mapper);
+        default <O> O foldRight(O accumulator, @NonNull BiFunction<O, E, O> mapper) {
+            Objects.requireNonNull(mapper, "mapper");
             return accumulator;
         }
 

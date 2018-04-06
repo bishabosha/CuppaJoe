@@ -4,8 +4,11 @@
 
 package io.cuppajoe.functions;
 
+import io.cuppajoe.annotation.NonNull;
 import io.cuppajoe.control.Try;
 import io.cuppajoe.tuples.Unit;
+
+import java.util.Objects;
 
 @FunctionalInterface
 public interface Consume0 extends Runnable {
@@ -14,11 +17,13 @@ public interface Consume0 extends Runnable {
         run();
     }
 
-    static Consume0 of(Runnable reference) {
+    static Consume0 of(@NonNull Runnable reference) {
+        Objects.requireNonNull(reference);
         return reference::run;
     }
 
-    static Func0<Try<Unit>> lift(Runnable func) {
+    static Func0<Try<Unit>> lift(@NonNull Runnable func) {
+        Objects.requireNonNull(func);
         return CheckedConsume0.lift(func::run);
     }
 

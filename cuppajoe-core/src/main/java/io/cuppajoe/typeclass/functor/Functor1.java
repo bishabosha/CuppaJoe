@@ -1,9 +1,11 @@
 package io.cuppajoe.typeclass.functor;
 
+import io.cuppajoe.annotation.NonNull;
+
 import java.util.function.Function;
 
 public interface Functor1<INSTANCE extends Functor1, T> {
-    <U> Functor1<INSTANCE, U> map(Function<? super T, ? extends U> mapper);
+    <U> Functor1<INSTANCE, U> map(@NonNull Function<? super T, ? extends U> mapper);
 
     interface Type {
 

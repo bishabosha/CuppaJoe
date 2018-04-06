@@ -1,5 +1,6 @@
 package io.cuppajoe.typeclass.value;
 
+import io.cuppajoe.annotation.NonNull;
 import io.cuppajoe.control.Option;
 
 import java.util.Objects;
@@ -19,40 +20,43 @@ public interface Value1<INSTANCE extends Value1, E> extends Iterable<E> {
         return !isEmpty();
     }
 
-    Value1<INSTANCE, E> or(Supplier<? extends Value1<INSTANCE, ? extends E>> alternative);
+    Value1<INSTANCE, E> or(@NonNull Supplier<? extends Value1<INSTANCE, ? extends E>> alternative);
 
     default E orElse(E alternative) {
         return isEmpty() ? alternative : get();
     }
 
-    default E orElseSupply(Supplier<? extends E> supplier) {
-        Objects.requireNonNull(supplier);
+    default E orElseSupply(@NonNull Supplier<? extends E> supplier) {
+        Objects.requireNonNull(supplier, "supplier");
         return isEmpty() ? supplier.get() : this.get();
     }
 
-    default <X extends Throwable> E orElseThrow(Supplier<? extends X> ifNothing) throws X {
+    default <X extends Throwable> E orElseThrow(@NonNull Supplier<? extends X> ifNothing) throws X {
+        Objects.requireNonNull(ifNothing, "ifNothing");
         ifEmptyThrow(ifNothing);
         return get();
     }
 
-    default <X extends Throwable> void ifEmptyThrow(Supplier<? extends X> ifNothing) throws X {
-        Objects.requireNonNull(ifNothing);
+    default <X extends Throwable> void ifEmptyThrow(@NonNull Supplier<? extends X> ifNothing) throws X {
+        Objects.requireNonNull(ifNothing, "ifNothing");
         if (isEmpty()) {
             throw ifNothing.get();
         }
     }
 
-    default void ifEmpty(Runnable toDo) {
+    default void ifEmpty(@NonNull Runnable toDo) {
         if (isEmpty()) {
             toDo.run();
         }
     }
 
-    default void doIfSomeElse(Consumer<? super E> toDo, Runnable alternative) {
+    default void doIfSomeElse(@NonNull Consumer<? super E> ifSomething, @NonNull Runnable ifNothing) {
+        Objects.requireNonNull(ifSomething, "ifSomething");
+        Objects.requireNonNull(ifNothing, "ifNothing");
         if (isEmpty()) {
-            alternative.run();
+            ifNothing.run();
         } else {
-            toDo.accept(get());
+            ifSomething.accept(get());
         }
     }
 

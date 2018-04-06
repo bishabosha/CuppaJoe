@@ -1,5 +1,6 @@
 package io.cuppajoe.collections.immutable;
 
+import io.cuppajoe.annotation.NonNull;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.tuples.Tuple2;
 import io.cuppajoe.typeclass.foldable.Foldable;
@@ -20,8 +21,6 @@ public class Queue<E> implements Foldable<E>, Bunch<E>, Value1<Queue, E>, Functo
     private List<E> tail;
 
     private Queue(List<E> head, List<E> tail) {
-        Objects.requireNonNull(head, "Queue head was null.");
-        Objects.requireNonNull(tail, "Queue tail was null.");
         this.head = head;
         this.tail = tail;
     }
@@ -44,7 +43,8 @@ public class Queue<E> implements Foldable<E>, Bunch<E>, Value1<Queue, E>, Functo
     }
 
     @Override
-    public Queue<E> or(Supplier<? extends Value1<Queue, ? extends E>> alternative) {
+    public Queue<E> or(@NonNull Supplier<? extends Value1<Queue, ? extends E>> alternative) {
+        Objects.requireNonNull(alternative, "alternative");
         return isEmpty() ? Value1.Type.narrow(alternative.get()) : this;
     }
 
@@ -58,7 +58,8 @@ public class Queue<E> implements Foldable<E>, Bunch<E>, Value1<Queue, E>, Functo
     }
 
     @Override
-    public <R> Queue<R> map(Function<? super E, ? extends R> mapper) {
+    public <R> Queue<R> map(@NonNull Function<? super E, ? extends R> mapper) {
+        Objects.requireNonNull(mapper, "mapper");
         return foldLeft(empty(), (xs, x) -> xs.enqueue(mapper.apply(x)));
     }
 
@@ -67,7 +68,8 @@ public class Queue<E> implements Foldable<E>, Bunch<E>, Value1<Queue, E>, Functo
     }
 
     @SafeVarargs
-    public final Queue<E> enqueueAll(E... elements) {
+    public final Queue<E> enqueueAll(@NonNull E... elements) {
+        Objects.requireNonNull(elements, "elements");
         var newTail = tail;
         for (var elem : elements) {
             newTail = newTail.push(elem);
@@ -101,7 +103,7 @@ public class Queue<E> implements Foldable<E>, Bunch<E>, Value1<Queue, E>, Functo
     }
 
     @Override
-    public <A> A foldRight(A accumulator, BiFunction<A, E, A> mapper) {
+    public <A> A foldRight(A accumulator, @NonNull BiFunction<A, E, A> mapper) {
         return reverse().foldLeft(accumulator, mapper);
     }
 

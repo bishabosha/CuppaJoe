@@ -4,10 +4,12 @@
 
 package io.cuppajoe.functions;
 
+import io.cuppajoe.annotation.NonNull;
 import io.cuppajoe.control.Try;
 import io.cuppajoe.tuples.Tuple2;
 import io.cuppajoe.tuples.Unit;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 @FunctionalInterface
@@ -15,15 +17,17 @@ public interface CheckedConsume2<A, B> {
 
     void apply(A a, B b) throws Exception;
 
-    static <X, Y> CheckedConsume2<X, Y> of(CheckedConsume2<X, Y> reference) {
-        return reference;
+    static <X, Y> CheckedConsume2<X, Y> of(@NonNull CheckedConsume2<X, Y> reference) {
+        return Objects.requireNonNull(reference);
     }
 
-    static <X, Y> CheckedConsume2<X, Y> narrow(CheckedConsume2<? super X, ? super Y> func) {
+    static <X, Y> CheckedConsume2<X, Y> narrow(@NonNull CheckedConsume2<? super X, ? super Y> func) {
+        Objects.requireNonNull(func);
         return func::apply;
     }
 
-    static <X, Y> Func2<X, Y, Try<Unit>> lift(CheckedConsume2<? super X, ? super Y> func) {
+    static <X, Y> Func2<X, Y, Try<Unit>> lift(@NonNull CheckedConsume2<? super X, ? super Y> func) {
+        Objects.requireNonNull(func);
         return (x, y) -> Try.of(() -> {
             func.apply(x, y);
             return Unit.INSTANCE;

@@ -4,10 +4,12 @@
 
 package io.cuppajoe.functions;
 
+import io.cuppajoe.annotation.NonNull;
 import io.cuppajoe.control.Try;
 import io.cuppajoe.tuples.Tuple3;
 import io.cuppajoe.tuples.Unit;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 @FunctionalInterface
@@ -15,15 +17,17 @@ public interface Consume3<A, B, C> {
 
     void apply(A a, B b, C c);
 
-    static <X, Y, Z> Consume3<X, Y, Z> of(Consume3<X, Y, Z> reference) {
-        return reference;
+    static <X, Y, Z> Consume3<X, Y, Z> of(@NonNull Consume3<X, Y, Z> reference) {
+        return Objects.requireNonNull(reference);
     }
 
-    static <X, Y, Z> Consume3<X, Y, Z> narrow(Consume3<? super X, ? super Y, ? super Z> func) {
+    static <X, Y, Z> Consume3<X, Y, Z> narrow(@NonNull Consume3<? super X, ? super Y, ? super Z> func) {
+        Objects.requireNonNull(func);
         return func::apply;
     }
 
-    static <X, Y, Z> Func3<X, Y, Z, Try<Unit>> lift(Consume3<? super X, ? super Y, ? super Z> func) {
+    static <X, Y, Z> Func3<X, Y, Z, Try<Unit>> lift(@NonNull Consume3<? super X, ? super Y, ? super Z> func) {
+        Objects.requireNonNull(func);
         return CheckedConsume3.lift(func::apply);
     }
 

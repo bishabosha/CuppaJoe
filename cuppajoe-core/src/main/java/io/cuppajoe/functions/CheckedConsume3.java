@@ -4,10 +4,12 @@
 
 package io.cuppajoe.functions;
 
+import io.cuppajoe.annotation.NonNull;
 import io.cuppajoe.control.Try;
 import io.cuppajoe.tuples.Tuple3;
 import io.cuppajoe.tuples.Unit;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 @FunctionalInterface
@@ -15,15 +17,17 @@ public interface CheckedConsume3<A, B, C> {
 
     void apply(A a, B b, C c) throws Exception;
 
-    static <X, Y, Z> CheckedConsume3<X, Y, Z> of(CheckedConsume3<X, Y, Z> reference) {
-        return reference;
+    static <X, Y, Z> CheckedConsume3<X, Y, Z> of(@NonNull CheckedConsume3<X, Y, Z> reference) {
+        return Objects.requireNonNull(reference);
     }
 
-    static <X, Y, Z> CheckedConsume3<X, Y, Z> narrow(CheckedConsume3<? super X, ? super Y, ? super Z> func) {
+    static <X, Y, Z> CheckedConsume3<X, Y, Z> narrow(@NonNull CheckedConsume3<? super X, ? super Y, ? super Z> func) {
+        Objects.requireNonNull(func);
         return func::apply;
     }
 
-    static <X, Y, Z> Func3<X, Y, Z, Try<Unit>> lift(CheckedConsume3<? super X, ? super Y, ? super Z> func) {
+    static <X, Y, Z> Func3<X, Y, Z, Try<Unit>> lift(@NonNull CheckedConsume3<? super X, ? super Y, ? super Z> func) {
+        Objects.requireNonNull(func);
         return (x, y, z) -> Try.of(() -> {
             func.apply(x, y, z);
             return Unit.INSTANCE;

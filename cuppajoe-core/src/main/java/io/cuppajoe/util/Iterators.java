@@ -8,6 +8,8 @@
 
 package io.cuppajoe.util;
 
+import io.cuppajoe.annotation.NonNull;
+
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
@@ -53,7 +55,8 @@ public final class Iterators {
         public abstract E nextSupplier();
     }
 
-    public static int hash(Iterator<?> it) {
+    public static int hash(@NonNull Iterator<?> it) {
+        Objects.requireNonNull(it, "it");
         var hash = 1;
         while (it.hasNext()) {
             var element = it.next();
@@ -62,7 +65,8 @@ public final class Iterators {
         return hash;
     }
 
-    public static <E> Iterator<E> singletonSupplier(Supplier<? extends E> supplier) {
+    public static <E> Iterator<E> singletonSupplier(@NonNull Supplier<? extends E> supplier) {
+        Objects.requireNonNull(supplier, "supplier");
         return new Iterator<>() {
             boolean unwrapped = false;
 
@@ -87,7 +91,8 @@ public final class Iterators {
     }
 
     @SafeVarargs
-    public static <E> Iterator<E> ofSuppliers(Supplier<E>... suppliers) {
+    public static <E> Iterator<E> ofSuppliers(@NonNull Supplier<E>... suppliers) {
+        Objects.requireNonNull(suppliers, "suppliers");
         return new Iterator<>() {
             private int i = 0;
 
@@ -104,7 +109,8 @@ public final class Iterators {
     }
 
     @SafeVarargs
-    public static <E> Iterator<E> concat(Iterable<E>... iterables) {
+    public static <E> Iterator<E> concat(@NonNull Iterable<E>... iterables) {
+        Objects.requireNonNull(iterables, "iterables");
         return new IdempotentIterator<>() {
             Iterator<E> current;
             int i = 0;
@@ -131,13 +137,15 @@ public final class Iterators {
         };
     }
 
-    public static <R> Iterator<R> iterate(R identity, UnaryOperator<R> accumulator) {
+    public static <R> Iterator<R> iterate(R identity, @NonNull UnaryOperator<R> accumulator) {
         return iterate(identity, x -> false, accumulator);
     }
 
     public static <R> Iterator<R> iterate(R identity,
-                                          Predicate<R> terminatingCondition,
-                                          UnaryOperator<R> accumulator) {
+                                          @NonNull Predicate<R> terminatingCondition,
+                                          @NonNull UnaryOperator<R> accumulator) {
+        Objects.requireNonNull(terminatingCondition, "terminatingCondition");
+        Objects.requireNonNull(accumulator, "accumulator");
         return new IdempotentIterator<>() {
             private R current = identity;
 
@@ -155,6 +163,7 @@ public final class Iterators {
     }
 
     public static <R> Iterator<R> fromOptional(Optional<R> optional) {
+        Objects.requireNonNull(optional, "optional");
         return new Iterator<>() {
 
             private boolean unWrapped = false;
@@ -175,7 +184,9 @@ public final class Iterators {
         };
     }
 
-    public static <E> boolean equals(Iterator<E> base, Iterator it) {
+    public static <E> boolean equals(@NonNull Iterator<E> base, @NonNull Iterator it) {
+        Objects.requireNonNull(base, "base");
+        Objects.requireNonNull(it, "it");
         while (base.hasNext()) {
             var term = base.next();
             if (!it.hasNext() || !Objects.equals(term, it.next())) {
@@ -185,19 +196,23 @@ public final class Iterators {
         return !it.hasNext();
     }
 
-    public static boolean equalElements(Collection a, Collection b) {
+    public static boolean equalElements(@NonNull Collection a, @NonNull Collection b) {
+        Objects.requireNonNull(a, "a");
+        Objects.requireNonNull(b, "b");
         return a.size() == b.size() && a.containsAll(b) && b.containsAll(a);
     }
 
-    public static <R> boolean equalElements(Collection a, R... values) {
+    public static <R> boolean equalElements(@NonNull Collection a, R... values) {
+        Objects.requireNonNull(a, "a");
         return equalElements(a, List.of(values));
     }
 
-    public static <R> Iterator<R> of(R... values) {
+    public static <R> Iterator<R> of(@NonNull R... values) {
         return array(values);
     }
 
-    public static <R> Iterator<R> array(R[] values) {
+    public static <R> Iterator<R> array(@NonNull R[] values) {
+        Objects.requireNonNull(values, "values");
         return new Iterator<>() {
 
             private int i = 0;
@@ -214,7 +229,8 @@ public final class Iterators {
         };
     }
 
-    public static <R> Iterator<R> castArray(Object[] values) {
+    public static <R> Iterator<R> castArray(@NonNull Object[] values) {
+        Objects.requireNonNull(values, "values");
         return new Iterator<>() {
 
             private int i = 0;
@@ -231,11 +247,12 @@ public final class Iterators {
         };
     }
 
-    public static <R> Iterator<R> cycle(R... values) {
+    public static <R> Iterator<R> cycle(@NonNull R... values) {
         return cycle(() -> of(values));
     }
 
-    public static <R> Iterator<R> cycle(Iterable<R> source) {
+    public static <R> Iterator<R> cycle(@NonNull Iterable<R> source) {
+        Objects.requireNonNull(source, "source");
         return new IdempotentIterator<>() {
 
             Iterator<R> it = getIt();
@@ -256,7 +273,8 @@ public final class Iterators {
         };
     }
 
-    public static String toString(char start, char end, Iterator iterator) {
+    public static String toString(char start, char end, @NonNull Iterator iterator) {
+        Objects.requireNonNull(iterator, "iterator");
         var builder = new StringBuilder();
         var hasNext = iterator.hasNext();
         builder.append(start);
@@ -269,7 +287,9 @@ public final class Iterators {
         return builder.append(end).toString();
     }
 
-    public static <O> String toString(char start, char end, Iterator<O> it, BiConsumer<StringBuilder, O> consumer) {
+    public static <O> String toString(char start, char end, @NonNull Iterator<O> it, @NonNull BiConsumer<StringBuilder, O> consumer) {
+        Objects.requireNonNull(it, "it");
+        Objects.requireNonNull(consumer, "consumer");
         var builder = new StringBuilder();
         var hasNext = it.hasNext();
         var current = hasNext ? it.next() : null;

@@ -4,21 +4,26 @@
 
 package io.cuppajoe.functions;
 
+import io.cuppajoe.annotation.NonNull;
 import io.cuppajoe.control.Try;
 import io.cuppajoe.tuples.Tuple8;
+
+import java.util.Objects;
 
 @FunctionalInterface
 public interface CheckedFunc8<A, B, C, D, E, F, G, H, R> {
 
-    static <S, T, U, V, W, X, Y, Z, R> CheckedFunc8<S, T, U, V, W, X, Y, Z, R> of(CheckedFunc8<S, T, U, V, W, X, Y, Z, R> reference) {
-        return reference;
+    static <S, T, U, V, W, X, Y, Z, R> CheckedFunc8<S, T, U, V, W, X, Y, Z, R> of(@NonNull CheckedFunc8<S, T, U, V, W, X, Y, Z, R> reference) {
+        return Objects.requireNonNull(reference);
     }
 
-    static <S, T, U, V, W, X, Y, Z, R> CheckedFunc8<S, T, U, V, W, X, Y, Z, R> narrow(CheckedFunc8<? super S, ? super T, ? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z, ? extends R> func) {
+    static <S, T, U, V, W, X, Y, Z, R> CheckedFunc8<S, T, U, V, W, X, Y, Z, R> narrow(@NonNull CheckedFunc8<? super S, ? super T, ? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z, ? extends R> func) {
+        Objects.requireNonNull(func);
         return func::apply;
     }
 
-    static <S, T, U, V, W, X, Y, Z, R> Func8<S, T, U, V, W, X, Y, Z, Try<R>> lift(CheckedFunc8<? super S, ? super T, ? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z, ? extends R> func) {
+    static <S, T, U, V, W, X, Y, Z, R> Func8<S, T, U, V, W, X, Y, Z, Try<R>> lift(@NonNull CheckedFunc8<? super S, ? super T, ? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z, ? extends R> func) {
+        Objects.requireNonNull(func);
         return (s, t, u, v, w, x, y, z) -> Try.of(() -> func.apply(s, t, u, v, w, x, y, z));
     }
 

@@ -1,5 +1,6 @@
 package io.cuppajoe.tuples;
 
+import io.cuppajoe.annotation.NonNull;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.functions.Func4;
 import io.cuppajoe.typeclass.compose.Compose4;
@@ -46,11 +47,13 @@ public final class Tuple4<A, B, C, D> implements Tuple, Unapply4<A, B, C, D>, Co
     }
 
     @Override
-    public <O> O compose(Func4<? super A, ? super B, ? super C, ? super D, ? extends O> mapper) {
+    public <O> O compose(@NonNull Func4<? super A, ? super B, ? super C, ? super D, ? extends O> mapper) {
+        Objects.requireNonNull(mapper, "mapper");
         return mapper.apply($1, $2, $3, $4);
     }
 
-    public <AA, BB, CC, DD> Tuple4<AA, BB, CC, DD> flatMap(Func4<A, B, C, D, Tuple4<AA, BB, CC, DD>> mapper) {
+    public <AA, BB, CC, DD> Tuple4<AA, BB, CC, DD> flatMap(@NonNull Func4<A, B, C, D, Tuple4<AA, BB, CC, DD>> mapper) {
+        Objects.requireNonNull(mapper, "mapper");
         return mapper.apply($1, $2, $3, $4);
     }
 

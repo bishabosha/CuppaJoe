@@ -1,5 +1,6 @@
 package io.cuppajoe.tuples;
 
+import io.cuppajoe.annotation.NonNull;
 import io.cuppajoe.functions.Func1;
 import io.cuppajoe.typeclass.compose.Compose1;
 
@@ -33,15 +34,18 @@ public final class Tuple1<A> implements Tuple, Unapply1<A>, Compose1<A> {
     }
 
     @Override
-    public <O> O compose(Function<? super A, ? extends O> mapper) {
+    public <O> O compose(@NonNull Function<? super A, ? extends O> mapper) {
+        Objects.requireNonNull(mapper, "mapper");
         return Func1.<A, O>narrow(mapper).tupled().apply(this);
     }
 
-    public <O> Tuple1<O> map(Function<? super A, ? extends O> function) {
-        return Tuple.of(function.apply($1));
+    public <O> Tuple1<O> map(@NonNull Function<? super A, ? extends O> mapper) {
+        Objects.requireNonNull(mapper, "mapper");
+        return Tuple.of(mapper.apply($1));
     }
 
-    public <AA> Tuple1<AA> flatMap(Func1<A, Tuple1<AA>> mapper) {
+    public <AA> Tuple1<AA> flatMap(@NonNull Func1<A, Tuple1<AA>> mapper) {
+        Objects.requireNonNull(mapper, "mapper");
         return mapper.apply($1);
     }
 

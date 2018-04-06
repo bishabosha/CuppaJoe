@@ -7,18 +7,22 @@ package io.cuppajoe.functions;
 import io.cuppajoe.control.Try;
 import io.cuppajoe.tuples.Tuple7;
 
+import java.util.Objects;
+
 @FunctionalInterface
 public interface CheckedFunc7<A, B, C, D, E, F, G, R> {
 
     static <T, U, V, W, X, Y, Z, R> CheckedFunc7<T, U, V, W, X, Y, Z, R> of(CheckedFunc7<T, U, V, W, X, Y, Z, R> reference) {
-        return reference;
+        return Objects.requireNonNull(reference);
     }
 
     static <T, U, V, W, X, Y, Z, R> CheckedFunc7<T, U, V, W, X, Y, Z, R> narrow(CheckedFunc7<? super T, ? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z, ? extends R> func) {
+        Objects.requireNonNull(func);
         return func::apply;
     }
 
     static <T, U, V, W, X, Y, Z, R> Func7<T, U, V, W, X, Y, Z, Try<R>> lift(CheckedFunc7<? super T, ? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z, ? extends R> func) {
+        Objects.requireNonNull(func);
         return (t, u, v, w, x, y, z) -> Try.of(() -> func.apply(t, u, v, w, x, y, z));
     }
 

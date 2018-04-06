@@ -4,10 +4,12 @@
 
 package io.cuppajoe.functions;
 
+import io.cuppajoe.annotation.NonNull;
 import io.cuppajoe.control.Try;
 import io.cuppajoe.tuples.Tuple8;
 import io.cuppajoe.tuples.Unit;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 @FunctionalInterface
@@ -15,15 +17,17 @@ public interface Consume8<A, B, C, D, E, F, G, H> {
 
     void apply(A a, B b, C c, D d, E e, F f, G g, H h);
 
-    static <S, T, U, V, W, X, Y, Z> Consume8<S, T, U, V, W, X, Y, Z> of(Consume8<S, T, U, V, W, X, Y, Z> reference) {
-        return reference;
+    static <S, T, U, V, W, X, Y, Z> Consume8<S, T, U, V, W, X, Y, Z> of(@NonNull Consume8<S, T, U, V, W, X, Y, Z> reference) {
+        return Objects.requireNonNull(reference);
     }
 
-    static <S, T, U, V, W, X, Y, Z> Consume8<S, T, U, V, W, X, Y, Z> narrow(Consume8<? super S, ? super T, ? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z> func) {
+    static <S, T, U, V, W, X, Y, Z> Consume8<S, T, U, V, W, X, Y, Z> narrow(@NonNull Consume8<? super S, ? super T, ? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z> func) {
+        Objects.requireNonNull(func);
         return func::apply;
     }
 
-    static <S, T, U, V, W, X, Y, Z> Func8<S, T, U, V, W, X, Y, Z, Try<Unit>> lift(Consume8<? super S, ? super T, ? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z> func) {
+    static <S, T, U, V, W, X, Y, Z> Func8<S, T, U, V, W, X, Y, Z, Try<Unit>> lift(@NonNull Consume8<? super S, ? super T, ? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z> func) {
+        Objects.requireNonNull(func);
         return CheckedConsume8.lift(func::apply);
     }
 

@@ -1,5 +1,6 @@
 package io.cuppajoe.tuples;
 
+import io.cuppajoe.annotation.NonNull;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.functions.Func8;
 import io.cuppajoe.typeclass.compose.Compose8;
@@ -62,12 +63,14 @@ public final class Tuple8<A, B, C, D, E, F, G, H> implements Tuple, Unapply8<A, 
     }
 
     @Override
-    public <O> O compose(Func8<? super A, ? super B, ? super C, ? super D, ? super E, ? super F, ? super G, ? super H, ? extends O> mapper) {
+    public <O> O compose(@NonNull Func8<? super A, ? super B, ? super C, ? super D, ? super E, ? super F, ? super G, ? super H, ? extends O> mapper) {
+        Objects.requireNonNull(mapper, "mapper");
         return mapper.apply($1, $2, $3, $4, $5, $6, $7, $8);
     }
 
     public <AA, BB, CC, DD, EE, FF, GG, HH> Tuple8<AA, BB, CC, DD, EE, FF, GG, HH>
-    flatMap(Func8<A, B, C, D, E, F, G, H, Tuple8<AA, BB, CC, DD, EE, FF, GG, HH>> mapper) {
+    flatMap(@NonNull Func8<A, B, C, D, E, F, G, H, Tuple8<AA, BB, CC, DD, EE, FF, GG, HH>> mapper) {
+        Objects.requireNonNull(mapper, "mapper");
         return mapper.apply($1, $2, $3, $4, $5, $6, $7, $8);
     }
 

@@ -4,10 +4,12 @@
 
 package io.cuppajoe.functions;
 
+import io.cuppajoe.annotation.NonNull;
 import io.cuppajoe.control.Try;
 import io.cuppajoe.tuples.Tuple7;
 import io.cuppajoe.tuples.Unit;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 @FunctionalInterface
@@ -15,15 +17,17 @@ public interface Consume7<A, B, C, D, E, F, G> {
 
     void apply(A a, B b, C c, D d, E e, F f, G g);
 
-    static <T, U, V, W, X, Y, Z> Consume7<T, U, V, W, X, Y, Z> of(Consume7<T, U, V, W, X, Y, Z> reference) {
-        return reference;
+    static <T, U, V, W, X, Y, Z> Consume7<T, U, V, W, X, Y, Z> of(@NonNull Consume7<T, U, V, W, X, Y, Z> reference) {
+        return Objects.requireNonNull(reference);
     }
 
-    static <T, U, V, W, X, Y, Z> Consume7<T, U, V, W, X, Y, Z> narrow(Consume7<? super T, ? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z> func) {
+    static <T, U, V, W, X, Y, Z> Consume7<T, U, V, W, X, Y, Z> narrow(@NonNull Consume7<? super T, ? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z> func) {
+        Objects.requireNonNull(func);
         return func::apply;
     }
 
-    static <T, U, V, W, X, Y, Z> Func7<T, U, V, W, X, Y, Z, Try<Unit>> lift(Consume7<? super T, ? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z> func) {
+    static <T, U, V, W, X, Y, Z> Func7<T, U, V, W, X, Y, Z, Try<Unit>> lift(@NonNull Consume7<? super T, ? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z> func) {
+        Objects.requireNonNull(func);
         return CheckedConsume7.lift(func::apply);
     }
 

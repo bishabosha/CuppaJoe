@@ -3,24 +3,28 @@
  */
 package io.cuppajoe.functions;
 
+import io.cuppajoe.annotation.NonNull;
 import io.cuppajoe.control.Try;
 import io.cuppajoe.tuples.Tuple4;
 
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 @FunctionalInterface
 public interface Func4<A, B, C, D, R> {
 
-    static <W, X, Y, Z, R> Func4<W, X, Y, Z, R> of(Func4<W, X, Y, Z, R> reference) {
-        return reference;
+    static <W, X, Y, Z, R> Func4<W, X, Y, Z, R> of(@NonNull Func4<W, X, Y, Z, R> reference) {
+        return Objects.requireNonNull(reference);
     }
 
-    static <W, X, Y, Z, R> Func4<W, X, Y, Z, R> narrow(Func4<? super W, ? super X, ? super Y, ? super Z, ? extends R> func) {
+    static <W, X, Y, Z, R> Func4<W, X, Y, Z, R> narrow(@NonNull Func4<? super W, ? super X, ? super Y, ? super Z, ? extends R> func) {
+        Objects.requireNonNull(func);
         return func::apply;
     }
 
-    static <W, X, Y, Z, R> Func4<W, X, Y, Z, Try<R>> lift(Func4<? super W, ? super X, ? super Y, ? super Z, ? extends R> func) {
+    static <W, X, Y, Z, R> Func4<W, X, Y, Z, Try<R>> lift(@NonNull Func4<? super W, ? super X, ? super Y, ? super Z, ? extends R> func) {
+        Objects.requireNonNull(func);
         return CheckedFunc4.lift(func::apply);
     }
 
@@ -32,7 +36,8 @@ public interface Func4<A, B, C, D, R> {
         return x -> apply(x.$1, x.$2, x.$3, x.$4);
     }
 
-    default <U> Func4<A, B, C, D, U> andThen(Function<? super R, ? extends U> next) {
+    default <U> Func4<A, B, C, D, U> andThen(@NonNull Function<? super R, ? extends U> next) {
+        Objects.requireNonNull(next);
         return (s, t, u, v) -> next.apply(apply(s, t, u, v));
     }
 

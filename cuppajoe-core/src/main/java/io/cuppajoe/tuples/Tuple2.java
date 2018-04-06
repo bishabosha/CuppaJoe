@@ -1,5 +1,6 @@
 package io.cuppajoe.tuples;
 
+import io.cuppajoe.annotation.NonNull;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.typeclass.applicative.Applicative2;
 import io.cuppajoe.typeclass.compose.Compose2;
@@ -48,28 +49,35 @@ public final class Tuple2<A, B> implements Tuple, Unapply2<A, B>, Monad2<Tuple2,
     }
 
     @Override
-    public <U1, U2> Tuple2<U1, U2> map(Function<? super A, ? extends U1> m1, Function<? super B, ? extends U2> m2) {
+    public <U1, U2> Tuple2<U1, U2> map(@NonNull Function<? super A, ? extends U1> m1, @NonNull Function<? super B, ? extends U2> m2) {
+        Objects.requireNonNull(m1, "m1");
+        Objects.requireNonNull(m2, "m2");
         return Tuple.of(m1.apply($1), m2.apply($2));
     }
 
     @Override
-    public <U1, U2> Tuple2<U1, U2> flatMap(BiFunction<? super A, ? super B, Monad2<Tuple2, ? extends U1, ? extends U2>> mapper) {
+    public <U1, U2> Tuple2<U1, U2> flatMap(@NonNull BiFunction<? super A, ? super B, Monad2<Tuple2, ? extends U1, ? extends U2>> mapper) {
+        Objects.requireNonNull(mapper, "mapper");
         return (Tuple2<U1, U2>) mapper.apply($1, $2);
     }
 
     @Override
-    public <O> O compose(BiFunction<? super A, ? super B, ? extends O> mapper) {
+    public <O> O compose(@NonNull BiFunction<? super A, ? super B, ? extends O> mapper) {
+        Objects.requireNonNull(mapper, "mapper");
         return mapper.apply($1, $2);
     }
 
     @Override
-    public void peek(Consumer<? super A> c1, Consumer<? super B> c2) {
+    public void peek(@NonNull Consumer<? super A> c1, @NonNull Consumer<? super B> c2) {
+        Objects.requireNonNull(c1, "c1");
+        Objects.requireNonNull(c2, "c2");
         c1.accept($1);
         c2.accept($2);
     }
 
     @Override
-    public <U1, U2> Tuple2<U1, U2> apply(Applicative2<Tuple2, Function<? super A, ? extends U1>, Function<? super B, ? extends U2>> applicative) {
+    public <U1, U2> Tuple2<U1, U2> apply(@NonNull Applicative2<Tuple2, Function<? super A, ? extends U1>, Function<? super B, ? extends U2>> applicative) {
+        Objects.requireNonNull(applicative, "applicative");
         return narrowA(applicative).flatMap((f1, f2) -> Tuple.of(f1.apply($1), f2.apply($2)));
     }
 

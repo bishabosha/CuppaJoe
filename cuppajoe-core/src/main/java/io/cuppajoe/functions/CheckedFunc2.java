@@ -4,21 +4,26 @@
 
 package io.cuppajoe.functions;
 
+import io.cuppajoe.annotation.NonNull;
 import io.cuppajoe.control.Try;
 import io.cuppajoe.tuples.Tuple2;
+
+import java.util.Objects;
 
 @FunctionalInterface
 public interface CheckedFunc2<A, B, R> {
 
-    static <X, Y, R> CheckedFunc2<X, Y, R> of(CheckedFunc2<X, Y, R> reference) {
-        return reference;
+    static <X, Y, R> CheckedFunc2<X, Y, R> of(@NonNull CheckedFunc2<X, Y, R> reference) {
+        return Objects.requireNonNull(reference);
     }
 
-    static <X, Y, R> CheckedFunc2<X, Y, R> narrow(CheckedFunc2<? super X, ? super Y, ? extends R> func) {
+    static <X, Y, R> CheckedFunc2<X, Y, R> narrow(@NonNull CheckedFunc2<? super X, ? super Y, ? extends R> func) {
+        Objects.requireNonNull(func);
         return func::apply;
     }
 
-    static <X, Y, R> Func2<X, Y, Try<R>> lift(CheckedFunc2<? super X, ? super Y, ? extends R> func) {
+    static <X, Y, R> Func2<X, Y, Try<R>> lift(@NonNull CheckedFunc2<? super X, ? super Y, ? extends R> func) {
+        Objects.requireNonNull(func);
         return (x, y) -> Try.of(() -> func.apply(x, y));
     }
 

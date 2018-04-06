@@ -1,15 +1,19 @@
 package io.cuppajoe.typeclass.monoid;
 
+import io.cuppajoe.annotation.NonNull;
 import io.cuppajoe.collections.immutable.List;
+
+import java.util.Objects;
 
 public interface Monoid1<INSTANCE extends Monoid1, T> {
 
     Monoid1<INSTANCE, T> mempty();
 
-    Monoid1<INSTANCE, T> mappend(Monoid1<INSTANCE, ? extends T> other);
+    Monoid1<INSTANCE, T> mappend(@NonNull Monoid1<INSTANCE, ? extends T> other);
 
-    default Monoid1<INSTANCE, T> mconcat(List<Monoid1<INSTANCE, ? extends T>> list) {
+    default Monoid1<INSTANCE, T> mconcat(@NonNull List<Monoid1<INSTANCE, ? extends T>> list) {
         // start from the base of the input stack and fast append each element on top of the accumulated monoid
+        Objects.requireNonNull(list, "list");
         return list.foldRight(mempty(), (mx, m) -> Type.<Monoid1<INSTANCE, T>, INSTANCE, T>narrow(m).mappend(mx));
     }
 

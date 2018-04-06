@@ -1,15 +1,21 @@
 package io.cuppajoe.typeclass.foldable;
 
+import io.cuppajoe.annotation.NonNull;
+
+import java.util.Objects;
 import java.util.function.BiFunction;
 
 public interface Foldable<E> extends Iterable<E> {
-    default <O> O foldLeft(O accumulator, BiFunction<O, E, O> mapper) {
+    default <O> O foldLeft(O accumulator, @NonNull BiFunction<O, E, O> mapper) {
+        Objects.requireNonNull(mapper, "mapper");
         return foldOver(this, accumulator, mapper);
     }
 
-    <O> O foldRight(O accumulator, BiFunction<O, E, O> mapper);
+    <O> O foldRight(O accumulator, @NonNull BiFunction<O, E, O> mapper);
 
-    static <E, A> A foldOver(Iterable<E> that, A accumulator, BiFunction<A, E, A> mapper) {
+    static <E, A> A foldOver(@NonNull Iterable<E> that, A accumulator, @NonNull BiFunction<A, E, A> mapper) {
+        Objects.requireNonNull(that, "that");
+        Objects.requireNonNull(mapper, "mapper");
         for (var elem : that) {
             accumulator = mapper.apply(accumulator, elem);
         }

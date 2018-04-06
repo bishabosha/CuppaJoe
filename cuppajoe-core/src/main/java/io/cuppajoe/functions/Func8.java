@@ -4,24 +4,28 @@
 
 package io.cuppajoe.functions;
 
+import io.cuppajoe.annotation.NonNull;
 import io.cuppajoe.control.Try;
 import io.cuppajoe.tuples.Tuple8;
 
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 @FunctionalInterface
 public interface Func8<A, B, C, D, E, F, G, H, R> {
 
-    static <S, T, U, V, W, X, Y, Z, R> Func8<S, T, U, V, W, X, Y, Z, R> of(Func8<S, T, U, V, W, X, Y, Z, R> func) {
-        return func;
+    static <S, T, U, V, W, X, Y, Z, R> Func8<S, T, U, V, W, X, Y, Z, R> of(@NonNull Func8<S, T, U, V, W, X, Y, Z, R> reference) {
+        return Objects.requireNonNull(reference);
     }
 
-    static <S, T, U, V, W, X, Y, Z, R> Func8<S, T, U, V, W, X, Y, Z, R> narrow(Func8<? super S, ? super T, ? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z, ? extends R> func) {
+    static <S, T, U, V, W, X, Y, Z, R> Func8<S, T, U, V, W, X, Y, Z, R> narrow(@NonNull Func8<? super S, ? super T, ? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z, ? extends R> func) {
+        Objects.requireNonNull(func);
         return func::apply;
     }
 
-    static <S, T, U, V, W, X, Y, Z, R> Func8<S, T, U, V, W, X, Y, Z, Try<R>> lift(Func8<? super S, ? super T, ? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z, ? extends R> func) {
+    static <S, T, U, V, W, X, Y, Z, R> Func8<S, T, U, V, W, X, Y, Z, Try<R>> lift(@NonNull Func8<? super S, ? super T, ? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z, ? extends R> func) {
+        Objects.requireNonNull(func);
         return CheckedFunc8.lift(func::apply);
     }
 
@@ -33,7 +37,8 @@ public interface Func8<A, B, C, D, E, F, G, H, R> {
         return x -> apply(x.$1, x.$2, x.$3, x.$4, x.$5, x.$6, x.$7, x.$8);
     }
 
-    default <U> Func8<A, B, C, D, E, F, G, H, U> andThen(Function<? super R, ? extends U> next) {
+    default <U> Func8<A, B, C, D, E, F, G, H, U> andThen(@NonNull Function<? super R, ? extends U> next) {
+        Objects.requireNonNull(next);
         return (s, t, u, v, w, x, y, z) -> next.apply(apply(s, t, u, v, w, x, y, z));
     }
 

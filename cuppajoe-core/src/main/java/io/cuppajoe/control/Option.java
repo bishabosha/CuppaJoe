@@ -4,6 +4,7 @@
 
 package io.cuppajoe.control;
 
+import io.cuppajoe.annotation.NonNull;
 import io.cuppajoe.tuples.Unapply0;
 import io.cuppajoe.tuples.Unapply1;
 import io.cuppajoe.tuples.Unit;
@@ -21,7 +22,8 @@ import java.util.function.Supplier;
 
 public interface Option<E> extends Monad1<Option, E>, Peek1<E>, Value1<Option, E> {
 
-    static <O> Option<O> from(Optional<O> optional) {
+    static <O> Option<O> from(@NonNull Optional<O> optional) {
+        Objects.requireNonNull(optional, "optional");
         return optional.map(Option::of).orElse(empty());
     }
 
@@ -47,25 +49,30 @@ public interface Option<E> extends Monad1<Option, E>, Peek1<E>, Value1<Option, E
     }
 
     @Override
-    default Option<E> or(Supplier<? extends Value1<Option, ? extends E>> alternative) {
+    default Option<E> or(@NonNull Supplier<? extends Value1<Option, ? extends E>> alternative) {
+        Objects.requireNonNull(alternative, "alternative");
         return isEmpty() ? Value1.Type.<Option<E>, Option, E>narrow(alternative.get()) : this;
     }
 
-    default Option<E> filter(Predicate<? super E> filter) {
+    default Option<E> filter(@NonNull Predicate<? super E> filter) {
+        Objects.requireNonNull(filter, "filter");
         return !isEmpty() && filter.test(get()) ? this : empty();
     }
 
     @Override
-    default <U> Option<U> map(Function<? super E, ? extends U> mapper) {
+    default <U> Option<U> map(@NonNull Function<? super E, ? extends U> mapper) {
+        Objects.requireNonNull(mapper, "mapper");
         return isEmpty() ? empty() : some(mapper.apply(get()));
     }
 
     @Override
-    default <U> Option<U> flatMap(Function<? super E, Monad1<Option, ? extends U>> mapper) {
+    default <U> Option<U> flatMap(@NonNull Function<? super E, Monad1<Option, ? extends U>> mapper) {
+        Objects.requireNonNull(mapper, "mapper");
         return isEmpty() ? empty() : Objects.requireNonNull(Monad1.Type.<Option<U>, Option, U>narrow(mapper.apply(get())));
     }
 
-    default <R> Option<R> cast(Class<R> clazz) {
+    default <R> Option<R> cast(@NonNull Class<R> clazz) {
+        Objects.requireNonNull(clazz, "clazz");
         return !isEmpty() && clazz.isInstance(get()) ? some(clazz.cast(get())) : empty();
     }
 
@@ -74,7 +81,8 @@ public interface Option<E> extends Monad1<Option, E>, Peek1<E>, Value1<Option, E
     }
 
     @Override
-    default void peek(Consumer<? super E> consumer) {
+    default void peek(@NonNull Consumer<? super E> consumer) {
+        Objects.requireNonNull(consumer, "consumer");
         if (!isEmpty()) {
             consumer.accept(get());
         }
@@ -91,7 +99,7 @@ public interface Option<E> extends Monad1<Option, E>, Peek1<E>, Value1<Option, E
     }
 
     @Override
-    default <U> Option<U> apply(Applicative1<Option, Function<? super E, ? extends U>> applicative1) {
+    default <U> Option<U> apply(@NonNull Applicative1<Option, Function<? super E, ? extends U>> applicative1) {
         return Monad1.applyImpl(this, applicative1);
     }
 

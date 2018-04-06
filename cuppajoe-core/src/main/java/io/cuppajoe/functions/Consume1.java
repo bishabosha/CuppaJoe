@@ -4,10 +4,12 @@
 
 package io.cuppajoe.functions;
 
+import io.cuppajoe.annotation.NonNull;
 import io.cuppajoe.control.Try;
 import io.cuppajoe.tuples.Tuple1;
 import io.cuppajoe.tuples.Unit;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -18,15 +20,18 @@ public interface Consume1<A> extends Consumer<A> {
         accept(a);
     }
 
-    static <X> Consume1<X> of(Consumer<X> reference) {
+    static <X> Consume1<X> of(@NonNull Consumer<X> reference) {
+        Objects.requireNonNull(reference);
         return reference::accept;
     }
 
-    static <X> Consume1<X> narrow(Consumer<? super X> func) {
+    static <X> Consume1<X> narrow(@NonNull Consumer<? super X> func) {
+        Objects.requireNonNull(func);
         return func::accept;
     }
 
-    static <X> Func1<X, Try<Unit>> lift(Consumer<? super X> func) {
+    static <X> Func1<X, Try<Unit>> lift(@NonNull Consumer<? super X> func) {
+        Objects.requireNonNull(func);
         return CheckedConsume1.lift(func::accept);
     }
 

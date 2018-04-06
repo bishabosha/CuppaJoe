@@ -4,6 +4,7 @@
 
 package io.cuppajoe.control;
 
+import io.cuppajoe.annotation.NonNull;
 import io.cuppajoe.tuples.Unapply1;
 
 import java.util.Objects;
@@ -12,10 +13,11 @@ import java.util.function.Supplier;
 public class Lazy<E> implements Supplier<E>, Unapply1<E> {
 
     private boolean isComputed = false;
-    private E value = null;
+    private volatile E value = null;
     private Supplier<E> getter;
 
-    public static <R> Lazy<R> of(Supplier<R> getter) {
+    public static <R> Lazy<R> of(@NonNull Supplier<R> getter) {
+        Objects.requireNonNull(getter, "getter");
         return new Lazy<>(getter);
     }
 
@@ -28,8 +30,12 @@ public class Lazy<E> implements Supplier<E>, Unapply1<E> {
         if (isComputed) {
             return value;
         }
-        isComputed = true;
-        return value = getter.get();
+        synchronized (this) {
+            value = getter.get();
+            isComputed = true;
+            getter = null;
+        }
+        return value;
     }
 
     @Override

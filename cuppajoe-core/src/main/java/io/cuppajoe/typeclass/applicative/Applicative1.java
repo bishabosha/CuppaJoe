@@ -1,5 +1,6 @@
 package io.cuppajoe.typeclass.applicative;
 
+import io.cuppajoe.annotation.NonNull;
 import io.cuppajoe.functions.*;
 import io.cuppajoe.typeclass.functor.Functor1;
 
@@ -10,11 +11,11 @@ import java.util.function.Function;
 public interface Applicative1<INSTANCE extends Applicative1, T> extends Functor1<INSTANCE, T> {
     <U> Applicative1<INSTANCE, U> pure(U value);
 
-    <U> Applicative1<INSTANCE, U> apply(Applicative1<INSTANCE, Function<? super T, ? extends U>> applicative1);
+    <U> Applicative1<INSTANCE, U> apply(@NonNull Applicative1<INSTANCE, Function<? super T, ? extends U>> applicative1);
 
     static <X, R, INSTANCE extends Applicative1, XA extends Applicative1<INSTANCE, X>, RA extends Applicative1<INSTANCE, R>>
     Function<XA, RA> liftAFunc1(
-            Function<? super X, ? extends R> function) {
+            @NonNull Function<? super X, ? extends R> function) {
         Objects.requireNonNull(function);
         return xA -> {
             Applicative1<INSTANCE, Function<? super X, ? extends R>> wrapped = xA.pure(function);
@@ -24,7 +25,7 @@ public interface Applicative1<INSTANCE extends Applicative1, T> extends Functor1
 
     static <X, Y, R, INSTANCE extends Applicative1, XA extends Applicative1<INSTANCE, X>, YA extends Applicative1<INSTANCE, Y>, RA extends Applicative1<INSTANCE, R>>
     BiFunction<XA, YA, RA> liftAFunc2(
-            BiFunction<? super X, ? super Y, ? extends R> function) {
+            @NonNull BiFunction<? super X, ? super Y, ? extends R> function) {
         Objects.requireNonNull(function);
         return (xA, yA) -> {
             Applicative1<INSTANCE, Function<? super X, ? extends Function<? super Y, ? extends R>>> curried =
@@ -35,7 +36,7 @@ public interface Applicative1<INSTANCE extends Applicative1, T> extends Functor1
 
     static <X, Y, Z, R, INSTANCE extends Applicative1, XA extends Applicative1<INSTANCE, X>, YA extends Applicative1<INSTANCE, Y>, ZA extends Applicative1<INSTANCE, Z>, RA extends Applicative1<INSTANCE, R>>
     Func3<XA, YA, ZA, RA> liftAFunc3(
-            Func3<? super X, ? super Y, ? super Z, ? extends R> function) {
+            @NonNull Func3<? super X, ? super Y, ? super Z, ? extends R> function) {
         Objects.requireNonNull(function);
         return (xA, yA, zA) -> {
             Applicative1<INSTANCE, Function<? super X, ? extends Function<? super Y, ? extends Function<? super Z, ? extends R>>>> curried =
@@ -46,7 +47,7 @@ public interface Applicative1<INSTANCE extends Applicative1, T> extends Functor1
 
     static <W, X, Y, Z, R, INSTANCE extends Applicative1, WA extends Applicative1<INSTANCE, W>, XA extends Applicative1<INSTANCE, X>, YA extends Applicative1<INSTANCE, Y>, ZA extends Applicative1<INSTANCE, Z>, RA extends Applicative1<INSTANCE, R>>
     Func4<WA, XA, YA, ZA, RA> liftAFunc4(
-            Func4<? super W, ? super X, ? super Y, ? super Z, ? extends R> function) {
+            @NonNull Func4<? super W, ? super X, ? super Y, ? super Z, ? extends R> function) {
         Objects.requireNonNull(function);
         return (wA, xA, yA, zA) -> {
             Applicative1<INSTANCE, Function<? super W, ? extends Function<? super X, ? extends Function<? super Y, ? extends Function<? super Z, ? extends R>>>>> curried =
@@ -57,7 +58,7 @@ public interface Applicative1<INSTANCE extends Applicative1, T> extends Functor1
 
     static <V, W, X, Y, Z, R, INSTANCE extends Applicative1, VA extends Applicative1<INSTANCE, V>, WA extends Applicative1<INSTANCE, W>, XA extends Applicative1<INSTANCE, X>, YA extends Applicative1<INSTANCE, Y>, ZA extends Applicative1<INSTANCE, Z>, RA extends Applicative1<INSTANCE, R>>
     Func5<VA, WA, XA, YA, ZA, RA> liftAFunc5(
-            Func5<? super V, ? super W, ? super X, ? super Y, ? super Z, ? extends R> function) {
+            @NonNull Func5<? super V, ? super W, ? super X, ? super Y, ? super Z, ? extends R> function) {
         Objects.requireNonNull(function);
         return (vA, wA, xA, yA, zA) -> {
             Applicative1<INSTANCE, Function<? super V, ? extends Function<? super W, ? extends Function<? super X, ? extends Function<? super Y, ? extends Function<? super Z, ? extends R>>>>>> curried =
@@ -68,7 +69,7 @@ public interface Applicative1<INSTANCE extends Applicative1, T> extends Functor1
 
     static <U, V, W, X, Y, Z, R, INSTANCE extends Applicative1, UA extends Applicative1<INSTANCE, U>, VA extends Applicative1<INSTANCE, V>, WA extends Applicative1<INSTANCE, W>, XA extends Applicative1<INSTANCE, X>, YA extends Applicative1<INSTANCE, Y>, ZA extends Applicative1<INSTANCE, Z>, RA extends Applicative1<INSTANCE, R>>
     Func6<UA, VA, WA, XA, YA, ZA, RA> liftAFunc6(
-            Func6<? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z, ? extends R> function) {
+            @NonNull Func6<? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z, ? extends R> function) {
         Objects.requireNonNull(function);
         return (uA, vA, wA, xA, yA, zA) -> {
             Applicative1<INSTANCE, Function<? super U, ? extends Function<? super V, ? extends Function<? super W, ? extends Function<? super X, ? extends Function<? super Y, ? extends Function<? super Z, ? extends R>>>>>>> curried =
@@ -79,7 +80,7 @@ public interface Applicative1<INSTANCE extends Applicative1, T> extends Functor1
 
     static <T, U, V, W, X, Y, Z, R, INSTANCE extends Applicative1, TA extends Applicative1<INSTANCE, T>, UA extends Applicative1<INSTANCE, U>, VA extends Applicative1<INSTANCE, V>, WA extends Applicative1<INSTANCE, W>, XA extends Applicative1<INSTANCE, X>, YA extends Applicative1<INSTANCE, Y>, ZA extends Applicative1<INSTANCE, Z>, RA extends Applicative1<INSTANCE, R>>
     Func7<TA, UA, VA, WA, XA, YA, ZA, RA> liftAFunc7(
-            Func7<? super T, ? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z, ? extends R> function) {
+            @NonNull Func7<? super T, ? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z, ? extends R> function) {
         Objects.requireNonNull(function);
         return (tA, uA, vA, wA, xA, yA, zA) -> {
             Applicative1<INSTANCE, Function<? super T, ? extends Function<? super U, ? extends Function<? super V, ? extends Function<? super W, ? extends Function<? super X, ? extends Function<? super Y, ? extends Function<? super Z, ? extends R>>>>>>>> curried =
@@ -90,7 +91,7 @@ public interface Applicative1<INSTANCE extends Applicative1, T> extends Functor1
 
     static <S, T, U, V, W, X, Y, Z, R, INSTANCE extends Applicative1, SA extends Applicative1<INSTANCE, S>, TA extends Applicative1<INSTANCE, T>, UA extends Applicative1<INSTANCE, U>, VA extends Applicative1<INSTANCE, V>, WA extends Applicative1<INSTANCE, W>, XA extends Applicative1<INSTANCE, X>, YA extends Applicative1<INSTANCE, Y>, ZA extends Applicative1<INSTANCE, Z>, RA extends Applicative1<INSTANCE, R>>
     Func8<SA, TA, UA, VA, WA, XA, YA, ZA, RA> liftAFunc8(
-            Func8<? super S, ? super T, ? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z, ? extends R> function) {
+            @NonNull Func8<? super S, ? super T, ? super U, ? super V, ? super W, ? super X, ? super Y, ? super Z, ? extends R> function) {
         Objects.requireNonNull(function);
         return (sA, tA, uA, vA, wA, xA, yA, zA) -> {
             Applicative1<INSTANCE, Function<? super S, ? extends Function<? super T, ? extends Function<? super U, ? extends Function<? super V, ? extends Function<? super W, ? extends Function<? super X, ? extends Function<? super Y, ? extends Function<? super Z, ? extends R>>>>>>>>> curried =

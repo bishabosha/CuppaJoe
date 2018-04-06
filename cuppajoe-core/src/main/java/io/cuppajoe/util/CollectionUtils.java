@@ -1,67 +1,88 @@
 package io.cuppajoe.util;
 
+import io.cuppajoe.annotation.NonNull;
+
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
 
 public final class CollectionUtils {
     private CollectionUtils() {
     }
 
-    public static <O, T extends Collection<O>> T fill(T collection, O[] values) {
+    public static <O, T extends Collection<O>> T fill(@NonNull T collection, @NonNull O[] values) {
+        Objects.requireNonNull(collection, "collection");
+        Objects.requireNonNull(values, "values");
         Collections.addAll(collection, values);
         return collection;
     }
 
-    public static <O extends Collection<Integer>> O fill(O collection, int[] values) {
+    public static <O extends Collection<Integer>> O fill(@NonNull O collection, @NonNull int[] values) {
+        Objects.requireNonNull(collection, "collection");
+        Objects.requireNonNull(values, "values");
         for (var i : values) {
             collection.add(i);
         }
         return collection;
     }
 
-    public static <O extends Collection<Double>> O fill(O collection, double[] values) {
+    public static <O extends Collection<Double>> O fill(@NonNull O collection, @NonNull double[] values) {
+        Objects.requireNonNull(collection, "collection");
+        Objects.requireNonNull(values, "values");
         for (var i : values) {
             collection.add(i);
         }
         return collection;
     }
 
-    public static <O extends Collection<Float>> O fill(O collection, float[] values) {
+    public static <O extends Collection<Float>> O fill(@NonNull O collection, @NonNull float[] values) {
+        Objects.requireNonNull(collection, "collection");
+        Objects.requireNonNull(values, "values");
         for (var i : values) {
             collection.add(i);
         }
         return collection;
     }
 
-    public static <O extends Collection<Long>> O fill(O collection, long[] values) {
+    public static <O extends Collection<Long>> O fill(@NonNull O collection, @NonNull long[] values) {
+        Objects.requireNonNull(collection, "collection");
+        Objects.requireNonNull(values, "values");
         for (var i : values) {
             collection.add(i);
         }
         return collection;
     }
 
-    public static <O extends Collection<Short>> O fill(O collection, short[] values) {
+    public static <O extends Collection<Short>> O fill(@NonNull O collection, @NonNull short[] values) {
+        Objects.requireNonNull(collection, "collection");
+        Objects.requireNonNull(values, "values");
         for (var i : values) {
             collection.add(i);
         }
         return collection;
     }
 
-    public static <O extends Collection<Byte>> O fill(O collection, byte[] values) {
+    public static <O extends Collection<Byte>> O fill(@NonNull O collection, @NonNull byte[] values) {
+        Objects.requireNonNull(collection, "collection");
+        Objects.requireNonNull(values, "values");
         for (var i : values) {
             collection.add(i);
         }
         return collection;
     }
 
-    public static <O extends Collection<Boolean>> O fill(O collection, boolean[] values) {
+    public static <O extends Collection<Boolean>> O fill(@NonNull O collection, @NonNull boolean[] values) {
+        Objects.requireNonNull(collection, "collection");
+        Objects.requireNonNull(values, "values");
         for (var i : values) {
             collection.add(i);
         }
         return collection;
     }
 
-    public static <O extends Collection<Character>> O fill(O collection, char[] values) {
+    public static <O extends Collection<Character>> O fill(@NonNull O collection, @NonNull char[] values) {
+        Objects.requireNonNull(collection, "collection");
+        Objects.requireNonNull(values, "values");
         for (var i : values) {
             collection.add(i);
         }

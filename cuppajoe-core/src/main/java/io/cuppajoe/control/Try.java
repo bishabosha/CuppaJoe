@@ -1,5 +1,6 @@
 package io.cuppajoe.control;
 
+import io.cuppajoe.annotation.NonNull;
 import io.cuppajoe.functions.CheckedFunc0;
 import io.cuppajoe.tuples.Unapply1;
 import io.cuppajoe.typeclass.applicative.Applicative1;
@@ -23,13 +24,13 @@ public interface Try<E> extends Monad1<Try, E>, Peek1<E>, Value1<Try, E> {
 
     Exception getError();
 
-    static <O> Try<O> of(CheckedFunc0<O> supplier) {
-        Objects.requireNonNull(supplier);
+    static <O> Try<O> of(@NonNull CheckedFunc0<O> supplier) {
+        Objects.requireNonNull(supplier, "supplier");
         try {
             var value = supplier.apply();
-            return success(value);
+            return new Success<>(value);
         } catch (Exception error) {
-            return failure(error);
+            return new Failure<>(error);
         }
     }
 
@@ -37,7 +38,8 @@ public interface Try<E> extends Monad1<Try, E>, Peek1<E>, Value1<Try, E> {
         return new Success<>(value);
     }
 
-    static <O> Failure<O> failure(Exception error) {
+    static <O> Failure<O> failure(@NonNull Exception error) {
+        Objects.requireNonNull(error, "error");
         return new Failure<>(error);
     }
 
@@ -51,25 +53,25 @@ public interface Try<E> extends Monad1<Try, E>, Peek1<E>, Value1<Try, E> {
         return new Success<>(value);
     }
 
-    default <O> Try<O> map(Function<? super E, ? extends O> mapper) {
-        Objects.requireNonNull(mapper);
+    default <O> Try<O> map(@NonNull Function<? super E, ? extends O> mapper) {
+        Objects.requireNonNull(mapper, "mapper");
         return isSuccess() ? new Success<>(mapper.apply(get())) : Failure.cast(this);
     }
 
     @Override
-    default <U> Try<U> flatMap(Function<? super E, Monad1<Try, ? extends U>> mapper) {
-        Objects.requireNonNull(mapper);
+    default <U> Try<U> flatMap(@NonNull Function<? super E, Monad1<Try, ? extends U>> mapper) {
+        Objects.requireNonNull(mapper, "mapper");
         return isSuccess() ? Monad1.Type.<Try<U>, Try, U>narrow(mapper.apply(get())) : Failure.cast(this);
     }
 
     @Override
-    default Try<E> or(Supplier<? extends Value1<Try, ? extends E>> alternative) {
-        Objects.requireNonNull(alternative);
+    default Try<E> or(@NonNull Supplier<? extends Value1<Try, ? extends E>> alternative) {
+        Objects.requireNonNull(alternative, "alternative");
         return isSuccess() ? this : Value1.Type.<Try<E>, Try, E>narrow(alternative.get());
     }
 
-    default <X extends Throwable> E orElseThrowMapped(Function<Exception, ? extends X> errorMapper) throws X {
-        Objects.requireNonNull(errorMapper);
+    default <X extends Throwable> E orElseThrowMapped(@NonNull Function<Exception, ? extends X> errorMapper) throws X {
+        Objects.requireNonNull(errorMapper, "errorMapper");
         if (isSuccess()) {
             return get();
         }
@@ -85,8 +87,8 @@ public interface Try<E> extends Monad1<Try, E>, Peek1<E>, Value1<Try, E> {
     }
 
 
-    default Optional<E> liftWhenError(Consumer<Exception> ifError) {
-        Objects.requireNonNull(ifError);
+    default Optional<E> liftWhenError(@NonNull Consumer<Exception> ifError) {
+        Objects.requireNonNull(ifError, "ifError");
         if (isSuccess()) {
             return Optional.ofNullable(get());
         } else {
@@ -96,16 +98,16 @@ public interface Try<E> extends Monad1<Try, E>, Peek1<E>, Value1<Try, E> {
     }
 
     @Override
-    default void peek(Consumer<? super E> ifSuccess) {
-        Objects.requireNonNull(ifSuccess);
+    default void peek(@NonNull Consumer<? super E> ifSuccess) {
+        Objects.requireNonNull(ifSuccess, "ifSuccess");
         if (isSuccess()) {
             ifSuccess.accept(get());
         }
     }
 
-    default void consumeElse(Consumer<E> ifSuccess, Consumer<Exception> ifError) {
-        Objects.requireNonNull(ifSuccess);
-        Objects.requireNonNull(ifError);
+    default void consumeElse(@NonNull Consumer<E> ifSuccess, @NonNull Consumer<Exception> ifError) {
+        Objects.requireNonNull(ifSuccess, "ifSuccess");
+        Objects.requireNonNull(ifError, "ifError");
         if (isSuccess()) {
             ifSuccess.accept(get());
         } else {
@@ -113,15 +115,15 @@ public interface Try<E> extends Monad1<Try, E>, Peek1<E>, Value1<Try, E> {
         }
     }
 
-    default void ifError(Consumer<Exception> ifError) {
-        Objects.requireNonNull(ifError);
+    default void ifError(@NonNull Consumer<Exception> ifError) {
+        Objects.requireNonNull(ifError, "ifError");
         if (isFailure()) {
             ifError.accept(getError());
         }
     }
 
     @Override
-    default <U> Try<U> apply(Applicative1<Try, Function<? super E, ? extends U>> applicative1) {
+    default <U> Try<U> apply(@NonNull Applicative1<Try, Function<? super E, ? extends U>> applicative1) {
         return Monad1.applyImpl(this, applicative1);
     }
 

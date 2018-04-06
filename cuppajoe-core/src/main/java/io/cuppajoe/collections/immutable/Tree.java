@@ -5,6 +5,7 @@
 package io.cuppajoe.collections.immutable;
 
 import io.cuppajoe.API;
+import io.cuppajoe.annotation.NonNull;
 import io.cuppajoe.control.Either;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.functions.Func1;
@@ -44,6 +45,9 @@ public interface Tree<E extends Comparable<E>> {
     @SafeVarargs
     static <R extends Comparable<R>> Tree<R> of(R... elems) {
         Tree<R> tree = Leaf();
+        if (elems == null) {
+            return tree;
+        }
         for (var elem : elems) {
             tree = tree.add(elem);
         }
@@ -70,12 +74,8 @@ public interface Tree<E extends Comparable<E>> {
      * @return the new {@link Tree} instance.
      * @throws NullPointerException if node, left or right are null.
      */
-    static <R extends Comparable<R>> Tree<R> Node(R node, Tree<R> left, Tree<R> right) {
-        return Node.of(
-            Objects.requireNonNull(node),
-            Objects.requireNonNull(left),
-            Objects.requireNonNull(right)
-        );
+    static <R extends Comparable<R>> Tree<R> Node(@NonNull R node, @NonNull Tree<R> left, @NonNull Tree<R> right) {
+        return Node.of(node, left, right);
     }
 
     /**
@@ -83,7 +83,6 @@ public interface Tree<E extends Comparable<E>> {
      *
      * @param elem the element to check for in the Tree.
      * @return true if there is a node in the tree that equals elem.
-     * @throws NullPointerException if elem is null.
      */
     default boolean contains(E elem) {
         int comparison;
@@ -156,8 +155,8 @@ public interface Tree<E extends Comparable<E>> {
      * @return a new Tree instance with the element added.
      * @throws NullPointerException if elem is null.
      */
-    default Tree<E> add(E elem) {
-        Objects.requireNonNull(elem);
+    default Tree<E> add(@NonNull E elem) {
+        Objects.requireNonNull(elem, "elem");
         int comparison;
         return isEmpty() ? Node(elem, Leaf(), Leaf())
                 : (comparison = elem.compareTo(node())) == 0 ? this
@@ -189,7 +188,7 @@ public interface Tree<E extends Comparable<E>> {
         return new Foldable<>() {
 
             @Override
-            public <A> A foldRight(A accumulator, BiFunction<A, E, A> mapper) {
+            public <A> A foldRight(A accumulator, @NonNull BiFunction<A, E, A> mapper) {
                 return Foldable.foldOver(reverse(), accumulator, mapper);
             }
 
@@ -409,7 +408,10 @@ public interface Tree<E extends Comparable<E>> {
             this.right = right;
         }
 
-        public static <O extends Comparable<O>> Node<O> of(O node, Tree<O> left, Tree<O> right) {
+        public static <O extends Comparable<O>> Node<O> of(@NonNull O node, @NonNull Tree<O> left, @NonNull Tree<O> right) {
+            Objects.requireNonNull(node, "node");
+            Objects.requireNonNull(left, "left");
+            Objects.requireNonNull(right, "right");
             return new Node<>(node, left, right);
         }
 

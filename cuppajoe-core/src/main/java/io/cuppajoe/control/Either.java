@@ -1,5 +1,6 @@
 package io.cuppajoe.control;
 
+import io.cuppajoe.annotation.NonNull;
 import io.cuppajoe.typeclass.applicative.Applicative1;
 import io.cuppajoe.typeclass.functor.Functor1;
 import io.cuppajoe.typeclass.functor.Functor2;
@@ -20,21 +21,21 @@ public interface Either<L, R> extends Functor2<Either, L, R>, Peek2<L, R> {
 
     R right();
 
-    default <U1, U2> Either<U1, U2> map(Function<? super L, ? extends U1> ifLeft, Function<? super R, ? extends U2> ifRight) {
-        Objects.requireNonNull(ifLeft);
-        Objects.requireNonNull(ifRight);
+    default <U1, U2> Either<U1, U2> map(@NonNull Function<? super L, ? extends U1> ifLeft, @NonNull Function<? super R, ? extends U2> ifRight) {
+        Objects.requireNonNull(ifLeft, "ifLeft");
+        Objects.requireNonNull(ifRight, "ifRight");
         return isLeft() ? Either.left(ifLeft.apply(left())) : Either.right(ifRight.apply(right()));
     }
 
-    default <O> O transform(Function<? super L, ? extends O> ifLeft, Function<? super R, ? extends O> ifRight) {
-        Objects.requireNonNull(ifLeft);
-        Objects.requireNonNull(ifRight);
+    default <O> O transform(@NonNull Function<? super L, ? extends O> ifLeft, @NonNull Function<? super R, ? extends O> ifRight) {
+        Objects.requireNonNull(ifLeft, "ifLeft");
+        Objects.requireNonNull(ifRight, "ifRight");
         return isLeft() ? ifLeft.apply(left()) : ifRight.apply(right());
     }
 
-    default void peek(Consumer<? super L> ifLeft, Consumer<? super R> ifRight) {
-        Objects.requireNonNull(ifRight);
-        Objects.requireNonNull(ifLeft);
+    default void peek(@NonNull Consumer<? super L> ifLeft, @NonNull Consumer<? super R> ifRight) {
+        Objects.requireNonNull(ifLeft, "ifLeft");
+        Objects.requireNonNull(ifRight, "ifRight");
         if (isLeft()) {
             ifLeft.accept(left());
         } else {
@@ -76,9 +77,9 @@ public interface Either<L, R> extends Functor2<Either, L, R>, Peek2<L, R> {
         }
 
         @Override
-        public <U> LeftProjection<U, R> apply(Applicative1<LeftProjection, Function<? super L, ? extends U>> applicative1) {
-            Objects.requireNonNull(applicative1);
-            LeftProjection<Function<? super L, ? extends U>, R> app = Applicative1.Type.narrow(applicative1);
+        public <U> LeftProjection<U, R> apply(@NonNull Applicative1<LeftProjection, Function<? super L, ? extends U>> applicative) {
+            Objects.requireNonNull(applicative, "applicative");
+            LeftProjection<Function<? super L, ? extends U>, R> app = Applicative1.Type.narrow(applicative);
             return app.restore().isLeft()
                     ? map(app.restore().left())
                     : Monad1.Type.<LeftProjection<U, R>, LeftProjection, U>castParam(this);
@@ -90,29 +91,29 @@ public interface Either<L, R> extends Functor2<Either, L, R>, Peek2<L, R> {
         }
 
         @Override
-        public <U> LeftProjection<U, R> map(Function<? super L, ? extends U> mapper) {
-            Objects.requireNonNull(mapper);
+        public <U> LeftProjection<U, R> map(@NonNull Function<? super L, ? extends U> mapper) {
+            Objects.requireNonNull(mapper, "mapper");
             return restore().isLeft() ? new LeftProjection<>(new Left<>(mapper.apply(restore().left()))) : Functor1.Type.<LeftProjection<U, R>, LeftProjection, U>castParam(this);
         }
 
         @Override
-        public <U> LeftProjection<U, R> flatMap(Function<? super L, Monad1<LeftProjection, ? extends U>> mapper) {
-            Objects.requireNonNull(mapper);
+        public <U> LeftProjection<U, R> flatMap(@NonNull Function<? super L, Monad1<LeftProjection, ? extends U>> mapper) {
+            Objects.requireNonNull(mapper, "mapper");
             return restore().isLeft()
                     ? Monad1.Type.<LeftProjection<U, R>, LeftProjection, U>narrow(mapper.apply(restore().left()))
                     : Monad1.Type.<LeftProjection<U, R>, LeftProjection, U>castParam(this);
         }
 
         @Override
-        public void peek(Consumer<? super L> consumer) {
-            Objects.requireNonNull(consumer);
+        public void peek(@NonNull Consumer<? super L> consumer) {
+            Objects.requireNonNull(consumer, "consumer");
             if (restore().isLeft()) {
                 consumer.accept(restore().left());
             }
         }
 
-        public <X extends Exception> void throwLeft(Function<? super L, ? extends X> exceptionMapper) throws X {
-            Objects.requireNonNull(exceptionMapper);
+        public <X extends Exception> void throwLeft(@NonNull Function<? super L, ? extends X> exceptionMapper) throws X {
+            Objects.requireNonNull(exceptionMapper, "exceptionMapper");
             if (restore().isLeft()) {
                 throw exceptionMapper.apply(restore().left());
             }
@@ -138,31 +139,31 @@ public interface Either<L, R> extends Functor2<Either, L, R>, Peek2<L, R> {
         }
 
         @Override
-        public <U> RightProjection<L, U> apply(Applicative1<RightProjection, Function<? super R, ? extends U>> applicative1) {
-            Objects.requireNonNull(applicative1);
-            RightProjection<L, Function<? super R, ? extends U>> app = Applicative1.Type.narrow(applicative1);
+        public <U> RightProjection<L, U> apply(@NonNull Applicative1<RightProjection, Function<? super R, ? extends U>> applicative) {
+            Objects.requireNonNull(applicative, "applicative");
+            RightProjection<L, Function<? super R, ? extends U>> app = Applicative1.Type.narrow(applicative);
             return app.restore().isLeft()
                     ? Monad1.Type.<RightProjection<L, U>, RightProjection, U>castParam(this)
                     : map(app.restore().right());
         }
 
         @Override
-        public <U> RightProjection<L, U> flatMap(Function<? super R, Monad1<RightProjection, ? extends U>> mapper) {
-            Objects.requireNonNull(mapper);
+        public <U> RightProjection<L, U> flatMap(@NonNull Function<? super R, Monad1<RightProjection, ? extends U>> mapper) {
+            Objects.requireNonNull(mapper, "mapper");
             return restore().isLeft()
                     ? Monad1.Type.<RightProjection<L, U>, RightProjection, U>castParam(this)
                     : Monad1.Type.<RightProjection<L, U>, RightProjection, U>narrow(mapper.apply(restore().right()));
         }
 
         @Override
-        public <U> RightProjection<L, U> map(Function<? super R, ? extends U> mapper) {
-            Objects.requireNonNull(mapper);
+        public <U> RightProjection<L, U> map(@NonNull Function<? super R, ? extends U> mapper) {
+            Objects.requireNonNull(mapper, "mapper");
             return !value.isLeft() ? new RightProjection<>(new Right<>(mapper.apply(restore().right()))) : Functor1.Type.<RightProjection<L, U>, RightProjection, U>castParam(this);
         }
 
         @Override
-        public void peek(Consumer<? super R> consumer) {
-            Objects.requireNonNull(consumer);
+        public void peek(@NonNull Consumer<? super R> consumer) {
+            Objects.requireNonNull(consumer, "consumer");
             if (!value.isLeft()) {
                 consumer.accept(restore().right());
             }

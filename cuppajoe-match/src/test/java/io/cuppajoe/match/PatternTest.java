@@ -47,24 +47,24 @@ public class PatternTest {
         var tree = getTree();
 
         assertEquals(
-                Some(Result.of(0)),
-                INode_($(0), __(), __()).test(tree)
+            Some(Result.of(0)),
+            INode_($(0), __(), __()).test(tree)
         );
         assertEquals(
-                Some(Result.of(0)),
-                INode_($(), __(), __()).test(tree)
+            Some(Result.of(0)),
+            INode_($(), __(), __()).test(tree)
         );
         assertEquals(
-                None(),
-                INode_($(5), __(), __()).test(tree)
+            None(),
+            INode_($(5), __(), __()).test(tree)
         );
         assertEquals(
-                Some(Result.of(Tree(1))),
-                INode_(__(), __(), $()).test(tree)
+            Some(Result.of(Tree(1))),
+            INode_(__(), __(), $()).test(tree)
         );
         assertEquals(
-                None(),
-                INode_($(), $(null), $(null)).test(tree)
+            None(),
+            INode_($(), $(null), $(null)).test(tree)
         );
     }
 

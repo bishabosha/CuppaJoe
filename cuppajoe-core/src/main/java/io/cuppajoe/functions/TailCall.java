@@ -1,8 +1,10 @@
 package io.cuppajoe.functions;
 
+import io.cuppajoe.annotation.NonNull;
+
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 /**
  * Allows simulation of tail call operations by lifting the call site
@@ -12,7 +14,8 @@ import java.util.stream.Stream;
  */
 public abstract class TailCall<E> implements Func0<E> {
 
-    public static <U> TailCall<U> call(Supplier<TailCall<U>> call) {
+    public static <U> TailCall<U> call(@NonNull Supplier<TailCall<U>> call) {
+        Objects.requireNonNull(call, "call");
         return new Call<>(call);
     }
 
@@ -25,11 +28,11 @@ public abstract class TailCall<E> implements Func0<E> {
 
     @Override
     public final E get() {
-        return Stream.iterate(this, TailCall::next)
-                .filter(TailCall::isComplete)
-                .findFirst()
-                .get()
-                .result();
+        var call = this;
+        while (!call.isComplete()) {
+            call = call.next();
+        }
+        return call.result();
     }
 
     protected abstract TailCall<E> next();

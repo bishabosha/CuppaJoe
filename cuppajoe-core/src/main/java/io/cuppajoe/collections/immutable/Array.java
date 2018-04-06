@@ -1,5 +1,6 @@
 package io.cuppajoe.collections.immutable;
 
+import io.cuppajoe.annotation.NonNull;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.tuples.Tuple2;
 import io.cuppajoe.typeclass.applicative.Applicative1;
@@ -35,7 +36,8 @@ public class Array<E> implements Seq<Array, E>, Value1<Array, E> {
     }
 
     @Override
-    public Array<E> or(Supplier<? extends Value1<Array, ? extends E>> alternative) {
+    public Array<E> or(@NonNull Supplier<? extends Value1<Array, ? extends E>> alternative) {
+        Objects.requireNonNull(alternative, "alternative");
         return isEmpty() ? Value1.Type.narrow(alternative.get()) : this;
     }
 
@@ -108,7 +110,7 @@ public class Array<E> implements Seq<Array, E>, Value1<Array, E> {
     }
 
     @Override
-    public <O> Array<E> distinct(Function<E, O> propertyGetter) {
+    public <O> Array<E> distinct(@NonNull Function<E, O> propertyGetter) {
         var isDistinct = Predicates.distinctProperty(propertyGetter);
         var distinctElems = foldLeft(new ArrayList<>(), (xs, x) -> {
             if (isDistinct.test(x)) {
@@ -149,7 +151,8 @@ public class Array<E> implements Seq<Array, E>, Value1<Array, E> {
     }
 
     @Override
-    public <U> Array<U> map(Function<? super E, ? extends U> mapper) {
+    public <U> Array<U> map(@NonNull Function<? super E, ? extends U> mapper) {
+        Objects.requireNonNull(mapper, "mapper");
         var size = size();
         var newArr = new Object[size];
         for (var i = 0; i < size; i++) {
@@ -159,7 +162,8 @@ public class Array<E> implements Seq<Array, E>, Value1<Array, E> {
     }
 
     @Override
-    public <U> Array<U> flatMap(Function<? super E, Monad1<Array, ? extends U>> mapper) {
+    public <U> Array<U> flatMap(@NonNull Function<? super E, Monad1<Array, ? extends U>> mapper) {
+        Objects.requireNonNull(mapper, "mapper");
         var resultArr = new Object[0];
         for (var e : this) {
             var computed = Monad1.Type.<Array<U>, Array, U>narrow(mapper.apply(e));
@@ -177,7 +181,8 @@ public class Array<E> implements Seq<Array, E>, Value1<Array, E> {
     }
 
     @Override
-    public <A> A foldLeft(A accumulator, BiFunction<A, E, A> mapper) {
+    public <A> A foldLeft(A accumulator, @NonNull BiFunction<A, E, A> mapper) {
+        Objects.requireNonNull(mapper, "mapper");
         for (var i = 0; i < size(); i++) {
             accumulator = mapper.apply(accumulator, get(i));
         }
@@ -185,7 +190,8 @@ public class Array<E> implements Seq<Array, E>, Value1<Array, E> {
     }
 
     @Override
-    public <A> A foldRight(A accumulator, BiFunction<A, E, A> mapper) {
+    public <A> A foldRight(A accumulator, @NonNull BiFunction<A, E, A> mapper) {
+        Objects.requireNonNull(mapper, "mapper");
         for (var i = size() - 1; i >= 0; i--) {
             accumulator = mapper.apply(accumulator, get(i));
         }
@@ -216,7 +222,7 @@ public class Array<E> implements Seq<Array, E>, Value1<Array, E> {
     }
 
     @Override
-    public <U> Array<U> apply(Applicative1<Array, Function<? super E, ? extends U>> applicative1) {
+    public <U> Array<U> apply(@NonNull Applicative1<Array, Function<? super E, ? extends U>> applicative1) {
         return Monad1.applyImpl(this, applicative1);
     }
 
@@ -226,7 +232,8 @@ public class Array<E> implements Seq<Array, E>, Value1<Array, E> {
     }
 
     @Override
-    public Array<E> mappend(Monoid1<Array, ? extends E> other) {
+    public Array<E> mappend(@NonNull Monoid1<Array, ? extends E> other) {
+        Objects.requireNonNull(other);
         var otherArr = Monoid1.Type.<Array<E>, Array, E>narrow(other);
         var newArr = new Object[otherArr.size() + size()];
         System.arraycopy(array, 0, newArr, 0, size());
@@ -235,7 +242,7 @@ public class Array<E> implements Seq<Array, E>, Value1<Array, E> {
     }
 
     @Override
-    public Array<E> mconcat(List<Monoid1<Array, ? extends E>> list) {
+    public Array<E> mconcat(@NonNull List<Monoid1<Array, ? extends E>> list) {
         return Monoid1.Type.narrow(Seq.super.mconcat(list));
     }
 }

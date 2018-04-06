@@ -4,10 +4,12 @@
 
 package io.cuppajoe.functions;
 
+import io.cuppajoe.annotation.NonNull;
 import io.cuppajoe.control.Try;
 import io.cuppajoe.tuples.Tuple2;
 import io.cuppajoe.tuples.Unit;
 
+import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
@@ -18,15 +20,18 @@ public interface Consume2<A, B> extends BiConsumer<A, B> {
         accept(a, b);
     }
 
-    static <X, Y> Consume2<X, Y> of(BiConsumer<X, Y> reference) {
+    static <X, Y> Consume2<X, Y> of(@NonNull BiConsumer<X, Y> reference) {
+        Objects.requireNonNull(reference);
         return reference::accept;
     }
 
-    static <X, Y> Consume2<X, Y> narrow(BiConsumer<? super X, ? super Y> func) {
+    static <X, Y> Consume2<X, Y> narrow(@NonNull BiConsumer<? super X, ? super Y> func) {
+        Objects.requireNonNull(func);
         return func::accept;
     }
 
-    static <X, Y> Func2<X, Y, Try<Unit>> lift(BiConsumer<? super X, ? super Y> func) {
+    static <X, Y> Func2<X, Y, Try<Unit>> lift(@NonNull BiConsumer<? super X, ? super Y> func) {
+        Objects.requireNonNull(func);
         return CheckedConsume2.lift(func::accept);
     }
 

@@ -1,5 +1,6 @@
 package io.cuppajoe;
 
+import io.cuppajoe.annotation.NonNull;
 import io.cuppajoe.control.Either;
 import io.cuppajoe.control.Either.Left;
 import io.cuppajoe.control.Either.Right;
@@ -77,7 +78,7 @@ public final class API {
         return Either.right(right);
     }
 
-    public static <O> Option<O> Option(BooleanSupplier condition, Func0<O> elem) {
+    public static <O> Option<O> Option(@NonNull BooleanSupplier condition, @NonNull Func0<O> elem) {
         return condition.getAsBoolean() ? Option.of(elem.get()) : None();
     }
 
@@ -89,11 +90,11 @@ public final class API {
         return Option.empty();
     }
 
-    public static <O> Lazy<O> Lazy(Supplier<O> getter) {
+    public static <O> Lazy<O> Lazy(@NonNull Supplier<O> getter) {
         return Lazy.of(getter);
     }
 
-    public static <O> Try<O> Try(CheckedFunc0<O> getter) {
+    public static <O> Try<O> Try(@NonNull CheckedFunc0<O> getter) {
         return Try.of(getter);
     }
 
@@ -101,11 +102,11 @@ public final class API {
         return Try.success(value);
     }
 
-    public static <O> Try<O> Failure(Exception error) {
+    public static <O> Try<O> Failure(@NonNull Exception error) {
         return Try.failure(error);
     }
 
-    public static <O> TailCall<O> Call(Supplier<TailCall<O>> tailCall) {
+    public static <O> TailCall<O> Call(@NonNull Supplier<TailCall<O>> tailCall) {
         return TailCall.call(tailCall);
     }
 

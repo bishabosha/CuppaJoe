@@ -1,5 +1,6 @@
 package io.cuppajoe.collections.immutable;
 
+import io.cuppajoe.annotation.NonNull;
 import io.cuppajoe.control.Either;
 import io.cuppajoe.control.Option;
 import io.cuppajoe.functions.Func2;
@@ -92,7 +93,8 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
     }
 
     @Override
-    default List<E> or(Supplier<? extends Value1<List, ? extends E>> alternative) {
+    default List<E> or(@NonNull Supplier<? extends Value1<List, ? extends E>> alternative) {
+        Objects.requireNonNull(alternative, "alternative");
         return isEmpty() ? Value1.Type.<List<E>, List, E>narrow(alternative.get()) : this;
     }
 
@@ -145,11 +147,12 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
      * @param <O>      the type of the accumulator.
      * @return The accumulator with whatever modifications have been applied.
      */
-    default <O> O loop(O identity, Func3<E, O, List<E>, Tuple2<O, List<E>>> consumer) {
+    default <O> O loop(O identity, @NonNull Func3<E, O, List<E>, @NonNull Tuple2<O, List<E>>> consumer) {
+        Objects.requireNonNull(consumer, "consumer");
         return loopRec(Tuple(identity, this), consumer).get();
     }
 
-    default <O> TailCall<O> loopRec(Tuple2<O, List<E>> loop, Func3<E, O, List<E>, Tuple2<O, List<E>>> consumer) {
+    private <O> TailCall<O> loopRec(Tuple2<O, List<E>> loop, Func3<E, O, List<E>, Tuple2<O, List<E>>> consumer) {
         return loop.compose((acc, stack) ->
                 stack.pop()
                      .map(headTail ->
@@ -163,7 +166,8 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
         );
     }
 
-    default <O> Option<Tuple2<O, List<E>>> nextItem(Func2<E, List<E>, Either<List<E>, Tuple2<O, List<E>>>> mapper) {
+    default <O> Option<Tuple2<O, List<E>>> nextItem(@NonNull Func2<E, List<E>, Either<List<E>, Tuple2<O, List<E>>>> mapper) {
+        Objects.requireNonNull(mapper, "mapper");
         return nextItemRec(Left(this), mapper).get();
     }
 
@@ -186,7 +190,7 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
     }
 
     @Override
-    default <O> List<E> distinct(Function<E, O> propertyGetter) {
+    default <O> List<E> distinct(@NonNull Function<E, O> propertyGetter) {
         var isDistinct = Predicates.distinctProperty(propertyGetter);
         return foldRight(mempty(), (xs, x) -> isDistinct.test(x) ? xs.push(x) : xs);
     }
@@ -202,29 +206,30 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
     }
 
 
-    default List<E> mappend(Monoid1<List, ? extends E> other) {
+    default List<E> mappend(@NonNull Monoid1<List, ? extends E> other) {
+        Objects.requireNonNull(other, "other");
         return foldRight(Monoid1.Type.<List<E>, List, E>narrow(other), List::push);
     }
 
     @Override
-    default List<E> mconcat(List<Monoid1<List, ? extends E>> list) {
+    default List<E> mconcat(@NonNull List<Monoid1<List, ? extends E>> list) {
         return Monoid1.Type.narrow(Seq.super.mconcat(list));
     }
 
     @Override
-    default <U> List<U> map(Function<? super E, ? extends U> mapper) {
-        Objects.requireNonNull(mapper);
+    default <U> List<U> map(@NonNull Function<? super E, ? extends U> mapper) {
+        Objects.requireNonNull(mapper, "mapper");
         return !isEmpty() ? foldRight((List) List.<U>empty(), (xs, x) -> xs.push(mapper.apply(x))) : empty();
     }
 
     @Override
-    default <U> List<U> flatMap(Function<? super E, Monad1<List, ? extends U>> mapper) {
-        Objects.requireNonNull(mapper);
+    default <U> List<U> flatMap(@NonNull Function<? super E, Monad1<List, ? extends U>> mapper) {
+        Objects.requireNonNull(mapper, "mapper");
         return !isEmpty() ? List.<U>empty().mconcat(map(mapper.andThen(Monad1.Type::<List<U>, List, U>narrow))) : empty();
     }
 
     @Override
-    default <U> List<U> apply(Applicative1<List, Function<? super E, ? extends U>> applicative1) {
+    default <U> List<U> apply(@NonNull Applicative1<List, Function<? super E, ? extends U>> applicative1) {
         return Monad1.applyImpl(this, applicative1);
     }
 
@@ -304,9 +309,9 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
         }
 
         @Override
-        public <O> O foldLeft(O accumulator, BiFunction<O, E, O> mapper) {
+        public <O> O foldLeft(O accumulator, @NonNull BiFunction<O, E, O> mapper) {
+            Objects.requireNonNull(mapper, "mapper");
             List<E> elements = this;
-            Objects.requireNonNull(mapper);
             while (!elements.isEmpty()) {
                 accumulator = mapper.apply(accumulator, elements.head());
                 elements = elements.tail();

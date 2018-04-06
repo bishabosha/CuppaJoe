@@ -4,10 +4,12 @@
 
 package io.cuppajoe.functions;
 
+import io.cuppajoe.annotation.NonNull;
 import io.cuppajoe.control.Try;
 import io.cuppajoe.tuples.Tuple5;
 import io.cuppajoe.tuples.Unit;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 @FunctionalInterface
@@ -15,15 +17,17 @@ public interface CheckedConsume5<A, B, C, D, E> {
 
     void apply(A a, B b, C c, D d, E e) throws Exception;
 
-    static <V, W, X, Y, Z> CheckedConsume5<V, W, X, Y, Z> of(CheckedConsume5<V, W, X, Y, Z> reference) {
-        return reference;
+    static <V, W, X, Y, Z> CheckedConsume5<V, W, X, Y, Z> of(@NonNull CheckedConsume5<V, W, X, Y, Z> reference) {
+        return Objects.requireNonNull(reference);
     }
 
-    static <V, W, X, Y, Z> CheckedConsume5<V, W, X, Y, Z> narrow(CheckedConsume5<? super V, ? super W, ? super X, ? super Y, ? super Z> func) {
+    static <V, W, X, Y, Z> CheckedConsume5<V, W, X, Y, Z> narrow(@NonNull CheckedConsume5<? super V, ? super W, ? super X, ? super Y, ? super Z> func) {
+        Objects.requireNonNull(func);
         return func::apply;
     }
 
-    static <V, W, X, Y, Z> Func5<V, W, X, Y, Z, Try<Unit>> lift(CheckedConsume5<? super V, ? super W, ? super X, ? super Y, ? super Z> func) {
+    static <V, W, X, Y, Z> Func5<V, W, X, Y, Z, Try<Unit>> lift(@NonNull CheckedConsume5<? super V, ? super W, ? super X, ? super Y, ? super Z> func) {
+        Objects.requireNonNull(func);
         return (v, w, x, y, z) -> Try.of(() -> {
             func.apply(v, w, x, y, z);
             return Unit.INSTANCE;
