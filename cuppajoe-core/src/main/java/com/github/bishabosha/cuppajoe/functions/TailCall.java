@@ -14,6 +14,9 @@ import java.util.function.Supplier;
  */
 public abstract class TailCall<E> implements Func0<E> {
 
+    private TailCall() {
+    }
+
     public static <U> TailCall<U> call(@NonNull Supplier<TailCall<U>> call) {
         Objects.requireNonNull(call, "call");
         return new Call<>(call);
@@ -21,9 +24,6 @@ public abstract class TailCall<E> implements Func0<E> {
 
     public static <U> TailCall<U> yield(U result) {
         return new Yield<>(result);
-    }
-
-    private TailCall() {
     }
 
     @Override

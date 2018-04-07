@@ -9,11 +9,7 @@ import com.github.bishabosha.cuppajoe.typeclass.peek.Peek1;
 import com.github.bishabosha.cuppajoe.typeclass.value.Value1;
 import com.github.bishabosha.cuppajoe.util.Iterators;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;

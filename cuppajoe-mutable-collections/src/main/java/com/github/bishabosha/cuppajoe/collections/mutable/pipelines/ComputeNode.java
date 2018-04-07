@@ -16,22 +16,26 @@ class ComputeNode<I, O> extends AbstractNode<I, O> {
 
     private BiConsumer<ComputeNode, Option<I>> compute;
 
+    @SuppressWarnings("unchecked")
     public static <T, R> ComputeNode<T, R> map(Func1<T, R> mapper) {
         return new ComputeNode<>(
                 (cn, op) -> cn.send(op.map(mapper)));
     }
 
+    @SuppressWarnings("unchecked")
     public static <T, R> ComputeNode<T, R> flatMap(Func1<? super T, ? extends AbstractPipeline> mapper) {
         return new ComputeNode<>(
                 (cn, op) -> cn.sendFlattened(
                         op.flatMap(x -> Option.of(mapper.apply(x)))));
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> ComputeNode<T, T> peek(Consumer<? super T> action) {
         return new ComputeNode<>(
                 (cn, op) -> cn.sendAfterAction(op, action));
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> ComputeNode<T, T> filter(Predicate<T> passCondition, boolean terminateOnFail) {
         return new ComputeNode<>(
                 (cn, op) -> cn.sendOrTerminate(op.filter(passCondition), terminateOnFail));
@@ -51,6 +55,7 @@ class ComputeNode<I, O> extends AbstractNode<I, O> {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void sendFlattened(Option<? extends AbstractPipeline> option) {
         option.peek(p -> {
             Iterator<O> iterator = p.iterator();

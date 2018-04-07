@@ -31,12 +31,12 @@ public abstract class FiniteAutomaton<S, L> extends WeightedGraph<S, L> {
             System.out.println("Final States:");
             printStateSet(finalStates);
         }
-        for (var i = 0; i < word.length; i++) {
-            if (!language.contains(word[i]))
-                throw new IllegalArgumentException("{" + word[i] + "} is not accepted by this automaton.");
-            var autoFail = !readLetter(word[i]);
+        for (L aWord : word) {
+            if (!language.contains(aWord))
+                throw new IllegalArgumentException("{" + aWord + "} is not accepted by this automaton.");
+            var autoFail = !readLetter(aWord);
             if (printStages) {
-                System.out.println("Current states after reading {" + word[i] + "}:");
+                System.out.println("Current states after reading {" + aWord + "}:");
                 printStateSet(currentStates);
             }
             if (autoFail) return false;

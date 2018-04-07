@@ -1,13 +1,7 @@
 package com.github.bishabosha.cuppajoe.typeclass.applicative;
 
 import com.github.bishabosha.cuppajoe.annotation.NonNull;
-import com.github.bishabosha.cuppajoe.functions.Func2;
-import com.github.bishabosha.cuppajoe.functions.Func3;
-import com.github.bishabosha.cuppajoe.functions.Func4;
-import com.github.bishabosha.cuppajoe.functions.Func5;
-import com.github.bishabosha.cuppajoe.functions.Func6;
-import com.github.bishabosha.cuppajoe.functions.Func7;
-import com.github.bishabosha.cuppajoe.functions.Func8;
+import com.github.bishabosha.cuppajoe.functions.*;
 import com.github.bishabosha.cuppajoe.typeclass.functor.Functor1;
 
 import java.util.Objects;

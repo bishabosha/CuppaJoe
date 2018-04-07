@@ -25,12 +25,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.github.bishabosha.cuppajoe.API.Call;
-import static com.github.bishabosha.cuppajoe.API.Left;
-import static com.github.bishabosha.cuppajoe.API.None;
-import static com.github.bishabosha.cuppajoe.API.Some;
-import static com.github.bishabosha.cuppajoe.API.Tuple;
-import static com.github.bishabosha.cuppajoe.API.Yield;
+import static com.github.bishabosha.cuppajoe.API.*;
 
 public interface List<E> extends Seq<List, E>, Value1<List, E> {
 

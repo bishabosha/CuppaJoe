@@ -9,7 +9,7 @@ import java.util.Iterator;
 
 public class BasicSet<E> extends AbstractSet<E> {
 
-    protected AbstractSet<? extends E> store;
+    AbstractSet<? extends E> store;
 
     @Override
     public boolean add(E e) {
@@ -57,6 +57,7 @@ public class BasicSet<E> extends AbstractSet<E> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Iterator<E> iterator() {
         return (Iterator<E>) store.iterator();
     }

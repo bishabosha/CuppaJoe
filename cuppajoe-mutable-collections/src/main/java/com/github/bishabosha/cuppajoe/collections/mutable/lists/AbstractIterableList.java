@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 public abstract class AbstractIterableList<E> extends AbstractCollection<E> implements IterableList<E> {
-    protected int currentIndex = 0;
+    int currentIndex = 0;
 
     @Override
     public int currentIndex() {

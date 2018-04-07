@@ -8,12 +8,7 @@ import com.github.bishabosha.cuppajoe.typeclass.monad.Monad1;
 import com.github.bishabosha.cuppajoe.typeclass.monoid.Monoid1;
 import com.github.bishabosha.cuppajoe.typeclass.peek.Peek1;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Objects;
-import java.util.Spliterator;
-import java.util.Spliterators;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;

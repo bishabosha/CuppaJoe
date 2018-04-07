@@ -5,6 +5,7 @@
 package com.github.bishabosha.cuppajoe.control;
 
 import com.github.bishabosha.cuppajoe.annotation.NonNull;
+import com.github.bishabosha.cuppajoe.functions.Func0;
 import com.github.bishabosha.cuppajoe.tuples.Unapply0;
 import com.github.bishabosha.cuppajoe.tuples.Unapply1;
 import com.github.bishabosha.cuppajoe.tuples.Unit;
@@ -14,15 +15,8 @@ import com.github.bishabosha.cuppajoe.typeclass.peek.Peek1;
 import com.github.bishabosha.cuppajoe.typeclass.value.Value1;
 import com.github.bishabosha.cuppajoe.util.Iterators;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
+import java.util.*;
+import java.util.function.*;
 
 public interface Option<E> extends Monad1<Option, E>, Peek1<E>, Value1<Option, E> {
 
@@ -33,6 +27,12 @@ public interface Option<E> extends Monad1<Option, E>, Peek1<E>, Value1<Option, E
 
     static <O> Option<O> of(O value) {
         return empty().pure(value);
+    }
+
+    static <O> Option<O> when(@NonNull BooleanSupplier condition, @NonNull Func0<O> elem) {
+        Objects.requireNonNull(condition, "condition");
+        Objects.requireNonNull(elem, "elem");
+        return condition.getAsBoolean() ? some(elem.get()) : empty();
     }
 
     static <O> Some<O> some(O value) {

@@ -13,6 +13,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> {
         data = new HashTable<MapEntry<K, V>>();
     }
 
+    @SuppressWarnings("unchecked")
     private HashTable<Entry<K, V>> getTable() {
         return (HashTable<Entry<K, V>>) data;
     }

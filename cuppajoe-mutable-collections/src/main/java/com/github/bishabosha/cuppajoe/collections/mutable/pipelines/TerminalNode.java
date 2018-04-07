@@ -23,6 +23,7 @@ class TerminalNode<I, O> extends AbstractNode<O, O> implements Iterable<O> {
         return new TerminalNode<>(source, head, tail);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Iterator<O> iterator() {
         return (head == null) ?

@@ -1,12 +1,7 @@
 package com.github.bishabosha.cuppajoe.typeclass.monad;
 
 import com.github.bishabosha.cuppajoe.control.Option;
-import com.github.bishabosha.cuppajoe.functions.Func3;
-import com.github.bishabosha.cuppajoe.functions.Func4;
-import com.github.bishabosha.cuppajoe.functions.Func5;
-import com.github.bishabosha.cuppajoe.functions.Func6;
-import com.github.bishabosha.cuppajoe.functions.Func7;
-import com.github.bishabosha.cuppajoe.functions.Func8;
+import com.github.bishabosha.cuppajoe.functions.*;
 import org.junit.jupiter.api.Test;
 
 import java.util.function.BiFunction;

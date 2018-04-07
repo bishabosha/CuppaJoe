@@ -6,13 +6,7 @@ package com.github.bishabosha.cuppajoe.collections.mutable.trees;
 
 import com.github.bishabosha.cuppajoe.collections.mutable.base.AbstractSet;
 
-import java.util.ArrayDeque;
-import java.util.Comparator;
-import java.util.Deque;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Objects;
-import java.util.Queue;
+import java.util.*;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -58,9 +52,10 @@ public class SearchTree<E extends Comparable<E>> extends AbstractSet<E> {
         return contains(o, Objects::equals);
     }
 
+    @SuppressWarnings("unchecked")
     protected boolean contains(Object o, BiPredicate<Object, E> equalsTest) {
         try {
-            return (o instanceof Comparable<?>) ? null != search((E) o, equalsTest) : false;
+            return (o instanceof Comparable<?>) && null != search((E) o, equalsTest);
         } catch (Exception e) {
             return false;
         }
@@ -140,7 +135,7 @@ public class SearchTree<E extends Comparable<E>> extends AbstractSet<E> {
                 var balance = current.calculateBalance();
 
                 if (balance < -1 && current.left.goLeft(value)) {
-                    performRotation(x -> x.rightRotate()); // Left-Left
+                    performRotation(BinaryNode::rightRotate); // Left-Left
                 } else if (balance < -1 && current.left.goRight(value)) {
 
                     performRotation(x -> { // Left-Right
@@ -148,7 +143,7 @@ public class SearchTree<E extends Comparable<E>> extends AbstractSet<E> {
                         return x.rightRotate();
                     });
                 } else if (balance > 1 && current.right.goRight(value)) {
-                    performRotation(x -> x.leftRotate()); // Right-Right
+                    performRotation(BinaryNode::leftRotate); // Right-Right
                 } else if (balance > 1 && current.right.goLeft(value)) {
 
                     performRotation(x -> { // Right-Left
@@ -177,6 +172,7 @@ public class SearchTree<E extends Comparable<E>> extends AbstractSet<E> {
         return pull(entry, Objects::equals);
     }
 
+    @SuppressWarnings("unchecked")
     protected E pull(Object o, BiPredicate<Object, E> entryEntryTest) {
         E element;
         try {
@@ -296,7 +292,7 @@ public class SearchTree<E extends Comparable<E>> extends AbstractSet<E> {
             current = working.pop();
             consumer.accept(current.value);
             current = current.right;
-        } while (current != null || (current == null && !working.isEmpty()));
+        } while (current != null || !working.isEmpty());
     };
 
     private Consumer<Consumer<E>> levelOrderTraversal = consumer -> {
@@ -336,9 +332,8 @@ public class SearchTree<E extends Comparable<E>> extends AbstractSet<E> {
         Deque<E> result = new ArrayDeque<>();
         if (root != null) {
             traversalDelegate.accept(
-                    addRear ?
-                            val -> result.addLast(val) :
-                            val -> result.addFirst(val)
+                addRear ? result::addLast
+                        : result::addFirst
             );
         }
         return result;

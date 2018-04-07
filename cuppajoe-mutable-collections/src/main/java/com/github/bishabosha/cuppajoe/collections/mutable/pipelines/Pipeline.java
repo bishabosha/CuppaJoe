@@ -10,18 +10,8 @@ import com.github.bishabosha.cuppajoe.control.Option;
 import com.github.bishabosha.cuppajoe.functions.Func1;
 import com.github.bishabosha.cuppajoe.util.Iterators;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.Optional;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.BinaryOperator;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
+import java.util.*;
+import java.util.function.*;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -85,7 +75,7 @@ public class Pipeline<T> extends AbstractPipeline<T> {
     }
 
     public static <R> Pipeline<R> stream(Stream<R> stream) {
-        return new Pipeline<>(() -> stream.iterator());
+        return new Pipeline<>(stream::iterator);
     }
 
     public static <R> Pipeline<R> iterate(R identity,
@@ -225,7 +215,7 @@ public class Pipeline<T> extends AbstractPipeline<T> {
 
     public Option<T> findFirst() {
         var it = iterator();
-        return API.Option(it::hasNext, it::next);
+        return Option.when(it::hasNext, it::next);
     }
 
     /**

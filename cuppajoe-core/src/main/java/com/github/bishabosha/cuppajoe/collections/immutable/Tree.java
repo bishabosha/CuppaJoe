@@ -8,11 +8,7 @@ import com.github.bishabosha.cuppajoe.annotation.NonNull;
 import com.github.bishabosha.cuppajoe.control.Either;
 import com.github.bishabosha.cuppajoe.control.Option;
 import com.github.bishabosha.cuppajoe.functions.Func1;
-import com.github.bishabosha.cuppajoe.tuples.Tuple2;
-import com.github.bishabosha.cuppajoe.tuples.Tuple3;
-import com.github.bishabosha.cuppajoe.tuples.Unapply0;
-import com.github.bishabosha.cuppajoe.tuples.Unapply3;
-import com.github.bishabosha.cuppajoe.tuples.Unit;
+import com.github.bishabosha.cuppajoe.tuples.*;
 import com.github.bishabosha.cuppajoe.typeclass.foldable.Foldable;
 import com.github.bishabosha.cuppajoe.util.Iterators;
 import com.github.bishabosha.cuppajoe.util.Iterators.IdempotentIterator;
@@ -23,11 +19,7 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
-import static com.github.bishabosha.cuppajoe.API.Left;
-import static com.github.bishabosha.cuppajoe.API.None;
-import static com.github.bishabosha.cuppajoe.API.Right;
-import static com.github.bishabosha.cuppajoe.API.Some;
-import static com.github.bishabosha.cuppajoe.API.Tuple;
+import static com.github.bishabosha.cuppajoe.API.*;
 
 /**
  * Immutable tree

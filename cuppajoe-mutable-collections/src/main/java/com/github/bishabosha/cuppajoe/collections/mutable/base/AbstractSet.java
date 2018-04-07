@@ -25,9 +25,6 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
         if (!containsAll(collection)) {
             return false;
         }
-        if (!collection.containsAll(this)) {
-            return false;
-        }
-        return true;
+        return collection.containsAll(this);
     }
 }

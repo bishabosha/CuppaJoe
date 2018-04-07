@@ -19,17 +19,17 @@ public final class Iterators {
         var found = new HashTable<K>();
         for (var key : keys) {
             Option.of(key)
-                    .filter(map.keySet()::contains)
-                    .map(k -> {
-                        found.add(k);
-                        return new MapEntry<>(k, map.get(k));
-                    })
-                    .peek(sorted::add);
+                  .filter(map.keySet()::contains)
+                  .map(k -> {
+                      found.add(k);
+                      return new MapEntry<>(k, map.get(k));
+                  })
+                  .peek(sorted::add);
         }
         for (var entry : map.entrySet()) {
             API.Some(entry)
-                    .filter(e -> !found.contains(e.getKey()))
-                    .peek(sorted::add);
+               .filter(e -> !found.contains(e.getKey()))
+               .peek(sorted::add);
         }
         return sorted;
     }

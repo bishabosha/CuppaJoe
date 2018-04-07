@@ -10,12 +10,7 @@ package com.github.bishabosha.cuppajoe.util;
 
 import com.github.bishabosha.cuppajoe.annotation.NonNull;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;

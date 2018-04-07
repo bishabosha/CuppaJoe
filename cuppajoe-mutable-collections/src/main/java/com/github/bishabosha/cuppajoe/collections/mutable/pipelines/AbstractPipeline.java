@@ -6,12 +6,7 @@ package com.github.bishabosha.cuppajoe.collections.mutable.pipelines;
 
 import com.github.bishabosha.cuppajoe.collections.mutable.base.AbstractBase;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Queue;
-import java.util.Spliterator;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;

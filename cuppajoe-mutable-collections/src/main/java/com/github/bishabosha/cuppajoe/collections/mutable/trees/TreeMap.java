@@ -14,6 +14,7 @@ public class TreeMap<K extends Comparable<K>, V> extends AbstractMap<K, V> {
         data = new SearchTree<ComparableEntry<K, V>>();
     }
 
+    @SuppressWarnings("unchecked")
     private SearchTree<ComparableEntry<K, V>> getTree() {
         return (SearchTree<ComparableEntry<K, V>>) data;
     }
@@ -21,7 +22,9 @@ public class TreeMap<K extends Comparable<K>, V> extends AbstractMap<K, V> {
     @Override
     public boolean containsKey(Object key) {
         try {
-            return getTree().contains(new ComparableEntry((Comparable) key, null), MapEntry::entryEntryEquator);
+            @SuppressWarnings("unchecked")
+            var entry = new ComparableEntry((Comparable) key, null);
+            return getTree().contains(entry, MapEntry::entryEntryEquator);
         } catch (Exception e) {
             return false;
         }
@@ -33,12 +36,14 @@ public class TreeMap<K extends Comparable<K>, V> extends AbstractMap<K, V> {
         return null == old ? null : old.getValue();
     }
 
+
     @Override
     public V get(Object key) {
-        if (key instanceof Comparable<?> == false) {
+        if (!(key instanceof Comparable<?>)) {
             return null;
         }
         try {
+            @SuppressWarnings("unchecked")
             var result = getTree().search(new ComparableEntry<>((K) key, null), MapEntry::entryEntryEquator);
             return null == result ? null : result.getValue();
         } catch (Exception e) {
@@ -52,6 +57,7 @@ public class TreeMap<K extends Comparable<K>, V> extends AbstractMap<K, V> {
             return null;
         }
         try {
+            @SuppressWarnings("unchecked")
             var old = getTree().pull(new ComparableEntry<>((K) key, null), MapEntry::entryEntryEquator);
             return null == old ? null : old.getValue();
         } catch (Exception e) {

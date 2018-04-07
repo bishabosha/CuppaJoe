@@ -14,12 +14,11 @@ import com.github.bishabosha.cuppajoe.match.patterns.Result;
 import com.github.bishabosha.cuppajoe.tuples.Tuple2;
 import org.junit.jupiter.api.Test;
 
-import static com.github.bishabosha.cuppajoe.match.Case.with;
-import static com.github.bishabosha.cuppajoe.match.patterns.Standard.$;
-import static com.github.bishabosha.cuppajoe.match.patterns.Standard.None_;
-import static com.github.bishabosha.cuppajoe.match.patterns.Standard.Some_;
-import static com.github.bishabosha.cuppajoe.match.patterns.Standard.Tuple2$;
-import static com.github.bishabosha.cuppajoe.match.patterns.Standard.__;
+import static com.github.bishabosha.cuppajoe.collections.immutable.API.List;
+import static com.github.bishabosha.cuppajoe.collections.immutable.API.Tree;
+import static com.github.bishabosha.cuppajoe.match.API.Cases;
+import static com.github.bishabosha.cuppajoe.match.API.With;
+import static com.github.bishabosha.cuppajoe.match.patterns.Standard.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PatternTest {
@@ -69,7 +68,7 @@ public class PatternTest {
     }
 
     private static Pattern<Tree<Integer>> INode_(Pattern<Integer> node, Pattern<Tree<Integer>> left, Pattern<Tree<Integer>> right) {
-        return Collections.Node$(node, left, right);
+        return Collections.Node_(node, left, right);
     }
 
     @Test
@@ -77,9 +76,9 @@ public class PatternTest {
         final Pattern<Tuple2<Option<Tree<Integer>>, List<Tree<Integer>>>> patt2Test;
         final Tuple2<Option<Tree<Integer>>, List<Tree<Integer>>> underTest;
 
-        patt2Test = Tuple2$(Some_(INode_($(), __(), $())), $());
+        patt2Test = Tuple2_(Some_(INode_($(), __(), $())), $());
 
-        underTest = API.Tuple(Option.of(Tree.Node(1, Tree.Leaf(), Tree.Leaf())), com.github.bishabosha.cuppajoe.collections.immutable.API.List(com.github.bishabosha.cuppajoe.collections.immutable.API.Tree(2)));
+        underTest = API.Tuple(Option.of(Tree.Node(1, Tree.Leaf(), Tree.Leaf())), List(Tree(2)));
 
         patt2Test.test(underTest).peek(results -> {
             var values = results.values();
@@ -92,10 +91,12 @@ public class PatternTest {
 
     @Test
     public void test_typeSafety() {
-        var cases = Case.combine(
-                with(Some_(Tuple2$($(), $())), (x, y) -> "Some(Tuple(" + x + ", " + y + "))"),
-                with(None_(), () -> "None")/*,
-            with($Lazy($_()), () -> "will not compile") */
+        var cases = Cases(
+            With(Some_(Tuple2_($(), $())), (x, y) ->
+                "Some(Tuple(" + x + ", " + y + "))"),
+            With(None_(), () ->
+                "None")/*,
+            With(Lazy_($()), () -> "will not compile")*/
         );
 
         assertEquals("Some(Tuple(1, 2))", cases.get(API.Some(API.Tuple(1, 2))));

@@ -9,12 +9,7 @@ import com.github.bishabosha.cuppajoe.collections.mutable.base.MapEntry;
 import com.github.bishabosha.cuppajoe.collections.mutable.lists.LinkedList;
 import com.github.bishabosha.cuppajoe.util.Iterators;
 
-import java.util.AbstractMap;
-import java.util.ArrayDeque;
-import java.util.Collection;
-import java.util.Deque;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 public class TrieMap<V> extends AbstractMap<String, V> {
 
@@ -54,7 +49,7 @@ public class TrieMap<V> extends AbstractMap<String, V> {
 
     @Override
     public boolean containsKey(Object key) {
-        if (key instanceof String == false) {
+        if (!(key instanceof String)) {
             return false;
         }
         var current = searchNonTerminating((String) key);
@@ -73,7 +68,7 @@ public class TrieMap<V> extends AbstractMap<String, V> {
 
     @Override
     public V get(Object key) {
-        if (key instanceof String == false) {
+        if (!(key instanceof String)) {
             return null;
         }
         var current = searchNonTerminating((String) key);
@@ -110,7 +105,7 @@ public class TrieMap<V> extends AbstractMap<String, V> {
 
     @Override
     public V remove(Object key) {
-        if (key instanceof String == false) {
+        if (!(key instanceof String)) {
             return null;
         }
         var word = (String) key;
@@ -256,9 +251,10 @@ public class TrieMap<V> extends AbstractMap<String, V> {
 
             @Override
             public boolean contains(Object o) {
-                if (o instanceof Entry == false || ((Entry<?, ?>) o).getKey() instanceof String == false) {
+                if (!(o instanceof Entry) || !(((Entry<?, ?>) o).getKey() instanceof String)) {
                     return false;
                 }
+                @SuppressWarnings("unchecked")
                 var entry = (Entry<String, ?>) o;
                 var current = searchNonTerminating(entry.getKey());
                 return current != null && current.isTerminating && current.value.equals(entry.getValue());

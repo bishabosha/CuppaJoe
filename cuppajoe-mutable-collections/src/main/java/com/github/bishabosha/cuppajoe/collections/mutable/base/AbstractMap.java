@@ -4,11 +4,7 @@
 
 package com.github.bishabosha.cuppajoe.collections.mutable.base;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public abstract class AbstractMap<K, V> implements Map<K, V> {
 
@@ -26,9 +22,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
 
     @Override
     public void putAll(Map<? extends K, ? extends V> m) {
-        Objects.requireNonNull(m, "m")
-                .entrySet()
-                .forEach(x -> put(x.getKey(), x.getValue()));
+        Objects.requireNonNull(m, "m").forEach(this::put);
     }
 
     @Override

@@ -2,23 +2,20 @@
  * Copyright (c) 2017. Jamie Thompson <bishbashboshjt@gmail.com>
  */
 
-package com.github.bishabosha.cuppajoe.match.patterns;
+package com.github.bishabosha.cuppajoe.match.internal;
 
 import com.github.bishabosha.cuppajoe.control.Option;
-import com.github.bishabosha.cuppajoe.tuples.Unapply0;
-import com.github.bishabosha.cuppajoe.tuples.Unapply1;
-import com.github.bishabosha.cuppajoe.tuples.Unapply2;
-import com.github.bishabosha.cuppajoe.tuples.Unapply3;
-import com.github.bishabosha.cuppajoe.tuples.Unapply4;
-import com.github.bishabosha.cuppajoe.tuples.Unapply5;
-import com.github.bishabosha.cuppajoe.tuples.Unapply6;
-import com.github.bishabosha.cuppajoe.tuples.Unapply7;
-import com.github.bishabosha.cuppajoe.tuples.Unapply8;
+import com.github.bishabosha.cuppajoe.match.patterns.Pattern;
+import com.github.bishabosha.cuppajoe.match.patterns.Result;
+import com.github.bishabosha.cuppajoe.tuples.*;
 
 import static com.github.bishabosha.cuppajoe.match.patterns.Pattern.FAIL;
 import static com.github.bishabosha.cuppajoe.match.patterns.Pattern.PASS;
 
-public class PatternFactory {
+public final class PatternFactory {
+
+    private PatternFactory() {
+    }
 
     public static <O> Pattern<O> unapply0(Unapply0 target) {
         return x -> target.equals(x) ? PASS : FAIL;
@@ -29,7 +26,7 @@ public class PatternFactory {
         return x -> Option.of(x)
             .filter(target::isInstance)
             .map(verified -> ((Unapply1<A>) verified).unapply())
-            .flatMap(v1 -> p1.test(v1));
+            .flatMap(p1::test);
     }
 
     @SuppressWarnings("unchecked")

@@ -6,25 +6,18 @@ import com.github.bishabosha.cuppajoe.control.Lazy;
 import com.github.bishabosha.cuppajoe.control.Option;
 import com.github.bishabosha.cuppajoe.control.Try;
 import com.github.bishabosha.cuppajoe.functions.CheckedFunc0;
-import com.github.bishabosha.cuppajoe.functions.Func0;
 import com.github.bishabosha.cuppajoe.functions.TailCall;
-import com.github.bishabosha.cuppajoe.tuples.Tuple;
-import com.github.bishabosha.cuppajoe.tuples.Tuple1;
-import com.github.bishabosha.cuppajoe.tuples.Tuple2;
-import com.github.bishabosha.cuppajoe.tuples.Tuple3;
-import com.github.bishabosha.cuppajoe.tuples.Tuple4;
-import com.github.bishabosha.cuppajoe.tuples.Tuple5;
-import com.github.bishabosha.cuppajoe.tuples.Tuple6;
-import com.github.bishabosha.cuppajoe.tuples.Tuple7;
-import com.github.bishabosha.cuppajoe.tuples.Tuple8;
-import com.github.bishabosha.cuppajoe.tuples.Unit;
+import com.github.bishabosha.cuppajoe.tuples.*;
 
-import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 public final class API {
 
-    public static Unit
+    private API() {
+    }
+
+    public static
+    Unit
     Tuple() {
         return Tuple.of();
     }
@@ -77,47 +70,63 @@ public final class API {
         return Tuple.of($1, $2, $3, $4, $5, $6, $7, $8);
     }
 
-    public static <L, R> Either.Left<L, R> Left(L left) {
+    public static <L, R>
+    Either.Left<L, R>
+    Left(L left) {
         return Either.left(left);
     }
 
-    public static <L, R> Either.Right<L, R> Right(R right) {
+    public static <L, R>
+    Either.Right<L, R>
+    Right(R right) {
         return Either.right(right);
     }
 
-    public static <O> Option<O> Option(@NonNull BooleanSupplier condition, @NonNull Func0<O> elem) {
-        return condition.getAsBoolean() ? Option.of(elem.get()) : None();
-    }
-
-    public static <O> Option<O> Some(O elem) {
+    public static <O>
+    Option<O>
+    Some(O elem) {
         return Option.some(elem);
     }
 
-    public static <O> Option<O> None() {
+    public static <O>
+    Option<O>
+    None() {
         return Option.empty();
     }
 
-    public static <O> Lazy<O> Lazy(@NonNull Supplier<O> getter) {
+    public static <O>
+    Lazy<O>
+    Lazy(@NonNull Supplier<O> getter) {
         return Lazy.of(getter);
     }
 
-    public static <O> Try<O> Try(@NonNull CheckedFunc0<O> getter) {
+    public static <O>
+    Try<O>
+    Try(@NonNull CheckedFunc0<O> getter) {
         return Try.of(getter);
     }
 
-    public static <O> Try<O> Success(O value) {
+    public static <O>
+    Try<O>
+    Success(O value) {
         return Try.success(value);
     }
 
-    public static <O> Try<O> Failure(@NonNull Exception error) {
+    public static <O>
+    Try<O>
+    Failure(@NonNull Exception error) {
         return Try.failure(error);
     }
 
-    public static <O> TailCall<O> Call(@NonNull Supplier<TailCall<O>> tailCall) {
+    public static <O>
+    TailCall<O>
+    Call(@NonNull Supplier<TailCall<O>> tailCall) {
         return TailCall.call(tailCall);
     }
 
-    public static <O> TailCall<O> Yield(O result) {
+    public static <O>
+    TailCall<O>
+    Yield(O result) {
         return TailCall.yield(result);
     }
 }

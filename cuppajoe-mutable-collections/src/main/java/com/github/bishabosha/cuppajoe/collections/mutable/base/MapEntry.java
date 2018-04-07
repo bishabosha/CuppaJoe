@@ -16,6 +16,7 @@ public class MapEntry<K, V> implements Entry<K, V> {
         this.value = value;
     }
 
+    @SuppressWarnings("unchecked")
     public static <K, V> boolean entryEntryEquator(Object x, Entry<K, V> y) {
         return ((Entry<K, V>) x).getKey().equals(y.getKey());
     }
