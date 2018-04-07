@@ -4,7 +4,6 @@
 
 package com.github.bishabosha.cuppajoe.match;
 
-import com.github.bishabosha.cuppajoe.API;
 import com.github.bishabosha.cuppajoe.collections.immutable.Tree;
 import com.github.bishabosha.cuppajoe.control.Option;
 import com.github.bishabosha.cuppajoe.match.patterns.Collections;
@@ -15,6 +14,8 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import static com.github.bishabosha.cuppajoe.API.Some;
+import static com.github.bishabosha.cuppajoe.API.Tuple;
 import static com.github.bishabosha.cuppajoe.match.API.*;
 import static com.github.bishabosha.cuppajoe.match.patterns.Collections.Leaf_;
 import static com.github.bishabosha.cuppajoe.match.patterns.Standard.*;
@@ -30,36 +31,36 @@ public class MatcherTest {
         Assertions.assertEquals(
             Option.of(6.28),
             Match(3.14).option(
-                With($(3.14), (Double x) ->
+                With ($(3.14), (Double x) ->
                     x * 2.0),
-                With($(2.72), (Double x) ->
+                With ($(2.72), (Double x) ->
                     x / 2.0)
             )
         );
         Assertions.assertEquals(
             Option.of(3.25),
             Match(6.5).option(
-                With($(3.14), (Double $x) ->
+                With ($(3.14), (Double $x) ->
                     $x * 2.0),
-                With($(), (Double $x) ->
+                With ($(), (Double $x) ->
                     $x / 2.0)
             )
         );
         Assertions.assertEquals(
             Option.of(Math.PI),
             Match(3.14).option(
-                With($(3.14), () ->
+                With ($(3.14), () ->
                     Math.PI),
-                With($(2.72), () ->
+                With ($(2.72), () ->
                     Math.E),
-                With($(), $x ->
+                With ($(), $x ->
                     $x)
             )
         );
         var cases = Cases(
-            With($("spicy"), x ->
+            With ($("spicy"), x ->
                 "Thats one " + x + " meme"),
-            With($("hw"), x ->
+            With ($("hw"), x ->
                 "Hello World")
         );
         Assertions.assertEquals(
@@ -79,18 +80,28 @@ public class MatcherTest {
     @Test
     public void test_OnList() {
         var cases = Cases(
-            With($any("-h", "--help"), () ->
-                "View Help"),
-            With($any("-v", "--version"), () ->
-                "View Version")
+            With (
+                $any("-h", "--help"),    ()
+                    -> "View Help"
+            ),
+            With (
+                $any("-v", "--version"), ()
+                    -> "View Version"
+            )
         );
         Case<Object, String> numCases = Cases(
-            With($any(1, 1L, 1.0, "1", "1.0", BigInteger.ONE, BigDecimal.ONE), () ->
-                "One"),
-            With($any(2, 2L, 2.0, "2", "2.0", BigInteger.valueOf(2), BigDecimal.valueOf(2)), () ->
-                "Two"),
-            With($any(3, 3L, 3.0, "3", "3.0", BigInteger.valueOf(3), BigDecimal.valueOf(3)), () ->
-                "Three")
+            With (
+                $any(1, 1L, 1.0, "1", "1.0", BigInteger.ONE, BigDecimal.ONE),               ()
+                    -> "One"
+            ),
+            With (
+                $any(2, 2L, 2.0, "2", "2.0", BigInteger.valueOf(2), BigDecimal.valueOf(2)), ()
+                    -> "Two"
+            ),
+            With (
+                $any(3, 3L, 3.0, "3", "3.0", BigInteger.valueOf(3), BigDecimal.valueOf(3)), ()
+                    -> "Three"
+            )
         );
         Assertions.assertEquals(
             "View Help",
@@ -114,15 +125,15 @@ public class MatcherTest {
         );
         Assertions.assertEquals(
             "One",
-            Match((Object) BigInteger.ONE).of(numCases)
+            numCases.get(BigInteger.ONE)
         );
         Assertions.assertEquals(
             "Two",
-            Match((Object)BigDecimal.valueOf(2)).of(numCases)
+            numCases.get(BigDecimal.valueOf(2))
         );
         Assertions.assertEquals(
             "Three",
-            Match((Object)"3.0").of(numCases)
+            numCases.get("3.0")
         );
     }
 
@@ -152,31 +163,44 @@ public class MatcherTest {
         Assertions.assertEquals(
             Option.of(1),
             Match(tree).option(
-                With(INode_($(), __(), __()), (Integer $x) -> $x + 1)
+                With (
+                    INode_($(), __(), __()), (Integer node)
+                        -> node + 1
+                )
             )
         );
         Assertions.assertEquals(
             Tree.Node(1, Tree.Leaf(), Tree.Leaf()),
             Match(tree).of(
-                With(INode_(__(), __(), $()), $r -> $r)
+                With (
+                    INode_(__(), __(), $()), (Tree<Integer> right)
+                        -> right
+                )
             )
         );
         Assertions.assertEquals(
             Option.of(0),
             Match(tree).option(
-                With(INode_(__(), $(), $()), this::sumNodes)
+                With (
+                    INode_(__(), $(), $()), this::sumNodes
+                )
             )
         );
         Assertions.assertEquals(
             tree,
             Match(tree).of(
-                With(INode_($(), $(), $()), this::makeTree)
+                With (
+                    INode_($(), $(), $()), this::makeTree
+                )
             )
         );
         Assertions.assertEquals(
             Option.of(25),
             Match(leaf).option(
-                With(INode_($(), Leaf_(), Leaf_()), $x -> $x)
+                With (
+                    INode_($(), Leaf_(), Leaf_()), (Integer node)
+                        -> node
+                )
             )
         );
     }
@@ -203,15 +227,23 @@ public class MatcherTest {
     }
 
     private int sumNodes(Tree<Integer> x, Tree<Integer> y) {
-        return Match(API.Tuple(x, y)).of(
-            With(Tuple2_(Leaf_(), Leaf_()), () ->
-                0),
-            With(Tuple2_(INode_($(), __(), __()), INode_($(), __(), __())), (Integer $n1, Integer $n2) ->
-                $n1 + $n2),
-            With(Tuple2_(Leaf_(), INode_($(), __(), __())), (Integer $n) ->
-                $n),
-            With(Tuple2_(INode_($(), __(), __()), Leaf_()), (Integer $n) ->
-                $n)
+        return Match(Tuple(x, y)).of(
+            With (
+                Tuple2_(Leaf_(), Leaf_()),                                  ()
+                    -> 0
+            ),
+            With (
+                Tuple2_(INode_($(), __(), __()), INode_($(), __(), __())),  (Integer nodeX, Integer nodeY)
+                    -> nodeX + nodeY
+            ),
+            With (
+                Tuple2_(Leaf_(), INode_($(), __(), __())),                  (Integer nodeY)
+                    -> nodeY
+            ),
+            With (
+                Tuple2_(INode_($(), __(), __()), Leaf_()),                  (Integer nodeX)
+                    -> nodeX
+            )
         );
     }
 
@@ -219,21 +251,17 @@ public class MatcherTest {
     public void test_Guards() {
         var x = 3;
         Assertions.assertEquals(
-            "Three",
-            GuardUnsafe(
-                When(() -> x == 3, () ->
-                    "Three"),
-                Edge(() ->
-                    "?")
+            Some("Three"),
+            If (
+                When (() -> x == 3, () -> "Three"),
+                Edge (() -> "?")
             )
         );
         Assertions.assertEquals(
-            "?",
-            GuardUnsafe(
-                When(() -> 1 < 0, () ->
-                    "impossible"),
-                Edge(() ->
-                    "?")
+            Some("?"),
+            If (
+                When (() -> 1 < 0, () -> "impossible"),
+                Edge (() -> "?")
             )
         );
     }
@@ -244,9 +272,12 @@ public class MatcherTest {
         Assertions.assertEquals(
             10,
             (int) Match(option).of(
-                With(Some_($()), (Integer $x) -> GuardUnsafe(
-                    When(() -> $x > 5, () -> $x)
-                ))
+                With (
+                    Some_($()),
+                    (Integer $x) -> IfUnsafe (
+                        When (() -> $x > 5, () -> $x)
+                    )
+                )
             )
         );
     }

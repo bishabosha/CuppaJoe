@@ -4,10 +4,13 @@
 
 package com.github.bishabosha.cuppajoe.match.internal;
 
+import com.github.bishabosha.cuppajoe.annotation.NonNull;
 import com.github.bishabosha.cuppajoe.control.Option;
 import com.github.bishabosha.cuppajoe.match.patterns.Pattern;
 import com.github.bishabosha.cuppajoe.match.patterns.Result;
 import com.github.bishabosha.cuppajoe.tuples.*;
+
+import java.util.Objects;
 
 import static com.github.bishabosha.cuppajoe.match.patterns.Pattern.FAIL;
 import static com.github.bishabosha.cuppajoe.match.patterns.Pattern.PASS;
@@ -17,12 +20,15 @@ public final class PatternFactory {
     private PatternFactory() {
     }
 
-    public static <O> Pattern<O> unapply0(Unapply0 target) {
+    public static <O> @NonNull Pattern<O> unapply0(@NonNull Unapply0 target) {
+        Objects.requireNonNull(target, "target");
         return x -> target.equals(x) ? PASS : FAIL;
     }
 
     @SuppressWarnings("unchecked")
-    public static <O, A> Pattern<O> unapply1(Class<? extends Unapply1> target, Pattern<A> p1) {
+    public static <O, A> @NonNull Pattern<O> unapply1(@NonNull Class<? extends Unapply1> target, @NonNull Pattern<A> p1) {
+        Objects.requireNonNull(target, "target");
+        Objects.requireNonNull(p1, "p1");
         return x -> Option.of(x)
             .filter(target::isInstance)
             .map(verified -> ((Unapply1<A>) verified).unapply())
@@ -30,7 +36,10 @@ public final class PatternFactory {
     }
 
     @SuppressWarnings("unchecked")
-    public static <O, A, B> Pattern<O> unapply2(Class<? extends Unapply2> target, Pattern<A> p1, Pattern<B> p2) {
+    public static <O, A, B> @NonNull Pattern<O> unapply2(@NonNull Class<? extends Unapply2> target, @NonNull Pattern<A> p1, @NonNull Pattern<B> p2) {
+        Objects.requireNonNull(target, "target");
+        Objects.requireNonNull(p1, "p1");
+        Objects.requireNonNull(p2, "p2");
         return x -> Option.of(x)
             .filter(target::isInstance)
             .map(verified -> ((Unapply2<A, B>) verified).unapply())
@@ -42,7 +51,11 @@ public final class PatternFactory {
     }
 
     @SuppressWarnings("unchecked")
-    public static <O, A, B, C> Pattern<O> unapply3(Class<? extends Unapply3> target, Pattern<A> p1, Pattern<B> p2, Pattern<C> p3) {
+    public static <O, A, B, C> @NonNull Pattern<O> unapply3(@NonNull Class<? extends Unapply3> target, @NonNull Pattern<A> p1, @NonNull Pattern<B> p2, @NonNull Pattern<C> p3) {
+        Objects.requireNonNull(target, "target");
+        Objects.requireNonNull(p1, "p1");
+        Objects.requireNonNull(p2, "p2");
+        Objects.requireNonNull(p3, "p3");
         return x -> Option.of(x)
             .filter(target::isInstance)
             .map(verified -> ((Unapply3<A, B, C>) verified).unapply())
@@ -55,7 +68,12 @@ public final class PatternFactory {
     }
 
     @SuppressWarnings("unchecked")
-    public static <O, A, B, C, D> Pattern<O> unapply4(Class<? extends Unapply4> target, Pattern<A> p1, Pattern<B> p2, Pattern<C> p3, Pattern<D> p4) {
+    public static <O, A, B, C, D> @NonNull Pattern<O> unapply4(@NonNull Class<? extends Unapply4> target, @NonNull Pattern<A> p1, @NonNull Pattern<B> p2, @NonNull Pattern<C> p3, @NonNull Pattern<D> p4) {
+        Objects.requireNonNull(target, "target");
+        Objects.requireNonNull(p1, "p1");
+        Objects.requireNonNull(p2, "p2");
+        Objects.requireNonNull(p3, "p3");
+        Objects.requireNonNull(p4, "p4");
         return x -> Option.of(x)
             .filter(target::isInstance)
             .map(verified -> ((Unapply4<A, B, C, D>) verified).unapply())
@@ -69,7 +87,13 @@ public final class PatternFactory {
     }
 
     @SuppressWarnings("unchecked")
-    public static <O, A, B, C, D, E> Pattern<O> unapply5(Class<? extends Unapply5> target, Pattern<A> p1, Pattern<B> p2, Pattern<C> p3, Pattern<D> p4, Pattern<E> p5) {
+    public static <O, A, B, C, D, E> @NonNull Pattern<O> unapply5(@NonNull Class<? extends Unapply5> target, @NonNull Pattern<A> p1, @NonNull Pattern<B> p2, @NonNull Pattern<C> p3, @NonNull Pattern<D> p4, @NonNull Pattern<E> p5) {
+        Objects.requireNonNull(target, "target");
+        Objects.requireNonNull(p1, "p1");
+        Objects.requireNonNull(p2, "p2");
+        Objects.requireNonNull(p3, "p3");
+        Objects.requireNonNull(p4, "p4");
+        Objects.requireNonNull(p5, "p5");
         return x -> Option.of(x)
             .filter(target::isInstance)
             .map(verified -> ((Unapply5<A, B, C, D, E>) verified).unapply())
@@ -84,7 +108,14 @@ public final class PatternFactory {
     }
 
     @SuppressWarnings("unchecked")
-    public static <O, A, B, C, D, E, F> Pattern<O> unapply6(Class<? extends Unapply6> target, Pattern<A> p1, Pattern<B> p2, Pattern<C> p3, Pattern<D> p4, Pattern<E> p5, Pattern<F> p6) {
+    public static <O, A, B, C, D, E, F> @NonNull Pattern<O> unapply6(@NonNull Class<? extends Unapply6> target, @NonNull Pattern<A> p1, @NonNull Pattern<B> p2, @NonNull Pattern<C> p3, @NonNull Pattern<D> p4, @NonNull Pattern<E> p5, @NonNull Pattern<F> p6) {
+        Objects.requireNonNull(target, "target");
+        Objects.requireNonNull(p1, "p1");
+        Objects.requireNonNull(p2, "p2");
+        Objects.requireNonNull(p3, "p3");
+        Objects.requireNonNull(p4, "p4");
+        Objects.requireNonNull(p5, "p5");
+        Objects.requireNonNull(p6, "p6");
         return x -> Option.of(x)
             .filter(target::isInstance)
             .map(verified -> ((Unapply6<A, B, C, D, E, F>) verified).unapply())
@@ -100,7 +131,15 @@ public final class PatternFactory {
     }
 
     @SuppressWarnings("unchecked")
-    public static <O, A, B, C, D, E, F, G> Pattern<O> unapply7(Class<? extends Unapply7> target, Pattern<A> p1, Pattern<B> p2, Pattern<C> p3, Pattern<D> p4, Pattern<E> p5, Pattern<F> p6, Pattern<G> p7) {
+    public static <O, A, B, C, D, E, F, G> @NonNull Pattern<O> unapply7(@NonNull Class<? extends Unapply7> target, @NonNull Pattern<A> p1, @NonNull Pattern<B> p2, @NonNull Pattern<C> p3, @NonNull Pattern<D> p4, @NonNull Pattern<E> p5, @NonNull Pattern<F> p6, @NonNull Pattern<G> p7) {
+        Objects.requireNonNull(target, "target");
+        Objects.requireNonNull(p1, "p1");
+        Objects.requireNonNull(p2, "p2");
+        Objects.requireNonNull(p3, "p3");
+        Objects.requireNonNull(p4, "p4");
+        Objects.requireNonNull(p5, "p5");
+        Objects.requireNonNull(p6, "p6");
+        Objects.requireNonNull(p7, "p7");
         return x -> Option.of(x)
             .filter(target::isInstance)
             .map(verified -> ((Unapply7<A, B, C, D, E, F, G>) verified).unapply())
@@ -117,7 +156,16 @@ public final class PatternFactory {
     }
 
     @SuppressWarnings("unchecked")
-    public static <O, A, B, C, D, E, F, G, H> Pattern<O> unapply8(Class<? extends Unapply8> target, Pattern<A> p1, Pattern<B> p2, Pattern<C> p3, Pattern<D> p4, Pattern<E> p5, Pattern<F> p6, Pattern<G> p7, Pattern<H> p8) {
+    public static <O, A, B, C, D, E, F, G, H> @NonNull Pattern<O> unapply8(@NonNull Class<? extends Unapply8> target, @NonNull Pattern<A> p1, @NonNull Pattern<B> p2, @NonNull Pattern<C> p3, @NonNull Pattern<D> p4, @NonNull Pattern<E> p5, @NonNull Pattern<F> p6, @NonNull Pattern<G> p7, @NonNull Pattern<H> p8) {
+        Objects.requireNonNull(target, "target");
+        Objects.requireNonNull(p1, "p1");
+        Objects.requireNonNull(p2, "p2");
+        Objects.requireNonNull(p3, "p3");
+        Objects.requireNonNull(p4, "p4");
+        Objects.requireNonNull(p5, "p5");
+        Objects.requireNonNull(p6, "p6");
+        Objects.requireNonNull(p7, "p7");
+        Objects.requireNonNull(p8, "p8");
         return x -> Option.of(x)
             .filter(target::isInstance)
             .map(verified -> ((Unapply8<A, B, C, D, E, F, G, H>) verified).unapply())

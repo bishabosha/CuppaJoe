@@ -9,7 +9,6 @@ import com.github.bishabosha.cuppajoe.match.internal.PatternFactory;
 import com.github.bishabosha.cuppajoe.match.patterns.Pattern;
 import com.github.bishabosha.cuppajoe.tuples.*;
 
-import java.util.Objects;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
@@ -27,14 +26,14 @@ public final class API {
     @SafeVarargs
     public static <O>
     O
-    GuardUnsafe(@NonNull Guard<O>... guards) {
+    IfUnsafe(@NonNull Guard<O>... guards) {
         return Guards(guards).get();
     }
 
     @SafeVarargs
     public static <O>
     Option<O>
-    Guard(@NonNull Guard<O>... guards) {
+    If(@NonNull Guard<O>... guards) {
         return Guards(guards).match();
     }
 
@@ -42,7 +41,6 @@ public final class API {
     public static <O>
     Guard<O>
     Guards(@NonNull Guard<O>... guards) {
-        Objects.requireNonNull(guards, "guards");
         return GuardFactory.combine(guards);
     }
 
@@ -55,7 +53,6 @@ public final class API {
     public static <O>
     Guard<O>
     Edge(@NonNull Supplier<O> valueSupplier) {
-        Objects.requireNonNull(valueSupplier, "valueSupplier");
         return GuardFactory.edge(valueSupplier);
     }
 
@@ -63,178 +60,114 @@ public final class API {
     public static <I, O>
     Case<I, O>
     Cases(@NonNull Case<I, O>... cases) {
-        Objects.requireNonNull(cases, "cases");
         return CaseFactory.combine(cases);
     }
 
     public static <I, O>
     Case<I, O>
     With(@NonNull Pattern<I> matcher, @NonNull Supplier<O> binder) {
-        Objects.requireNonNull(matcher, "matcher");
-        Objects.requireNonNull(binder, "binder");
         return CaseFactory.with(matcher, binder);
     }
 
     public static <I, O, A>
     Case<I, O>
     With(@NonNull Pattern<I> matcher, @NonNull Func1<A, O> binder) {
-        Objects.requireNonNull(matcher, "matcher");
-        Objects.requireNonNull(binder, "binder");
         return CaseFactory.with(matcher, binder);
     }
 
     public static <I, O, A, B>
     Case<I, O>
     With(@NonNull Pattern<I> matcher, @NonNull Func2<A, B, O> binder) {
-        Objects.requireNonNull(matcher, "matcher");
-        Objects.requireNonNull(binder, "binder");
         return CaseFactory.with(matcher, binder);
     }
 
     public static <I, O, A, B, C>
     Case<I, O>
     With(@NonNull Pattern<I> matcher, @NonNull Func3<A, B, C, O> binder) {
-        Objects.requireNonNull(matcher, "matcher");
-        Objects.requireNonNull(binder, "binder");
         return CaseFactory.with(matcher, binder);
     }
 
     public static <I, O, A, B, C, D>
     Case<I, O>
     With(@NonNull Pattern<I> matcher, @NonNull Func4<A, B, C, D, O> binder) {
-        Objects.requireNonNull(matcher, "matcher");
-        Objects.requireNonNull(binder, "binder");
         return CaseFactory.with(matcher, binder);
     }
 
     public static <I, O, A, B, C, D, E>
     Case<I, O>
     With(@NonNull Pattern<I> matcher, @NonNull Func5<A, B, C, D, E, O> binder) {
-        Objects.requireNonNull(matcher, "matcher");
-        Objects.requireNonNull(binder, "binder");
         return CaseFactory.with(matcher, binder);
     }
 
     public static <I, O, A, B, C, D, E, F>
     Case<I, O>
     With(@NonNull Pattern<I> matcher, @NonNull Func6<A, B, C, D, E, F, O> binder) {
-        Objects.requireNonNull(matcher, "matcher");
-        Objects.requireNonNull(binder, "binder");
         return CaseFactory.with(matcher, binder);
     }
 
     public static <I, O, A, B, C, D, E, F, G>
     Case<I, O>
     With(@NonNull Pattern<I> matcher, @NonNull Func7<A, B, C, D, E, F, G, O> binder) {
-        Objects.requireNonNull(matcher, "matcher");
-        Objects.requireNonNull(binder, "binder");
         return CaseFactory.with(matcher, binder);
     }
 
     public static <I, O, A, B, C, D, E, F, G, H>
     Case<I, O>
     With(@NonNull Pattern<I> matcher, @NonNull Func8<A, B, C, D, E, F, G, H, O> binder) {
-        Objects.requireNonNull(matcher, "matcher");
-        Objects.requireNonNull(binder, "binder");
         return CaseFactory.with(matcher, binder);
     }
 
     public static <O>
     Pattern<O>
     PatternFor(@NonNull Unapply0 target) {
-        Objects.requireNonNull(target, "target");
         return PatternFactory.unapply0(target);
     }
 
     public static <O, A>
     Pattern<O>
     PatternFor(@NonNull Class<? extends Unapply1> target, @NonNull Pattern<A> p1) {
-        Objects.requireNonNull(target, "target");
-        Objects.requireNonNull(p1, "p1");
         return PatternFactory.unapply1(target, p1);
     }
 
     public static <O, A, B>
     Pattern<O>
     PatternFor(@NonNull Class<? extends Unapply2> target, @NonNull Pattern<A> p1, @NonNull Pattern<B> p2) {
-        Objects.requireNonNull(target, "target");
-        Objects.requireNonNull(p1, "p1");
-        Objects.requireNonNull(p2, "p2");
         return PatternFactory.unapply2(target, p1, p2);
     }
 
     public static <O, A, B, C>
     Pattern<O>
     PatternFor(@NonNull Class<? extends Unapply3> target, @NonNull Pattern<A> p1, @NonNull Pattern<B> p2, @NonNull Pattern<C> p3) {
-        Objects.requireNonNull(target, "target");
-        Objects.requireNonNull(p1, "p1");
-        Objects.requireNonNull(p2, "p2");
-        Objects.requireNonNull(p3, "p3");
         return PatternFactory.unapply3(target, p1, p2, p3);
     }
 
     public static <O, A, B, C, D>
     Pattern<O>
     PatternFor(@NonNull Class<? extends Unapply4> target, @NonNull Pattern<A> p1, @NonNull Pattern<B> p2, @NonNull Pattern<C> p3, @NonNull Pattern<D> p4) {
-        Objects.requireNonNull(target, "target");
-        Objects.requireNonNull(p1, "p1");
-        Objects.requireNonNull(p2, "p2");
-        Objects.requireNonNull(p3, "p3");
-        Objects.requireNonNull(p4, "p4");
         return PatternFactory.unapply4(target, p1, p2, p3, p4);
     }
 
     public static <O, A, B, C, D, E>
     Pattern<O>
     PatternFor(@NonNull Class<? extends Unapply5> target, @NonNull Pattern<A> p1, @NonNull Pattern<B> p2, @NonNull Pattern<C> p3, @NonNull Pattern<D> p4, @NonNull Pattern<E> p5) {
-        Objects.requireNonNull(target, "target");
-        Objects.requireNonNull(p1, "p1");
-        Objects.requireNonNull(p2, "p2");
-        Objects.requireNonNull(p3, "p3");
-        Objects.requireNonNull(p4, "p4");
-        Objects.requireNonNull(p5, "p5");
         return PatternFactory.unapply5(target, p1, p2, p3, p4, p5);
     }
 
     public static <O, A, B, C, D, E, F>
     Pattern<O>
     PatternFor(@NonNull Class<? extends Unapply6> target, @NonNull Pattern<A> p1, @NonNull Pattern<B> p2, @NonNull Pattern<C> p3, @NonNull Pattern<D> p4, @NonNull Pattern<E> p5, @NonNull Pattern<F> p6) {
-        Objects.requireNonNull(target, "target");
-        Objects.requireNonNull(p1, "p1");
-        Objects.requireNonNull(p2, "p2");
-        Objects.requireNonNull(p3, "p3");
-        Objects.requireNonNull(p4, "p4");
-        Objects.requireNonNull(p5, "p5");
-        Objects.requireNonNull(p6, "p6");
         return PatternFactory.unapply6(target, p1, p2, p3, p4, p5, p6);
     }
 
     public static <O, A, B, C, D, E, F, G>
     Pattern<O>
     PatternFor(@NonNull Class<? extends Unapply7> target, @NonNull Pattern<A> p1, @NonNull Pattern<B> p2, @NonNull Pattern<C> p3, @NonNull Pattern<D> p4, @NonNull Pattern<E> p5, @NonNull Pattern<F> p6, @NonNull Pattern<G> p7) {
-        Objects.requireNonNull(target, "target");
-        Objects.requireNonNull(p1, "p1");
-        Objects.requireNonNull(p2, "p2");
-        Objects.requireNonNull(p3, "p3");
-        Objects.requireNonNull(p4, "p4");
-        Objects.requireNonNull(p5, "p5");
-        Objects.requireNonNull(p6, "p6");
-        Objects.requireNonNull(p7, "p7");
         return PatternFactory.unapply7(target, p1, p2, p3, p4, p5, p6, p7);
     }
 
     public static <O, A, B, C, D, E, F, G, H>
     Pattern<O>
     PatternFor(@NonNull Class<? extends Unapply8> target, @NonNull Pattern<A> p1, @NonNull Pattern<B> p2, @NonNull Pattern<C> p3, @NonNull Pattern<D> p4, @NonNull Pattern<E> p5, @NonNull Pattern<F> p6, @NonNull Pattern<G> p7, @NonNull Pattern<H> p8) {
-        Objects.requireNonNull(target, "target");
-        Objects.requireNonNull(p1, "p1");
-        Objects.requireNonNull(p2, "p2");
-        Objects.requireNonNull(p3, "p3");
-        Objects.requireNonNull(p4, "p4");
-        Objects.requireNonNull(p5, "p5");
-        Objects.requireNonNull(p6, "p6");
-        Objects.requireNonNull(p7, "p7");
-        Objects.requireNonNull(p8, "p8");
         return PatternFactory.unapply8(target, p1, p2, p3, p4, p5, p6, p7, p8);
     }
 }

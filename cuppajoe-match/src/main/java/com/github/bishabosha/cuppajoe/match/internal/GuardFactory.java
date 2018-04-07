@@ -6,6 +6,7 @@ import com.github.bishabosha.cuppajoe.control.Option;
 import com.github.bishabosha.cuppajoe.functions.Func0;
 import com.github.bishabosha.cuppajoe.match.Guard;
 
+import java.util.Objects;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
@@ -37,12 +38,14 @@ public final class GuardFactory {
      * @param <O>           The type of the output variable
      * @return a Guard that will supply {@link Option} of the supplied value.
      */
-    public static <O> Guard<O> edge(Supplier<O> valueSupplier) {
+    public static <O> Guard<O> edge(@NonNull Supplier<O> valueSupplier) {
+        Objects.requireNonNull(valueSupplier, "valueSupplier");
         return () -> Some(valueSupplier.get());
     }
 
     @SafeVarargs
-    public static <O> Guard<O> combine(Guard<O>... guards) {
+    public static <O> Guard<O> combine(@NonNull Guard<O>... guards) {
+        Objects.requireNonNull(guards, "guards");
         return () -> {
             Option<O> result = None();
             for (var guard : guards) {

@@ -6,9 +6,6 @@ package com.github.bishabosha.cuppajoe.match;
 
 import com.github.bishabosha.cuppajoe.annotation.NonNull;
 import com.github.bishabosha.cuppajoe.control.Option;
-import com.github.bishabosha.cuppajoe.match.internal.CaseFactory;
-
-import java.util.Objects;
 
 import static com.github.bishabosha.cuppajoe.match.API.Cases;
 
