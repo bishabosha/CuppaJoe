@@ -5,14 +5,14 @@
 package com.github.bishabosha.cuppajoe.control;
 
 import com.github.bishabosha.cuppajoe.annotation.NonNull;
-import com.github.bishabosha.cuppajoe.functions.Func0;
+import com.github.bishabosha.cuppajoe.higher.applicative.Applicative1;
+import com.github.bishabosha.cuppajoe.higher.functions.Func0;
+import com.github.bishabosha.cuppajoe.higher.monad.Monad1;
+import com.github.bishabosha.cuppajoe.higher.peek.Peek1;
+import com.github.bishabosha.cuppajoe.higher.value.Value1;
 import com.github.bishabosha.cuppajoe.tuples.Unapply0;
 import com.github.bishabosha.cuppajoe.tuples.Unapply1;
 import com.github.bishabosha.cuppajoe.tuples.Unit;
-import com.github.bishabosha.cuppajoe.typeclass.applicative.Applicative1;
-import com.github.bishabosha.cuppajoe.typeclass.monad.Monad1;
-import com.github.bishabosha.cuppajoe.typeclass.peek.Peek1;
-import com.github.bishabosha.cuppajoe.typeclass.value.Value1;
 import com.github.bishabosha.cuppajoe.util.Iterators;
 
 import java.util.*;
@@ -90,11 +90,6 @@ public interface Option<E> extends Monad1<Option, E>, Peek1<E>, Value1<Option, E
         if (!isEmpty()) {
             consumer.accept(get());
         }
-    }
-
-    @Override
-    default Option<E> toOption() {
-        return this;
     }
 
     @Override

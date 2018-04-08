@@ -1,8 +1,8 @@
 package com.github.bishabosha.cuppajoe.tuples;
 
 import com.github.bishabosha.cuppajoe.annotation.NonNull;
-import com.github.bishabosha.cuppajoe.functions.Func1;
-import com.github.bishabosha.cuppajoe.typeclass.compose.Compose1;
+import com.github.bishabosha.cuppajoe.higher.compose.Compose1;
+import com.github.bishabosha.cuppajoe.higher.functions.Func1;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -36,7 +36,7 @@ public final class Tuple1<A> implements Tuple, Unapply1<A>, Compose1<A> {
     @Override
     public <O> O compose(@NonNull Function<? super A, ? extends O> mapper) {
         Objects.requireNonNull(mapper, "mapper");
-        return Func1.<A, O>narrow(mapper).tupled().apply(this);
+        return Tuple.<A, O>tupled(mapper).apply(this);
     }
 
     public <O> Tuple1<O> map(@NonNull Function<? super A, ? extends O> mapper) {

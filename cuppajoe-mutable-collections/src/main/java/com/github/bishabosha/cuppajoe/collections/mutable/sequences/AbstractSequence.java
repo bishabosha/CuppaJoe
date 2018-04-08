@@ -5,7 +5,7 @@
 package com.github.bishabosha.cuppajoe.collections.mutable.sequences;
 
 import com.github.bishabosha.cuppajoe.API;
-import com.github.bishabosha.cuppajoe.collections.mutable.base.AbstractArrayHelper;
+import com.github.bishabosha.cuppajoe.collections.mutable.internal.AbstractArrayHelper;
 import com.github.bishabosha.cuppajoe.collections.mutable.pipelines.Pipeline;
 import com.github.bishabosha.cuppajoe.control.Option;
 import com.github.bishabosha.cuppajoe.util.Iterators;

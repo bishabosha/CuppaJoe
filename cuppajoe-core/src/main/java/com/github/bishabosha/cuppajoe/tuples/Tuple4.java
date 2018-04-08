@@ -2,8 +2,8 @@ package com.github.bishabosha.cuppajoe.tuples;
 
 import com.github.bishabosha.cuppajoe.annotation.NonNull;
 import com.github.bishabosha.cuppajoe.control.Option;
-import com.github.bishabosha.cuppajoe.functions.Func4;
-import com.github.bishabosha.cuppajoe.typeclass.compose.Compose4;
+import com.github.bishabosha.cuppajoe.higher.compose.Compose4;
+import com.github.bishabosha.cuppajoe.higher.functions.Func4;
 
 import java.util.Objects;
 

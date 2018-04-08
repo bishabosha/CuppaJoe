@@ -1,12 +1,13 @@
 package com.github.bishabosha.cuppajoe.control;
 
 import com.github.bishabosha.cuppajoe.annotation.NonNull;
-import com.github.bishabosha.cuppajoe.typeclass.applicative.Applicative1;
-import com.github.bishabosha.cuppajoe.typeclass.functor.Functor1;
-import com.github.bishabosha.cuppajoe.typeclass.functor.Functor2;
-import com.github.bishabosha.cuppajoe.typeclass.monad.Monad1;
-import com.github.bishabosha.cuppajoe.typeclass.peek.Peek1;
-import com.github.bishabosha.cuppajoe.typeclass.peek.Peek2;
+import com.github.bishabosha.cuppajoe.higher.applicative.Applicative1;
+import com.github.bishabosha.cuppajoe.higher.functor.Functor1;
+import com.github.bishabosha.cuppajoe.higher.functor.Functor2;
+import com.github.bishabosha.cuppajoe.higher.monad.Monad1;
+import com.github.bishabosha.cuppajoe.higher.peek.Peek1;
+import com.github.bishabosha.cuppajoe.higher.peek.Peek2;
+import com.github.bishabosha.cuppajoe.tuples.Unapply1;
 
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -170,7 +171,7 @@ public interface Either<L, R> extends Functor2<Either, L, R>, Peek2<L, R> {
         }
     }
 
-    class Left<L, R> implements Either<L, R> {
+    class Left<L, R> implements Either<L, R>, Unapply1<L> {
 
         private final L value;
 
@@ -194,12 +195,17 @@ public interface Either<L, R> extends Functor2<Either, L, R>, Peek2<L, R> {
         }
 
         @Override
+        public L unapply() {
+            return left();
+        }
+
+        @Override
         public String toString() {
             return "Left(" + value + ")";
         }
     }
 
-    class Right<L, R> implements Either<L, R> {
+    class Right<L, R> implements Either<L, R>, Unapply1<R> {
 
         private final R value;
 
@@ -225,6 +231,11 @@ public interface Either<L, R> extends Functor2<Either, L, R>, Peek2<L, R> {
         @Override
         public String toString() {
             return "Right(" + value + ")";
+        }
+
+        @Override
+        public R unapply() {
+            return right();
         }
     }
 }

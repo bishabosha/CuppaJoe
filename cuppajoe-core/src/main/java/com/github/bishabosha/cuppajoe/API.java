@@ -5,8 +5,8 @@ import com.github.bishabosha.cuppajoe.control.Either;
 import com.github.bishabosha.cuppajoe.control.Lazy;
 import com.github.bishabosha.cuppajoe.control.Option;
 import com.github.bishabosha.cuppajoe.control.Try;
-import com.github.bishabosha.cuppajoe.functions.CheckedFunc0;
-import com.github.bishabosha.cuppajoe.functions.TailCall;
+import com.github.bishabosha.cuppajoe.higher.functions.CheckedFunc0;
+import com.github.bishabosha.cuppajoe.higher.functions.TailCall;
 import com.github.bishabosha.cuppajoe.tuples.*;
 
 import java.util.function.Supplier;
@@ -16,8 +16,7 @@ public final class API {
     private API() {
     }
 
-    public static
-    Unit
+    public static Unit
     Tuple() {
         return Tuple.of();
     }

@@ -2,10 +2,10 @@ package com.github.bishabosha.cuppajoe.tuples;
 
 import com.github.bishabosha.cuppajoe.annotation.NonNull;
 import com.github.bishabosha.cuppajoe.control.Option;
-import com.github.bishabosha.cuppajoe.typeclass.applicative.Applicative2;
-import com.github.bishabosha.cuppajoe.typeclass.compose.Compose2;
-import com.github.bishabosha.cuppajoe.typeclass.monad.Monad2;
-import com.github.bishabosha.cuppajoe.typeclass.peek.Peek2;
+import com.github.bishabosha.cuppajoe.higher.applicative.Applicative2;
+import com.github.bishabosha.cuppajoe.higher.compose.Compose2;
+import com.github.bishabosha.cuppajoe.higher.monad.Monad2;
+import com.github.bishabosha.cuppajoe.higher.peek.Peek2;
 
 import java.util.Objects;
 import java.util.function.BiFunction;
