@@ -4,8 +4,8 @@
 
 package com.github.bishabosha.cuppajoe.collections.mutable.hashtables;
 
-import com.github.bishabosha.cuppajoe.collections.mutable.base.AbstractMap;
-import com.github.bishabosha.cuppajoe.collections.mutable.base.MapEntry;
+import com.github.bishabosha.cuppajoe.collections.mutable.internal.AbstractMap;
+import com.github.bishabosha.cuppajoe.collections.mutable.internal.MapEntry;
 
 public class HashMap<K, V> extends AbstractMap<K, V> {
 

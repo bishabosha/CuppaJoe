@@ -1,8 +1,8 @@
 package com.github.bishabosha.cuppajoe.higher.monad;
 
 import com.github.bishabosha.cuppajoe.annotation.NonNull;
-import com.github.bishabosha.cuppajoe.functions.*;
 import com.github.bishabosha.cuppajoe.higher.applicative.Applicative1;
+import com.github.bishabosha.cuppajoe.higher.functions.*;
 import com.github.bishabosha.cuppajoe.higher.functor.Functor1;
 
 import java.util.Objects;

@@ -1,2 +1,3 @@
-module $MODULE_NAME$ {
+module com.github.bishabosha.cuppajoe.annotation {
+    exports com.github.bishabosha.cuppajoe.annotation;
 }

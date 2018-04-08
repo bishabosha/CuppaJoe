@@ -4,7 +4,7 @@
 
 package com.github.bishabosha.cuppajoe.collections.mutable.lists;
 
-import com.github.bishabosha.cuppajoe.collections.mutable.base.AbstractCollection;
+import com.github.bishabosha.cuppajoe.collections.mutable.internal.AbstractCollection;
 import com.github.bishabosha.cuppajoe.util.Iterators;
 
 import java.util.Collection;

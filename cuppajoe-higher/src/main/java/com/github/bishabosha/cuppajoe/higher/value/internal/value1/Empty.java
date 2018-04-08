@@ -1,4 +1,7 @@
-package com.github.bishabosha.cuppajoe.higher.value;
+package com.github.bishabosha.cuppajoe.higher.value.internal.value1;
 
-public class Empty {
+import com.github.bishabosha.cuppajoe.higher.value.Value1.Value;
+
+public enum Empty implements Value<Void> {
+    INSTANCE
 }

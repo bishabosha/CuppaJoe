@@ -4,9 +4,9 @@
 
 package com.github.bishabosha.cuppajoe.collections.mutable.trees;
 
-import com.github.bishabosha.cuppajoe.collections.mutable.base.AbstractMap;
-import com.github.bishabosha.cuppajoe.collections.mutable.base.ComparableEntry;
-import com.github.bishabosha.cuppajoe.collections.mutable.base.MapEntry;
+import com.github.bishabosha.cuppajoe.collections.mutable.internal.AbstractMap;
+import com.github.bishabosha.cuppajoe.collections.mutable.internal.ComparableEntry;
+import com.github.bishabosha.cuppajoe.collections.mutable.internal.MapEntry;
 
 public class TreeMap<K extends Comparable<K>, V> extends AbstractMap<K, V> {
 

@@ -1,7 +1,6 @@
-package com.github.bishabosha.cuppajoe.collections.mutable.sequences;
+package com.github.bishabosha.cuppajoe.examples.sequences;
 
 import com.github.bishabosha.cuppajoe.control.Option;
-import com.github.bishabosha.cuppajoe.examples.sequences.SequenceOf;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2017. Jamie Thompson <bishbashboshjt@gmail.com>
  */
-package com.github.bishabosha.cuppajoe.functions;
+package com.github.bishabosha.cuppajoe.higher.functions;
 
 import com.github.bishabosha.cuppajoe.annotation.NonNull;
 import com.github.bishabosha.cuppajoe.higher.value.Value1.Value;

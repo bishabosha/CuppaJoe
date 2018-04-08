@@ -20,6 +20,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.github.bishabosha.cuppajoe.API.*;
+import static com.github.bishabosha.cuppajoe.higher.monad.Monad1.applyImpl;
 
 public class Array<E> implements Seq<Array, E>, Value1<Array, E> {
     private Object[] array;

@@ -1,5 +1,8 @@
 package com.github.bishabosha.cuppajoe.match.patterns;
 
+import com.github.bishabosha.cuppajoe.control.Either;
+import com.github.bishabosha.cuppajoe.control.Either.Left;
+import com.github.bishabosha.cuppajoe.control.Either.Right;
 import com.github.bishabosha.cuppajoe.control.Lazy;
 import com.github.bishabosha.cuppajoe.control.Option;
 import com.github.bishabosha.cuppajoe.control.Try;
@@ -60,6 +63,14 @@ public final class Standard {
 
     public static <O> Pattern<Try<O>> Failure_(Pattern<Exception> error) {
         return PatternFor(Try.Failure.class, error);
+    }
+
+    public static <L, R> Pattern<Either<L, R>> Left_(Pattern<L> value) {
+        return PatternFor(Left.class, value);
+    }
+
+    public static <L, R> Pattern<Either<L, R>> Right_(Pattern<R> value) {
+        return PatternFor(Right.class, value);
     }
 
     public static <O> Pattern<Lazy<O>> Lazy_(Pattern<O> value) {

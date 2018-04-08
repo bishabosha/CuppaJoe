@@ -4,7 +4,7 @@
 
 package com.github.bishabosha.cuppajoe.collections.mutable.trees;
 
-import com.github.bishabosha.cuppajoe.collections.mutable.base.AbstractSet;
+import com.github.bishabosha.cuppajoe.collections.mutable.internal.AbstractSet;
 
 import java.util.*;
 import java.util.function.BiPredicate;

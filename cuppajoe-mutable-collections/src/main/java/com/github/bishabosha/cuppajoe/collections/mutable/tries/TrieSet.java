@@ -4,7 +4,7 @@
 
 package com.github.bishabosha.cuppajoe.collections.mutable.tries;
 
-import com.github.bishabosha.cuppajoe.collections.mutable.base.AbstractSet;
+import com.github.bishabosha.cuppajoe.collections.mutable.internal.AbstractSet;
 import com.github.bishabosha.cuppajoe.collections.mutable.lists.LinkedList;
 
 import java.util.Iterator;

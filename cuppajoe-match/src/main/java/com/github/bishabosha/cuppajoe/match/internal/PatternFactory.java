@@ -31,8 +31,7 @@ public final class PatternFactory {
         Objects.requireNonNull(p1, "p1");
         return x -> Option.of(x)
             .filter(target::isInstance)
-            .map(verified -> ((Unapply1<A>) verified).unapply())
-            .flatMap(p1::test);
+            .flatMap(verified -> (p1.test(((Unapply1<A>) verified).unapply())));
     }
 
     @SuppressWarnings("unchecked")

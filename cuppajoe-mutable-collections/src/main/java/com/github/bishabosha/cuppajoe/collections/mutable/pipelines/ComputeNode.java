@@ -5,7 +5,7 @@
 package com.github.bishabosha.cuppajoe.collections.mutable.pipelines;
 
 import com.github.bishabosha.cuppajoe.control.Option;
-import com.github.bishabosha.cuppajoe.functions.Func1;
+import com.github.bishabosha.cuppajoe.higher.functions.Func1;
 
 import java.util.Iterator;
 import java.util.function.BiConsumer;

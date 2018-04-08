@@ -4,8 +4,8 @@
 
 package com.github.bishabosha.cuppajoe.collections.mutable.tries;
 
-import com.github.bishabosha.cuppajoe.collections.mutable.base.BasicSet;
-import com.github.bishabosha.cuppajoe.collections.mutable.base.MapEntry;
+import com.github.bishabosha.cuppajoe.collections.mutable.internal.BasicSet;
+import com.github.bishabosha.cuppajoe.collections.mutable.internal.MapEntry;
 import com.github.bishabosha.cuppajoe.collections.mutable.lists.LinkedList;
 import com.github.bishabosha.cuppajoe.util.Iterators;
 

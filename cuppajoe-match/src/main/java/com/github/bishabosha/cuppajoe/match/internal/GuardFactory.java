@@ -3,7 +3,7 @@ package com.github.bishabosha.cuppajoe.match.internal;
 import com.github.bishabosha.cuppajoe.API;
 import com.github.bishabosha.cuppajoe.annotation.NonNull;
 import com.github.bishabosha.cuppajoe.control.Option;
-import com.github.bishabosha.cuppajoe.functions.Func0;
+import com.github.bishabosha.cuppajoe.higher.functions.Func0;
 import com.github.bishabosha.cuppajoe.match.Guard;
 
 import java.util.Objects;

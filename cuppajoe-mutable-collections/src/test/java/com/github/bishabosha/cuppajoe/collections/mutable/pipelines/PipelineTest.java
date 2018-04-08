@@ -4,7 +4,7 @@
 
 package com.github.bishabosha.cuppajoe.collections.mutable.pipelines;
 
-import com.github.bishabosha.cuppajoe.collections.mutable.base.MapEntry;
+import com.github.bishabosha.cuppajoe.collections.mutable.internal.MapEntry;
 import com.github.bishabosha.cuppajoe.control.Option;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -12,9 +12,7 @@ import org.junit.jupiter.api.Test;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class PipelineTest {
 

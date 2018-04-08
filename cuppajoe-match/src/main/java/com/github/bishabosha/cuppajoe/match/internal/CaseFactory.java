@@ -2,7 +2,7 @@ package com.github.bishabosha.cuppajoe.match.internal;
 
 import com.github.bishabosha.cuppajoe.annotation.NonNull;
 import com.github.bishabosha.cuppajoe.control.Option;
-import com.github.bishabosha.cuppajoe.functions.*;
+import com.github.bishabosha.cuppajoe.higher.functions.*;
 import com.github.bishabosha.cuppajoe.match.Case;
 import com.github.bishabosha.cuppajoe.match.patterns.Pattern;
 import com.github.bishabosha.cuppajoe.match.patterns.Result;

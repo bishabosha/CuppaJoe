@@ -2,7 +2,7 @@
  * Copyright (c) 2017. Jamie Thompson <bishbashboshjt@gmail.com>
  */
 
-package com.github.bishabosha.cuppajoe.examples.collections.mutable.sequences;
+package com.github.bishabosha.cuppajoe.examples.sequences;
 
 import com.github.bishabosha.cuppajoe.collections.mutable.sequences.NonRecursiveSequence;
 import com.github.bishabosha.cuppajoe.collections.mutable.sequences.RecursiveSequence;

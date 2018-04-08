@@ -4,7 +4,7 @@
 
 package com.github.bishabosha.cuppajoe.collections.mutable.hashtables;
 
-import com.github.bishabosha.cuppajoe.collections.mutable.base.AbstractSet;
+import com.github.bishabosha.cuppajoe.collections.mutable.internal.AbstractSet;
 import com.github.bishabosha.cuppajoe.collections.mutable.lists.LinkedList;
 import com.github.bishabosha.cuppajoe.util.Iterators;
 

@@ -1,4 +1,4 @@
-package com.github.bishabosha.cuppajoe.functions;
+package com.github.bishabosha.cuppajoe.higher.functions;
 
 import com.github.bishabosha.cuppajoe.annotation.NonNull;
 

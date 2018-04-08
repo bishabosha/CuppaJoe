@@ -14,8 +14,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.github.bishabosha.cuppajoe.core</groupId>
-            <artifactId>cuppajoe-core</artifactId>
+            <groupId>com.github.bishabosha.cuppajoe.collections.immutable</groupId>
+            <artifactId>cuppajoe-immutable-collections</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>

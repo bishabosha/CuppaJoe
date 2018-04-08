@@ -7,9 +7,7 @@ package com.github.bishabosha.cuppajoe.collections.mutable.tries;
 import com.github.bishabosha.cuppajoe.util.Iterators;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TrieSetTest {
 

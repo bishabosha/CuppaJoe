@@ -1,12 +1,13 @@
 package com.github.bishabosha.cuppajoe.higher.monad;
 
 import com.github.bishabosha.cuppajoe.annotation.NonNull;
-import com.github.bishabosha.cuppajoe.functions.*;
 import com.github.bishabosha.cuppajoe.higher.applicative.Applicative1;
+import com.github.bishabosha.cuppajoe.higher.functions.*;
 import com.github.bishabosha.cuppajoe.higher.functor.Functor1;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
@@ -105,6 +106,11 @@ public class Monad1Test {
         @Override
         public <U> Functor1<BasicMonad1, U> map(@NonNull Function<? super T, ? extends U> mapper) {
             return pure(mapper.apply(value));
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return obj instanceof BasicMonad1 && Objects.equals(value, ((BasicMonad1) obj).value);
         }
     }
 }

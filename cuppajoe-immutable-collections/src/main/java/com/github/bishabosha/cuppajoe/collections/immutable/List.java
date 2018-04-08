@@ -27,6 +27,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.github.bishabosha.cuppajoe.API.*;
+import static com.github.bishabosha.cuppajoe.higher.monad.Monad1.applyImpl;
 
 public interface List<E> extends Seq<List, E>, Value1<List, E> {
 

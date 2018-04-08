@@ -4,7 +4,7 @@
 
 package com.github.bishabosha.cuppajoe.collections.mutable.pipelines;
 
-import com.github.bishabosha.cuppajoe.collections.mutable.base.AbstractBase;
+import com.github.bishabosha.cuppajoe.collections.mutable.internal.AbstractBase;
 
 import java.util.*;
 import java.util.function.Function;

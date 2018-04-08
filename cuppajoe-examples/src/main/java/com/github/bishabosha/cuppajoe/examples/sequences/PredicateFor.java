@@ -1,4 +1,4 @@
-package com.github.bishabosha.cuppajoe.examples.collections.mutable.sequences;
+package com.github.bishabosha.cuppajoe.examples.sequences;
 
 import java.util.List;
 import java.util.function.Predicate;

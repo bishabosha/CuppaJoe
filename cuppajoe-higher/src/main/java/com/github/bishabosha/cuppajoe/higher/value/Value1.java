@@ -1,26 +1,30 @@
 package com.github.bishabosha.cuppajoe.higher.value;
 
 import com.github.bishabosha.cuppajoe.annotation.NonNull;
-import com.github.bishabosha.cuppajoe.control.Option;
+import com.github.bishabosha.cuppajoe.higher.value.internal.value1.Box;
+import com.github.bishabosha.cuppajoe.higher.value.internal.value1.Empty;
 
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import static com.github.bishabosha.cuppajoe.API.None;
-import static com.github.bishabosha.cuppajoe.API.Some;
-
 public interface Value1<INSTANCE extends Value1, E> extends Iterable<E> {
-    boolean isEmpty();
 
-    E get();
+    default Value1<INSTANCE, E> or(@NonNull Supplier<? extends Value1<INSTANCE, ? extends E>> alternative) {
+        return Value1.Type.narrow(alternative.get());
+    }
+
+    default boolean isEmpty() {
+        return true;
+    }
 
     default boolean containsValue() {
         return !isEmpty();
     }
 
-    Value1<INSTANCE, E> or(@NonNull Supplier<? extends Value1<INSTANCE, ? extends E>> alternative);
+    default E get() {
+        throw new NoSuchElementException();
+    }
 
     default E orElse(E alternative) {
         return isEmpty() ? alternative : get();
@@ -60,17 +64,37 @@ public interface Value1<INSTANCE extends Value1, E> extends Iterable<E> {
         }
     }
 
-    default Option<E> toOption() {
-        return isEmpty() ? API.None() : API.Some(get());
-    }
-
     default Optional<E> toJavaOptional() {
         return isEmpty() ? Optional.empty() : Optional.ofNullable(get());
     }
 
+    @Override
+    default Iterator<E> iterator() {
+        return Collections.emptyIterator();
+    }
+
+    static <O> Value<O> value(O value) {
+        return new Box<>(value);
+    }
+
+    static <O> Value<O> empty() {
+        return Value1.Type.<Value<O>, Value, O>castParam(Empty.INSTANCE);
+    }
+
+    interface Value<E> extends Value1<Value, E> {
+    }
+
     interface Type {
+
+        @SuppressWarnings("unchecked")
         static <OUT extends Value1<INSTANCE, U>, INSTANCE extends Value1, U> OUT narrow(Value1<INSTANCE, ? extends U> higher) {
+            return (OUT) higher;
+        }
+
+        @SuppressWarnings("unchecked")
+        static <OUT extends Value1<INSTANCE, U>, INSTANCE extends Value1, U> OUT castParam(Value1<INSTANCE, ?> higher) {
             return (OUT) higher;
         }
     }
 }
+

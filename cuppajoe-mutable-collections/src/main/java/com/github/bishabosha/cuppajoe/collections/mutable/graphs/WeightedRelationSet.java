@@ -4,8 +4,8 @@
 
 package com.github.bishabosha.cuppajoe.collections.mutable.graphs;
 
-import com.github.bishabosha.cuppajoe.collections.mutable.base.MapEntry;
 import com.github.bishabosha.cuppajoe.collections.mutable.hashtables.HashMap;
+import com.github.bishabosha.cuppajoe.collections.mutable.internal.MapEntry;
 
 import java.util.Collection;
 import java.util.Iterator;
