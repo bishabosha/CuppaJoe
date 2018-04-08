@@ -5,7 +5,7 @@
 package com.github.bishabosha.cuppajoe.control;
 
 import com.github.bishabosha.cuppajoe.annotation.NonNull;
-import com.github.bishabosha.cuppajoe.tuples.Unapply1;
+import com.github.bishabosha.cuppajoe.higher.unapply.Unapply1;
 
 import java.util.Objects;
 import java.util.function.Supplier;

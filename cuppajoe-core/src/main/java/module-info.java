@@ -3,6 +3,5 @@ module com.github.bishabosha.cuppajoe.core {
 
     exports com.github.bishabosha.cuppajoe;
     exports com.github.bishabosha.cuppajoe.control;
-    exports com.github.bishabosha.cuppajoe.tuples;
     exports com.github.bishabosha.cuppajoe.util;
 }

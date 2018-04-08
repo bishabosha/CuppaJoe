@@ -1,4 +1,6 @@
-package com.github.bishabosha.cuppajoe.tuples;
+package com.github.bishabosha.cuppajoe.collections.immutable.tuples;
+
+import com.github.bishabosha.cuppajoe.higher.unapply.Unapply0;
 
 public enum Unit implements Tuple, Unapply0 {
     INSTANCE;

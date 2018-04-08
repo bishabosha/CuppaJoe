@@ -1,9 +1,10 @@
-package com.github.bishabosha.cuppajoe.tuples;
+package com.github.bishabosha.cuppajoe.collections.immutable.tuples;
 
 import com.github.bishabosha.cuppajoe.annotation.NonNull;
 import com.github.bishabosha.cuppajoe.control.Option;
 import com.github.bishabosha.cuppajoe.higher.compose.Compose4;
 import com.github.bishabosha.cuppajoe.higher.functions.Func4;
+import com.github.bishabosha.cuppajoe.higher.unapply.Unapply4;
 
 import java.util.Objects;
 

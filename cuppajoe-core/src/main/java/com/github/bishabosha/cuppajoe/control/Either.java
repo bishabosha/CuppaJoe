@@ -7,7 +7,7 @@ import com.github.bishabosha.cuppajoe.higher.functor.Functor2;
 import com.github.bishabosha.cuppajoe.higher.monad.Monad1;
 import com.github.bishabosha.cuppajoe.higher.peek.Peek1;
 import com.github.bishabosha.cuppajoe.higher.peek.Peek2;
-import com.github.bishabosha.cuppajoe.tuples.Unapply1;
+import com.github.bishabosha.cuppajoe.higher.unapply.Unapply1;
 
 import java.util.NoSuchElementException;
 import java.util.Objects;

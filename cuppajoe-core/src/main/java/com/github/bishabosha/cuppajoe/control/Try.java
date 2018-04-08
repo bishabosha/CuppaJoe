@@ -5,8 +5,8 @@ import com.github.bishabosha.cuppajoe.higher.applicative.Applicative1;
 import com.github.bishabosha.cuppajoe.higher.functions.CheckedFunc0;
 import com.github.bishabosha.cuppajoe.higher.monad.Monad1;
 import com.github.bishabosha.cuppajoe.higher.peek.Peek1;
+import com.github.bishabosha.cuppajoe.higher.unapply.Unapply1;
 import com.github.bishabosha.cuppajoe.higher.value.Value1;
-import com.github.bishabosha.cuppajoe.tuples.Unapply1;
 import com.github.bishabosha.cuppajoe.util.Iterators;
 
 import java.util.*;

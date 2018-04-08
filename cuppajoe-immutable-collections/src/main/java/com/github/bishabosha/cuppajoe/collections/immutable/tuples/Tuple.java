@@ -1,4 +1,4 @@
-package com.github.bishabosha.cuppajoe.tuples;
+package com.github.bishabosha.cuppajoe.collections.immutable.tuples;
 
 import com.github.bishabosha.cuppajoe.higher.functions.*;
 import com.github.bishabosha.cuppajoe.higher.value.Value1.Value;

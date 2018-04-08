@@ -1,4 +1,4 @@
-package com.github.bishabosha.cuppajoe.tuples;
+package com.github.bishabosha.cuppajoe.collections.immutable.tuples;
 
 import java.util.Iterator;
 

@@ -9,10 +9,9 @@ import com.github.bishabosha.cuppajoe.higher.applicative.Applicative1;
 import com.github.bishabosha.cuppajoe.higher.functions.Func0;
 import com.github.bishabosha.cuppajoe.higher.monad.Monad1;
 import com.github.bishabosha.cuppajoe.higher.peek.Peek1;
+import com.github.bishabosha.cuppajoe.higher.unapply.Unapply0;
+import com.github.bishabosha.cuppajoe.higher.unapply.Unapply1;
 import com.github.bishabosha.cuppajoe.higher.value.Value1;
-import com.github.bishabosha.cuppajoe.tuples.Unapply0;
-import com.github.bishabosha.cuppajoe.tuples.Unapply1;
-import com.github.bishabosha.cuppajoe.tuples.Unit;
 import com.github.bishabosha.cuppajoe.util.Iterators;
 
 import java.util.*;
@@ -151,7 +150,7 @@ public interface Option<E> extends Monad1<Option, E>, Peek1<E>, Value1<Option, E
         }
     }
 
-    enum None implements Option<Unit>, Unapply0 {
+    enum None implements Option<Void>, Unapply0 {
 
         INSTANCE;
 

@@ -1,4 +1,4 @@
-package com.github.bishabosha.cuppajoe.tuples;
+package com.github.bishabosha.cuppajoe.collections.immutable.tuples;
 
 import com.github.bishabosha.cuppajoe.annotation.NonNull;
 import com.github.bishabosha.cuppajoe.control.Option;
@@ -6,6 +6,7 @@ import com.github.bishabosha.cuppajoe.higher.applicative.Applicative2;
 import com.github.bishabosha.cuppajoe.higher.compose.Compose2;
 import com.github.bishabosha.cuppajoe.higher.monad.Monad2;
 import com.github.bishabosha.cuppajoe.higher.peek.Peek2;
+import com.github.bishabosha.cuppajoe.higher.unapply.Unapply2;
 
 import java.util.Objects;
 import java.util.function.BiFunction;
