@@ -1,13 +1,13 @@
 package com.github.bishabosha.cuppajoe.collections.immutable;
 
 import com.github.bishabosha.cuppajoe.annotation.NonNull;
+import com.github.bishabosha.cuppajoe.collections.immutable.tuples.Tuple2;
 import com.github.bishabosha.cuppajoe.control.Option;
 import com.github.bishabosha.cuppajoe.higher.applicative.Applicative1;
 import com.github.bishabosha.cuppajoe.higher.foldable.Foldable;
 import com.github.bishabosha.cuppajoe.higher.monad.Monad1;
 import com.github.bishabosha.cuppajoe.higher.monoid.Monoid1;
 import com.github.bishabosha.cuppajoe.higher.value.Value1;
-import com.github.bishabosha.cuppajoe.tuples.Tuple2;
 import com.github.bishabosha.cuppajoe.util.Iterators;
 import com.github.bishabosha.cuppajoe.util.Predicates;
 
@@ -19,7 +19,9 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.github.bishabosha.cuppajoe.API.*;
+import static com.github.bishabosha.cuppajoe.API.None;
+import static com.github.bishabosha.cuppajoe.API.Some;
+import static com.github.bishabosha.cuppajoe.collections.immutable.API.Tuple;
 import static com.github.bishabosha.cuppajoe.higher.monad.Monad1.applyImpl;
 
 public class Array<E> implements Seq<Array, E>, Value1<Array, E> {

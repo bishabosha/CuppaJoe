@@ -6,7 +6,6 @@ import com.github.bishabosha.cuppajoe.control.Either.Right;
 import com.github.bishabosha.cuppajoe.control.Lazy;
 import com.github.bishabosha.cuppajoe.control.Option;
 import com.github.bishabosha.cuppajoe.control.Try;
-import com.github.bishabosha.cuppajoe.tuples.*;
 
 import java.util.Objects;
 
@@ -83,39 +82,5 @@ public final class Standard {
 
     public static <O> Pattern<Option<O>> None_() {
         return PatternFor(Option.None.INSTANCE);
-    }
-
-    public static final Pattern<Unit> Unit_ = PatternFor(Unit.INSTANCE);
-
-    public static <A> Pattern<Tuple1<A>> Tuple1_(Pattern<A> $1) {
-        return PatternFor(Tuple1.class, $1);
-    }
-
-    public static <A, B> Pattern<Tuple2<A, B>> Tuple2_(Pattern<A> $1, Pattern<B> $2) {
-        return PatternFor(Tuple2.class, $1, $2);
-    }
-
-    public static <A, B, C> Pattern<Tuple3<A, B, C>> Tuple3_(Pattern<A> $1, Pattern<B> $2, Pattern<C> $3) {
-        return PatternFor(Tuple3.class, $1, $2, $3);
-    }
-
-    public static <A, B, C, D> Pattern<Tuple4<A, B, C, D>> Tuple4_(Pattern<A> $1, Pattern<B> $2, Pattern<C> $3, Pattern<D> $4) {
-        return PatternFor(Tuple4.class, $1, $2, $3, $4);
-    }
-
-    public static <A, B, C, D, E> Pattern<Tuple5<A, B, C, D, E>> Tuple5_(Pattern<A> $1, Pattern<B> $2, Pattern<C> $3, Pattern<D> $4, Pattern<E> $5) {
-        return PatternFor(Tuple5.class, $1, $2, $3, $4, $5);
-    }
-
-    public static <A, B, C, D, E, F> Pattern<Tuple6<A, B, C, D, E, F>> Tuple6_(Pattern<A> $1, Pattern<B> $2, Pattern<C> $3, Pattern<D> $4, Pattern<E> $5, Pattern<F> $6) {
-        return PatternFor(Tuple6.class, $1, $2, $3, $4, $5, $6);
-    }
-
-    public static <A, B, C, D, E, F, G> Pattern<Tuple7<A, B, C, D, E, F, G>> Tuple7_(Pattern<A> $1, Pattern<B> $2, Pattern<C> $3, Pattern<D> $4, Pattern<E> $5, Pattern<F> $6, Pattern<G> $7) {
-        return PatternFor(Tuple7.class, $1, $2, $3, $4, $5, $6, $7);
-    }
-
-    public static <A, B, C, D, E, F, G, H> Pattern<Tuple8<A, B, C, D, E, F, G, H>> Tuple8_(Pattern<A> $1, Pattern<B> $2, Pattern<C> $3, Pattern<D> $4, Pattern<E> $5, Pattern<F> $6, Pattern<G> $7, Pattern<H> $8) {
-        return PatternFor(Tuple8.class, $1, $2, $3, $4, $5, $6, $7, $8);
     }
 }

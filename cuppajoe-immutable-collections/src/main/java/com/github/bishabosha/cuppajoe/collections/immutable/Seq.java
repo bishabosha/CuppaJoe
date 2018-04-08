@@ -1,13 +1,13 @@
 package com.github.bishabosha.cuppajoe.collections.immutable;
 
 import com.github.bishabosha.cuppajoe.annotation.NonNull;
+import com.github.bishabosha.cuppajoe.collections.immutable.tuples.Tuple2;
 import com.github.bishabosha.cuppajoe.control.Option;
 import com.github.bishabosha.cuppajoe.higher.foldable.Foldable;
 import com.github.bishabosha.cuppajoe.higher.monad.Monad1;
 import com.github.bishabosha.cuppajoe.higher.monoid.Monoid1;
 import com.github.bishabosha.cuppajoe.higher.peek.Peek1;
 import com.github.bishabosha.cuppajoe.higher.value.Value1;
-import com.github.bishabosha.cuppajoe.tuples.Tuple2;
 
 import java.util.*;
 import java.util.function.BiFunction;

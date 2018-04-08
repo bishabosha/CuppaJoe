@@ -5,11 +5,15 @@
 package com.github.bishabosha.cuppajoe.collections.immutable;
 
 import com.github.bishabosha.cuppajoe.annotation.NonNull;
+import com.github.bishabosha.cuppajoe.collections.immutable.tuples.Tuple2;
+import com.github.bishabosha.cuppajoe.collections.immutable.tuples.Tuple3;
+import com.github.bishabosha.cuppajoe.collections.immutable.tuples.Unit;
 import com.github.bishabosha.cuppajoe.control.Either;
 import com.github.bishabosha.cuppajoe.control.Option;
 import com.github.bishabosha.cuppajoe.higher.foldable.Foldable;
 import com.github.bishabosha.cuppajoe.higher.functions.Func1;
-import com.github.bishabosha.cuppajoe.tuples.*;
+import com.github.bishabosha.cuppajoe.higher.unapply.Unapply0;
+import com.github.bishabosha.cuppajoe.higher.unapply.Unapply3;
 import com.github.bishabosha.cuppajoe.util.Iterators;
 import com.github.bishabosha.cuppajoe.util.Iterators.IdempotentIterator;
 
@@ -20,6 +24,7 @@ import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
 import static com.github.bishabosha.cuppajoe.API.*;
+import static com.github.bishabosha.cuppajoe.collections.immutable.API.Tuple;
 
 /**
  * Immutable tree

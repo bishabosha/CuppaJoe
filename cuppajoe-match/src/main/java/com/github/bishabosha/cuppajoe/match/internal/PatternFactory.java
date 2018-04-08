@@ -6,9 +6,9 @@ package com.github.bishabosha.cuppajoe.match.internal;
 
 import com.github.bishabosha.cuppajoe.annotation.NonNull;
 import com.github.bishabosha.cuppajoe.control.Option;
+import com.github.bishabosha.cuppajoe.higher.unapply.*;
 import com.github.bishabosha.cuppajoe.match.patterns.Pattern;
 import com.github.bishabosha.cuppajoe.match.patterns.Result;
-import com.github.bishabosha.cuppajoe.tuples.*;
 
 import java.util.Objects;
 

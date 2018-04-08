@@ -4,20 +4,21 @@
 
 package com.github.bishabosha.cuppajoe.match;
 
-import com.github.bishabosha.cuppajoe.API;
 import com.github.bishabosha.cuppajoe.collections.immutable.List;
 import com.github.bishabosha.cuppajoe.collections.immutable.Tree;
+import com.github.bishabosha.cuppajoe.collections.immutable.tuples.Tuple2;
 import com.github.bishabosha.cuppajoe.control.Option;
 import com.github.bishabosha.cuppajoe.match.patterns.Collections;
 import com.github.bishabosha.cuppajoe.match.patterns.Pattern;
 import com.github.bishabosha.cuppajoe.match.patterns.Result;
-import com.github.bishabosha.cuppajoe.tuples.Tuple2;
 import org.junit.jupiter.api.Test;
 
-import static com.github.bishabosha.cuppajoe.collections.immutable.API.List;
-import static com.github.bishabosha.cuppajoe.collections.immutable.API.Tree;
+import static com.github.bishabosha.cuppajoe.API.None;
+import static com.github.bishabosha.cuppajoe.API.Some;
+import static com.github.bishabosha.cuppajoe.collections.immutable.API.*;
 import static com.github.bishabosha.cuppajoe.match.API.Cases;
 import static com.github.bishabosha.cuppajoe.match.API.With;
+import static com.github.bishabosha.cuppajoe.match.patterns.Collections.Tuple2_;
 import static com.github.bishabosha.cuppajoe.match.patterns.Standard.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -46,23 +47,23 @@ public class PatternTest {
         var tree = getTree();
 
         assertEquals(
-            API.Some(Result.of(0)),
+            Some(Result.of(0)),
             INode_($(0), __(), __()).test(tree)
         );
         assertEquals(
-            API.Some(Result.of(0)),
+            Some(Result.of(0)),
             INode_($(), __(), __()).test(tree)
         );
         assertEquals(
-            API.None(),
+            None(),
             INode_($(5), __(), __()).test(tree)
         );
         assertEquals(
-            API.Some(Result.of(com.github.bishabosha.cuppajoe.collections.immutable.API.Tree(1))),
+            Some(Result.of(Tree(1))),
             INode_(__(), __(), $()).test(tree)
         );
         assertEquals(
-            API.None(),
+            None(),
             INode_($(), $(null), $(null)).test(tree)
         );
     }
@@ -78,7 +79,7 @@ public class PatternTest {
 
         patt2Test = Tuple2_(Some_(INode_($(), __(), $())), $());
 
-        underTest = API.Tuple(Option.of(Tree.Node(1, Tree.Leaf(), Tree.Leaf())), List(Tree(2)));
+        underTest = Tuple(Option.of(Tree.Node(1, Tree.Leaf(), Tree.Leaf())), List(Tree(2)));
 
         patt2Test.test(underTest).peek(results -> {
             var values = results.values();
@@ -99,8 +100,8 @@ public class PatternTest {
             With(Lazy_($()), () -> "will not compile")*/
         );
 
-        assertEquals("Some(Tuple(1, 2))", cases.get(API.Some(API.Tuple(1, 2))));
-        assertEquals("None", cases.get(API.None()));
+        assertEquals("Some(Tuple(1, 2))", cases.get(Some(Tuple(1, 2))));
+        assertEquals("None", cases.get(None()));
 //      assertEquals("will not compile", cases.get(Lazy(() -> 0)));
     }
 }

@@ -1,11 +1,11 @@
 package com.github.bishabosha.cuppajoe.collections.immutable;
 
 import com.github.bishabosha.cuppajoe.annotation.NonNull;
+import com.github.bishabosha.cuppajoe.collections.immutable.tuples.Tuple2;
 import com.github.bishabosha.cuppajoe.control.Option;
 import com.github.bishabosha.cuppajoe.higher.foldable.Foldable;
 import com.github.bishabosha.cuppajoe.higher.functor.Functor1;
 import com.github.bishabosha.cuppajoe.higher.value.Value1;
-import com.github.bishabosha.cuppajoe.tuples.Tuple2;
 import com.github.bishabosha.cuppajoe.util.Iterators;
 
 import java.util.Iterator;
@@ -14,7 +14,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.github.bishabosha.cuppajoe.API.Tuple;
+import static com.github.bishabosha.cuppajoe.collections.immutable.API.Tuple;
 
 public class Queue<E> implements Foldable<E>, Bunch<E>, Value1<Queue, E>, Functor1<Queue, E> {
     private List<E> head;

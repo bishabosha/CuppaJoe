@@ -1,6 +1,8 @@
 package com.github.bishabosha.cuppajoe.collections.immutable;
 
 import com.github.bishabosha.cuppajoe.annotation.NonNull;
+import com.github.bishabosha.cuppajoe.collections.immutable.tuples.Tuple2;
+import com.github.bishabosha.cuppajoe.collections.immutable.tuples.Unit;
 import com.github.bishabosha.cuppajoe.control.Either;
 import com.github.bishabosha.cuppajoe.control.Option;
 import com.github.bishabosha.cuppajoe.higher.applicative.Applicative1;
@@ -10,11 +12,9 @@ import com.github.bishabosha.cuppajoe.higher.functions.Func3;
 import com.github.bishabosha.cuppajoe.higher.functions.TailCall;
 import com.github.bishabosha.cuppajoe.higher.monad.Monad1;
 import com.github.bishabosha.cuppajoe.higher.monoid.Monoid1;
+import com.github.bishabosha.cuppajoe.higher.unapply.Unapply0;
+import com.github.bishabosha.cuppajoe.higher.unapply.Unapply2;
 import com.github.bishabosha.cuppajoe.higher.value.Value1;
-import com.github.bishabosha.cuppajoe.tuples.Tuple2;
-import com.github.bishabosha.cuppajoe.tuples.Unapply0;
-import com.github.bishabosha.cuppajoe.tuples.Unapply2;
-import com.github.bishabosha.cuppajoe.tuples.Unit;
 import com.github.bishabosha.cuppajoe.util.Iterators;
 import com.github.bishabosha.cuppajoe.util.Iterators.IdempotentIterator;
 import com.github.bishabosha.cuppajoe.util.Predicates;
@@ -27,6 +27,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.github.bishabosha.cuppajoe.API.*;
+import static com.github.bishabosha.cuppajoe.collections.immutable.API.Tuple;
 import static com.github.bishabosha.cuppajoe.higher.monad.Monad1.applyImpl;
 
 public interface List<E> extends Seq<List, E>, Value1<List, E> {

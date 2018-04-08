@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.util.function.Function;
 
 import static com.github.bishabosha.cuppajoe.API.Some;
-import static com.github.bishabosha.cuppajoe.API.Tuple;
+import static com.github.bishabosha.cuppajoe.collections.immutable.API.Tuple;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ArrayTest {

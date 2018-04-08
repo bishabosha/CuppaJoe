@@ -1,16 +1,20 @@
 package com.github.bishabosha.cuppajoe.match.patterns;
 
-import com.github.bishabosha.cuppajoe.API;
 import com.github.bishabosha.cuppajoe.collections.immutable.List;
+import com.github.bishabosha.cuppajoe.collections.immutable.tuples.Tuple;
+import com.github.bishabosha.cuppajoe.collections.immutable.tuples.Tuple2;
+import com.github.bishabosha.cuppajoe.collections.immutable.tuples.Unit;
 import com.github.bishabosha.cuppajoe.control.Either;
-import com.github.bishabosha.cuppajoe.tuples.Tuple;
-import com.github.bishabosha.cuppajoe.tuples.Tuple2;
-import com.github.bishabosha.cuppajoe.tuples.Unit;
 import com.github.bishabosha.cuppajoe.util.Iterators;
 
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import static com.github.bishabosha.cuppajoe.API.Left;
+import static com.github.bishabosha.cuppajoe.API.Right;
+import static com.github.bishabosha.cuppajoe.collections.immutable.API.List;
+import static com.github.bishabosha.cuppajoe.collections.immutable.API.Tuple;
 
 public interface Result {
 
@@ -73,7 +77,7 @@ public interface Result {
 
     class Node implements Result {
 
-        private static final Result EMPTY = new Node(API.Tuple());
+        private static final Result EMPTY = new Node(Tuple());
 
         Tuple branches;
 
@@ -104,7 +108,7 @@ public interface Result {
         public Values values() {
             return new Values() {
 
-                private List<Iterator<Result>> stack = isEmpty() ? com.github.bishabosha.cuppajoe.collections.immutable.API.List() : com.github.bishabosha.cuppajoe.collections.immutable.API.List(Node.this.branches());
+                private List<Iterator<Result>> stack = isEmpty() ? List() : List(Node.this.branches());
                 private Object toReturn;
 
                 @Override
@@ -121,12 +125,12 @@ public interface Result {
                             xs = xs.push(it);
                         }
                         if (result.isLeaf()) {
-                            return API.Right(API.Tuple(result.get(), xs));
+                            return Right(Tuple(result.get(), xs));
                         } else {
-                            return API.Left(result.isEmpty() ? xs : xs.push(result.branches()));
+                            return Left(result.isEmpty() ? xs : xs.push(result.branches()));
                         }
                     }
-                    return API.Left(com.github.bishabosha.cuppajoe.collections.immutable.API.List());
+                    return Left(List());
                 }
 
                 private Unit foundItem(Tuple2<Object, List<Iterator<Result>>> tuple) {

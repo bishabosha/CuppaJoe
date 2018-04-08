@@ -15,9 +15,10 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import static com.github.bishabosha.cuppajoe.API.Some;
-import static com.github.bishabosha.cuppajoe.API.Tuple;
+import static com.github.bishabosha.cuppajoe.collections.immutable.API.Tuple;
 import static com.github.bishabosha.cuppajoe.match.API.*;
 import static com.github.bishabosha.cuppajoe.match.patterns.Collections.Leaf_;
+import static com.github.bishabosha.cuppajoe.match.patterns.Collections.Tuple2_;
 import static com.github.bishabosha.cuppajoe.match.patterns.Standard.*;
 
 public class MatcherTest {

@@ -10,4 +10,5 @@ module com.github.bishabosha.cuppajoe.higher {
     exports com.github.bishabosha.cuppajoe.higher.monoid;
     exports com.github.bishabosha.cuppajoe.higher.peek;
     exports com.github.bishabosha.cuppajoe.higher.value;
+    exports com.github.bishabosha.cuppajoe.higher.unapply;
 }

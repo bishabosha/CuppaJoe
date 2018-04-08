@@ -3,11 +3,11 @@ package com.github.bishabosha.cuppajoe.match;
 import com.github.bishabosha.cuppajoe.annotation.NonNull;
 import com.github.bishabosha.cuppajoe.control.Option;
 import com.github.bishabosha.cuppajoe.higher.functions.*;
+import com.github.bishabosha.cuppajoe.higher.unapply.*;
 import com.github.bishabosha.cuppajoe.match.internal.CaseFactory;
 import com.github.bishabosha.cuppajoe.match.internal.GuardFactory;
 import com.github.bishabosha.cuppajoe.match.internal.PatternFactory;
 import com.github.bishabosha.cuppajoe.match.patterns.Pattern;
-import com.github.bishabosha.cuppajoe.tuples.*;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;

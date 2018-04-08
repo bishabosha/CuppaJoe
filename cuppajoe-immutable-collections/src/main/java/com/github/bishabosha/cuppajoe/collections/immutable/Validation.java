@@ -1,12 +1,12 @@
 package com.github.bishabosha.cuppajoe.collections.immutable;
 
 import com.github.bishabosha.cuppajoe.annotation.NonNull;
+import com.github.bishabosha.cuppajoe.collections.immutable.tuples.Unit;
 import com.github.bishabosha.cuppajoe.control.Either;
 import com.github.bishabosha.cuppajoe.higher.applicative.Applicative1;
 import com.github.bishabosha.cuppajoe.higher.foldable.Foldable;
 import com.github.bishabosha.cuppajoe.higher.monad.Monad1;
 import com.github.bishabosha.cuppajoe.higher.monoid.Monoid1;
-import com.github.bishabosha.cuppajoe.tuples.Unit;
 
 import java.util.NoSuchElementException;
 import java.util.Objects;
