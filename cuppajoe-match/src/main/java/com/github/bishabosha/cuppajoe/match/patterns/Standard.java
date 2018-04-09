@@ -10,6 +10,7 @@ import com.github.bishabosha.cuppajoe.control.Try;
 import java.util.Objects;
 
 import static com.github.bishabosha.cuppajoe.match.API.PatternFor;
+import static java.util.regex.Pattern.compile;
 
 public final class Standard {
 
@@ -42,7 +43,7 @@ public final class Standard {
     }
 
     public static Pattern<String> $RegEx(String regex) {
-        return $RegEx(java.util.regex.Pattern.compile(regex));
+        return $RegEx(compile(regex));
     }
 
     public static Pattern<String> $RegEx(java.util.regex.Pattern pattern) {
