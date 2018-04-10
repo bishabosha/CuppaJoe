@@ -47,10 +47,7 @@ public final class Standard {
     }
 
     public static Pattern<String> $RegEx(java.util.regex.Pattern pattern) {
-        return x -> {
-            var matcher = pattern.matcher(x);
-            return matcher.matches() ? Pattern.bind(x) : Pattern.FAIL;
-        };
+        return x -> pattern.matcher(x).matches() ? Pattern.bind(x) : Pattern.FAIL;
     }
 
     public static final Pattern<Integer> LT = x -> x < 0 ? Pattern.PASS : Pattern.FAIL;
