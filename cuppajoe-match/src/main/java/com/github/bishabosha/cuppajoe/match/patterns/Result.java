@@ -3,10 +3,9 @@ package com.github.bishabosha.cuppajoe.match.patterns;
 import com.github.bishabosha.cuppajoe.collections.immutable.List;
 import com.github.bishabosha.cuppajoe.collections.immutable.tuples.Tuple;
 import com.github.bishabosha.cuppajoe.collections.immutable.tuples.Tuple2;
-import com.github.bishabosha.cuppajoe.collections.immutable.tuples.Unit;
 import com.github.bishabosha.cuppajoe.control.Either;
-import com.github.bishabosha.cuppajoe.util.Iterators;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -65,14 +64,16 @@ public interface Result {
 
     Values values();
 
-    default int size() {
-        var size = 0;
+    default List<Object> capture() {
         var values = values();
-        while (values.hasNext()) {
-            size++;
-            values.nextVal();
+        var list = List.empty();
+        try {
+            while (true) {
+                list = list.push(values.nextImpl());
+            }
+        } catch (CursorEnd e) {
+            return list.reverse();
         }
-        return size;
     }
 
     class Node implements Result {
@@ -107,15 +108,13 @@ public interface Result {
         @Override
         public Values values() {
             return new Values() {
-
                 private List<Iterator<Result>> stack = isEmpty() ? List() : List(Node.this.branches());
-                private Object toReturn;
 
                 @Override
-                public boolean hasNextSupplier() {
+                public Object nextImpl() throws CursorEnd {
                     return stack.nextItem(this::stackAlgorithm)
                         .map(this::foundItem)
-                        .containsValue();
+                        .orElseThrow(CursorEnd::new);
                 }
 
                 private Either<List<Iterator<Result>>, Tuple2<Object, List<Iterator<Result>>>> stackAlgorithm(Iterator<Result> it, List<Iterator<Result>> xs) {
@@ -133,28 +132,13 @@ public interface Result {
                     return Left(List());
                 }
 
-                private Unit foundItem(Tuple2<Object, List<Iterator<Result>>> tuple) {
+                private Object foundItem(Tuple2<Object, List<Iterator<Result>>> tuple) {
                     return tuple.compose((elem, xs) -> {
                         stack = xs;
-                        toReturn = elem;
-                        return Unit.INSTANCE;
+                        return elem;
                     });
                 }
-
-                public Object nextSupplier() {
-                    return toReturn;
-                }
             };
-        }
-
-        @Override
-        public int hashCode() {
-            return Iterators.hash(values());
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            return obj == this || obj instanceof Result && Iterators.equals(values(), ((Result) obj).values());
         }
     }
 
@@ -190,50 +174,46 @@ public interface Result {
         public Values values() {
             return new SingleValues(value);
         }
-
-        @Override
-        public int hashCode() {
-            return Iterators.hash(values());
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            return obj == this || obj instanceof Result && Iterators.equals(values(), ((Result) obj).values());
-        }
     }
 
     class SingleValues extends Values {
 
         private final Object value;
-        private boolean unboxed = false;
+        private boolean read = false;
 
         private SingleValues(Object value) {
             this.value = value;
         }
 
         @Override
-        public boolean hasNextSupplier() {
-            return !unboxed;
-        }
-
-        @Override
-        public Object nextSupplier() {
-            unboxed = true;
+        public Object nextImpl() throws CursorEnd {
+            if (read) {
+                throw new CursorEnd();
+            }
+            read = true;
             return value;
         }
     }
 
-    abstract class Values extends Iterators.IdempotentIterator<Object> {
-        private int count = -1;
+    abstract class Values {
+        abstract Object nextImpl() throws CursorEnd;
 
         @SuppressWarnings("unchecked")
-        public <O> O nextVal() {
-            count++;
+        public <O> O next() {
+            Object obj;
             try {
-                return (O) next();
-            } catch (ClassCastException cce) {
-                throw new ClassCastException("Result elem " + count + " is not of the type requested.");
+                obj = nextImpl();
+                try {
+                    return (O) obj;
+                } catch (ClassCastException cce) {
+                    throw new ClassCastException("Result elem [" + obj + "] is not of the type requested.");
+                }
+            } catch (CursorEnd end) {
+                throw new IndexOutOfBoundsException("Not enough elements");
             }
         }
+    }
+
+    class CursorEnd extends Exception {
     }
 }

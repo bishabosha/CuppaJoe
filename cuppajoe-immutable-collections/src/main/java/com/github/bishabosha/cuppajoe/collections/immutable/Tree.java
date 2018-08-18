@@ -24,6 +24,7 @@ import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
 import static com.github.bishabosha.cuppajoe.API.*;
+import static com.github.bishabosha.cuppajoe.collections.immutable.API.List;
 import static com.github.bishabosha.cuppajoe.collections.immutable.API.Tuple;
 
 /**
@@ -184,7 +185,7 @@ public interface Tree<E extends Comparable<E>> {
     }
 
     default List<E> toList() {
-        return inOrder().foldRight(API.List(), List::push);
+        return inOrder().foldRight(List(), List::push);
     }
 
     default Foldable<E> inOrder() {
@@ -267,7 +268,7 @@ public interface Tree<E extends Comparable<E>> {
             }
 
             private Either<List<Tree<E>>, Tuple2<E, List<Tree<E>>>> stackAlgorithm(Tree<E> head, List<Tree<E>> tail) {
-                return head.isEmpty() ? Left(API.List())
+                return head.isEmpty() ? Left(List())
                         : Right(Tuple(head.node(), processNode(head.left(), head.right(), tail)));
             }
 
@@ -342,7 +343,7 @@ public interface Tree<E extends Comparable<E>> {
     default Iterable<E> postOrder() {
         return () -> new IdempotentIterator<>() {
 
-            private List<Object> stack = API.List(Tree.this);
+            private List<Object> stack = List(Tree.this);
             private E current;
 
             @Override
@@ -354,7 +355,7 @@ public interface Tree<E extends Comparable<E>> {
 
             private Either<List<Object>, Tuple2<E, List<Object>>> stackAlgorithm(Object head, List<Object> tail) {
                 return head instanceof Node ? Left(processNode((Node<E>) head, tail))
-                        : head == Leaf() ? Left(API.List())
+                        : head == Leaf() ? Left(List())
                         : Right(Tuple((E) head, tail));
             }
 

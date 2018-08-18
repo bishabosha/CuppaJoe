@@ -19,7 +19,7 @@ import static com.github.bishabosha.cuppajoe.collections.immutable.API.*;
 import static com.github.bishabosha.cuppajoe.collections.immutable.Tree.Node;
 import static com.github.bishabosha.cuppajoe.match.API.Cases;
 import static com.github.bishabosha.cuppajoe.match.API.With;
-import static com.github.bishabosha.cuppajoe.match.patterns.Collections.Tuple2_;
+import static com.github.bishabosha.cuppajoe.match.patterns.Collections.Tuple2$;
 import static com.github.bishabosha.cuppajoe.match.patterns.Standard.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -48,29 +48,29 @@ public class PatternTest {
         var tree = getTree();
 
         assertEquals(
-            Some(Result.of(0)),
-            INode_($(0), __(), __()).test(tree)
+            Some(List.singleton(0)),
+            INode$($(0), __(), __()).test(tree).map(Result::capture)
         );
         assertEquals(
-            Some(Result.of(0)),
-            INode_($(), __(), __()).test(tree)
-        );
-        assertEquals(
-            None(),
-            INode_($(5), __(), __()).test(tree)
-        );
-        assertEquals(
-            Some(Result.of(Tree(1))),
-            INode_(__(), __(), $()).test(tree)
+            Some(List.singleton(0)),
+            INode$($(), __(), __()).test(tree).map(Result::capture)
         );
         assertEquals(
             None(),
-            INode_($(), $(null), $(null)).test(tree)
+            INode$($(5), __(), __()).test(tree).map(Result::capture)
+        );
+        assertEquals(
+            Some(List.singleton(Tree(1))),
+            INode$(__(), __(), $()).test(tree).map(Result::capture)
+        );
+        assertEquals(
+            None(),
+            INode$($(), $(null), $(null)).test(tree)
         );
     }
 
-    private static Pattern<Tree<Integer>> INode_(Pattern<Integer> node, Pattern<Tree<Integer>> left, Pattern<Tree<Integer>> right) {
-        return Collections.Node_(node, left, right);
+    private static Pattern<Tree<Integer>> INode$(Pattern<Integer> node, Pattern<Tree<Integer>> left, Pattern<Tree<Integer>> right) {
+        return Collections.Node$(node, left, right);
     }
 
     @Test
@@ -78,25 +78,24 @@ public class PatternTest {
         final Pattern<Tuple2<Option<Tree<Integer>>, List<Tree<Integer>>>> patt2Test;
         final Tuple2<Option<Tree<Integer>>, List<Tree<Integer>>> underTest;
 
-        patt2Test = Tuple2_(Some_(INode_($(), __(), $())), $());
+        patt2Test = Tuple2$(Some$(INode$($(), __(), $())), $());
 
         underTest = Tuple(Option.of(Node(1, Tree.Leaf(), Tree.Leaf())), List(Tree(2)));
 
         patt2Test.test(underTest).peek(results -> {
             var values = results.values();
-            assertEquals(3, results.size());
-            assertEquals(1, (int) values.nextVal());
-            assertEquals(Tree.Leaf(), values.nextVal());
-            assertEquals(List.singleton(Tree.ofAll(2)), values.nextVal());
+            assertEquals(1, (int) values.next());
+            assertEquals(Tree.Leaf(), values.next());
+            assertEquals(List.singleton(Tree.ofAll(2)), values.next());
         });
     }
 
     @Test
     public void test_typeSafety() {
         var cases = Cases(
-            With(Some_(Tuple2_($(), $())), (x, y) ->
+            With(Some$(Tuple2$($(), $())), (x, y) ->
                 "Some(Tuple(" + x + ", " + y + "))"),
-            With(None_(), () ->
+            With(None$(), () ->
                 "None")/*,
             With(Lazy_($()), () -> "will not compile")*/
         );

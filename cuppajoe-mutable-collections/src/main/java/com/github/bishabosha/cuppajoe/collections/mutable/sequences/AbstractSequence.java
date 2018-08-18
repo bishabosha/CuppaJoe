@@ -4,7 +4,6 @@
 
 package com.github.bishabosha.cuppajoe.collections.mutable.sequences;
 
-import com.github.bishabosha.cuppajoe.API;
 import com.github.bishabosha.cuppajoe.collections.mutable.internal.AbstractArrayHelper;
 import com.github.bishabosha.cuppajoe.collections.mutable.pipelines.Pipeline;
 import com.github.bishabosha.cuppajoe.control.Option;
@@ -13,6 +12,8 @@ import com.github.bishabosha.cuppajoe.util.Iterators;
 import java.util.Iterator;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+
+import static com.github.bishabosha.cuppajoe.API.None;
 
 public abstract class AbstractSequence<T> extends AbstractArrayHelper<T> implements Sequence<T> {
     int initialTerm = 0;
@@ -51,7 +52,7 @@ public abstract class AbstractSequence<T> extends AbstractArrayHelper<T> impleme
                 return Option.of(val);
             }
         }
-        return API.None();
+        return None();
     }
 
     @Override

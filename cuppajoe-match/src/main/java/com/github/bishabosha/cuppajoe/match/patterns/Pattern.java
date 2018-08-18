@@ -4,18 +4,20 @@
 
 package com.github.bishabosha.cuppajoe.match.patterns;
 
-import com.github.bishabosha.cuppajoe.API;
 import com.github.bishabosha.cuppajoe.control.Option;
+
+import static com.github.bishabosha.cuppajoe.API.None;
+import static com.github.bishabosha.cuppajoe.API.Some;
 
 public interface Pattern<A> {
     Option<Result> test(A obj);
 
-    Option<Result> PASS = API.Some(Result.empty());
+    Option<Result> PASS = Some(Result.empty());
 
-    Option<Result> FAIL = API.None();
+    Option<Result> FAIL = None();
 
     static <O> Option<Result> bind(O $x) {
-        return API.Some(Result.of($x));
+        return Some(Result.of($x));
     }
 }
 

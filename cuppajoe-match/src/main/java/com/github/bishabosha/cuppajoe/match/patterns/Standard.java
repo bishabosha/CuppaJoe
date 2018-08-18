@@ -50,35 +50,31 @@ public final class Standard {
         return x -> pattern.matcher(x).matches() ? Pattern.bind(x) : Pattern.FAIL;
     }
 
-    public static final Pattern<Integer> LT = x -> x < 0 ? Pattern.PASS : Pattern.FAIL;
-    public static final Pattern<Integer> GT = x -> x > 0 ? Pattern.PASS : Pattern.FAIL;
-    public static final Pattern<Integer> EQ = x -> x == 0 ? Pattern.PASS : Pattern.FAIL;
-
-    public static <O> Pattern<Try<O>> Success_(Pattern<O> value) {
+    public static <O> Pattern<Try<O>> Success$(Pattern<O> value) {
         return PatternFor(Try.Success.class, value);
     }
 
-    public static <O> Pattern<Try<O>> Failure_(Pattern<Exception> error) {
+    public static <O> Pattern<Try<O>> Failure$(Pattern<Exception> error) {
         return PatternFor(Try.Failure.class, error);
     }
 
-    public static <L, R> Pattern<Either<L, R>> Left_(Pattern<L> value) {
+    public static <L, R> Pattern<Either<L, R>> Left$(Pattern<L> value) {
         return PatternFor(Left.class, value);
     }
 
-    public static <L, R> Pattern<Either<L, R>> Right_(Pattern<R> value) {
+    public static <L, R> Pattern<Either<L, R>> Right$(Pattern<R> value) {
         return PatternFor(Right.class, value);
     }
 
-    public static <O> Pattern<Lazy<O>> Lazy_(Pattern<O> value) {
+    public static <O> Pattern<Lazy<O>> Lazy$(Pattern<O> value) {
         return PatternFor(Lazy.class, value);
     }
 
-    public static <O> Pattern<Option<O>> Some_(Pattern<O> value) {
+    public static <O> Pattern<Option<O>> Some$(Pattern<O> value) {
         return PatternFor(Option.Some.class, value);
     }
 
-    public static <O> Pattern<Option<O>> None_() {
+    public static <O> Pattern<Option<O>> None$() {
         return PatternFor(Option.None.INSTANCE);
     }
 }

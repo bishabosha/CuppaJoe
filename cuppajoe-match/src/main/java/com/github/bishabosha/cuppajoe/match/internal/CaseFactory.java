@@ -29,56 +29,56 @@ public final class CaseFactory {
     with(@NonNull Pattern<I> matcher, @NonNull Func1<A, O> binder) {
         Objects.requireNonNull(binder, "binder");
         return base(matcher, xs ->
-            binder.apply(xs.nextVal()));
+            binder.apply(xs.next()));
     }
 
     public static <I, O, A, B> Case<I, O>
     with(@NonNull Pattern<I> matcher, @NonNull Func2<A, B, O> binder) {
         Objects.requireNonNull(binder, "binder");
         return base(matcher, xs ->
-            binder.apply(xs.nextVal(), xs.nextVal()));
+            binder.apply(xs.next(), xs.next()));
     }
 
     public static <I, O, A, B, C> Case<I, O>
     with(@NonNull Pattern<I> matcher, @NonNull Func3<A, B, C, O> binder) {
         Objects.requireNonNull(binder, "binder");
         return base(matcher, xs ->
-            binder.apply(xs.nextVal(), xs.nextVal(), xs.nextVal()));
+            binder.apply(xs.next(), xs.next(), xs.next()));
     }
 
     public static <I, O, A, B, C, D> Case<I, O>
     with(@NonNull Pattern<I> matcher, @NonNull Func4<A, B, C, D, O> binder) {
         Objects.requireNonNull(binder, "binder");
         return base(matcher, xs ->
-            binder.apply(xs.nextVal(), xs.nextVal(), xs.nextVal(), xs.nextVal()));
+            binder.apply(xs.next(), xs.next(), xs.next(), xs.next()));
     }
 
     public static <I, O, A, B, C, D, E> Case<I, O>
     with(@NonNull Pattern<I> matcher, @NonNull Func5<A, B, C, D, E, O> binder) {
         Objects.requireNonNull(binder, "binder");
         return base(matcher, xs ->
-            binder.apply(xs.nextVal(), xs.nextVal(), xs.nextVal(), xs.nextVal(), xs.nextVal()));
+            binder.apply(xs.next(), xs.next(), xs.next(), xs.next(), xs.next()));
     }
 
     public static <I, O, A, B, C, D, E, F> Case<I, O>
     with(@NonNull Pattern<I> matcher, @NonNull Func6<A, B, C, D, E, F, O> binder) {
         Objects.requireNonNull(binder, "binder");
         return base(matcher, xs ->
-            binder.apply(xs.nextVal(), xs.nextVal(), xs.nextVal(), xs.nextVal(), xs.nextVal(), xs.nextVal()));
+            binder.apply(xs.next(), xs.next(), xs.next(), xs.next(), xs.next(), xs.next()));
     }
 
     public static <I, O, A, B, C, D, E, F, G> Case<I, O>
     with(@NonNull Pattern<I> matcher, @NonNull Func7<A, B, C, D, E, F, G, O> binder) {
         Objects.requireNonNull(binder, "binder");
         return base(matcher, xs ->
-            binder.apply(xs.nextVal(), xs.nextVal(), xs.nextVal(), xs.nextVal(), xs.nextVal(), xs.nextVal(), xs.nextVal()));
+            binder.apply(xs.next(), xs.next(), xs.next(), xs.next(), xs.next(), xs.next(), xs.next()));
     }
 
     public static <I, O, A, B, C, D, E, F, G, H> Case<I, O>
     with(@NonNull Pattern<I> matcher, @NonNull Func8<A, B, C, D, E, F, G, H, O> binder) {
         Objects.requireNonNull(binder, "binder");
         return base(matcher, xs ->
-            binder.apply(xs.nextVal(), xs.nextVal(), xs.nextVal(), xs.nextVal(), xs.nextVal(), xs.nextVal(), xs.nextVal(), xs.nextVal()));
+            binder.apply(xs.next(), xs.next(), xs.next(), xs.next(), xs.next(), xs.next(), xs.next(), xs.next()));
     }
 
     private static <I, O> Case<I, O> base(@NonNull Pattern<I> matcher, Function<Result.Values, O> mapper) {
