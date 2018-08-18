@@ -1,10 +1,6 @@
 package com.github.bishabosha.cuppajoe.higher.functions;
 
-import com.github.bishabosha.cuppajoe.annotation.NonNull;
-
 import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.function.Supplier;
 
 /**
  * Allows simulation of tail call operations by lifting the call site
@@ -12,53 +8,28 @@ import java.util.function.Supplier;
  *
  * @param <E> the type of the return value
  */
-public abstract class TailCall<E> implements Func0<E> {
+@FunctionalInterface
+public interface TailCall<E> {
 
-    private TailCall() {
-    }
-
-    public static <U> TailCall<U> call(@NonNull Supplier<TailCall<U>> call) {
-        Objects.requireNonNull(call, "call");
-        return new Call<>(call);
-    }
-
-    public static <U> TailCall<U> yield(U result) {
+    static <U> TailCall<U> yield(U result) {
         return new Yield<>(result);
     }
 
-    @Override
-    public final E get() {
+    TailCall<E> next();
+
+    default E apply() {
         var call = this;
-        while (!call.isComplete()) {
+        while (call.isEmpty()) {
             call = call.next();
         }
-        return call.result();
+        return call.apply();
     }
 
-    protected abstract TailCall<E> next();
-
-    protected boolean isComplete() {
-        return false;
+    default boolean isEmpty() {
+        return true;
     }
 
-    protected E result() {
-        throw new NoSuchElementException("The operation is not complete.");
-    }
-
-    private static final class Call<E> extends TailCall<E> {
-        private final Supplier<TailCall<E>> call;
-
-        private Call(Supplier<TailCall<E>> callSupplier) {
-            call = callSupplier;
-        }
-
-        @Override
-        public TailCall<E> next() {
-            return call.get();
-        }
-    }
-
-    private static final class Yield<E> extends TailCall<E> {
+    final class Yield<E> implements TailCall<E> {
         private final E val;
 
         private Yield(E val) {
@@ -66,8 +37,8 @@ public abstract class TailCall<E> implements Func0<E> {
         }
 
         @Override
-        public boolean isComplete() {
-            return true;
+        public boolean isEmpty() {
+            return false;
         }
 
         @Override
@@ -76,7 +47,7 @@ public abstract class TailCall<E> implements Func0<E> {
         }
 
         @Override
-        public E result() {
+        public E apply() {
             return val;
         }
     }

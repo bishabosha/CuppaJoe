@@ -152,33 +152,36 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
      */
     default <O> O loop(O identity, @NonNull Func3<E, O, List<E>, @NonNull Tuple2<O, List<E>>> consumer) {
         Objects.requireNonNull(consumer, "consumer");
-        return loopRec(Tuple(identity, this), consumer).get();
+        return loopRec(Tuple(identity, this), consumer).apply();
     }
 
     private <O> TailCall<O> loopRec(Tuple2<O, List<E>> loop, Func3<E, O, List<E>, Tuple2<O, List<E>>> consumer) {
         return loop.compose((acc, stack) ->
                 stack.pop()
                      .map(headTail ->
-                         headTail.compose((head, tail) ->
-                             Call(() -> loopRec(consumer.apply(head, acc, tail), consumer))
+                         headTail.compose((head, tail) -> (TailCall<O>)
+                             () -> loopRec(consumer.apply(head, acc, tail), consumer)
                          )
                      )
                      .orElseSupply(() ->
                         Yield(acc)
-                     )
-        );
+                     ));
     }
 
     default <O> Option<Tuple2<O, List<E>>> nextItem(@NonNull Func2<E, List<E>, Either<List<E>, Tuple2<O, List<E>>>> mapper) {
         Objects.requireNonNull(mapper, "mapper");
-        return nextItemRec(Left(this), mapper).get();
+        return nextItemRec(Left(this), mapper).apply();
     }
 
     private <O> TailCall<Option<Tuple2<O, List<E>>>> nextItemRec(Either<List<E>, Tuple2<O, List<E>>> loop, Func2<E, List<E>, Either<List<E>, Tuple2<O, List<E>>>> mapper) {
         return loop.transform(
                 xs -> xs.pop()
-                        .map(popped -> Call(() -> nextItemRec(popped.compose(mapper), mapper)))
-                        .orElseSupply(() -> Yield(None())),
+                        .map(popped -> (TailCall<Option<Tuple2<O, List<E>>>>)
+                            () -> nextItemRec(popped.compose(mapper), mapper)
+                        )
+                        .orElseSupply(() ->
+                            Yield(None())
+                        ),
                 result -> Yield(Some(result)));
     }
 

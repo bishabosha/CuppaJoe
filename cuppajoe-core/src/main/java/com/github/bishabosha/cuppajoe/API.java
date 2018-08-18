@@ -65,12 +65,6 @@ public final class API {
 
     public static <O>
     TailCall<O>
-    Call(@NonNull Supplier<TailCall<O>> tailCall) {
-        return TailCall.call(tailCall);
-    }
-
-    public static <O>
-    TailCall<O>
     Yield(O result) {
         return TailCall.yield(result);
     }

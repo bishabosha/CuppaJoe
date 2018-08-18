@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import static com.github.bishabosha.cuppajoe.API.None;
 import static com.github.bishabosha.cuppajoe.API.Some;
 import static com.github.bishabosha.cuppajoe.collections.immutable.API.*;
+import static com.github.bishabosha.cuppajoe.collections.immutable.Tree.Node;
 import static com.github.bishabosha.cuppajoe.match.API.Cases;
 import static com.github.bishabosha.cuppajoe.match.API.With;
 import static com.github.bishabosha.cuppajoe.match.patterns.Collections.Tuple2_;
@@ -25,16 +26,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class PatternTest {
 
     Tree<Integer> getTree() {
-        return Tree.Node(
+        return Node(
             0,
-            Tree.Node(
+            Node(
                 -1,
-                Tree.Node(
+                Node(
                     -2,
                     Tree.Leaf(),
                     Tree.Leaf()),
                 Tree.Leaf()),
-            Tree.Node(
+            Node(
                 1,
                 Tree.Leaf(),
                 Tree.Leaf())
@@ -79,7 +80,7 @@ public class PatternTest {
 
         patt2Test = Tuple2_(Some_(INode_($(), __(), $())), $());
 
-        underTest = Tuple(Option.of(Tree.Node(1, Tree.Leaf(), Tree.Leaf())), List(Tree(2)));
+        underTest = Tuple(Option.of(Node(1, Tree.Leaf(), Tree.Leaf())), List(Tree(2)));
 
         patt2Test.test(underTest).peek(results -> {
             var values = results.values();
