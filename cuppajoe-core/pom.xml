@@ -16,7 +16,7 @@
         <dependency>
             <groupId>com.github.bishabosha.cuppajoe.higher</groupId>
             <artifactId>cuppajoe-higher</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0</version>
         </dependency>
     </dependencies>
 
