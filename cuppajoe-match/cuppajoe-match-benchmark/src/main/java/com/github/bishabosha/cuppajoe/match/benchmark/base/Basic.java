@@ -65,7 +65,7 @@ public class Basic {
      * Benchmark           Mode  Cnt  Score   Error  Units
      * Basic.sumPrimitive  avgt    3  0.060 ± 0.093   s/op
      */
-    @Benchmark
+//    @Benchmark
     public int sumPrimitive(IntArrayState state) {
         int sum = 0;
         for (var num: state.arr) {
@@ -78,7 +78,7 @@ public class Basic {
      * Benchmark         Mode  Cnt  Score   Error  Units
      * Basic.sumPattern  avgt    3  0.058 ± 0.010   s/op
      */
-    @Benchmark
+//    @Benchmark
     public int sumPattern(IntArrayState state) {
        int sum = 0;
        Pattern<Integer> pattern = $();
@@ -92,7 +92,7 @@ public class Basic {
      * Benchmark      Mode  Cnt  Score   Error  Units
      * Basic.sumCase  avgt    3  0.057 ± 0.020   s/op
      */
-    @Benchmark
+//    @Benchmark
     public int sumCase(IntArrayState state) {
         int sum = 0;
         for (var tuple: state.arr) {
@@ -105,7 +105,7 @@ public class Basic {
      * Benchmark         Mode  Cnt  Score   Error  Units
      * Basic.sumMatcher  avgt    3  0.057 ± 0.023   s/op
      */
-    @Benchmark
+//    @Benchmark
     public int sumMatcher(IntArrayState state) {
         int sum = 0;
         for (var tuple: state.arr) {

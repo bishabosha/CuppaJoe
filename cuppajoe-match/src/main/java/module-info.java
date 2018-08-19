@@ -4,4 +4,6 @@ module com.github.bishabosha.cuppajoe.match {
 
     exports com.github.bishabosha.cuppajoe.match.patterns;
     exports com.github.bishabosha.cuppajoe.match;
+
+    exports com.github.bishabosha.cuppajoe.match.incubator;
 }

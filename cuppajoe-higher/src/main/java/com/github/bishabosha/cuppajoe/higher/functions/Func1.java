@@ -33,6 +33,10 @@ public interface Func1<A, R> extends Function<A, R> {
         return x -> apply(x.get());
     }
 
+    default Func0<R> capture(A a) {
+        return () -> apply(a);
+    }
+
     @Override
     default <U> Func1<U, R> compose(@NonNull Function<? super U, ? extends A> before) {
         Objects.requireNonNull(before, "before");

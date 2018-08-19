@@ -66,7 +66,23 @@ public class Tuple2Sum {
         }
     }
 
-    @Benchmark
+    @State(Scope.Thread)
+    public static class Tuple2NestedState {
+
+        static final int SIZE = 10_000_000;
+        Tuple2<Tuple2<Integer, Integer>, Integer>[] arr;
+
+        @SuppressWarnings("unchecked")
+        @Setup
+        public void setup() {
+            arr = (Tuple2<Tuple2<Integer, Integer>, Integer>[]) Array.newInstance(Tuple2.class, SIZE);
+            for (var i = 0; i < SIZE; i += 1) {
+                arr[i] = Tuple(Tuple(i, i+1), i+2);
+            }
+        }
+    }
+
+//    @Benchmark
     public int sumScalarised(Tuple2State state) {
         int sum = 0;
         for (var tuple: state.arr) {
@@ -75,7 +91,17 @@ public class Tuple2Sum {
         return sum;
     }
 
-    @Benchmark
+//    @Benchmark
+    public int sumScalarisedNested(Tuple2NestedState state) {
+        int sum = 0;
+        for (var tuple: state.arr) {
+            var tupleNested = tuple.$1;
+            sum += (tupleNested.$1 + tupleNested.$2);
+        }
+        return sum;
+    }
+
+//    @Benchmark
     public int sumConsume(Tuple2State state) {
         int sum = 0;
         for (var tuple: state.arr) {
@@ -85,6 +111,28 @@ public class Tuple2Sum {
     }
 
     @Benchmark
+    public int sumConsumeNested(Tuple2NestedState state) {
+        int sum = 0;
+        for (var tuple: state.arr) {
+            sum += tuple.compose((xy, _ignored) ->
+                xy.compose((x, y) ->
+                    x + y
+                )
+            );
+        }
+        return sum;
+    }
+
+//    @Benchmark
+    public int sumLeft(Tuple2State state) {
+        int sum = 0;
+        for (var tuple: state.arr) {
+            sum += tuple.compose((x, _ignored) -> x);
+        }
+        return sum;
+    }
+
+//    @Benchmark
     public int sumPattern(Tuple2State state) {
        int sum = 0;
        for (var tuple: state.arr) {
@@ -94,7 +142,7 @@ public class Tuple2Sum {
        return sum;
     }
 
-    @Benchmark
+//    @Benchmark
     public int sumCase(Tuple2State state) {
         int sum = 0;
         for (var tuple: state.arr) {
@@ -106,7 +154,7 @@ public class Tuple2Sum {
         return sum;
     }
 
-    @Benchmark
+//    @Benchmark
     public int sumMatcher(Tuple2State state) {
         int sum = 0;
         for (var tuple: state.arr) {
