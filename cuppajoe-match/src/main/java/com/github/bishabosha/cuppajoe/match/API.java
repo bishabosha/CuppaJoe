@@ -65,6 +65,12 @@ public final class API {
 
     public static <I, O>
     Case<I, O>
+    With(@NonNull Pattern<I> matcher, @NonNull O value) {
+        return CaseFactory.with(matcher, value);
+    }
+
+    public static <I, O>
+    Case<I, O>
     With(@NonNull Pattern<I> matcher, @NonNull Supplier<O> binder) {
         return CaseFactory.with(matcher, binder);
     }

@@ -32,6 +32,8 @@
 package com.github.bishabosha.cuppajoe.match.benchmark.base;
 
 import com.github.bishabosha.cuppajoe.match.patterns.Pattern;
+import com.github.bishabosha.cuppajoe.match.patterns.Result;
+import com.github.bishabosha.cuppajoe.match.patterns.ResultVisitor;
 import org.openjdk.jmh.annotations.*;
 
 import static com.github.bishabosha.cuppajoe.collections.immutable.API.Tuple;
@@ -48,7 +50,7 @@ public class Basic {
 
     @State(Scope.Thread)
     public static class IntArrayState {
-        static final int SIZE = 100_000_000;
+        static final int SIZE = 1_000_000_000;
         int[] arr;
 
         @SuppressWarnings("unchecked")
@@ -63,7 +65,7 @@ public class Basic {
 
     /**
      * Benchmark           Mode  Cnt  Score   Error  Units
-     * Basic.sumPrimitive  avgt    3  0.060 ± 0.093   s/op
+     * Basic.sumPrimitive  avgt    3  0.578 ± 0.324   s/op
      */
 //    @Benchmark
     public int sumPrimitive(IntArrayState state) {
@@ -76,21 +78,21 @@ public class Basic {
 
     /**
      * Benchmark         Mode  Cnt  Score   Error  Units
-     * Basic.sumPattern  avgt    3  0.058 ± 0.010   s/op
+     * Basic.sumPattern  avgt    3  0.569 ± 0.015   s/op
      */
 //    @Benchmark
     public int sumPattern(IntArrayState state) {
        int sum = 0;
        Pattern<Integer> pattern = $();
        for (var num: state.arr) {
-           sum += pattern.test(num).get().values().<Integer>next();
+           sum += SingleNumExtractor.extract(pattern.test(num).get());
        }
        return sum;
     }
 
     /**
      * Benchmark      Mode  Cnt  Score   Error  Units
-     * Basic.sumCase  avgt    3  0.057 ± 0.020   s/op
+     * Basic.sumCase  avgt    3  0.546 ± 0.259   s/op
      */
 //    @Benchmark
     public int sumCase(IntArrayState state) {
@@ -103,7 +105,7 @@ public class Basic {
 
     /**
      * Benchmark         Mode  Cnt  Score   Error  Units
-     * Basic.sumMatcher  avgt    3  0.057 ± 0.023   s/op
+     * Basic.sumMatcher  avgt    3  0.565 ± 0.226   s/op
      */
 //    @Benchmark
     public int sumMatcher(IntArrayState state) {
@@ -114,5 +116,35 @@ public class Basic {
             );
         }
         return sum;
+    }
+
+    private static class SingleNumExtractor extends ResultVisitor {
+
+        private static int extract(Result result) {
+            var extractor = new SingleNumExtractor();
+            result.accept(extractor);
+            return extractor.getInt();
+        }
+
+        boolean uninitialised = true;
+        int val;
+
+        @Override
+        public void onValue(Object o) {
+            val = (int) o;
+            uninitialised = false;
+        }
+
+        @Override
+        public boolean uninitialised() {
+            return uninitialised;
+        }
+
+        private int getInt() {
+            if (uninitialised) {
+                throw new IllegalStateException();
+            }
+            return val;
+        }
     }
 }

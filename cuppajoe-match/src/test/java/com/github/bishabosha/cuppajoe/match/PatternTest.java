@@ -10,7 +10,6 @@ import com.github.bishabosha.cuppajoe.collections.immutable.tuples.Tuple2;
 import com.github.bishabosha.cuppajoe.control.Option;
 import com.github.bishabosha.cuppajoe.match.patterns.Collections;
 import com.github.bishabosha.cuppajoe.match.patterns.Pattern;
-import com.github.bishabosha.cuppajoe.match.patterns.Result;
 import org.junit.jupiter.api.Test;
 
 import static com.github.bishabosha.cuppajoe.API.None;
@@ -22,6 +21,7 @@ import static com.github.bishabosha.cuppajoe.match.API.With;
 import static com.github.bishabosha.cuppajoe.match.patterns.Collections.Tuple2$;
 import static com.github.bishabosha.cuppajoe.match.patterns.Standard.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class PatternTest {
 
@@ -49,19 +49,19 @@ public class PatternTest {
 
         assertEquals(
             Some(List.singleton(0)),
-            INode$($(0), __(), __()).test(tree).map(Result::capture)
+            INode$($(0), __(), __()).test(tree).map(ListCapture::capture)
         );
         assertEquals(
             Some(List.singleton(0)),
-            INode$($(), __(), __()).test(tree).map(Result::capture)
+            INode$($(), __(), __()).test(tree).map(ListCapture::capture)
         );
         assertEquals(
             None(),
-            INode$($(5), __(), __()).test(tree).map(Result::capture)
+            INode$($(5), __(), __()).test(tree).map(ListCapture::capture)
         );
         assertEquals(
             Some(List.singleton(Tree(1))),
-            INode$(__(), __(), $()).test(tree).map(Result::capture)
+            INode$(__(), __(), $()).test(tree).map(ListCapture::capture)
         );
         assertEquals(
             None(),
@@ -82,12 +82,15 @@ public class PatternTest {
 
         underTest = Tuple(Option.of(Node(1, Tree.Leaf(), Tree.Leaf())), List(Tree(2)));
 
-        patt2Test.test(underTest).peek(results -> {
-            var values = results.values();
-            assertEquals(1, (int) values.next());
-            assertEquals(Tree.Leaf(), values.next());
-            assertEquals(List.singleton(Tree.ofAll(2)), values.next());
-        });
+        var listOp = patt2Test.test(underTest).map(ListCapture::capture);
+
+        assertFalse(listOp.isEmpty());
+
+        var list = listOp.get();
+
+        assertEquals(1, list.head());
+        assertEquals(Tree.Leaf(), list.tail().head());
+        assertEquals(List.singleton(Tree.ofAll(2)), list.tail().tail().head());
     }
 
     @Test
@@ -97,7 +100,7 @@ public class PatternTest {
                 "Some(Tuple(" + x + ", " + y + "))"),
             With(None$(), () ->
                 "None")/*,
-            With(Lazy_($()), () -> "will not compile")*/
+            With(Lazy$($()), () -> "will not compile")*/
         );
 
         assertEquals("Some(Tuple(1, 2))", cases.get(Some(Tuple(1, 2))));

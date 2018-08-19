@@ -268,19 +268,21 @@ public interface Tree<E extends Comparable<E>> {
             }
 
             private Either<List<Tree<E>>, Tuple2<E, List<Tree<E>>>> stackAlgorithm(Tree<E> head, List<Tree<E>> tail) {
-                return head.isEmpty() ? Left(List())
+                return head.isEmpty()
+                        ? Left(List())
                         : Right(Tuple(head.node(), processNode(head.left(), head.right(), tail)));
             }
 
             private List<Tree<E>> processNode(Tree<E> left, Tree<E> right, List<Tree<E>> list) {
                 var rightEmpty = right.isEmpty();
                 var leftEmpty = left.isEmpty();
-                return leftEmpty ? rightEmpty
-                          ? list
-                          : list.push(right)
+                return leftEmpty
+                        ? rightEmpty
+                            ? list
+                            : list.push(right)
                         : rightEmpty
-                          ? list.push(left)
-                          : list.push(right).push(left);
+                            ? list.push(left)
+                            : list.push(right).push(left);
             }
 
             private Unit foundNext(Tuple2<E, List<Tree<E>>> headTail) {
@@ -316,7 +318,8 @@ public interface Tree<E extends Comparable<E>> {
             }
 
             private Option<Unit> extract(Tree<E> tree, Queue<Tree<E>> list) {
-                return tree.isEmpty() ? None()
+                return tree.isEmpty()
+                        ? None()
                         : Some(processTree(tree.node(), tree.left(), tree.right(), list));
             }
 
@@ -354,20 +357,23 @@ public interface Tree<E extends Comparable<E>> {
             }
 
             private Either<List<Object>, Tuple2<E, List<Object>>> stackAlgorithm(Object head, List<Object> tail) {
-                return head instanceof Node ? Left(processNode((Node<E>) head, tail))
-                        : head == Leaf() ? Left(List())
-                        : Right(Tuple((E) head, tail));
+                return head instanceof Node
+                        ? Left(processNode((Node<E>) head, tail))
+                        : head == Leaf()
+                            ? Left(List())
+                            : Right(Tuple((E) head, tail));
             }
 
             private List<Object> processNode(Node<E> node, List<Object> list) {
                 var rightEmpty = node.right.isEmpty();
                 var leftEmpty = node.left.isEmpty();
-                return leftEmpty ? rightEmpty
-                          ? list.push(node.node)
-                          : list.push(node.node).push(node.right)
+                return leftEmpty
+                        ? rightEmpty
+                            ? list.push(node.node)
+                            : list.push(node.node).push(node.right)
                         : rightEmpty
-                          ? list.push(node.node).push(node.left)
-                          : list.push(node.node).push(node.right).push(node.left);
+                            ? list.push(node.node).push(node.left)
+                            : list.push(node.node).push(node.right).push(node.left);
             }
 
             private Unit foundNext(Tuple2<E, List<Object>> tuple) {

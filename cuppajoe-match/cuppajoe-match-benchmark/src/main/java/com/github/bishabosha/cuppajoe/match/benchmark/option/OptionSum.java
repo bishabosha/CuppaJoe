@@ -29,111 +29,82 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.github.bishabosha.cuppajoe.match.benchmark.tuples;
+package com.github.bishabosha.cuppajoe.match.benchmark.option;
 
-import com.github.bishabosha.cuppajoe.collections.immutable.tuples.Tuple2;
-import com.github.bishabosha.cuppajoe.match.patterns.Collections;
+import com.github.bishabosha.cuppajoe.control.Option;
+import com.github.bishabosha.cuppajoe.match.Case;
 import org.openjdk.jmh.annotations.*;
 
 import java.lang.reflect.Array;
 
-import static com.github.bishabosha.cuppajoe.collections.immutable.API.Tuple;
-import static com.github.bishabosha.cuppajoe.match.API.Match;
+import static com.github.bishabosha.cuppajoe.API.None;
+import static com.github.bishabosha.cuppajoe.API.Some;
+import static com.github.bishabosha.cuppajoe.match.API.Cases;
 import static com.github.bishabosha.cuppajoe.match.API.With;
-import static com.github.bishabosha.cuppajoe.match.patterns.Collections.Tuple2$;
-import static com.github.bishabosha.cuppajoe.match.patterns.Standard.$;
-import static com.github.bishabosha.cuppajoe.match.patterns.Standard.__;
+import static com.github.bishabosha.cuppajoe.match.patterns.Standard.*;
 
 @Fork(1)
 @Warmup(iterations = 3, time = 5)
 @Measurement(iterations = 3, time = 10)
 @BenchmarkMode(Mode.AverageTime)
 @State(Scope.Thread)
-public class Tuple2Sum {
+public class OptionSum {
 
     @State(Scope.Thread)
-    public static class Tuple2State {
+    public static class OptionState {
 
         static final int SIZE = 10_000_000;
-        Tuple2<Integer, Integer>[] arr;
+        Option<Integer>[] arr;
 
         @SuppressWarnings("unchecked")
         @Setup
         public void setup() {
-            arr = (Tuple2<Integer, Integer>[]) Array.newInstance(Tuple2.class, SIZE);
+            arr = (Option<Integer>[]) Array.newInstance(Option.class, SIZE);
             for (var i = 0; i < SIZE; i += 1) {
-                arr[i] = Tuple(i, i+1);
+                arr[i] = i % 2 == 0 ? Some(i) : None();
             }
         }
     }
 
 //    @Benchmark
-    public int sumScalarised(Tuple2State state) {
+    public int sumScalarised(OptionState state) {
         int sum = 0;
-        for (var tuple: state.arr) {
-            sum += (tuple.$1 + tuple.$2);
+        for (var option: state.arr) {
+            sum += option.isEmpty() ? 0 : option.get();
         }
         return sum;
     }
 
 //    @Benchmark
-    public int sumCompose(Tuple2State state) {
+    public int sumBuildIn(OptionState state) {
         int sum = 0;
-        for (var tuple: state.arr) {
-            sum += tuple.compose((x, y) -> x + y);
+        for (var option: state.arr) {
+            sum += option.orElse(0);
         }
         return sum;
     }
 
 //    @Benchmark
-    public int sumComposeLeft(Tuple2State state) {
+    public int sumCase(OptionState state) {
         int sum = 0;
-        for (var tuple: state.arr) {
-            sum += tuple.compose((x, _ignored) -> x);
+        Case<Option<Integer>, Integer> optionCase = With(Some$($()), OptionSum::identity);
+        for (var option: state.arr) {
+            sum += optionCase.match(option).orElse(0);
         }
         return sum;
     }
 
-    //    @Benchmark
-    public int sumCase(Tuple2State state) {
+//    @Benchmark
+    public int sumCaseExhaustive(OptionState state) {
         int sum = 0;
-        for (var tuple: state.arr) {
-            sum += With(Collections.<Integer, Integer>Tuple2$($(), $()), Tuple2Sum::sum).get(tuple);
+        Case<Option<Integer>, Integer> optionCase = Cases(
+            With(Some$($()), OptionSum::identity),
+            With(None$(), 0)
+        );
+        for (var option: state.arr) {
+            sum += optionCase.get(option);
         }
         return sum;
-    }
-
-    //    @Benchmark
-    public int sumLeft(Tuple2State state) {
-        int sum = 0;
-        for (var tuple: state.arr) {
-            sum += With(Collections.<Integer, Integer>Tuple2$($(), __()), Tuple2Sum::identity).get(tuple);
-        }
-        return sum;
-    }
-
-    //    @Benchmark
-    public int sumRight(Tuple2State state) {
-        int sum = 0;
-        for (var tuple: state.arr) {
-            sum += With(Collections.<Integer, Integer>Tuple2$(__(), $()), Tuple2Sum::identity).get(tuple);
-        }
-        return sum;
-    }
-
-    //    @Benchmark
-    public int sumMatcher(Tuple2State state) {
-        int sum = 0;
-        for (var tuple: state.arr) {
-            sum += Match(tuple).of(
-                    With(Tuple2$($(), $()), Tuple2Sum::sum)
-            );
-        }
-        return sum;
-    }
-
-    private static int sum(int x, int y) {
-        return x + y;
     }
 
     private static int identity(int x) {
