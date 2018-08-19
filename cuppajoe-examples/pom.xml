@@ -16,7 +16,7 @@
         <dependency>
             <groupId>com.github.bishabosha.cuppajoe.collections.mutable</groupId>
             <artifactId>cuppajoe-mutable-collections</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0</version>
         </dependency>
     </dependencies>
 
