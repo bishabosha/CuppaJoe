@@ -1,219 +1,356 @@
 package com.github.bishabosha.cuppajoe.match.patterns;
 
-import com.github.bishabosha.cuppajoe.collections.immutable.List;
-import com.github.bishabosha.cuppajoe.collections.immutable.tuples.Tuple;
-import com.github.bishabosha.cuppajoe.collections.immutable.tuples.Tuple2;
-import com.github.bishabosha.cuppajoe.control.Either;
+public abstract class Result {
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-
-import static com.github.bishabosha.cuppajoe.API.Left;
-import static com.github.bishabosha.cuppajoe.API.Right;
-import static com.github.bishabosha.cuppajoe.collections.immutable.API.List;
-import static com.github.bishabosha.cuppajoe.collections.immutable.API.Tuple;
-
-public interface Result {
-
-    static Result compose(Result a, Result b) {
-        return new Node(Tuple.of(a, b));
+    private Result() {
     }
 
-    static Result compose(Result a, Result b, Result c) {
-        return new Node(Tuple.of(a, b, c));
+    public static Result empty() {
+        return Empty.INSTANCE;
     }
 
-    static Result compose(Result a, Result b, Result c, Result d) {
-        return new Node(Tuple.of(a, b, c, d));
+    public static Result of(Object a) {
+        return new Leaf(a);
     }
 
-    static Result compose(Result a, Result b, Result c, Result d, Result e) {
-        return new Node(Tuple.of(a, b, c, d, e));
+    public static Result compose(Result a, Result b) {
+        return new Branch2(a, b);
     }
 
-    static Result compose(Result a, Result b, Result c, Result d, Result e, Result f) {
-        return new Node(Tuple.of(a, b, c, d, e, f));
+    public static Result compose(Result a, Result b, Result c) {
+        return new Branch3(a, b, c);
     }
 
-    static Result compose(Result a, Result b, Result c, Result d, Result e, Result f, Result g) {
-        return new Node(Tuple.of(a, b, c, d, e, f, g));
+    public static Result compose(Result a, Result b, Result c, Result d) {
+        return new Branch4(a, b, c, d);
     }
 
-    static Result compose(Result a, Result b, Result c, Result d, Result e, Result f, Result g, Result h) {
-        return new Node(Tuple.of(a, b, c, d, e, f, g, h));
+    public static Result compose(Result a, Result b, Result c, Result d, Result e) {
+        return new Branch5(a, b, c, d, e);
     }
 
-    static Result of(Object value) {
-        return new Leaf(value);
+    public static Result compose(Result a, Result b, Result c, Result d, Result e, Result f) {
+        return new Branch6(a, b, c, d, e, f);
     }
 
-    @SuppressWarnings("unchecked")
-    static Result empty() {
-        return Node.EMPTY;
+    public static Result compose(Result a, Result b, Result c, Result d, Result e, Result f, Result g) {
+        return new Branch7(a, b, c, d, e, f, g);
     }
 
-    boolean isEmpty();
-
-    boolean isLeaf();
-
-    Object get();
-
-    Iterator<Result> branches();
-
-    Values values();
-
-    default List<Object> capture() {
-        var values = values();
-        var list = List.empty();
-        try {
-            while (true) {
-                list = list.push(values.nextImpl());
-            }
-        } catch (CursorEnd e) {
-            return list.reverse();
-        }
+    public static Result compose(Result a, Result b, Result c, Result d, Result e, Result f, Result g, Result h) {
+        return new Branch8(a, b, c, d, e, f, g, h);
     }
 
-    class Node implements Result {
+    public abstract void accept(ResultVisitor resultVisitor);
 
-        private static final Result EMPTY = new Node(Tuple());
+    public static class Empty extends Result {
+        private static final Empty INSTANCE = new Empty();
 
-        Tuple branches;
-
-        private Node(Tuple branches) {
-            this.branches = branches;
+        @Override
+        public void accept(ResultVisitor resultVisitor) {
         }
 
         @Override
-        public boolean isEmpty() {
-            return branches.arity() == 0;
+        public String toString() {
+            return "*";
         }
+    }
 
-        public boolean isLeaf() {
-            return false;
-        }
+    public static class Leaf extends Result {
+        private final Object val;
 
-        @Override
-        public Object get() {
-            throw new NoSuchElementException();
-        }
-
-        @Override
-        public Iterator<Result> branches() {
-            return branches.iterator();
+        private Leaf(Object val) {
+            this.val = val;
         }
 
         @Override
-        public Values values() {
-            return new Values() {
-                private List<Iterator<Result>> stack = isEmpty() ? List() : List(Node.this.branches());
+        public void accept(ResultVisitor resultVisitor) {
+            resultVisitor.onValue(val);
+        }
 
-                @Override
-                public Object nextImpl() throws CursorEnd {
-                    return stack.nextItem(this::stackAlgorithm)
-                        .map(this::foundItem)
-                        .orElseThrow(CursorEnd::new);
+        @Override
+        public String toString() {
+            return "<" + val + ">";
+        }
+    }
+
+    public static class Branch2 extends Result {
+        private final Result b1;
+        private final Result b2;
+
+        public Branch2(Result b1, Result b2) {
+            this.b1 = b1;
+            this.b2 = b2;
+        }
+
+        @Override
+        public void accept(ResultVisitor resultVisitor) {
+            if (resultVisitor.uninitialised()) {
+                b1.accept(resultVisitor);
+                if (resultVisitor.uninitialised()) {
+                    b2.accept(resultVisitor);
                 }
+            }
+        }
 
-                private Either<List<Iterator<Result>>, Tuple2<Object, List<Iterator<Result>>>> stackAlgorithm(Iterator<Result> it, List<Iterator<Result>> xs) {
-                    if (it.hasNext()) {
-                        var result = it.next();
-                        if (it.hasNext()) {
-                            xs = xs.push(it);
-                        }
-                        if (result.isLeaf()) {
-                            return Right(Tuple(result.get(), xs));
-                        } else {
-                            return Left(result.isEmpty() ? xs : xs.push(result.branches()));
+        @Override
+        public String toString() {
+            return "{" + b1 + ", " + b2 + "}";
+        }
+    }
+
+    public static class Branch3 extends Result {
+        private final Result b1;
+        private final Result b2;
+        private final Result b3;
+
+        public Branch3(Result b1, Result b2, Result b3) {
+            this.b1 = b1;
+            this.b2 = b2;
+            this.b3 = b3;
+        }
+
+        @Override
+        public void accept(ResultVisitor resultVisitor) {
+            if (resultVisitor.uninitialised()) {
+                b1.accept(resultVisitor);
+                if (resultVisitor.uninitialised()) {
+                    b2.accept(resultVisitor);
+                    if (resultVisitor.uninitialised()) {
+                        b3.accept(resultVisitor);
+                    }
+                }
+            }
+        }
+
+        @Override
+        public String toString() {
+            return "{" + b1 + ", " + b2 + ", " + b3 + "}";
+        }
+    }
+
+    public static class Branch4 extends Result {
+        private final Result b1;
+        private final Result b2;
+        private final Result b3;
+        private final Result b4;
+
+        public Branch4(Result b1, Result b2, Result b3, Result b4) {
+            this.b1 = b1;
+            this.b2 = b2;
+            this.b3 = b3;
+            this.b4 = b4;
+        }
+
+        @Override
+        public void accept(ResultVisitor resultVisitor) {
+            if (resultVisitor.uninitialised()) {
+                b1.accept(resultVisitor);
+                if (resultVisitor.uninitialised()) {
+                    b2.accept(resultVisitor);
+                    if (resultVisitor.uninitialised()) {
+                        b3.accept(resultVisitor);
+                        if (resultVisitor.uninitialised()) {
+                            b4.accept(resultVisitor);
                         }
                     }
-                    return Left(List());
                 }
-
-                private Object foundItem(Tuple2<Object, List<Iterator<Result>>> tuple) {
-                    return tuple.compose((elem, xs) -> {
-                        stack = xs;
-                        return elem;
-                    });
-                }
-            };
-        }
-    }
-
-    class Leaf implements Result {
-
-        private Object value;
-
-        private Leaf(Object value) {
-            this.value = value;
-        }
-
-        @Override
-        public boolean isEmpty() {
-            return false;
-        }
-
-        @Override
-        public boolean isLeaf() {
-            return true;
-        }
-
-        @Override
-        public Object get() {
-            return value;
-        }
-
-        @Override
-        public Iterator<Result> branches() {
-            return Collections.emptyIterator();
-        }
-
-        @Override
-        public Values values() {
-            return new SingleValues(value);
-        }
-    }
-
-    class SingleValues extends Values {
-
-        private final Object value;
-        private boolean read = false;
-
-        private SingleValues(Object value) {
-            this.value = value;
-        }
-
-        @Override
-        public Object nextImpl() throws CursorEnd {
-            if (read) {
-                throw new CursorEnd();
-            }
-            read = true;
-            return value;
-        }
-    }
-
-    abstract class Values {
-        abstract Object nextImpl() throws CursorEnd;
-
-        @SuppressWarnings("unchecked")
-        public <O> O next() {
-            Object obj;
-            try {
-                obj = nextImpl();
-                try {
-                    return (O) obj;
-                } catch (ClassCastException cce) {
-                    throw new ClassCastException("Result elem [" + obj + "] is not of the type requested.");
-                }
-            } catch (CursorEnd end) {
-                throw new IndexOutOfBoundsException("Not enough elements");
             }
         }
+
+        @Override
+        public String toString() {
+            return "{" + b1 + ", " + b2 + ", " + b3 + ", " + b4 + "}";
+        }
     }
 
-    class CursorEnd extends Exception {
+    public static class Branch5 extends Result {
+        private final Result b1;
+        private final Result b2;
+        private final Result b3;
+        private final Result b4;
+        private final Result b5;
+
+        public Branch5(Result b1, Result b2, Result b3, Result b4, Result b5) {
+            this.b1 = b1;
+            this.b2 = b2;
+            this.b3 = b3;
+            this.b4 = b4;
+            this.b5 = b5;
+        }
+
+        @Override
+        public void accept(ResultVisitor resultVisitor) {
+            if (resultVisitor.uninitialised()) {
+                b1.accept(resultVisitor);
+                if (resultVisitor.uninitialised()) {
+                    b2.accept(resultVisitor);
+                    if (resultVisitor.uninitialised()) {
+                        b3.accept(resultVisitor);
+                        if (resultVisitor.uninitialised()) {
+                            b4.accept(resultVisitor);
+                            if (resultVisitor.uninitialised()) {
+                                b5.accept(resultVisitor);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        @Override
+        public String toString() {
+            return "{" + b1 + ", " + b2 + ", " + b3 + ", " + b4 + ", " + b5 + "}";
+        }
+    }
+
+    public static class Branch6 extends Result {
+        private final Result b1;
+        private final Result b2;
+        private final Result b3;
+        private final Result b4;
+        private final Result b5;
+        private final Result b6;
+
+        public Branch6(Result b1, Result b2, Result b3, Result b4, Result b5, Result b6) {
+            this.b1 = b1;
+            this.b2 = b2;
+            this.b3 = b3;
+            this.b4 = b4;
+            this.b5 = b5;
+            this.b6 = b6;
+        }
+
+        @Override
+        public void accept(ResultVisitor resultVisitor) {
+            if (resultVisitor.uninitialised()) {
+                b1.accept(resultVisitor);
+                if (resultVisitor.uninitialised()) {
+                    b2.accept(resultVisitor);
+                    if (resultVisitor.uninitialised()) {
+                        b3.accept(resultVisitor);
+                        if (resultVisitor.uninitialised()) {
+                            b4.accept(resultVisitor);
+                            if (resultVisitor.uninitialised()) {
+                                b5.accept(resultVisitor);
+                                if (resultVisitor.uninitialised()) {
+                                    b6.accept(resultVisitor);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        @Override
+        public String toString() {
+            return "{" + b1 + ", " + b2 + ", " + b3 + ", " + b4 + ", " + b5 + ", " + b6 + "}";
+        }
+    }
+
+    public static class Branch7 extends Result {
+        private final Result b1;
+        private final Result b2;
+        private final Result b3;
+        private final Result b4;
+        private final Result b5;
+        private final Result b6;
+        private final Result b7;
+
+        public Branch7(Result b1, Result b2, Result b3, Result b4, Result b5, Result b6, Result b7) {
+            this.b1 = b1;
+            this.b2 = b2;
+            this.b3 = b3;
+            this.b4 = b4;
+            this.b5 = b5;
+            this.b6 = b6;
+            this.b7 = b7;
+        }
+
+        @Override
+        public void accept(ResultVisitor resultVisitor) {
+            if (resultVisitor.uninitialised()) {
+                b1.accept(resultVisitor);
+                if (resultVisitor.uninitialised()) {
+                    b2.accept(resultVisitor);
+                    if (resultVisitor.uninitialised()) {
+                        b3.accept(resultVisitor);
+                        if (resultVisitor.uninitialised()) {
+                            b4.accept(resultVisitor);
+                            if (resultVisitor.uninitialised()) {
+                                b5.accept(resultVisitor);
+                                if (resultVisitor.uninitialised()) {
+                                    b6.accept(resultVisitor);
+                                    if (resultVisitor.uninitialised()) {
+                                        b7.accept(resultVisitor);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        @Override
+        public String toString() {
+            return "{" + b1 + ", " + b2 + ", " + b3 + ", " + b4 + ", " + b5 + ", " + b6 + ", " + b7 + "}";
+        }
+    }
+
+    public static class Branch8 extends Result {
+        private final Result b1;
+        private final Result b2;
+        private final Result b3;
+        private final Result b4;
+        private final Result b5;
+        private final Result b6;
+        private final Result b7;
+        private final Result b8;
+
+        public Branch8(Result b1, Result b2, Result b3, Result b4, Result b5, Result b6, Result b7, Result b8) {
+            this.b1 = b1;
+            this.b2 = b2;
+            this.b3 = b3;
+            this.b4 = b4;
+            this.b5 = b5;
+            this.b6 = b6;
+            this.b7 = b7;
+            this.b8 = b8;
+        }
+
+        @Override
+        public void accept(ResultVisitor resultVisitor) {
+            if (resultVisitor.uninitialised()) {
+                b1.accept(resultVisitor);
+                if (resultVisitor.uninitialised()) {
+                    b2.accept(resultVisitor);
+                    if (resultVisitor.uninitialised()) {
+                        b3.accept(resultVisitor);
+                        if (resultVisitor.uninitialised()) {
+                            b4.accept(resultVisitor);
+                            if (resultVisitor.uninitialised()) {
+                                b5.accept(resultVisitor);
+                                if (resultVisitor.uninitialised()) {
+                                    b6.accept(resultVisitor);
+                                    if (resultVisitor.uninitialised()) {
+                                        b7.accept(resultVisitor);
+                                        if (resultVisitor.uninitialised()) {
+                                            b8.accept(resultVisitor);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        @Override
+        public String toString() {
+            return "{" + b1 + ", " + b2 + ", " + b3 + ", " + b4 + ", " + b5 + ", " + b6 + ", " + b7 + ", " + b8 + "}";
+        }
     }
 }

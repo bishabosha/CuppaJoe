@@ -32,111 +32,74 @@
 package com.github.bishabosha.cuppajoe.match.benchmark.tuples;
 
 import com.github.bishabosha.cuppajoe.collections.immutable.tuples.Tuple2;
-import com.github.bishabosha.cuppajoe.match.patterns.Collections;
+import com.github.bishabosha.cuppajoe.match.Case;
 import org.openjdk.jmh.annotations.*;
 
 import java.lang.reflect.Array;
 
 import static com.github.bishabosha.cuppajoe.collections.immutable.API.Tuple;
-import static com.github.bishabosha.cuppajoe.match.API.Match;
 import static com.github.bishabosha.cuppajoe.match.API.With;
 import static com.github.bishabosha.cuppajoe.match.patterns.Collections.tuple;
-import static com.github.bishabosha.cuppajoe.match.patterns.Standard.__;
 import static com.github.bishabosha.cuppajoe.match.patterns.Standard.id;
+import static com.github.bishabosha.cuppajoe.match.patterns.Standard.__;
 
 @Fork(1)
 @Warmup(iterations = 3, time = 5)
 @Measurement(iterations = 3, time = 10)
 @BenchmarkMode(Mode.AverageTime)
 @State(Scope.Thread)
-public class Tuple2Sum {
+public class Tuple2NestedSum {
 
     @State(Scope.Thread)
-    public static class Tuple2State {
+    public static class Tuple2NestedState {
 
         static final int SIZE = 10_000_000;
-        Tuple2<Integer, Integer>[] arr;
+        Tuple2<Tuple2<Integer, Integer>, Integer>[] arr;
 
         @SuppressWarnings("unchecked")
         @Setup
         public void setup() {
-            arr = (Tuple2<Integer, Integer>[]) Array.newInstance(Tuple2.class, SIZE);
+            arr = (Tuple2<Tuple2<Integer, Integer>, Integer>[]) Array.newInstance(Tuple2.class, SIZE);
             for (var i = 0; i < SIZE; i += 1) {
-                arr[i] = Tuple(i, i+1);
+                arr[i] = Tuple(Tuple(i, i+1), i+2);
             }
         }
     }
 
 //    @Benchmark
-    public int sumScalarised(Tuple2State state) {
+    public int sumScalarisedNested(Tuple2NestedState state) {
         int sum = 0;
         for (var tuple: state.arr) {
-            sum += (tuple.$1 + tuple.$2);
+            var tupleNested = tuple.$1;
+            sum += (tupleNested.$1 + tupleNested.$2);
         }
         return sum;
     }
 
 //    @Benchmark
-    public int sumCompose(Tuple2State state) {
+    public int sumConsumeNested(Tuple2NestedState state) {
         int sum = 0;
         for (var tuple: state.arr) {
-            sum += tuple.compose((x, y) -> x + y);
-        }
-        return sum;
-    }
-
-//    @Benchmark
-    public int sumComposeLeft(Tuple2State state) {
-        int sum = 0;
-        for (var tuple: state.arr) {
-            sum += tuple.compose((x, _ignored) -> x);
-        }
-        return sum;
-    }
-
-    //    @Benchmark
-    public int sumCase(Tuple2State state) {
-        int sum = 0;
-        for (var tuple: state.arr) {
-            sum += With(Collections.<Integer, Integer>tuple(id(), id()), Tuple2Sum::sum).get(tuple);
-        }
-        return sum;
-    }
-
-    //    @Benchmark
-    public int sumLeft(Tuple2State state) {
-        int sum = 0;
-        for (var tuple: state.arr) {
-            sum += With(Collections.<Integer, Integer>tuple(id(), __()), Tuple2Sum::identity).get(tuple);
-        }
-        return sum;
-    }
-
-    //    @Benchmark
-    public int sumRight(Tuple2State state) {
-        int sum = 0;
-        for (var tuple: state.arr) {
-            sum += With(Collections.<Integer, Integer>tuple(__(), id()), Tuple2Sum::identity).get(tuple);
-        }
-        return sum;
-    }
-
-    //    @Benchmark
-    public int sumMatcher(Tuple2State state) {
-        int sum = 0;
-        for (var tuple: state.arr) {
-            sum += Match(tuple).of(
-                With(tuple(id(), id()), Tuple2Sum::sum)
+            sum += tuple.compose((xy, _ignored) ->
+                xy.compose((x, y) ->
+                    x + y
+                )
             );
+        }
+        return sum;
+    }
+
+    //    @Benchmark
+    public int sumCaseNested(Tuple2NestedState state) {
+        int sum = 0;
+        Case<Tuple2<Tuple2<Integer, Integer>, Integer>, Integer> tupleCase = With(tuple(tuple(id(), id()), __()), Tuple2NestedSum::sum);
+        for (var tuple: state.arr) {
+            sum += tupleCase.get(tuple);
         }
         return sum;
     }
 
     private static int sum(int x, int y) {
         return x + y;
-    }
-
-    private static int identity(int x) {
-        return x;
     }
 }

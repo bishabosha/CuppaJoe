@@ -8,20 +8,20 @@ import com.github.bishabosha.cuppajoe.collections.immutable.List;
 import com.github.bishabosha.cuppajoe.collections.immutable.Tree;
 import com.github.bishabosha.cuppajoe.collections.immutable.tuples.Tuple2;
 import com.github.bishabosha.cuppajoe.control.Option;
-import com.github.bishabosha.cuppajoe.match.patterns.Collections;
 import com.github.bishabosha.cuppajoe.match.patterns.Pattern;
-import com.github.bishabosha.cuppajoe.match.patterns.Result;
 import org.junit.jupiter.api.Test;
 
 import static com.github.bishabosha.cuppajoe.API.None;
 import static com.github.bishabosha.cuppajoe.API.Some;
 import static com.github.bishabosha.cuppajoe.collections.immutable.API.*;
+import static com.github.bishabosha.cuppajoe.collections.immutable.Tree.Leaf;
 import static com.github.bishabosha.cuppajoe.collections.immutable.Tree.Node;
 import static com.github.bishabosha.cuppajoe.match.API.Cases;
 import static com.github.bishabosha.cuppajoe.match.API.With;
-import static com.github.bishabosha.cuppajoe.match.patterns.Collections.Tuple2$;
+import static com.github.bishabosha.cuppajoe.match.patterns.Collections.*;
 import static com.github.bishabosha.cuppajoe.match.patterns.Standard.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class PatternTest {
 
@@ -32,13 +32,13 @@ public class PatternTest {
                 -1,
                 Node(
                     -2,
-                    Tree.Leaf(),
-                    Tree.Leaf()),
-                Tree.Leaf()),
+                    Leaf(),
+                    Leaf()),
+                Leaf()),
             Node(
                 1,
-                Tree.Leaf(),
-                Tree.Leaf())
+                Leaf(),
+                Leaf())
         );
     }
 
@@ -49,28 +49,28 @@ public class PatternTest {
 
         assertEquals(
             Some(List.singleton(0)),
-            INode$($(0), __(), __()).test(tree).map(Result::capture)
+            inode(eq(0), __(), __()).test(tree).map(ListCapture::capture)
         );
         assertEquals(
             Some(List.singleton(0)),
-            INode$($(), __(), __()).test(tree).map(Result::capture)
+            inode(id(), __(), __()).test(tree).map(ListCapture::capture)
         );
         assertEquals(
             None(),
-            INode$($(5), __(), __()).test(tree).map(Result::capture)
+            inode(eq(5), __(), __()).test(tree).map(ListCapture::capture)
         );
         assertEquals(
             Some(List.singleton(Tree(1))),
-            INode$(__(), __(), $()).test(tree).map(Result::capture)
+            inode(__(), __(), id()).test(tree).map(ListCapture::capture)
         );
         assertEquals(
             None(),
-            INode$($(), $(null), $(null)).test(tree)
+            inode(id(), eq(null), eq(null)).test(tree)
         );
     }
 
-    private static Pattern<Tree<Integer>> INode$(Pattern<Integer> node, Pattern<Tree<Integer>> left, Pattern<Tree<Integer>> right) {
-        return Collections.Node$(node, left, right);
+    private static Pattern<Tree<Integer>> inode(Pattern<Integer> node, Pattern<Tree<Integer>> left, Pattern<Tree<Integer>> right) {
+        return node(node, left, right);
     }
 
     @Test
@@ -78,26 +78,29 @@ public class PatternTest {
         final Pattern<Tuple2<Option<Tree<Integer>>, List<Tree<Integer>>>> patt2Test;
         final Tuple2<Option<Tree<Integer>>, List<Tree<Integer>>> underTest;
 
-        patt2Test = Tuple2$(Some$(INode$($(), __(), $())), $());
+        patt2Test = tuple(some(inode(id(), __(), id())), id());
 
-        underTest = Tuple(Option.of(Node(1, Tree.Leaf(), Tree.Leaf())), List(Tree(2)));
+        underTest = Tuple(Some(Node(1, Leaf(), Leaf())), List(Tree(2)));
 
-        patt2Test.test(underTest).peek(results -> {
-            var values = results.values();
-            assertEquals(1, (int) values.next());
-            assertEquals(Tree.Leaf(), values.next());
-            assertEquals(List.singleton(Tree.ofAll(2)), values.next());
-        });
+        var listOp = patt2Test.test(underTest).map(ListCapture::capture);
+
+        assertFalse(listOp.isEmpty());
+
+        var list = listOp.get();
+
+        assertEquals(1, list.head());
+        assertEquals(Leaf(), list.tail().head());
+        assertEquals(List.singleton(Tree.ofAll(2)), list.tail().tail().head());
     }
 
     @Test
     public void test_typeSafety() {
         var cases = Cases(
-            With(Some$(Tuple2$($(), $())), (x, y) ->
+            With(some(tuple(id(), id())), (x, y) ->
                 "Some(Tuple(" + x + ", " + y + "))"),
-            With(None$(), () ->
+            With(none(), () ->
                 "None")/*,
-            With(Lazy_($()), () -> "will not compile")*/
+            With(Lazy$($()), () -> "will not compile")*/
         );
 
         assertEquals("Some(Tuple(1, 2))", cases.get(Some(Tuple(1, 2))));

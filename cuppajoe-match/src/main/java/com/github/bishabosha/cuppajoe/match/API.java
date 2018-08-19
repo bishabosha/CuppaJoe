@@ -52,8 +52,20 @@ public final class API {
 
     public static <O>
     Guard<O>
+    When(@NonNull BooleanSupplier test, @NonNull O value) {
+        return GuardFactory.when(test, value);
+    }
+
+    public static <O>
+    Guard<O>
     Edge(@NonNull Supplier<O> valueSupplier) {
         return GuardFactory.edge(valueSupplier);
+    }
+
+    public static <O>
+    Guard<O>
+    Edge(@NonNull O value) {
+        return GuardFactory.edge(value);
     }
 
     @SafeVarargs
@@ -61,6 +73,12 @@ public final class API {
     Case<I, O>
     Cases(@NonNull Case<I, O>... cases) {
         return CaseFactory.combine(cases);
+    }
+
+    public static <I, O>
+    Case<I, O>
+    With(@NonNull Pattern<I> matcher, @NonNull O value) {
+        return CaseFactory.with(matcher, value);
     }
 
     public static <I, O>

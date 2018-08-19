@@ -11,22 +11,22 @@ public class ResultTest {
 
     @Test
     public void test_iterating() {
-        assertTrue(Result.empty().capture().isEmpty());
+        assertTrue(ListCapture.capture(Result.empty()).isEmpty());
         assertIterableEquals(
             List.singleton(1),
-            Result.of(1).capture()
+            ListCapture.capture(Result.of(1))
         );
         assertIterableEquals(
             List.ofAll(1, 2),
-            Result.compose(Result.of(1), Result.of(2)).capture()
+            ListCapture.capture(Result.compose(Result.of(1), Result.of(2)))
         );
         assertIterableEquals(
             List.ofAll(1, 2, 3, 4),
-            Result.compose(Result.compose(Result.of(1), Result.of(2), Result.of(3)), Result.of(4)).capture()
+            ListCapture.capture(Result.compose(Result.compose(Result.of(1), Result.of(2), Result.of(3)), Result.of(4)))
         );
         assertIterableEquals(
             List.ofAll("One", "Two", "Three"),
-            Result.compose(Result.compose(Result.of("One"), Result.compose(Result.of("Two"), Result.empty()), Result.empty()), Result.of("Three")).capture()
+            ListCapture.capture(Result.compose(Result.compose(Result.of("One"), Result.compose(Result.of("Two"), Result.empty()), Result.empty()), Result.of("Three")))
         );
     }
 }
