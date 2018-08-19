@@ -52,8 +52,20 @@ public final class API {
 
     public static <O>
     Guard<O>
+    When(@NonNull BooleanSupplier test, @NonNull O value) {
+        return GuardFactory.when(test, value);
+    }
+
+    public static <O>
+    Guard<O>
     Edge(@NonNull Supplier<O> valueSupplier) {
         return GuardFactory.edge(valueSupplier);
+    }
+
+    public static <O>
+    Guard<O>
+    Edge(@NonNull O value) {
+        return GuardFactory.edge(value);
     }
 
     @SafeVarargs

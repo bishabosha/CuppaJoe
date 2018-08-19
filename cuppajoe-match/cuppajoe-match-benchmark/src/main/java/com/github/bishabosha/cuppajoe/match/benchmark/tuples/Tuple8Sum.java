@@ -8,16 +8,16 @@ import java.lang.reflect.Array;
 
 import static com.github.bishabosha.cuppajoe.collections.immutable.API.Tuple;
 import static com.github.bishabosha.cuppajoe.match.API.With;
-import static com.github.bishabosha.cuppajoe.match.patterns.Standard.$;
-import static com.github.bishabosha.cuppajoe.match.patterns.Collections.Tuple8$;
+import static com.github.bishabosha.cuppajoe.match.patterns.Collections.tuple;
 import static com.github.bishabosha.cuppajoe.match.patterns.Standard.__;
+import static com.github.bishabosha.cuppajoe.match.patterns.Standard.id;
 
 /**
  * match API 3.0
- * Tuple8Sum.sumCase                      avgt   15  0.900 ± 0.417   s/op
- * Tuple8Sum.sumCase_smallExtract_2first  avgt   15  0.940 ± 0.105   s/op
- * Tuple8Sum.sumCase_smallExtract_2last   avgt   15  1.346 ± 0.361   s/op
- * Tuple8Sum.sumCompose                   avgt   15  0.164 ± 0.002   s/op
+ * Tuple8Sum.sumCase                      avgt   15  0.785 ± 0.233   s/op
+ * Tuple8Sum.sumCase_smallExtract_2first  avgt   15  0.742 ± 0.166   s/op
+ * Tuple8Sum.sumCase_smallExtract_2last   avgt   15  1.226 ± 0.348   s/op
+ * Tuple8Sum.sumCompose                   avgt   15  0.163 ± 0.006   s/op
  */
 @Fork(3)
 @Warmup(iterations = 5, time = 5)
@@ -55,7 +55,7 @@ public class Tuple8Sum {
     public int sumCase(Tuple8State state) {
         int sum = 0;
         Case<Tuple8<Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer>, Integer> tupleCase;
-        tupleCase = With(Tuple8$($(), $(), $(), $(), $(), $(), $(), $()), Tuple8Sum::sum);
+        tupleCase = With(tuple(id(), id(), id(), id(), id(), id(), id(), id()), Tuple8Sum::sum);
         for (var tuple: state.arr) {
             sum += tupleCase.get(tuple);
         }
@@ -74,7 +74,7 @@ public class Tuple8Sum {
     public int sumCase_smallExtract_2first(Tuple8State state) {
         int sum = 0;
         Case<Tuple8<Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer>, Integer> tupleCase;
-        tupleCase = With(Tuple8$($(), $(), __(), __(), __(), __(), __(), __()), Tuple8Sum::sum2);
+        tupleCase = With(tuple(id(), id(), __(), __(), __(), __(), __(), __()), Tuple8Sum::sum2);
         for (var tuple: state.arr) {
             sum += tupleCase.get(tuple);
         }
@@ -85,7 +85,7 @@ public class Tuple8Sum {
     public int sumCase_smallExtract_2last(Tuple8State state) {
         int sum = 0;
         Case<Tuple8<Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer>, Integer> tupleCase;
-        tupleCase = With(Tuple8$(__(), __(), __(), __(), __(), __(), $(), $()), Tuple8Sum::sum2);
+        tupleCase = With(tuple(__(), __(), __(), __(), __(), __(), id(), id()), Tuple8Sum::sum2);
         for (var tuple: state.arr) {
             sum += tupleCase.get(tuple);
         }

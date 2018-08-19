@@ -34,6 +34,12 @@ public interface Option<E> extends Monad1<Option, E>, Peek1<E>, Value1<Option, E
         return condition.getAsBoolean() ? some(elem.get()) : empty();
     }
 
+    static <O> Option<O> when(@NonNull BooleanSupplier condition, @NonNull O elem) {
+        Objects.requireNonNull(condition, "condition");
+        Objects.requireNonNull(elem, "elem");
+        return condition.getAsBoolean() ? some(elem) : empty();
+    }
+
     static <O> Some<O> some(O value) {
         return new Some<>(value);
     }

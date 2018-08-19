@@ -39,8 +39,8 @@ import java.lang.reflect.Array;
 
 import static com.github.bishabosha.cuppajoe.collections.immutable.API.Tuple;
 import static com.github.bishabosha.cuppajoe.match.API.With;
-import static com.github.bishabosha.cuppajoe.match.patterns.Collections.Tuple2$;
-import static com.github.bishabosha.cuppajoe.match.patterns.Standard.$;
+import static com.github.bishabosha.cuppajoe.match.patterns.Collections.tuple;
+import static com.github.bishabosha.cuppajoe.match.patterns.Standard.id;
 import static com.github.bishabosha.cuppajoe.match.patterns.Standard.__;
 
 @Fork(1)
@@ -92,7 +92,7 @@ public class Tuple2NestedSum {
     //    @Benchmark
     public int sumCaseNested(Tuple2NestedState state) {
         int sum = 0;
-        Case<Tuple2<Tuple2<Integer, Integer>, Integer>, Integer> tupleCase = With(Tuple2$(Tuple2$($(), $()), __()), Tuple2NestedSum::sum);
+        Case<Tuple2<Tuple2<Integer, Integer>, Integer>, Integer> tupleCase = With(tuple(tuple(id(), id()), __()), Tuple2NestedSum::sum);
         for (var tuple: state.arr) {
             sum += tupleCase.get(tuple);
         }

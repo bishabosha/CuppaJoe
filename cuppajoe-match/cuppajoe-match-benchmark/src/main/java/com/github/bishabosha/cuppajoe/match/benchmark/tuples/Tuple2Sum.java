@@ -40,9 +40,9 @@ import java.lang.reflect.Array;
 import static com.github.bishabosha.cuppajoe.collections.immutable.API.Tuple;
 import static com.github.bishabosha.cuppajoe.match.API.Match;
 import static com.github.bishabosha.cuppajoe.match.API.With;
-import static com.github.bishabosha.cuppajoe.match.patterns.Collections.Tuple2$;
-import static com.github.bishabosha.cuppajoe.match.patterns.Standard.$;
+import static com.github.bishabosha.cuppajoe.match.patterns.Collections.tuple;
 import static com.github.bishabosha.cuppajoe.match.patterns.Standard.__;
+import static com.github.bishabosha.cuppajoe.match.patterns.Standard.id;
 
 @Fork(1)
 @Warmup(iterations = 3, time = 5)
@@ -98,7 +98,7 @@ public class Tuple2Sum {
     public int sumCase(Tuple2State state) {
         int sum = 0;
         for (var tuple: state.arr) {
-            sum += With(Collections.<Integer, Integer>Tuple2$($(), $()), Tuple2Sum::sum).get(tuple);
+            sum += With(Collections.<Integer, Integer>tuple(id(), id()), Tuple2Sum::sum).get(tuple);
         }
         return sum;
     }
@@ -107,7 +107,7 @@ public class Tuple2Sum {
     public int sumLeft(Tuple2State state) {
         int sum = 0;
         for (var tuple: state.arr) {
-            sum += With(Collections.<Integer, Integer>Tuple2$($(), __()), Tuple2Sum::identity).get(tuple);
+            sum += With(Collections.<Integer, Integer>tuple(id(), __()), Tuple2Sum::identity).get(tuple);
         }
         return sum;
     }
@@ -116,7 +116,7 @@ public class Tuple2Sum {
     public int sumRight(Tuple2State state) {
         int sum = 0;
         for (var tuple: state.arr) {
-            sum += With(Collections.<Integer, Integer>Tuple2$(__(), $()), Tuple2Sum::identity).get(tuple);
+            sum += With(Collections.<Integer, Integer>tuple(__(), id()), Tuple2Sum::identity).get(tuple);
         }
         return sum;
     }
@@ -126,7 +126,7 @@ public class Tuple2Sum {
         int sum = 0;
         for (var tuple: state.arr) {
             sum += Match(tuple).of(
-                    With(Tuple2$($(), $()), Tuple2Sum::sum)
+                With(tuple(id(), id()), Tuple2Sum::sum)
             );
         }
         return sum;

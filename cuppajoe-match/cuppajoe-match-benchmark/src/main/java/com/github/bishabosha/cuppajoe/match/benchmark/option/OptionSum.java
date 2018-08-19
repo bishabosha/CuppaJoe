@@ -42,6 +42,7 @@ import static com.github.bishabosha.cuppajoe.API.Some;
 import static com.github.bishabosha.cuppajoe.match.API.Cases;
 import static com.github.bishabosha.cuppajoe.match.API.With;
 import static com.github.bishabosha.cuppajoe.match.patterns.Standard.*;
+import static com.github.bishabosha.cuppajoe.match.patterns.Collections.*;
 
 @Fork(1)
 @Warmup(iterations = 3, time = 5)
@@ -87,7 +88,7 @@ public class OptionSum {
 //    @Benchmark
     public int sumCase(OptionState state) {
         int sum = 0;
-        Case<Option<Integer>, Integer> optionCase = With(Some$($()), OptionSum::identity);
+        Case<Option<Integer>, Integer> optionCase = With(some(id()), OptionSum::identity);
         for (var option: state.arr) {
             sum += optionCase.match(option).orElse(0);
         }
@@ -98,8 +99,8 @@ public class OptionSum {
     public int sumCaseExhaustive(OptionState state) {
         int sum = 0;
         Case<Option<Integer>, Integer> optionCase = Cases(
-            With(Some$($()), OptionSum::identity),
-            With(None$(), 0)
+            With(some(id()), OptionSum::identity),
+            With(none(), 0)
         );
         for (var option: state.arr) {
             sum += optionCase.get(option);

@@ -36,10 +36,9 @@ import com.github.bishabosha.cuppajoe.match.patterns.Result;
 import com.github.bishabosha.cuppajoe.match.patterns.ResultVisitor;
 import org.openjdk.jmh.annotations.*;
 
-import static com.github.bishabosha.cuppajoe.collections.immutable.API.Tuple;
 import static com.github.bishabosha.cuppajoe.match.API.Match;
 import static com.github.bishabosha.cuppajoe.match.API.With;
-import static com.github.bishabosha.cuppajoe.match.patterns.Standard.$;
+import static com.github.bishabosha.cuppajoe.match.patterns.Standard.id;
 
 @Fork(1)
 @Warmup(iterations = 3, time = 5)
@@ -83,7 +82,7 @@ public class Basic {
 //    @Benchmark
     public int sumPattern(IntArrayState state) {
        int sum = 0;
-       Pattern<Integer> pattern = $();
+       Pattern<Integer> pattern = id();
        for (var num: state.arr) {
            sum += SingleNumExtractor.extract(pattern.test(num).get());
        }
@@ -98,7 +97,7 @@ public class Basic {
     public int sumCase(IntArrayState state) {
         int sum = 0;
         for (var tuple: state.arr) {
-            sum += With($(), (Integer x) -> x).get(tuple);
+            sum += With(id(), (Integer x) -> x).get(tuple);
         }
         return sum;
     }
@@ -112,7 +111,7 @@ public class Basic {
         int sum = 0;
         for (var tuple: state.arr) {
             sum += Match(tuple).of(
-                With($(), (Integer x) -> x)
+                With(id(), (Integer x) -> x)
             );
         }
         return sum;

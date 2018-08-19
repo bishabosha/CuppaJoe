@@ -30,6 +30,10 @@ public final class GuardFactory {
         return () -> Option.when(test, valueSupplier);
     }
 
+    public static <O> Guard<O> when(@NonNull BooleanSupplier test, @NonNull O value) {
+        return () -> Option.when(test, value);
+    }
+
     /**
      * Guard that will lazily wrap the value supplied in an Option.<br>
      * Used as a catch all result in a guard block.
@@ -41,6 +45,11 @@ public final class GuardFactory {
     public static <O> Guard<O> edge(@NonNull Supplier<O> valueSupplier) {
         Objects.requireNonNull(valueSupplier, "valueSupplier");
         return () -> Some(valueSupplier.get());
+    }
+
+    public static <O> Guard<O> edge(@NonNull O value) {
+        Objects.requireNonNull(value, "value");
+        return () -> Some(value);
     }
 
     @SafeVarargs
