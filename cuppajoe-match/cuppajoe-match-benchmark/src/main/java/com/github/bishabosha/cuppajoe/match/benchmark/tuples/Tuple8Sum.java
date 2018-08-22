@@ -2,6 +2,7 @@ package com.github.bishabosha.cuppajoe.match.benchmark.tuples;
 
 import com.github.bishabosha.cuppajoe.collections.immutable.tuples.Tuple8;
 import com.github.bishabosha.cuppajoe.match.Case;
+import com.github.bishabosha.cuppajoe.match.patterns.Standard;
 import org.openjdk.jmh.annotations.*;
 
 import java.lang.reflect.Array;
@@ -11,6 +12,7 @@ import static com.github.bishabosha.cuppajoe.match.API.With;
 import static com.github.bishabosha.cuppajoe.match.patterns.Collections.tuple;
 import static com.github.bishabosha.cuppajoe.match.patterns.Standard.__;
 import static com.github.bishabosha.cuppajoe.match.patterns.Standard.id;
+import static com.github.bishabosha.cuppajoe.match.patterns.Standard.of;
 
 /**
  * match API 3.0
@@ -74,7 +76,7 @@ public class Tuple8Sum {
     public int sumCase_smallExtract_2first(Tuple8State state) {
         int sum = 0;
         Case<Tuple8<Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer>, Integer> tupleCase;
-        tupleCase = With(tuple(id(), id(), __(), __(), __(), __(), __(), __()), Tuple8Sum::sum2);
+        tupleCase = With(tuple(__(), __(), __(), __(), __(), __(), __(), __()), Tuple8Sum::sum2);
         for (var tuple: state.arr) {
             sum += tupleCase.get(tuple);
         }

@@ -1,9 +1,11 @@
 package com.github.bishabosha.cuppajoe.match;
 
+import com.github.bishabosha.cuppajoe.collections.immutable.API;
 import com.github.bishabosha.cuppajoe.collections.immutable.tuples.Tuple;
 import com.github.bishabosha.cuppajoe.control.Option;
 import org.junit.jupiter.api.Test;
 
+import static com.github.bishabosha.cuppajoe.API.Some;
 import static com.github.bishabosha.cuppajoe.match.internal.CaseFactory.with;
 import static com.github.bishabosha.cuppajoe.match.patterns.Collections.*;
 import static com.github.bishabosha.cuppajoe.match.patterns.Standard.__;
@@ -71,5 +73,10 @@ public class CaseFactoryTest {
              )
              .get(Tuple.of(1, 1, 1, 1, 1, 1, 1, 1)).intValue()
         );
+    }
+
+    @Test
+    public void test_stress() {
+        assertEquals("id", with(tuple(some(__()), tuple(__(), some(id()))), x -> x).get(API.Tuple(Some("whatever"), API.Tuple("Foo", Some("id")))));
     }
 }

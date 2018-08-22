@@ -35,6 +35,7 @@ import com.github.bishabosha.cuppajoe.higher.functions.TailCall;
 import org.openjdk.jmh.annotations.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -54,9 +55,9 @@ import static com.github.bishabosha.cuppajoe.higher.functions.TailCall.yield;
  * # Benchmark mode: Average time, time/op
  *
  * Benchmark                           Mode  Cnt  Score   Error  Units
- * StringConcatBenchmark.testLoop      avgt   15  0.179 ± 0.027   s/op
- * StringConcatBenchmark.testStream    avgt   15  0.179 ± 0.010   s/op
- * StringConcatBenchmark.testTailCall  avgt   15  0.218 ± 0.012   s/op
+ * StringConcatBenchmark.testLoop      avgt   15  0.173 ± 0.003   s/op
+ * StringConcatBenchmark.testStream    avgt   15  0.222 ± 0.006   s/op
+ * StringConcatBenchmark.testTailCall  avgt   15  0.233 ± 0.016   s/op
  */
 @Fork(3)
 @Warmup(iterations = 3, time = 5)
@@ -67,14 +68,14 @@ public class StringConcatBenchmark {
 
     @State(Scope.Thread)
     public static class ListState {
-        private List<String> list;
+        private String[] list;
 
         @Setup
         public void setup() {
             var size = 10_000_000;
-            list = new ArrayList<>(size);
-            for (var i = 0; i <= size; i++) {
-                list.add("" + i);
+            list = new String[size];
+            for (var i = 0; i < size; i++) {
+                list[i] = "" + i;
             }
         }
     }
@@ -90,12 +91,12 @@ public class StringConcatBenchmark {
 
     @Benchmark
     public String testStream(ListState state) {
-        return state.list.stream().collect(Collectors.joining());
+        return Arrays.stream(state.list).collect(Collectors.joining());
     }
 
     @Benchmark
     public String testTailCall(ListState state) {
-        return concatList(state.list.iterator(), new StringBuilder()).apply();
+        return concatList(Arrays.asList(state.list).iterator(), new StringBuilder()).apply();
     }
 
     private static TailCall<String> concatList(Iterator<String> iterator, StringBuilder builder) {
