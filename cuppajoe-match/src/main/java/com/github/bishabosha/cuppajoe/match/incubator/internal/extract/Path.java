@@ -1,7 +1,17 @@
 package com.github.bishabosha.cuppajoe.match.incubator.internal.extract;
 
+@FunctionalInterface
 public interface Path<I, O> {
     O get(I source);
+
+    static <I> Path<I, I> identity() {
+        return x -> x;
+    }
+
+    @SuppressWarnings("unchecked")
+    static <I, O> CompletedPath<I, O> identityCompletedPath() {
+        return x -> (O) x;
+    }
 
     static <I, O> CompletedPath<I, O> complete(Path<I, O> path) {
         return new DeferredCompletedPath<>(path);

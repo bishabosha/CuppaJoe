@@ -1,8 +1,6 @@
 package com.github.bishabosha.cuppajoe.match.incubator.internal.extract;
 
-import com.github.bishabosha.cuppajoe.higher.functions.Func1;
 import com.github.bishabosha.cuppajoe.match.incubator.ExtractionFailedException;
-import com.github.bishabosha.cuppajoe.match.incubator.internal.extract.Path.CompletedPath;
 import com.github.bishabosha.cuppajoe.match.incubator.patterns.Pattern;
 import com.github.bishabosha.cuppajoe.match.incubator.patterns.Pattern.Leaf;
 
@@ -21,11 +19,6 @@ public abstract class Extractors {
         return extractor;
     }
 
-    @SuppressWarnings("unchecked")
-    public static <I> Func1<I, I> identity() {
-        return x -> x;
-    }
-
     public static <T> Predicate<T> alwaysTrue() {
         return x -> true;
     }
@@ -38,37 +31,35 @@ public abstract class Extractors {
         return x -> { throw new IllegalStateException("This Path goes to nowhere"); };
     }
 
-    @SuppressWarnings("unchecked")
-    private static <I, O> CompletedPath<I, O> identityCompletedPath() {
-        return x -> (O) x;
-    }
-
     private Extractors() {
     }
 
-    static <I> Predicate<I> extractMatches(Leaf<I> leaf) {
-        return alwaysMatches(leaf) ? alwaysTrue() : leaf::matches;
+    static <I, T> Predicate<I> extractMatches(Path<I, T> path, Leaf<T> leaf) {
+        return alwaysMatches(leaf) ? alwaysTrue() : composeWithPath(path, leaf::matches);
     }
 
     @SuppressWarnings("unchecked")
-    static <I, T> Predicate<I> composePredicates(Predicate<I> before, Predicate<T> after, Func1<I, T> mapper) {
+    static <I, T> Predicate<I> composePredicates(Predicate<I> before, Predicate<T> after) {
         return neverMatches(before) || isIdempotent(before)
             ? (Predicate<I>) after
             : isIdempotent(after)
                 ? before
-                : isIdempotent(mapper)
-                    ? before.and((Predicate<I>) after)
-                    : before.and(x -> after.test(mapper.apply(x)));
+                : before.and((Predicate<I>) after);
+    }
+
+    @SuppressWarnings("unchecked")
+    static <I, T> Predicate<I> composeWithPath(Path<I, T> path, Predicate<T> predicate) {
+        return isIdempotent(path) ? (Predicate<I>) predicate : x -> predicate.test(path.get(x));
     }
 
     @SuppressWarnings("unchecked")
     static <U, P, T, S> Path<T, S> composePaths(Path<T, S> before, Path<U, P> after) {
-        return goesNowhere(before) ? (Path<T, S>) after : before.then((Path<S, S>) after);
+        return goesNowhere(before) || isIdempotent(before) ? (Path<T, S>) after : before.then((Path<S, S>) after);
     }
 
     @SuppressWarnings("unchecked")
     static <T, S> Path<T, S> completePath(Path<T, S> path) {
-        return goesNowhere(path) ? identityCompletedPath() : Path.complete(path);
+        return goesNowhere(path) ? Path.identityCompletedPath() : Path.complete(path);
     }
 
     private static <O> boolean alwaysMatches(Leaf<O> leaf) {
@@ -83,13 +74,9 @@ public abstract class Extractors {
         return alwaysTrue() == predicate;
     }
 
-    private static boolean isIdempotent(Func1 func1) {
-        return identity() == func1;
+    private static boolean isIdempotent(Path func1) {
+        return Path.identity() == func1;
     }
-
-//    private static boolean isIdempotent(Path path) {
-//        return identityCompletedPath() == path;
-//    }
 
     private static boolean goesNowhere(Path path) {
         return toNowhere() == path;

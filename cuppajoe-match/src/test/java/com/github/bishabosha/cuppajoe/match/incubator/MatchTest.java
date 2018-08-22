@@ -1,6 +1,5 @@
 package com.github.bishabosha.cuppajoe.match.incubator;
 
-import com.github.bishabosha.cuppajoe.collections.immutable.tuples.Tuple;
 import org.junit.jupiter.api.Test;
 
 import java.util.function.Function;
@@ -83,8 +82,8 @@ public class MatchTest {
      *   [tuple@1 canBranch VAL]
      *    && [some@1 canBranch [tuple@1 extract1 VAL]]
      *    && [tuple@2 canBranch [tuple@1 extract2 VAL]]
-     *    && [some@2 canBranch [tuple@2 extract2 VAL]] // need to chain paths here, or cache vars stack frame
-     *    // have an object stack that the predicates consume from, and func to say what to push
+     *    && [some@2 canBranch [tuple@2 extract2 [tuple@1 extract2 VAL]]]
+     *    // or have an object stack that the predicates consume from, and func to say what to push
      * }</pre>
      * <p>pseudo code for the compiled extract function:</p>
      * <pre>{@code
@@ -110,13 +109,5 @@ public class MatchTest {
     @Test
     public void test_Case1_tuple2_some_wildcard_some_identity() {
         assertEquals("id", With(tuple(some(__()), some(id())), x -> x).get(Tuple(Some("whatever"), Some("id"))));
-    }
-
-    @Test
-    public void test() {
-        var identity = Function.identity();
-        var identity2 = Function.identity();
-        System.out.println(identity);
-        System.out.println(identity2);
     }
 }
