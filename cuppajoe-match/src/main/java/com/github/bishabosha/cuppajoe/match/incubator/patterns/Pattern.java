@@ -1,77 +1,99 @@
 package com.github.bishabosha.cuppajoe.match.incubator.patterns;
 
+import com.github.bishabosha.cuppajoe.collections.immutable.tuples.Tuple;
+import com.github.bishabosha.cuppajoe.collections.immutable.tuples.Tuple2;
+import com.github.bishabosha.cuppajoe.match.incubator.Path;
+
+import java.util.ArrayDeque;
+import java.util.Arrays;
+import java.util.Deque;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 public abstract class Pattern<T> {
+
+    private final Predicate<T> matches;
 
     public interface PatternVisitor {
         <O> void onEmpty(Empty<O> empty);
         <O> void onValue(Value<O> value);
-        <O, Z> void onBranch1(Branch1<O, Z> branch);
-        <O, Y, Z> void onBranch2(Branch2<O, Y, Z> branch);
+        <O> void onBranch(Branch<O> branch);
     }
 
-    private Pattern() {
+    public static <T> Pattern<T> empty(Predicate<T> matches) {
+        return new Empty<>(matches);
+    }
+
+    public static <T> Pattern<T> value(Predicate<T> matches) {
+        return new Value<>(matches);
+    }
+
+    public static <T> Pattern<T> branch1(Predicate<T> canBranch, Pattern<?> branch, Path<T, ?> path) {
+        return new Branch<>(canBranch, Tuple.of(branch, path));
+    }
+
+    @SafeVarargs
+    public static <T> Pattern<T> branchN(Predicate<T> canBranch, Tuple2<Pattern<?>, ? extends Path<T, ?>>... paths) {
+        return new Branch<>(canBranch, paths);
+    }
+
+    private Pattern(Predicate<T> matches) {
+        this.matches = matches;
+    }
+
+    public Predicate<T> matches() {
+        return matches;
     }
 
     public abstract void accept(PatternVisitor visitor);
 
-    public static abstract class Leaf<T> extends Pattern<T> {
-        public abstract boolean matches(T value);
-    }
+    public static final class Empty<T> extends Pattern<T> {
+        private Empty(Predicate<T> matches) {
+            super(matches);
+        }
 
-    public static abstract class Empty<T> extends Leaf<T> {
         @Override
         public void accept(PatternVisitor visitor) {
             visitor.onEmpty(this);
         }
     }
 
-    public static abstract class Value<T> extends Leaf<T> {
+    public static final class Value<T> extends Pattern<T> {
+        private Value(Predicate<T> matches) {
+            super(matches);
+        }
+
         @Override
         public void accept(PatternVisitor visitor) {
             visitor.onValue(this);
         }
     }
 
-    public static abstract class Branch<T> extends Pattern<T> {
-        public abstract boolean canBranch(T value);
-    }
+    public static final class Branch<T> extends Pattern<T> {
+        private final List<Pattern<?>> branches;
+        private final Deque<Path<T, ?>> paths;
 
-    public static abstract class Branch1<T, A> extends Branch<T> {
-        private final Pattern<A> branch1;
-
-        protected Branch1(Pattern<A> branch1) {
-            this.branch1 = branch1;
+        @SafeVarargs
+        Branch(Predicate<T> canBranch, Tuple2<Pattern<?>, ? extends Path<T, ?>>... paths) {
+            super(canBranch);
+            this.branches = Arrays.stream(paths).map(x -> x.$1).collect(Collectors.toList());
+            this.paths = new ArrayDeque<>();
+            Arrays.stream(paths).map(x -> x.$2).forEach(this.paths::addFirst);
         }
 
-        public Pattern<A> branch1() {
-            return branch1;
+        public final Stream<Path<T, ?>> pathsAscending() {
+            return paths.stream();
         }
 
-        public abstract A extract1(T value);
+        public final void visitEachBranch(PatternVisitor visitor) {
+            branches.forEach(branch -> branch.accept(visitor));
+        }
 
         @Override
-        public void accept(PatternVisitor visitor) {
-            visitor.onBranch1(this);
-        }
-    }
-
-    public static abstract class Branch2<T, A, B> extends Branch1<T, A> {
-        private final Pattern<B> branch2;
-
-        protected Branch2(Pattern<A> branch1, Pattern<B> branch2) {
-            super(branch1);
-            this.branch2 = branch2;
-        }
-
-        public Pattern<B> branch2() {
-            return branch2;
-        }
-
-        public abstract B extract2(T value);
-
-        @Override
-        public void accept(PatternVisitor visitor) {
-            visitor.onBranch2(this);
+        public final void accept(PatternVisitor visitor) {
+            visitor.onBranch(this);
         }
     }
 }

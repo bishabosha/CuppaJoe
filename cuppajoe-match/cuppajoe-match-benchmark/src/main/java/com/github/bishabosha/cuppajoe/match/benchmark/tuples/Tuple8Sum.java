@@ -22,8 +22,8 @@ import static com.github.bishabosha.cuppajoe.match.patterns.Standard.of;
  * Tuple8Sum.sumCompose                   avgt   15  0.163 ± 0.006   s/op
  */
 @Fork(3)
-@Warmup(iterations = 5, time = 5)
-@Measurement(iterations = 5, time = 10)
+@Warmup(iterations = 5, time = 2)
+@Measurement(iterations = 5, time = 2)
 @BenchmarkMode(Mode.AverageTime)
 @State(Scope.Thread)
 public class Tuple8Sum {
@@ -44,16 +44,25 @@ public class Tuple8Sum {
         }
     }
 
-    @Benchmark
-    public int sumCompose(Tuple8State state) {
+//    @Benchmark
+    public int sumScalarised(Tuple8State state) {
         int sum = 0;
         for (var tuple: state.arr) {
-            sum += tuple.compose((a, b, c, d, e, f, g, h) -> a + b + c + d + e + f + g+ h);
+            sum += (tuple.$1 + tuple.$2 + tuple.$3 + tuple.$4 + tuple.$5 + tuple.$6 + tuple.$7 + tuple.$8);
         }
         return sum;
     }
 
-    @Benchmark
+//    @Benchmark
+    public int sumCompose(Tuple8State state) {
+        int sum = 0;
+        for (var tuple: state.arr) {
+            sum += tuple.compose((a, b, c, d, e, f, g, h) -> a + b + c + d + e + f + g + h);
+        }
+        return sum;
+    }
+
+//    @Benchmark
     public int sumCase(Tuple8State state) {
         int sum = 0;
         Case<Tuple8<Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer>, Integer> tupleCase;
@@ -72,24 +81,42 @@ public class Tuple8Sum {
      * Flattened structure should have a heuristic where if the test passes then invoke the function directly, calling each typed param extractor
      * Extractors to variables within a nested pattern should share a root extractor for their parent object that is invoked exactly once
      */
-    @Benchmark
-    public int sumCase_smallExtract_2first(Tuple8State state) {
+//    @Benchmark
+    public int sumCase_2first(Tuple8State state) {
         int sum = 0;
         Case<Tuple8<Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer>, Integer> tupleCase;
-        tupleCase = With(tuple(__(), __(), __(), __(), __(), __(), __(), __()), Tuple8Sum::sum2);
+        tupleCase = With(tuple(id(), id(), __(), __(), __(), __(), __(), __()), Tuple8Sum::sum2);
         for (var tuple: state.arr) {
             sum += tupleCase.get(tuple);
         }
         return sum;
     }
 
-    @Benchmark
-    public int sumCase_smallExtract_2last(Tuple8State state) {
+//    @Benchmark
+    public int sumCase_2last(Tuple8State state) {
         int sum = 0;
         Case<Tuple8<Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer>, Integer> tupleCase;
         tupleCase = With(tuple(__(), __(), __(), __(), __(), __(), id(), id()), Tuple8Sum::sum2);
         for (var tuple: state.arr) {
             sum += tupleCase.get(tuple);
+        }
+        return sum;
+    }
+
+//    @Benchmark
+    public int sum2FirstScalarised(Tuple8State state) {
+        int sum = 0;
+        for (var tuple: state.arr) {
+            sum += (tuple.$1 + tuple.$2);
+        }
+        return sum;
+    }
+
+//    @Benchmark
+    public int sum2LastScalarised(Tuple8State state) {
+        int sum = 0;
+        for (var tuple: state.arr) {
+            sum += (tuple.$7 + tuple.$8);
         }
         return sum;
     }

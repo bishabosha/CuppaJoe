@@ -7,35 +7,49 @@ package com.github.bishabosha.cuppajoe.control;
 import com.github.bishabosha.cuppajoe.annotation.NonNull;
 import com.github.bishabosha.cuppajoe.higher.unapply.Unapply1;
 
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-public class Lazy<E> implements Supplier<E>, Unapply1<E> {
+public final class Lazy<E> implements Supplier<E>, Unapply1<E> {
 
-    private boolean isComputed = false;
-    private volatile E value = null;
-    private Supplier<E> getter;
+    private static final VarHandle VALUE;
 
-    public static <R> Lazy<R> of(@NonNull Supplier<R> getter) {
-        Objects.requireNonNull(getter, "getter");
-        return new Lazy<>(getter);
+    private boolean isComputed;
+    private volatile E value;
+    private final Supplier<E> factory;
+
+    static {
+        var lookup = MethodHandles.lookup();
+        try {
+            VALUE = lookup.findVarHandle(Lazy.class, "value", Object.class);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new Error(e);
+        }
     }
 
-    private Lazy(Supplier<E> getter) {
-        this.getter = getter;
+    public static <R> Lazy<R> of(@NonNull Supplier<R> factory) {
+        Objects.requireNonNull(factory, "factory");
+        return new Lazy<>(factory);
+    }
+
+    private Lazy(Supplier<E> factory) {
+        this.factory = factory;
+        value = null;
+        isComputed = false;
+    }
+
+    public final E memo() {
+        while (!isComputed) {
+            isComputed = VALUE.compareAndSet(this, null, factory.get());
+        }
+        return value;
     }
 
     @Override
     public E get() {
-        if (isComputed) {
-            return value;
-        }
-        synchronized (this) {
-            value = getter.get();
-            isComputed = true;
-            getter = null;
-        }
-        return value;
+        return memo();
     }
 
     @Override

@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static com.github.bishabosha.cuppajoe.match.incubator.API.With;
 import static com.github.bishabosha.cuppajoe.match.incubator.patterns.Standard.*;
+import static com.github.bishabosha.cuppajoe.match.incubator.patterns.Collections.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CaseCompileTest {
@@ -88,5 +89,40 @@ public class CaseCompileTest {
     @Test
     public void test_Case0Strict_failsOn_Branch2EmptyValue() {
         assertThrows(ExtractionFailedException.class, () -> With(tuple(__(), id()), "Fail"));
+    }
+
+    @Test
+    public void test_Case2_failsOn_Branch2EmptyValue() {
+        assertThrows(ExtractionFailedException.class, () -> With(tuple(__(), id()), (x, y) -> "Fail"));
+    }
+
+    @Test
+    public void test_Case2_failsOn_Branch2EmptyEmpty() {
+        assertThrows(ExtractionFailedException.class, () -> With(tuple(__(), __()), (x, y) -> "Fail"));
+    }
+
+    @Test
+    public void test_Case2_succeedsOn_Branch2ValueValue() {
+        With(tuple(id(), id()), (x, y) -> "OK");
+    }
+
+    @Test
+    public void test_Case3_failsOn_Branch2Branch2EmptyEmptyEmpty() {
+        assertThrows(ExtractionFailedException.class, () -> With(tuple(tuple(__(), __()), __()), (x, y, z) -> "Fail"));
+    }
+
+    @Test
+    public void test_Case3_failsOn_Branch2Branch2ValueEmptyEmpty() {
+        assertThrows(ExtractionFailedException.class, () -> With(tuple(tuple(id(), __()), __()), (x, y, z) -> "Fail"));
+    }
+
+    @Test
+    public void test_Case3_failsOn_Branch2Branch2ValueValueEmpty() {
+        assertThrows(ExtractionFailedException.class, () -> With(tuple(tuple(id(), id()), __()), (x, y, z) -> "Fail"));
+    }
+
+    @Test
+    public void test_Case3_succeedsOn_Branch2Branch2ValueValueValue() {
+        With(tuple(tuple(id(), id()), id()), (x, y, z) -> "OK");
     }
 }

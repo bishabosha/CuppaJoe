@@ -29,19 +29,20 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.github.bishabosha.cuppajoe.match.benchmark.tuples;
+package com.github.bishabosha.cuppajoe.match.benchmark.incubator.tuples;
 
 import com.github.bishabosha.cuppajoe.collections.immutable.tuples.Tuple2;
-import com.github.bishabosha.cuppajoe.match.Case;
+import com.github.bishabosha.cuppajoe.match.incubator.Case;
+import com.github.bishabosha.cuppajoe.match.incubator.MatchException;
 import org.openjdk.jmh.annotations.*;
 
 import java.lang.reflect.Array;
 
 import static com.github.bishabosha.cuppajoe.collections.immutable.API.Tuple;
-import static com.github.bishabosha.cuppajoe.match.API.With;
-import static com.github.bishabosha.cuppajoe.match.patterns.Collections.tuple;
-import static com.github.bishabosha.cuppajoe.match.patterns.Standard.id;
-import static com.github.bishabosha.cuppajoe.match.patterns.Standard.__;
+import static com.github.bishabosha.cuppajoe.match.incubator.API.With;
+import static com.github.bishabosha.cuppajoe.match.incubator.patterns.Standard.tuple;
+import static com.github.bishabosha.cuppajoe.match.incubator.patterns.Standard.__;
+import static com.github.bishabosha.cuppajoe.match.incubator.patterns.Standard.id;
 
 @Fork(2)
 @Warmup(iterations = 3, time = 5)
@@ -66,33 +67,14 @@ public class Tuple2NestedSum {
         }
     }
 
-//    @Benchmark
-    public int sumScalarisedNested(Tuple2NestedState state) {
-        int sum = 0;
-        for (var tuple: state.arr) {
-            sum += (tuple.$1.$1 + tuple.$2);
-        }
-        return sum;
+    private static Case<Tuple2<Tuple2<Integer, Integer>, Integer>, Integer> nestedSum() {
+        return With(tuple(tuple(id(), __()), id()), Tuple2NestedSum::sum);
     }
 
 //    @Benchmark
-    public int sumConsumeNested(Tuple2NestedState state) {
+    public int sumCaseNested(Tuple2NestedState state) throws MatchException {
         int sum = 0;
-        for (var tuple: state.arr) {
-            sum += tuple.compose((xy, z) ->
-                xy.compose((x, y) ->
-                    x + z
-                )
-            );
-        }
-        return sum;
-    }
-
-//    @Benchmark
-    public int sumCaseNested(Tuple2NestedState state) {
-        int sum = 0;
-        Case<Tuple2<Tuple2<Integer, Integer>, Integer>, Integer> tupleCase;
-        tupleCase = With(tuple(tuple(id(), __()), id()), Tuple2NestedSum::sum);
+        var tupleCase = nestedSum();
         for (var tuple: state.arr) {
             sum += tupleCase.get(tuple);
         }

@@ -29,30 +29,20 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.github.bishabosha.cuppajoe.match.benchmark.tuples;
+package com.github.bishabosha.cuppajoe.match.benchmark.incubator.tuples;
 
 import com.github.bishabosha.cuppajoe.collections.immutable.tuples.Tuple2;
-import com.github.bishabosha.cuppajoe.match.patterns.Collections;
+import com.github.bishabosha.cuppajoe.match.incubator.Case;
+import com.github.bishabosha.cuppajoe.match.incubator.MatchException;
 import org.openjdk.jmh.annotations.*;
 
 import java.lang.reflect.Array;
 
 import static com.github.bishabosha.cuppajoe.collections.immutable.API.Tuple;
-import static com.github.bishabosha.cuppajoe.match.API.Match;
-import static com.github.bishabosha.cuppajoe.match.API.With;
-import static com.github.bishabosha.cuppajoe.match.patterns.Collections.tuple;
-import static com.github.bishabosha.cuppajoe.match.patterns.Standard.__;
-import static com.github.bishabosha.cuppajoe.match.patterns.Standard.id;
+import static com.github.bishabosha.cuppajoe.match.incubator.API.*;
+import static com.github.bishabosha.cuppajoe.match.incubator.patterns.Standard.*;
 
-/**
- * c.g.b.c.m.b.incubator.tuples.Tuple2Sum.sumCase         avgt    9  0.160 ± 0.004   s/op
- * c.g.b.c.m.b.incubator.tuples.Tuple2Sum.sumCaseNoCache  avgt    9  0.632 ± 0.016   s/op
- * c.g.b.c.m.b.incubator.tuples.Tuple2Sum.sumCaseRight    avgt    9  0.048 ± 0.004   s/op
- * c.g.b.c.m.b.tuples.Tuple2Sum.sumCase                   avgt    9  0.336 ± 0.026   s/op
- * c.g.b.c.m.b.tuples.Tuple2Sum.sumCompose                avgt    9  0.059 ± 0.005   s/op
- * c.g.b.c.m.b.tuples.Tuple2Sum.sumRight                  avgt    9  0.236 ± 0.101   s/op
- */
-@Fork(1)
+@Fork(2)
 @Warmup(iterations = 5, time = 2)
 @Measurement(iterations = 5, time = 2)
 @BenchmarkMode(Mode.AverageTime)
@@ -75,67 +65,30 @@ public class Tuple2Sum {
         }
     }
 
+    private static Case<Tuple2<Integer, Integer>, Integer> sumComponents() {
+        return With(tuple(id(), id()), Tuple2Sum::sum);
+    }
+
+    private static Case<Tuple2<Integer, Integer>, Integer> getRight() {
+        return With(tuple(__(), id()), Tuple2Sum::identity);
+    }
+
 //    @Benchmark
-    public int sumScalarised(Tuple2State state) {
+    public int sumCase(Tuple2State state) throws MatchException {
         int sum = 0;
+        var sumCase = sumComponents();
         for (var tuple: state.arr) {
-            sum += (tuple.$1 + tuple.$2);
+            sum += sumCase.get(tuple);
         }
         return sum;
     }
 
 //    @Benchmark
-    public int sumRightScalarised(Tuple2State state) {
+    public int sumCaseRight(Tuple2State state) throws MatchException {
         int sum = 0;
+        var sumCase = getRight();
         for (var tuple: state.arr) {
-            sum += tuple.$2;
-        }
-        return sum;
-    }
-
-//    @Benchmark
-    public int sumCompose(Tuple2State state) {
-        int sum = 0;
-        for (var tuple: state.arr) {
-            sum += tuple.compose((x, y) -> x + y);
-        }
-        return sum;
-    }
-
-//    @Benchmark
-    public int sumComposeRight(Tuple2State state) {
-        int sum = 0;
-        for (var tuple: state.arr) {
-            sum += tuple.compose((_ignored, y) -> y);
-        }
-        return sum;
-    }
-
-//    @Benchmark
-    public int sumCase(Tuple2State state) {
-        int sum = 0;
-        for (var tuple: state.arr) {
-            sum += With(Collections.<Integer, Integer>tuple(id(), id()), Tuple2Sum::sum).get(tuple);
-        }
-        return sum;
-    }
-
-//    @Benchmark
-    public int sumRight(Tuple2State state) {
-        int sum = 0;
-        for (var tuple: state.arr) {
-            sum += With(Collections.<Integer, Integer>tuple(__(), id()), Tuple2Sum::identity).get(tuple);
-        }
-        return sum;
-    }
-
-    //    @Benchmark
-    public int sumMatcher(Tuple2State state) {
-        int sum = 0;
-        for (var tuple: state.arr) {
-            sum += Match(tuple).of(
-                With(tuple(id(), id()), Tuple2Sum::sum)
-            );
+            sum += sumCase.get(tuple);
         }
         return sum;
     }
