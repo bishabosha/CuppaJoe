@@ -125,4 +125,19 @@ public class CaseCompileTest {
     public void test_Case3_succeedsOn_Branch2Branch2ValueValueValue() {
         With(tuple(tuple(id(), id()), id()), (x, y, z) -> "OK");
     }
+
+    @Test
+    public void test_Case3_succeedsOn_varargsValueValueValue() {
+        With(arr(id(), id(), id()), (x, y, z) -> "OK");
+    }
+
+    @Test
+    public void test_Case2_succeedsOn_varargsValueValue() {
+        With(arr(id(), id()), (x, y) -> "OK");
+    }
+
+    @Test
+    public void test_Case1_failsOn_varargsValueValue() {
+        assertThrows(ExtractionFailedException.class, () -> With(arr(id(), id()), (x) -> "FAIL"));
+    }
 }

@@ -1,5 +1,6 @@
 package com.github.bishabosha.cuppajoe.match.patterns;
 
+import com.github.bishabosha.cuppajoe.collections.immutable.Array;
 import com.github.bishabosha.cuppajoe.collections.immutable.List;
 import com.github.bishabosha.cuppajoe.collections.immutable.Tree;
 import com.github.bishabosha.cuppajoe.collections.immutable.tuples.*;
@@ -7,8 +8,7 @@ import com.github.bishabosha.cuppajoe.control.Either;
 import com.github.bishabosha.cuppajoe.control.Lazy;
 import com.github.bishabosha.cuppajoe.control.Option;
 import com.github.bishabosha.cuppajoe.control.Try;
-import com.github.bishabosha.cuppajoe.match.patterns.Pattern.Branch;
-import com.github.bishabosha.cuppajoe.match.patterns.Pattern.Empty;
+import com.github.bishabosha.cuppajoe.match.patterns.Pattern.*;
 
 import java.util.Objects;
 
@@ -16,8 +16,7 @@ import static com.github.bishabosha.cuppajoe.API.None;
 import static com.github.bishabosha.cuppajoe.collections.immutable.API.List;
 import static com.github.bishabosha.cuppajoe.collections.immutable.API.Tuple;
 import static com.github.bishabosha.cuppajoe.collections.immutable.Tree.Leaf;
-import static com.github.bishabosha.cuppajoe.match.patterns.Pattern.branch1;
-import static com.github.bishabosha.cuppajoe.match.patterns.Pattern.branchN;
+import static com.github.bishabosha.cuppajoe.match.patterns.Pattern.*;
 import static com.github.bishabosha.cuppajoe.match.patterns.Standard.is;
 
 public class Collections {
@@ -77,6 +76,24 @@ public class Collections {
 
     public static Empty<Unit> unit() {
         return is(Tuple());
+    }
+
+    @SafeVarargs
+    public static <O> Branch<O[]> arr(Pattern<O>... values) {
+        return branchGenerator(
+            arr -> arr != null && arr.length >= values.length,
+            i -> arr -> arr[i],
+            values
+        );
+    }
+
+    @SafeVarargs
+    public static <O> Branch<Array<O>> array(Pattern<O>... values) {
+        return branchGenerator(
+            arr -> arr != null && arr.size() >= values.length,
+            i -> arr -> arr.get(i),
+            values
+        );
     }
 
     public static <A> Branch<Tuple1<A>> tuple(Pattern<A> $1) {

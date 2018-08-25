@@ -1,5 +1,6 @@
 package com.github.bishabosha.cuppajoe.match.patterns;
 
+import com.github.bishabosha.cuppajoe.collections.immutable.API;
 import com.github.bishabosha.cuppajoe.collections.immutable.tuples.Tuple;
 import com.github.bishabosha.cuppajoe.collections.immutable.tuples.Tuple2;
 import com.github.bishabosha.cuppajoe.match.Path;
@@ -8,8 +9,11 @@ import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.List;
+import java.util.function.IntFunction;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public abstract class Pattern<T> {
@@ -37,6 +41,22 @@ public abstract class Pattern<T> {
     @SafeVarargs
     public static <T> Branch<T> branchN(Predicate<T> canBranch, Tuple2<Pattern<?>, ? extends Path<T, ?>>... paths) {
         return new Branch<>(canBranch, paths);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> Branch<T> branchGenerator(Predicate<T> canBranch, Stream<Tuple2<Pattern<?>, ? extends Path<T, ?>>> paths) {
+        return new Branch<>(canBranch, paths.toArray(Tuple2[]::new));
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> Branch<T> branchGenerator(Predicate<T> canBranch, IntFunction<? extends Path<T, ?>> generator, Pattern<?>... patterns) {
+        return branchGenerator(
+            canBranch,
+            IntStream.range(0, patterns.length)
+                     .mapToObj(i ->
+                         API.Tuple(patterns[i], generator.apply(i))
+                     )
+        );
     }
 
     private Pattern(Predicate<T> matches) {

@@ -1,5 +1,7 @@
 package com.github.bishabosha.cuppajoe.match;
 
+import com.github.bishabosha.cuppajoe.collections.immutable.Array;
+import com.github.bishabosha.cuppajoe.control.Option;
 import org.junit.jupiter.api.Test;
 
 import static com.github.bishabosha.cuppajoe.API.None;
@@ -9,7 +11,9 @@ import static com.github.bishabosha.cuppajoe.match.API.With;
 import static com.github.bishabosha.cuppajoe.match.patterns.Standard.*;
 import static com.github.bishabosha.cuppajoe.match.patterns.Collections.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
+@SuppressWarnings({"all"})
 public class MatchTest {
 
     @Test
@@ -95,5 +99,16 @@ public class MatchTest {
     @Test
     public void test_Case8_tuple8_allId() {
         assertEquals("abcdefgh", With(tuple(id(), id(), id(), id(), id(), id(), id(), id()), (String a, String b, String c, String d, String e, String f, String g, String h) -> a + b + c + d + e + f + g + h).get(Tuple("a", "b", "c", "d", "e", "f", "g", "h")));
+    }
+
+    @Test
+    public void test_arr2_case2() {
+        assertEquals(1, With(arr(some(id()), none()), (Integer i) -> i).get(new Option[]{Some(1), None(), None(), Some("hello")}).intValue());
+    }
+
+    @Test
+    public void test_array2_case2() {
+        assertEquals(1, With(array(some(id()), none()), (Integer i) -> i).get(Array.of(Some(1), None(), None(), Some("hello"))).intValue());
+        assertFalse(With(array(some(id()), none()), (Integer i) -> i).matches(Array.of(Some(1), Some("hello"))));
     }
 }
