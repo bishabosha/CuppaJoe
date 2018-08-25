@@ -31,25 +31,30 @@
 
 package com.github.bishabosha.cuppajoe.match.benchmark.base;
 
-import com.github.bishabosha.cuppajoe.match.patterns.Pattern;
-import com.github.bishabosha.cuppajoe.match.patterns.Result;
-import com.github.bishabosha.cuppajoe.match.patterns.ResultVisitor;
+import com.github.bishabosha.cuppajoe.match.cases.Case;
 import org.openjdk.jmh.annotations.*;
 
 import static com.github.bishabosha.cuppajoe.match.API.Match;
 import static com.github.bishabosha.cuppajoe.match.API.With;
 import static com.github.bishabosha.cuppajoe.match.patterns.Standard.id;
 
-@Fork(1)
-@Warmup(iterations = 3, time = 5)
-@Measurement(iterations = 3, time = 5)
+/**
+ * SIZE = 100_000_000
+ * Benchmark           Mode  Cnt  Score    Error  Units
+ * Basic.sumCase       avgt   15  0.054 ±  0.001   s/op
+ * Basic.sumMatcher    avgt   15  3.823 ±  1.117   s/op
+ * Basic.sumPrimitive  avgt   15  0.058 ±  0.004   s/op
+ */
+@Fork(3)
+@Warmup(iterations = 5, time = 1)
+@Measurement(iterations = 5, time = 1)
 @BenchmarkMode(Mode.AverageTime)
 @State(Scope.Thread)
 public class Basic {
 
     @State(Scope.Thread)
     public static class IntArrayState {
-        static final int SIZE = 1_000_000_000;
+        static final int SIZE = 100_000_000;
         int[] arr;
 
         @SuppressWarnings("unchecked")
@@ -62,11 +67,7 @@ public class Basic {
         }
     }
 
-    /**
-     * Benchmark           Mode  Cnt  Score   Error  Units
-     * Basic.sumPrimitive  avgt    3  0.578 ± 0.324   s/op
-     */
-//    @Benchmark
+    @Benchmark
     public int sumPrimitive(IntArrayState state) {
         int sum = 0;
         for (var num: state.arr) {
@@ -75,75 +76,35 @@ public class Basic {
         return sum;
     }
 
-    /**
-     * Benchmark         Mode  Cnt  Score   Error  Units
-     * Basic.sumPattern  avgt    3  0.569 ± 0.015   s/op
-     */
-//    @Benchmark
-    public int sumPattern(IntArrayState state) {
-       int sum = 0;
-       Pattern<Integer> pattern = id();
-       for (var num: state.arr) {
-           sum += SingleNumExtractor.extract(pattern.test(num).get());
-       }
-       return sum;
+    private static Case<Integer, Integer> intCase() {
+        return With(id(), Basic::identity);
     }
 
-    /**
-     * Benchmark      Mode  Cnt  Score   Error  Units
-     * Basic.sumCase  avgt    3  0.546 ± 0.259   s/op
-     */
-//    @Benchmark
+    @Benchmark
     public int sumCase(IntArrayState state) {
         int sum = 0;
+        final var intCase = intCase();
         for (var tuple: state.arr) {
-            sum += With(id(), (Integer x) -> x).get(tuple);
+            sum += intCase.get(tuple);
         }
         return sum;
     }
 
     /**
-     * Benchmark         Mode  Cnt  Score   Error  Units
-     * Basic.sumMatcher  avgt    3  0.565 ± 0.226   s/op
+     * @apiNote Do not use matcher in tight loops
      */
-//    @Benchmark
+    @Benchmark
     public int sumMatcher(IntArrayState state) {
         int sum = 0;
         for (var tuple: state.arr) {
-            sum += Match(tuple).of(
+            sum += Match(tuple).get(
                 With(id(), (Integer x) -> x)
             );
         }
         return sum;
     }
 
-    private static class SingleNumExtractor extends ResultVisitor {
-
-        private static int extract(Result result) {
-            var extractor = new SingleNumExtractor();
-            result.accept(extractor);
-            return extractor.getInt();
-        }
-
-        boolean uninitialised = true;
-        int val;
-
-        @Override
-        public void onValue(Object o) {
-            val = (int) o;
-            uninitialised = false;
-        }
-
-        @Override
-        public boolean uninitialised() {
-            return uninitialised;
-        }
-
-        private int getInt() {
-            if (uninitialised) {
-                throw new IllegalStateException();
-            }
-            return val;
-        }
+    private static int identity(int i) {
+        return i;
     }
 }

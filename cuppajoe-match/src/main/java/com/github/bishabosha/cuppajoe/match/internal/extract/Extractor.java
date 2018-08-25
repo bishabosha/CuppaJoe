@@ -1,14 +1,14 @@
-package com.github.bishabosha.cuppajoe.match.incubator.internal.extract;
+package com.github.bishabosha.cuppajoe.match.internal.extract;
 
-import com.github.bishabosha.cuppajoe.match.incubator.Path;
-import com.github.bishabosha.cuppajoe.match.incubator.patterns.Pattern;
-import com.github.bishabosha.cuppajoe.match.incubator.patterns.Pattern.PatternVisitor;
+import com.github.bishabosha.cuppajoe.match.Path;
+import com.github.bishabosha.cuppajoe.match.patterns.Pattern;
+import com.github.bishabosha.cuppajoe.match.patterns.Pattern.PatternVisitor;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.function.Predicate;
 
-import static com.github.bishabosha.cuppajoe.match.incubator.internal.extract.Extractors.*;
+import static com.github.bishabosha.cuppajoe.match.internal.extract.Extractors.*;
 
 public abstract class Extractor implements PatternVisitor {
 
@@ -35,7 +35,7 @@ public abstract class Extractor implements PatternVisitor {
         matcher = composePredicates(matcher, composeWithPath(path, pattern.matches()));
     }
 
-    protected Predicate<Object> matcher() {
+    public Predicate<Object> matcher() {
         return matcher;
     }
 }

@@ -1,6 +1,7 @@
-package com.github.bishabosha.cuppajoe.match;
+package com.github.bishabosha.cuppajoe.match.cases;
 
 import com.github.bishabosha.cuppajoe.control.Option;
+import com.github.bishabosha.cuppajoe.match.MatchException;
 
 /**
  * Similar to a Case, but only has to optionally supply a value. Guards are different to Cases,
@@ -15,7 +16,7 @@ public interface Guard<O> {
      */
     Option<O> match();
 
-    default O get() throws MatchException {
+    default O get() {
         return match().orElseThrow(MatchException::new);
     }
 }

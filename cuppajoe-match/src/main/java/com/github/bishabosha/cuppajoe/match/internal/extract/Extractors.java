@@ -1,8 +1,8 @@
-package com.github.bishabosha.cuppajoe.match.incubator.internal.extract;
+package com.github.bishabosha.cuppajoe.match.internal.extract;
 
-import com.github.bishabosha.cuppajoe.match.incubator.ExtractionFailedException;
-import com.github.bishabosha.cuppajoe.match.incubator.Path;
-import com.github.bishabosha.cuppajoe.match.incubator.patterns.Pattern;
+import com.github.bishabosha.cuppajoe.match.ExtractionFailedException;
+import com.github.bishabosha.cuppajoe.match.Path;
+import com.github.bishabosha.cuppajoe.match.patterns.Pattern;
 
 import java.util.function.Function;
 import java.util.function.Predicate;

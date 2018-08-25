@@ -32,7 +32,8 @@
 package com.github.bishabosha.cuppajoe.match.benchmark.tuples;
 
 import com.github.bishabosha.cuppajoe.collections.immutable.tuples.Tuple2;
-import com.github.bishabosha.cuppajoe.match.Case;
+import com.github.bishabosha.cuppajoe.match.MatchException;
+import com.github.bishabosha.cuppajoe.match.cases.Case;
 import org.openjdk.jmh.annotations.*;
 
 import java.lang.reflect.Array;
@@ -40,12 +41,12 @@ import java.lang.reflect.Array;
 import static com.github.bishabosha.cuppajoe.collections.immutable.API.Tuple;
 import static com.github.bishabosha.cuppajoe.match.API.With;
 import static com.github.bishabosha.cuppajoe.match.patterns.Collections.tuple;
-import static com.github.bishabosha.cuppajoe.match.patterns.Standard.id;
 import static com.github.bishabosha.cuppajoe.match.patterns.Standard.__;
+import static com.github.bishabosha.cuppajoe.match.patterns.Standard.id;
 
-@Fork(2)
-@Warmup(iterations = 3, time = 5)
-@Measurement(iterations = 5, time = 5)
+@Fork(3)
+@Warmup(iterations = 5, time = 1)
+@Measurement(iterations = 5, time = 1)
 @BenchmarkMode(Mode.AverageTime)
 @State(Scope.Thread)
 public class Tuple2NestedSum {
@@ -66,7 +67,11 @@ public class Tuple2NestedSum {
         }
     }
 
-//    @Benchmark
+    private static Case<Tuple2<Tuple2<Integer, Integer>, Integer>, Integer> nestedSum() {
+        return With(tuple(tuple(id(), __()), id()), Tuple2NestedSum::sum);
+    }
+
+    @Benchmark
     public int sumScalarisedNested(Tuple2NestedState state) {
         int sum = 0;
         for (var tuple: state.arr) {
@@ -75,7 +80,7 @@ public class Tuple2NestedSum {
         return sum;
     }
 
-//    @Benchmark
+    @Benchmark
     public int sumConsumeNested(Tuple2NestedState state) {
         int sum = 0;
         for (var tuple: state.arr) {
@@ -88,11 +93,10 @@ public class Tuple2NestedSum {
         return sum;
     }
 
-//    @Benchmark
-    public int sumCaseNested(Tuple2NestedState state) {
+    @Benchmark
+    public int sumCaseNested(Tuple2NestedState state) throws MatchException {
         int sum = 0;
-        Case<Tuple2<Tuple2<Integer, Integer>, Integer>, Integer> tupleCase;
-        tupleCase = With(tuple(tuple(id(), __()), id()), Tuple2NestedSum::sum);
+        var tupleCase = nestedSum();
         for (var tuple: state.arr) {
             sum += tupleCase.get(tuple);
         }

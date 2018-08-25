@@ -1,10 +1,10 @@
-package com.github.bishabosha.cuppajoe.match.incubator;
+package com.github.bishabosha.cuppajoe.match;
 
 import org.junit.jupiter.api.Test;
 
-import static com.github.bishabosha.cuppajoe.match.incubator.API.With;
-import static com.github.bishabosha.cuppajoe.match.incubator.patterns.Standard.*;
-import static com.github.bishabosha.cuppajoe.match.incubator.patterns.Collections.*;
+import static com.github.bishabosha.cuppajoe.match.API.With;
+import static com.github.bishabosha.cuppajoe.match.patterns.Standard.*;
+import static com.github.bishabosha.cuppajoe.match.patterns.Collections.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CaseCompileTest {

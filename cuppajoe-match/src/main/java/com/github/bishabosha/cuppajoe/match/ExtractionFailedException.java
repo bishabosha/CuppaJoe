@@ -1,4 +1,4 @@
-package com.github.bishabosha.cuppajoe.match.incubator;
+package com.github.bishabosha.cuppajoe.match;
 
 public class ExtractionFailedException extends RuntimeException {
     public ExtractionFailedException() {

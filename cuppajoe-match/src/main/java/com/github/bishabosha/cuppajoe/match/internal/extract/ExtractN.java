@@ -1,16 +1,18 @@
-package com.github.bishabosha.cuppajoe.match.incubator.internal.extract;
+package com.github.bishabosha.cuppajoe.match.internal.extract;
 
-import com.github.bishabosha.cuppajoe.match.incubator.ExtractionFailedException;
-import com.github.bishabosha.cuppajoe.match.incubator.Path;
-import com.github.bishabosha.cuppajoe.match.incubator.patterns.Pattern.Branch;
-import com.github.bishabosha.cuppajoe.match.incubator.patterns.Pattern.Empty;
-import com.github.bishabosha.cuppajoe.match.incubator.patterns.Pattern.Value;
+import com.github.bishabosha.cuppajoe.match.ExtractionFailedException;
+import com.github.bishabosha.cuppajoe.match.Path;
+import com.github.bishabosha.cuppajoe.match.patterns.Pattern.Branch;
+import com.github.bishabosha.cuppajoe.match.patterns.Pattern.Empty;
+import com.github.bishabosha.cuppajoe.match.patterns.Pattern.Value;
 
-import static com.github.bishabosha.cuppajoe.match.incubator.internal.extract.Extractors.composePaths;
+import java.util.Arrays;
 
-public class ExtractN extends Extractor {
+import static com.github.bishabosha.cuppajoe.match.internal.extract.Extractors.composePaths;
 
-    protected final Path[] paths;
+public final class ExtractN extends Extractor {
+
+    private final Path[] paths;
     private final int size;
     private int cursor;
 
@@ -49,5 +51,9 @@ public class ExtractN extends Extractor {
         appendPredicates(path, branch);
         branch.pathsAscending().map(composePaths(path)).forEach(this::pushPath);
         branch.visitEachBranch(this);
+    }
+
+    public Path[] getPaths() {
+        return Arrays.copyOf(paths, paths.length);
     }
 }
