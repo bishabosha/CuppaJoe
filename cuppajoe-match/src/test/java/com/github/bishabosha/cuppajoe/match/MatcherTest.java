@@ -6,8 +6,10 @@ package com.github.bishabosha.cuppajoe.match;
 
 import com.github.bishabosha.cuppajoe.collections.immutable.Tree;
 import com.github.bishabosha.cuppajoe.control.Option;
+import com.github.bishabosha.cuppajoe.match.cases.Case;
 import com.github.bishabosha.cuppajoe.match.patterns.Collections;
 import com.github.bishabosha.cuppajoe.match.patterns.Pattern;
+import com.github.bishabosha.cuppajoe.match.patterns.Standard;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -30,7 +32,7 @@ public class MatcherTest {
     public void test_Basic() {
         Assertions.assertEquals(
             Option.of(6.28),
-            Match(3.14).option(
+            Match(3.14).match(
                 With(eq(3.14), (Double x) ->
                     x * 2.0),
                 With(eq(2.72), (Double x) ->
@@ -39,7 +41,7 @@ public class MatcherTest {
         );
         Assertions.assertEquals(
             Option.of(3.25),
-            Match(6.5).option(
+            Match(6.5).match(
                 With(eq(3.14), (Double $x) ->
                     $x * 2.0),
                 With(id(), (Double $x) ->
@@ -48,10 +50,10 @@ public class MatcherTest {
         );
         Assertions.assertEquals(
             Option.of(Math.PI),
-            Match(3.14).option(
-                With(eq(3.14), () ->
+            Match(3.14).match(
+                With(in(3.14),
                     Math.PI),
-                With(eq(2.72), () ->
+                With(in(2.72),
                     Math.E),
                 With(id(), $x ->
                     $x)
@@ -65,53 +67,53 @@ public class MatcherTest {
         );
         Assertions.assertEquals(
             "Hello World",
-            Match("hw").of(cases)
+            Match("hw").get(cases)
         );
         Assertions.assertEquals(
             "Thats one spicy meme",
-            Match("spicy").of(cases)
+            Match("spicy").get(cases)
         );
         Assertions.assertEquals(
             "None Found",
-            Match("jsdkjfksj").option(cases).orElse("None Found")
+            Match("jsdkjfksj").match(cases).orElse("None Found")
         );
     }
 
     @Test
     public void test_OnList() {
         var cases = Cases(
-            With(eq("-h", "--help"),
+            With(in("-h", "--help"),
                 "View Help"),
-            With(eq("-v", "--version"),
+            With(in("-v", "--version"),
                 "View Version")
         );
         Case<Object, String> numCases = Cases(
-            With(eq(1, 1L, 1.0, "1", "1.0", BigInteger.ONE, BigDecimal.ONE),
+            With(in(1, 1L, 1.0, "1", "1.0", BigInteger.ONE, BigDecimal.ONE),
                 "One"),
-            With(eq(2, 2L, 2.0, "2", "2.0", BigInteger.valueOf(2), BigDecimal.valueOf(2)),
+            With(in(2, 2L, 2.0, "2", "2.0", BigInteger.valueOf(2), BigDecimal.valueOf(2)),
                 "Two"),
-            With(eq(3, 3L, 3.0, "3", "3.0", BigInteger.valueOf(3), BigDecimal.valueOf(3)),
+            With(in(3, 3L, 3.0, "3", "3.0", BigInteger.valueOf(3), BigDecimal.valueOf(3)),
                 "Three")
         );
         Assertions.assertEquals(
             "View Help",
-            Match("-h").of(cases)
+            Match("-h").get(cases)
         );
         Assertions.assertEquals(
             "View Help",
-            Match("--help").of(cases)
+            Match("--help").get(cases)
         );
         Assertions.assertEquals(
             "View Version",
-            Match("-v").of(cases)
+            Match("-v").get(cases)
         );
         Assertions.assertEquals(
             "View Version",
-            Match("--version").of(cases)
+            Match("--version").get(cases)
         );
         Assertions.assertEquals(
             "Malformatted Args",
-            Match("-u").option(cases).orElse("Malformatted Args")
+            Match("-u").match(cases).orElse("Malformatted Args")
         );
         Assertions.assertEquals(
             "One",
@@ -152,7 +154,7 @@ public class MatcherTest {
 
         Assertions.assertEquals(
             Option.of(1),
-            Match(tree).option(
+            Match(tree).match(
                 With(inode(id(), __(), __()), (Integer node) ->
                     node + 1
                 )
@@ -160,7 +162,7 @@ public class MatcherTest {
         );
         Assertions.assertEquals(
             Tree.Node(1, Tree.Leaf(), Tree.Leaf()),
-            Match(tree).of(
+            Match(tree).get(
                 With(inode(__(), __(), id()), (Tree<Integer> right) ->
                     right
                 )
@@ -168,19 +170,19 @@ public class MatcherTest {
         );
         Assertions.assertEquals(
             Option.of(0),
-            Match(tree).option(
+            Match(tree).match(
                 With(inode(__(), id(), id()), this::sumNodes)
             )
         );
         Assertions.assertEquals(
             tree,
-            Match(tree).of(
+            Match(tree).get(
                 With(inode(id(), id(), id()), this::makeTree)
             )
         );
         Assertions.assertEquals(
             Option.of(25),
-            Match(leaf).option(
+            Match(leaf).match(
                 With(inode(id(), leaf(), leaf()), (Integer node) ->
                     node
                 )
@@ -210,7 +212,7 @@ public class MatcherTest {
     }
 
     private int sumNodes(Tree<Integer> x, Tree<Integer> y) {
-        return Match(Tuple(x, y)).of(
+        return Match(Tuple(x, y)).get(
             With(tuple(leaf(), leaf()),
                 0
             ),
@@ -250,13 +252,14 @@ public class MatcherTest {
         var option = Option.of(10);
         Assertions.assertEquals(
             10,
-            (int) Match(option).of(
+            Match(option).get(
                 With(some(id()), (Integer $x) ->
                     IfUnsafe(
-                        When(() -> $x > 5, () -> $x)
+                        When(() -> $x > 5, $x)
                     )
                 )
             )
+            .intValue()
         );
     }
 }

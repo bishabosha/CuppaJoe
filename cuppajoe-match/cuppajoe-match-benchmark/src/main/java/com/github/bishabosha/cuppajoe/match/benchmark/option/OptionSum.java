@@ -32,7 +32,7 @@
 package com.github.bishabosha.cuppajoe.match.benchmark.option;
 
 import com.github.bishabosha.cuppajoe.control.Option;
-import com.github.bishabosha.cuppajoe.match.Case;
+import com.github.bishabosha.cuppajoe.match.cases.Case;
 import org.openjdk.jmh.annotations.*;
 
 import java.lang.reflect.Array;
@@ -41,8 +41,9 @@ import static com.github.bishabosha.cuppajoe.API.None;
 import static com.github.bishabosha.cuppajoe.API.Some;
 import static com.github.bishabosha.cuppajoe.match.API.Cases;
 import static com.github.bishabosha.cuppajoe.match.API.With;
-import static com.github.bishabosha.cuppajoe.match.patterns.Standard.*;
-import static com.github.bishabosha.cuppajoe.match.patterns.Collections.*;
+import static com.github.bishabosha.cuppajoe.match.patterns.Collections.none;
+import static com.github.bishabosha.cuppajoe.match.patterns.Collections.some;
+import static com.github.bishabosha.cuppajoe.match.patterns.Standard.id;
 
 @Fork(1)
 @Warmup(iterations = 3, time = 5)
@@ -67,7 +68,7 @@ public class OptionSum {
         }
     }
 
-//    @Benchmark
+    @Benchmark
     public int sumScalarised(OptionState state) {
         int sum = 0;
         for (var option: state.arr) {
@@ -76,7 +77,7 @@ public class OptionSum {
         return sum;
     }
 
-//    @Benchmark
+    @Benchmark
     public int sumBuildIn(OptionState state) {
         int sum = 0;
         for (var option: state.arr) {
@@ -85,7 +86,7 @@ public class OptionSum {
         return sum;
     }
 
-//    @Benchmark
+    @Benchmark
     public int sumCase(OptionState state) {
         int sum = 0;
         Case<Option<Integer>, Integer> optionCase = With(some(id()), OptionSum::identity);
@@ -95,7 +96,7 @@ public class OptionSum {
         return sum;
     }
 
-//    @Benchmark
+    @Benchmark
     public int sumCaseExhaustive(OptionState state) {
         int sum = 0;
         Case<Option<Integer>, Integer> optionCase = Cases(
