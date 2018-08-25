@@ -4,7 +4,7 @@
     <groupId>com.github.bishabosha.cuppajoe</groupId>
     <artifactId>cuppajoe</artifactId>
     <packaging>pom</packaging>
-    <version>1.0</version>
+    <version>1.1</version>
     <modules>
         <module>cuppajoe-annotation</module>
         <module>cuppajoe-higher</module>
