@@ -1,10 +1,10 @@
-package com.github.bishabosha.cuppajoe.match.internal;
+package com.github.bishabosha.cuppajoe.match.internal.guards;
 
 import com.github.bishabosha.cuppajoe.API;
 import com.github.bishabosha.cuppajoe.annotation.NonNull;
 import com.github.bishabosha.cuppajoe.control.Option;
 import com.github.bishabosha.cuppajoe.higher.functions.Func0;
-import com.github.bishabosha.cuppajoe.match.Guard;
+import com.github.bishabosha.cuppajoe.match.cases.Guard;
 
 import java.util.Objects;
 import java.util.function.BooleanSupplier;

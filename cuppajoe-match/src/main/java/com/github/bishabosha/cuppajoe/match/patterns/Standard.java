@@ -1,51 +1,78 @@
 package com.github.bishabosha.cuppajoe.match.patterns;
 
-import java.util.Objects;
+import com.github.bishabosha.cuppajoe.match.patterns.Pattern.Empty;
+import com.github.bishabosha.cuppajoe.match.patterns.Pattern.Value;
 
+import java.util.Objects;
+import java.util.function.Predicate;
+
+import static com.github.bishabosha.cuppajoe.match.internal.extract.Extractors.alwaysTrue;
+import static com.github.bishabosha.cuppajoe.match.patterns.Pattern.empty;
+import static com.github.bishabosha.cuppajoe.match.patterns.Pattern.value;
 import static java.util.regex.Pattern.compile;
 
 public final class Standard {
 
-    public static <O> Pattern<O> __() {
-        return x -> Pattern.PASS;
+    private Standard() {}
+
+    public static <T> Value<T> id() {
+        return value(alwaysTrue());
     }
 
-    public static <O> Pattern<O> id() {
-        return Pattern::bind;
+    public static <T> Empty<T> __() {
+        return empty(alwaysTrue());
     }
 
-    public static <O> Pattern<O> eq(O toMatch) {
-        return x -> Objects.equals(x, toMatch) ? Pattern.bind(x) : Pattern.FAIL;
+    public static <O> Empty<O> nil() {
+        return empty(Objects::isNull);
+    }
+
+    public static <O> Empty<O> is(O toMatch) {
+        return toMatch == null ? nil() : empty(x -> x == toMatch);
+    }
+
+    public static <O> Value<O> eq(O value) {
+        return value == null ? value(Objects::isNull) : value(value::equals);
     }
 
     @SafeVarargs
-    public static <O> Pattern<O> eq(O first, O... rest) {
+    public static <O> Value<O> eq(O first, O... rest) {
+        return value(range(first, rest));
+    }
+
+    public static <O> Empty<O> in(O value) {
+        return value == null ? empty(Objects::isNull) : empty(value::equals);
+    }
+
+    @SafeVarargs
+    public static <O> Empty<O> in(O first, O... rest) {
+        return empty(range(first, rest));
+    }
+
+    private static <O> Predicate<O> range(O first, O... rest) {
         return x -> {
-            if (Objects.equals(first, x)) {
-                return Pattern.bind(x);
-            }
-            if (rest == null) {
-                return x == null ? Pattern.bind(null) : Pattern.FAIL;
+            if (Objects.equals(x, first)) {
+                return true;
             } else {
                 for (var val : rest) {
                     if (Objects.equals(x, val)) {
-                        return Pattern.bind(x);
+                        return true;
                     }
                 }
             }
-            return Pattern.FAIL;
+            return false;
         };
     }
 
-    public static <O> Pattern<O> of(Class<? super O> clazz) {
-        return x -> clazz.isInstance(x) ? Pattern.bind(x) : Pattern.FAIL;
+    public static <O> Value<O> of(Class<? super O> clazz) {
+        return value(clazz::isInstance);
     }
 
-    public static Pattern<String> regex(String regex) {
+    public static Value<String> regex(String regex) {
         return regex(compile(regex));
     }
 
-    public static Pattern<String> regex(java.util.regex.Pattern pattern) {
-        return x -> pattern.matcher(x).matches() ? Pattern.bind(x) : Pattern.FAIL;
+    public static Value<String> regex(java.util.regex.Pattern pattern) {
+        return value(x -> pattern.matcher(x).matches());
     }
 }
