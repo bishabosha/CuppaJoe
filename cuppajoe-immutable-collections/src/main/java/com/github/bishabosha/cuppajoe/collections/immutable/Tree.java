@@ -407,10 +407,9 @@ public interface Tree<E extends Comparable<E>> {
     }
 
     class Node<E extends Comparable<E>> implements Tree<E>, Unapply3<E, Tree<E>, Tree<E>> {
-
-        private final E node;
-        private final Tree<E> left;
-        private final Tree<E> right;
+        public final E node;
+        public final Tree<E> left;
+        public final Tree<E> right;
 
         private Node(E node, Tree<E> left, Tree<E> right) {
             this.node = node;

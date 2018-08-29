@@ -1,26 +1,37 @@
 package com.github.bishabosha.cuppajoe.match;
 
 import com.github.bishabosha.cuppajoe.annotation.NonNull;
+import com.github.bishabosha.cuppajoe.collections.immutable.List;
 import com.github.bishabosha.cuppajoe.control.Option;
 import com.github.bishabosha.cuppajoe.higher.functions.*;
-import com.github.bishabosha.cuppajoe.match.cases.Case;
+import com.github.bishabosha.cuppajoe.match.cases.*;
 import com.github.bishabosha.cuppajoe.match.cases.Case.CombinatorCase;
-import com.github.bishabosha.cuppajoe.match.cases.ExtractNCase;
-import com.github.bishabosha.cuppajoe.match.cases.Guard;
-import com.github.bishabosha.cuppajoe.match.cases.Matcher;
 import com.github.bishabosha.cuppajoe.match.internal.guards.GuardFactory;
 import com.github.bishabosha.cuppajoe.match.patterns.Pattern;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 
 public final class API {
 
     private API () {
     }
 
-    public static <I> Matcher<I> Match(I input) {
-        return Matcher.of(input);
+    public static <I, O> Case<I, O> Match(Func1<Matching<I, O>, Case<I, O>> mapper) {
+        return mapper.apply(Matching.toCase());
+    }
+
+    public static <I, O> Case<I, O> MatchUnsafe(UnaryOperator<Matching<I, O>> mapper) {
+        return Matching.eval(mapper.apply(Matching.toCase()));
+    }
+
+    public static <I, O> O Match(I input, Func1<Matching<I, O>, Case<I, O>> mapper) {
+        return Match(mapper).get(input);
+    }
+
+    public static <I, O> O MatchUnsafe(I input, UnaryOperator<Matching<I, O>> mapper) {
+        return MatchUnsafe(mapper).get(input);
     }
 
     @SafeVarargs
@@ -57,6 +68,78 @@ public final class API {
     @SafeVarargs
     public static <I, O> Case<I, O> Cases(@NonNull CombinatorCase<I, O>... cases) {
         return Case.combine(cases);
+    }
+
+    public static <I, O> CombinatorCase<I, O> Default(O value) {
+        return new CombinatorCase<>() {
+            @Override
+            public boolean matches(I input) {
+                return true;
+            }
+
+            @Override
+            public O extract(I input) {
+                return value;
+            }
+
+            @Override
+            public O get(I input) {
+                return value;
+            }
+
+            @Override
+            public Option<O> match(I input) {
+                return Option.some(value);
+            }
+        };
+    }
+
+    public static <I, O> CombinatorCase<I, O> Default(Func0<O> func) {
+        return new CombinatorCase<>() {
+            @Override
+            public boolean matches(I input) {
+                return true;
+            }
+
+            @Override
+            public O extract(I input) {
+                return func.apply();
+            }
+
+            @Override
+            public O get(I input) {
+                return func.apply();
+            }
+
+            @Override
+            public Option<O> match(I input) {
+                return Option.some(func.apply());
+            }
+        };
+    }
+
+    public static <I, O> CombinatorCase<I, O> Default(Func1<I, O> func) {
+        return new CombinatorCase<>() {
+            @Override
+            public boolean matches(I input) {
+                return true;
+            }
+
+            @Override
+            public O extract(I input) {
+                return func.apply(input);
+            }
+
+            @Override
+            public O get(I input) {
+                return func.apply(input);
+            }
+
+            @Override
+            public Option<O> match(I input) {
+                return Option.some(func.apply(input));
+            }
+        };
     }
 
     public static <I, O> CombinatorCase<I, O> With(Pattern<I> pattern, O value) {

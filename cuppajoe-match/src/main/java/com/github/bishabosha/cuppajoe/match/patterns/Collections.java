@@ -21,12 +21,13 @@ import static com.github.bishabosha.cuppajoe.match.patterns.Standard.is;
 
 public class Collections {
 
+    @SuppressWarnings("unchecked")
     public static <O extends Comparable<O>> Branch<Tree<O>> node(Pattern<O> $node, Pattern<Tree<O>> $left, Pattern<Tree<O>> $right) {
         return branchN(
-            x -> x instanceof Tree.Node,
-            Tuple($node, Tree::node),
-            Tuple($left, Tree::left),
-            Tuple($right, Tree::right)
+            Tree.Node.class,
+            Tuple($node, x -> x.node),
+            Tuple($left, x -> x.left),
+            Tuple($right, x -> x.right)
         );
     }
 
@@ -34,11 +35,12 @@ public class Collections {
         return is(Leaf());
     }
 
+    @SuppressWarnings("unchecked")
     public static <O> Branch<List<O>> cons(Pattern<O> $x, Pattern<List<O>> $xs) {
         return branchN(
-            x -> x instanceof List.Cons,
-            Tuple($x, List::head),
-            Tuple($xs, List::tail)
+            List.Cons.class,
+            Tuple($x, x -> x.head),
+            Tuple($xs, x -> x.tail)
         );
     }
 
@@ -46,28 +48,33 @@ public class Collections {
         return is(List());
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> Branch<Option<T>> some(Pattern<T> value) {
-        return branch1(o -> o instanceof Option.Some, value, Option::get);
+        return branch1(Option.Some.class, value, x -> x.value);
     }
 
     public static <T> Empty<Option<T>> none() {
         return is(None());
     }
 
+    @SuppressWarnings("unchecked")
     public static <O> Branch<Try<O>> success(Pattern<O> value) {
-        return branch1(x -> x instanceof Try.Success, value, Try::get);
+        return branch1(Try.Success.class, value, x -> x.value);
     }
 
+    @SuppressWarnings("unchecked")
     public static <O> Branch<Try<O>> failure(Pattern<Exception> error) {
-        return branch1(x -> x instanceof Try.Failure, error, Try::getError);
+        return branch1(Try.Failure.class, error, x -> x.error);
     }
 
+    @SuppressWarnings("unchecked")
     public static <L, R> Branch<Either<L, R>> left(Pattern<L> value) {
-        return branch1(x -> x instanceof Either.Left, value, x -> x.left());
+        return branch1(Either.Left.class, value, x -> x.value);
     }
 
+    @SuppressWarnings("unchecked")
     public static <L, R> Branch<Either<L, R>> right(Pattern<R> value) {
-        return branch1(x -> x instanceof Either.Right, value, x -> x.right());
+        return branch1(Either.Right.class, value, x -> x.value);
     }
 
     public static <O> Branch<Lazy<O>> lazy(Pattern<O> value) {

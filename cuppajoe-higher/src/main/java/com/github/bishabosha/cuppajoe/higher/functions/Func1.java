@@ -14,6 +14,10 @@ import java.util.function.Supplier;
 @FunctionalInterface
 public interface Func1<A, R> extends Function<A, R> {
 
+    static <X> Func1<X, X> identity() {
+        return x -> x;
+    }
+
     static <X, R> Func1<X, R> of(@NonNull Function<X, R> reference) {
         Objects.requireNonNull(reference, "reference");
         return reference::apply;

@@ -173,7 +173,7 @@ public interface Either<L, R> extends Functor2<Either, L, R>, Peek2<L, R> {
 
     class Left<L, R> implements Either<L, R>, Unapply1<L> {
 
-        private final L value;
+        public final L value;
 
         private Left(L value) {
             this.value = value;
@@ -207,7 +207,7 @@ public interface Either<L, R> extends Functor2<Either, L, R>, Peek2<L, R> {
 
     class Right<L, R> implements Either<L, R>, Unapply1<R> {
 
-        private final R value;
+        public final R value;
 
         private Right(R value) {
             this.value = value;

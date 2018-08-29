@@ -18,6 +18,11 @@
             <artifactId>cuppajoe-mutable-collections</artifactId>
             <version>1.1</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.bishabosha.cuppajoe.match</groupId>
+            <artifactId>cuppajoe-match</artifactId>
+            <version>4.0</version>
+        </dependency>
     </dependencies>
 
 

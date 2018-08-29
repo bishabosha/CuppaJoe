@@ -133,8 +133,7 @@ public interface Try<E> extends Monad1<Try, E>, Peek1<E>, Value1<Try, E> {
     }
 
     final class Success<E> implements Try<E>, Unapply1<E> {
-
-        private final E value;
+        public final E value;
 
         private Success(E value) {
             this.value = value;
@@ -182,8 +181,7 @@ public interface Try<E> extends Monad1<Try, E>, Peek1<E>, Value1<Try, E> {
     }
 
     final class Failure<E> implements Try<E>, Unapply1<Exception> {
-
-        private final Exception error;
+        public final Exception error;
 
         private Failure(Exception error) {
             this.error = error;

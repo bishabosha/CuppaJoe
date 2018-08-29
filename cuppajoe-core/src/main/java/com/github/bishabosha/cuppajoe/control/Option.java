@@ -113,8 +113,7 @@ public interface Option<E> extends Monad1<Option, E>, Peek1<E>, Value1<Option, E
     }
 
     final class Some<O> implements Option<O>, Unapply1<O> {
-
-        private O value;
+        public final O value;
 
         @Override
         public O unapply() {
