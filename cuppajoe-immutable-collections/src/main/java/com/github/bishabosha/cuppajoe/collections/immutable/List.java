@@ -24,6 +24,7 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.IntFunction;
 import java.util.function.Supplier;
 
 import static com.github.bishabosha.cuppajoe.API.*;
@@ -239,6 +240,10 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
         return applyImpl(this, applicative1);
     }
 
+    default E[] toArray(IntFunction<E[]> factory) {
+        return toJavaStream().toArray(factory);
+    }
+
     private List<E> bufferElementsReversed(int limit) {
         if (limit < 0) {
             throw new IllegalArgumentException("limit can't be less than zero.");
@@ -257,8 +262,8 @@ public interface List<E> extends Seq<List, E>, Value1<List, E> {
     }
 
     final class Cons<E> implements List<E>, Unapply2<E, List<E>> {
-        private E head;
-        private List<E> tail;
+        public final E head;
+        public final List<E> tail;
 
         /**
          * Private constructor to compose a new of from head element and another of for a tail.

@@ -3,8 +3,9 @@ package com.github.bishabosha.cuppajoe.match;
 import org.junit.jupiter.api.Test;
 
 import static com.github.bishabosha.cuppajoe.match.API.With;
-import static com.github.bishabosha.cuppajoe.match.patterns.Standard.*;
 import static com.github.bishabosha.cuppajoe.match.patterns.Collections.*;
+import static com.github.bishabosha.cuppajoe.match.patterns.Standard.__;
+import static com.github.bishabosha.cuppajoe.match.patterns.Standard.id;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CaseCompileTest {
@@ -124,5 +125,20 @@ public class CaseCompileTest {
     @Test
     public void test_Case3_succeedsOn_Branch2Branch2ValueValueValue() {
         With(tuple(tuple(id(), id()), id()), (x, y, z) -> "OK");
+    }
+
+    @Test
+    public void test_Case3_succeedsOn_varargsValueValueValue() {
+        With(arr(id(), id(), id()), (x, y, z) -> "OK");
+    }
+
+    @Test
+    public void test_Case2_succeedsOn_varargsValueValue() {
+        With(arr(id(), id()), (x, y) -> "OK");
+    }
+
+    @Test
+    public void test_Case1_failsOn_varargsValueValue() {
+        assertThrows(ExtractionFailedException.class, () -> With(arr(id(), id()), (x) -> "FAIL"));
     }
 }

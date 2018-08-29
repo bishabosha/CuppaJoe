@@ -34,10 +34,8 @@ package com.github.bishabosha.cuppajoe.higher.functions.tailcall;
 import com.github.bishabosha.cuppajoe.higher.functions.TailCall;
 import org.openjdk.jmh.annotations.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.github.bishabosha.cuppajoe.higher.functions.TailCall.yield;

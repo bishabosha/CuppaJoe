@@ -1,14 +1,13 @@
 package com.github.bishabosha.cuppajoe.match.patterns;
 
-import com.github.bishabosha.cuppajoe.match.patterns.Pattern.Empty;
-import com.github.bishabosha.cuppajoe.match.patterns.Pattern.Value;
+import com.github.bishabosha.cuppajoe.match.patterns.Pattern.*;
 
 import java.util.Objects;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static com.github.bishabosha.cuppajoe.match.internal.extract.Extractors.alwaysTrue;
-import static com.github.bishabosha.cuppajoe.match.patterns.Pattern.empty;
-import static com.github.bishabosha.cuppajoe.match.patterns.Pattern.value;
+import static com.github.bishabosha.cuppajoe.match.patterns.Pattern.*;
 import static java.util.regex.Pattern.compile;
 
 public final class Standard {
@@ -64,8 +63,44 @@ public final class Standard {
         };
     }
 
-    public static <O> Value<O> of(Class<? super O> clazz) {
-        return value(clazz::isInstance);
+    public static <R, O extends R> Value<R> of(Class<O> clazz) {
+        return value(classEq(clazz));
+    }
+
+    public static <R, O extends R> Empty<R> as(Class<O> clazz) {
+        return empty(classEq(clazz));
+    }
+
+    @SafeVarargs
+    public static <O> Value<O> any(Value<O>... values) {
+        return value(any(Stream.of(values).map(Pattern::matches)));
+    }
+
+    @SafeVarargs
+    public static <O> Empty<O> any(Empty<O>... values) {
+        return empty(any(Stream.of(values).map(Pattern::matches)));
+    }
+
+    private static <O> Predicate<O> any(Stream<Predicate<O>> predicates) {
+        return predicates.reduce(alwaysFalse(), (result, predicate) -> {
+            if (alwaysTrue() == predicate) {
+                return predicate;
+            } else if (alwaysFalse() != predicate) {
+                return alwaysFalse() == result
+                        ? predicate
+                        : result.or(predicate);
+            } else {
+                return result;
+            }
+        });
+    }
+
+    public static <O> Value<O> not(Value<O> value) {
+        return value(value.matches().negate());
+    }
+
+    private static <O> Predicate<O> alwaysFalse() {
+        return x -> false;
     }
 
     public static Value<String> regex(String regex) {
