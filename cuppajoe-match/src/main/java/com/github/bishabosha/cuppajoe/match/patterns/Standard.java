@@ -3,7 +3,6 @@ package com.github.bishabosha.cuppajoe.match.patterns;
 import com.github.bishabosha.cuppajoe.match.patterns.Pattern.*;
 
 import java.util.Objects;
-import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 

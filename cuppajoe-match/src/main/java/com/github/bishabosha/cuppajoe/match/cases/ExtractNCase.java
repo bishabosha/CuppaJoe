@@ -1,9 +1,9 @@
 package com.github.bishabosha.cuppajoe.match.cases;
 
 import com.github.bishabosha.cuppajoe.control.Option;
+import com.github.bishabosha.cuppajoe.match.MatchException;
 import com.github.bishabosha.cuppajoe.match.Path;
 import com.github.bishabosha.cuppajoe.match.cases.Case.CombinatorCase;
-import com.github.bishabosha.cuppajoe.match.MatchException;
 import com.github.bishabosha.cuppajoe.match.internal.extract.ExtractN;
 import com.github.bishabosha.cuppajoe.match.internal.extract.Extractors;
 import com.github.bishabosha.cuppajoe.match.patterns.Pattern;

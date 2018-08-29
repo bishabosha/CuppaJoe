@@ -58,7 +58,7 @@ THE POSSIBILITY OF SUCH DAMAGE.
         <dependency>
             <groupId>com.github.bishabosha.cuppajoe.higher</groupId>
             <artifactId>cuppajoe-higher</artifactId>
-            <version>1.1</version>
+            <version>1.1.1</version>
         </dependency>
     </dependencies>
 
