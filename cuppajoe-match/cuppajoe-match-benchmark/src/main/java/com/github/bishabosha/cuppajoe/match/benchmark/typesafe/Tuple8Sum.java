@@ -1,11 +1,7 @@
 package com.github.bishabosha.cuppajoe.match.benchmark.typesafe;
 
 import com.github.bishabosha.cuppajoe.collections.immutable.tuples.Tuple8;
-import com.github.bishabosha.cuppajoe.control.Option;
-import com.github.bishabosha.cuppajoe.higher.functions.Func1;
-import com.github.bishabosha.cuppajoe.higher.functions.Func8;
 import com.github.bishabosha.cuppajoe.match.MatchException;
-import com.github.bishabosha.cuppajoe.match.cases.Case;
 import com.github.bishabosha.cuppajoe.match.typesafe.cases.Case.CombinatorCase;
 import org.openjdk.jmh.annotations.*;
 
@@ -13,8 +9,6 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Array;
-import java.util.Objects;
-import java.util.function.Predicate;
 
 import static com.github.bishabosha.cuppajoe.collections.immutable.API.Tuple;
 import static com.github.bishabosha.cuppajoe.match.typesafe.API.With;
@@ -23,11 +17,14 @@ import static com.github.bishabosha.cuppajoe.match.typesafe.patterns.Standard.__
 import static com.github.bishabosha.cuppajoe.match.typesafe.patterns.Standard.id;
 
 /**
- * match API 3.0
- * Tuple8Sum.sumCase                      avgt   15  0.785 ± 0.233   s/op
- * Tuple8Sum.sumCase_smallExtract_2first  avgt   15  0.742 ± 0.166   s/op
- * Tuple8Sum.sumCase_smallExtract_2last   avgt   15  1.226 ± 0.348   s/op
- * Tuple8Sum.sumCompose                   avgt   15  0.163 ± 0.006   s/op
+ * performance is awful on Graal, C2 produces native performance
+ * Benchmark                                      Mode  Cnt  Score   Error  Units
+ * c.g.b.c.m.b.tuples.Tuple8Sum.sumCase           avgt   15  0.237 ± 0.054   s/op
+ * c.g.b.c.m.b.tuples.Tuple8Sum.sumScalarised     avgt   15  0.163 ± 0.003   s/op
+ * c.g.b.c.m.b.typesafe.Tuple8Sum.sumCase         avgt   15  0.162 ± 0.014   s/op
+ * c.g.b.c.m.b.typesafe.Tuple8Sum.sumCaseExtract  avgt   15  0.161 ± 0.008   s/op
+ * c.g.b.c.m.b.typesafe.Tuple8Sum.sumCase_2first  avgt   15  0.133 ± 0.012   s/op
+ * c.g.b.c.m.b.typesafe.Tuple8Sum.sumCase_2last   avgt   15  0.120 ± 0.015   s/op
  */
 @Fork(3)
 @Warmup(iterations = 5, time = 2)
@@ -88,6 +85,19 @@ public class Tuple8Sum {
 
     @Benchmark
     public int sumCase(Tuple8State state) throws MatchException {
+        int sum = 0;
+        for (var tuple: state.arr) {
+            try {
+                sum += (int)Cases.SUM_8_GET.invokeExact((Object)tuple);
+            } catch (Throwable throwable) {
+                throw new MatchException(throwable);
+            }
+        }
+        return sum;
+    }
+
+    @Benchmark
+    public int sumCaseExtract(Tuple8State state) throws MatchException {
         int sum = 0;
         for (var tuple: state.arr) {
             try {
