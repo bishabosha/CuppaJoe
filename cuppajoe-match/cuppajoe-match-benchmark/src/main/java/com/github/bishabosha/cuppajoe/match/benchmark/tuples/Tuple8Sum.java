@@ -114,7 +114,7 @@ public class Tuple8Sum {
         return With(tuple(__(), __(), __(), __(), __(), __(), id(), id()), Tuple8Sum::sum2);
     }
 
-    @Benchmark
+//    @Benchmark
     public int sumScalarised(Tuple8State state) {
         int sum = 0;
         for (var tuple: state.arr) {
@@ -123,7 +123,7 @@ public class Tuple8Sum {
         return sum;
     }
 
-    @Benchmark
+//    @Benchmark
     public int sumCompose(Tuple8State state) {
         int sum = 0;
         for (var tuple: state.arr) {
@@ -132,7 +132,7 @@ public class Tuple8Sum {
         return sum;
     }
 
-    @Benchmark
+//    @Benchmark
     public int sumCase(Tuple8State state) throws MatchException {
         int sum = 0;
         var tupleCase = sumComponents();
@@ -142,7 +142,7 @@ public class Tuple8Sum {
         return sum;
     }
 
-    @Benchmark
+//    @Benchmark
     public int sumCaseOptimal(Tuple8State state) throws MatchException {
         int sum = 0;
         var tupleCase = sumComponentsOptimal();
@@ -152,7 +152,7 @@ public class Tuple8Sum {
         return sum;
     }
 
-    @Benchmark
+//    @Benchmark
     public int sumCaseHandrolled(Tuple8State state) throws MatchException {
         int sum = 0;
         var tupleCase = sumComponentsHandrolled(Tuple8Sum::sum);
@@ -162,7 +162,7 @@ public class Tuple8Sum {
         return sum;
     }
 
-    @Benchmark
+//    @Benchmark
     public int sumCase_2first(Tuple8State state) throws MatchException {
         int sum = 0;
         var tupleCase = sumTwoFirst();
@@ -172,7 +172,7 @@ public class Tuple8Sum {
         return sum;
     }
 
-    @Benchmark
+//    @Benchmark
     public int sumCase_2last(Tuple8State state) throws MatchException {
         int sum = 0;
         var tupleCase = sumTwoLast();
@@ -182,7 +182,7 @@ public class Tuple8Sum {
         return sum;
     }
 
-    @Benchmark
+//    @Benchmark
     public int sum2FirstScalarised(Tuple8State state) {
         int sum = 0;
         for (var tuple: state.arr) {
@@ -191,7 +191,7 @@ public class Tuple8Sum {
         return sum;
     }
 
-    @Benchmark
+//    @Benchmark
     public int sum2LastScalarised(Tuple8State state) {
         int sum = 0;
         for (var tuple: state.arr) {

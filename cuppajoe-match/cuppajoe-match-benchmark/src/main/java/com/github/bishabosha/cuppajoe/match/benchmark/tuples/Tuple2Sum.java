@@ -87,7 +87,7 @@ public class Tuple2Sum {
         return With(tuple(__(), id()), Tuple2Sum::identity);
     }
 
-    @Benchmark
+    //@Benchmark
     public int sumScalarised(Tuple2State state) {
         int sum = 0;
         for (var tuple: state.arr) {
@@ -96,7 +96,7 @@ public class Tuple2Sum {
         return sum;
     }
 
-    @Benchmark
+    //@Benchmark
     public int sumRightScalarised(Tuple2State state) {
         int sum = 0;
         for (var tuple: state.arr) {
@@ -105,7 +105,7 @@ public class Tuple2Sum {
         return sum;
     }
 
-    @Benchmark
+    //@Benchmark
     public int sumCase(Tuple2State state) throws MatchException {
         int sum = 0;
         var sumCase = sumComponents();
@@ -115,7 +115,7 @@ public class Tuple2Sum {
         return sum;
     }
 
-    @Benchmark
+    //@Benchmark
     public int sumCaseRight(Tuple2State state) throws MatchException {
         int sum = 0;
         var sumCase = getRight();
@@ -125,7 +125,7 @@ public class Tuple2Sum {
         return sum;
     }
 
-    @Benchmark
+    //@Benchmark
     public int sumCompose(Tuple2State state) {
         int sum = 0;
         for (var tuple: state.arr) {
@@ -134,7 +134,7 @@ public class Tuple2Sum {
         return sum;
     }
 
-    @Benchmark
+    //@Benchmark
     public int sumComposeRight(Tuple2State state) {
         int sum = 0;
         for (var tuple: state.arr) {

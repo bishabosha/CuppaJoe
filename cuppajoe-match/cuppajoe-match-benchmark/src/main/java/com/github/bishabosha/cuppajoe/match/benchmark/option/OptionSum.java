@@ -68,7 +68,7 @@ public class OptionSum {
         }
     }
 
-    @Benchmark
+    //@Benchmark
     public int sumScalarised(OptionState state) {
         int sum = 0;
         for (var option: state.arr) {
@@ -77,7 +77,7 @@ public class OptionSum {
         return sum;
     }
 
-    @Benchmark
+    //@Benchmark
     public int sumBuildIn(OptionState state) {
         int sum = 0;
         for (var option: state.arr) {
@@ -86,7 +86,7 @@ public class OptionSum {
         return sum;
     }
 
-    @Benchmark
+    //@Benchmark
     public int sumCase(OptionState state) {
         int sum = 0;
         Case<Option<Integer>, Integer> optionCase = With(some(id()), OptionSum::identity);
@@ -96,7 +96,7 @@ public class OptionSum {
         return sum;
     }
 
-    @Benchmark
+    //@Benchmark
     public int sumCaseExhaustive(OptionState state) {
         int sum = 0;
         Case<Option<Integer>, Integer> optionCase = Cases(

@@ -35,6 +35,7 @@ import com.github.bishabosha.cuppajoe.match.cases.Case;
 import org.openjdk.jmh.annotations.*;
 
 import static com.github.bishabosha.cuppajoe.match.API.Match;
+import static com.github.bishabosha.cuppajoe.match.API.MatchUnsafe;
 import static com.github.bishabosha.cuppajoe.match.API.With;
 import static com.github.bishabosha.cuppajoe.match.patterns.Standard.id;
 
@@ -67,7 +68,7 @@ public class Basic {
         }
     }
 
-    @Benchmark
+    //@Benchmark
     public int sumPrimitive(IntArrayState state) {
         int sum = 0;
         for (var num: state.arr) {
@@ -80,7 +81,7 @@ public class Basic {
         return With(id(), Basic::identity);
     }
 
-    @Benchmark
+    //@Benchmark
     public int sumCase(IntArrayState state) {
         int sum = 0;
         final var intCase = intCase();
@@ -93,12 +94,12 @@ public class Basic {
     /**
      * @apiNote Do not use matcher in tight loops
      */
-    @Benchmark
+    //@Benchmark
     public int sumMatcher(IntArrayState state) {
         int sum = 0;
         for (var tuple: state.arr) {
-            sum += Match(tuple).get(
-                With(id(), (Integer x) -> x)
+            sum += (int) MatchUnsafe(tuple, m -> m
+                .with(id()).then((Integer x) -> x)
             );
         }
         return sum;

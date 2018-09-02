@@ -71,7 +71,7 @@ public class Tuple2NestedSum {
         return With(tuple(tuple(id(), __()), id()), Tuple2NestedSum::sum);
     }
 
-    @Benchmark
+    //@Benchmark
     public int sumScalarisedNested(Tuple2NestedState state) {
         int sum = 0;
         for (var tuple: state.arr) {
@@ -80,7 +80,7 @@ public class Tuple2NestedSum {
         return sum;
     }
 
-    @Benchmark
+    //@Benchmark
     public int sumConsumeNested(Tuple2NestedState state) {
         int sum = 0;
         for (var tuple: state.arr) {
@@ -93,7 +93,7 @@ public class Tuple2NestedSum {
         return sum;
     }
 
-    @Benchmark
+    //@Benchmark
     public int sumCaseNested(Tuple2NestedState state) throws MatchException {
         int sum = 0;
         var tupleCase = nestedSum();
