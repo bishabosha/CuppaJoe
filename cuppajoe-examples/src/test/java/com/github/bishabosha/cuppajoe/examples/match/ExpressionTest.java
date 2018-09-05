@@ -6,7 +6,8 @@ import com.github.bishabosha.cuppajoe.match.cases.Case;
 import org.junit.jupiter.api.Test;
 
 import static com.github.bishabosha.cuppajoe.examples.match.Expression.*;
-import static com.github.bishabosha.cuppajoe.match.API.*;
+import static com.github.bishabosha.cuppajoe.match.API.Match;
+import static com.github.bishabosha.cuppajoe.match.API.MatchUnsafe;
 import static com.github.bishabosha.cuppajoe.match.patterns.Collections.tuple;
 import static com.github.bishabosha.cuppajoe.match.patterns.Standard.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;

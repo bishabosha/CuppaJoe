@@ -34,13 +34,11 @@ package com.github.bishabosha.cuppajoe.match.benchmark.tuples;
 import com.github.bishabosha.cuppajoe.collections.immutable.tuples.Tuple2;
 import com.github.bishabosha.cuppajoe.match.MatchException;
 import com.github.bishabosha.cuppajoe.match.cases.Case;
-import com.github.bishabosha.cuppajoe.match.patterns.Collections;
 import org.openjdk.jmh.annotations.*;
 
 import java.lang.reflect.Array;
 
 import static com.github.bishabosha.cuppajoe.collections.immutable.API.Tuple;
-import static com.github.bishabosha.cuppajoe.match.API.Match;
 import static com.github.bishabosha.cuppajoe.match.API.With;
 import static com.github.bishabosha.cuppajoe.match.patterns.Collections.tuple;
 import static com.github.bishabosha.cuppajoe.match.patterns.Standard.__;

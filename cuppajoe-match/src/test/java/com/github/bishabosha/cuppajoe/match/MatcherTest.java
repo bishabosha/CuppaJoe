@@ -6,15 +6,10 @@ package com.github.bishabosha.cuppajoe.match;
 
 import com.github.bishabosha.cuppajoe.collections.immutable.Tree;
 import com.github.bishabosha.cuppajoe.control.Option;
-import com.github.bishabosha.cuppajoe.match.cases.Case;
 import com.github.bishabosha.cuppajoe.match.patterns.Collections;
 import com.github.bishabosha.cuppajoe.match.patterns.Pattern;
-import com.github.bishabosha.cuppajoe.match.patterns.Standard;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
 
 import static com.github.bishabosha.cuppajoe.API.Some;
 import static com.github.bishabosha.cuppajoe.collections.immutable.API.Tuple;

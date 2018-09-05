@@ -1,11 +1,13 @@
 package com.github.bishabosha.cuppajoe.match;
 
 import com.github.bishabosha.cuppajoe.annotation.NonNull;
-import com.github.bishabosha.cuppajoe.collections.immutable.List;
 import com.github.bishabosha.cuppajoe.control.Option;
 import com.github.bishabosha.cuppajoe.higher.functions.*;
-import com.github.bishabosha.cuppajoe.match.cases.*;
+import com.github.bishabosha.cuppajoe.match.cases.Case;
 import com.github.bishabosha.cuppajoe.match.cases.Case.CombinatorCase;
+import com.github.bishabosha.cuppajoe.match.cases.ExtractNCase;
+import com.github.bishabosha.cuppajoe.match.cases.Guard;
+import com.github.bishabosha.cuppajoe.match.cases.Matching;
 import com.github.bishabosha.cuppajoe.match.internal.guards.GuardFactory;
 import com.github.bishabosha.cuppajoe.match.patterns.Pattern;
 

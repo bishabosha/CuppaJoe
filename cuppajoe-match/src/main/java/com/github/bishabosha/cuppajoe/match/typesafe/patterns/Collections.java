@@ -1,17 +1,19 @@
 package com.github.bishabosha.cuppajoe.match.typesafe.patterns;
 
-import com.github.bishabosha.cuppajoe.collections.immutable.tuples.*;
+import com.github.bishabosha.cuppajoe.collections.immutable.tuples.Tuple2;
+import com.github.bishabosha.cuppajoe.collections.immutable.tuples.Tuple8;
 import com.github.bishabosha.cuppajoe.control.Option;
 import com.github.bishabosha.cuppajoe.control.Option.Some;
-import com.github.bishabosha.cuppajoe.match.typesafe.patterns.Pattern.*;
 import com.github.bishabosha.cuppajoe.match.typesafe.patterns.Pattern.Branch;
+import com.github.bishabosha.cuppajoe.match.typesafe.patterns.Pattern.Empty;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 
 import static com.github.bishabosha.cuppajoe.API.None;
 import static com.github.bishabosha.cuppajoe.collections.immutable.API.Tuple;
-import static com.github.bishabosha.cuppajoe.match.typesafe.patterns.Pattern.*;
+import static com.github.bishabosha.cuppajoe.match.typesafe.patterns.Pattern.branch1;
+import static com.github.bishabosha.cuppajoe.match.typesafe.patterns.Pattern.branchN;
 import static com.github.bishabosha.cuppajoe.match.typesafe.patterns.Standard.is;
 
 public class Collections {

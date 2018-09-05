@@ -3,8 +3,9 @@ package com.github.bishabosha.cuppajoe.match;
 import org.junit.jupiter.api.Test;
 
 import static com.github.bishabosha.cuppajoe.match.API.With;
-import static com.github.bishabosha.cuppajoe.match.patterns.Standard.*;
 import static com.github.bishabosha.cuppajoe.match.patterns.Collections.*;
+import static com.github.bishabosha.cuppajoe.match.patterns.Standard.__;
+import static com.github.bishabosha.cuppajoe.match.patterns.Standard.id;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CaseCompileTest {

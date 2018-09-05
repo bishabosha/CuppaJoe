@@ -85,7 +85,7 @@ public final class Extractors {
             ? predicate
             : isAlwaysTrue(predicate)
                 ? predicate
-                : filterReturnValue(path, predicate);
+                : filterReturnValue(path, predicate.asType(predicate.type().changeParameterType(0, path.type().returnType())));
     }
 
     static Function<MethodHandle, MethodHandle> composePaths(MethodHandle path) {

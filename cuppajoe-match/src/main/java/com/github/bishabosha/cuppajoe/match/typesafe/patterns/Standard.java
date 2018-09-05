@@ -1,17 +1,14 @@
 package com.github.bishabosha.cuppajoe.match.typesafe.patterns;
 
 
-import com.github.bishabosha.cuppajoe.match.typesafe.patterns.Pattern.Empty;
-import com.github.bishabosha.cuppajoe.match.typesafe.patterns.Pattern.Value;
+import com.github.bishabosha.cuppajoe.match.typesafe.patterns.Pattern.*;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 
 import static com.github.bishabosha.cuppajoe.match.typesafe.internal.extract.Extractors.alwaysTrue;
-import static com.github.bishabosha.cuppajoe.match.typesafe.patterns.Pattern.classEq;
-import static com.github.bishabosha.cuppajoe.match.typesafe.patterns.Pattern.empty;
-import static com.github.bishabosha.cuppajoe.match.typesafe.patterns.Pattern.value;
+import static com.github.bishabosha.cuppajoe.match.typesafe.patterns.Pattern.*;
 
 public final class Standard {
 
@@ -37,7 +34,7 @@ public final class Standard {
     }
 
     public static Value id(Class<?> type) {
-        return value(classEq(type).asType(MethodType.methodType(boolean.class, type)));
+        return value(classEq(type));
     }
 
     public static Value id() {

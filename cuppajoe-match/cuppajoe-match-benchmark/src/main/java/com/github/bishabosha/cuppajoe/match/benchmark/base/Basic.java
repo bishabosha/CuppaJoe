@@ -34,7 +34,6 @@ package com.github.bishabosha.cuppajoe.match.benchmark.base;
 import com.github.bishabosha.cuppajoe.match.cases.Case;
 import org.openjdk.jmh.annotations.*;
 
-import static com.github.bishabosha.cuppajoe.match.API.Match;
 import static com.github.bishabosha.cuppajoe.match.API.MatchUnsafe;
 import static com.github.bishabosha.cuppajoe.match.API.With;
 import static com.github.bishabosha.cuppajoe.match.patterns.Standard.id;

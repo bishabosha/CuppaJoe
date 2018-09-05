@@ -12,7 +12,7 @@ import com.github.bishabosha.cuppajoe.match.typesafe.patterns.Pattern;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
-import java.util.stream.Stream;
+import java.util.stream.IntStream;
 
 public final class ExtractNCase extends CombinatorCase {
 
@@ -20,6 +20,7 @@ public final class ExtractNCase extends CombinatorCase {
         private static final MethodHandle SOME;
         private static final MethodHandle NONE;
         private static final MethodHandle NEW_MATCH_EXCEPTION;
+        private static final MethodHandle NEW_MATCH_EXCEPTION_EMPTY;
 
         static {
             var lookup = MethodHandles.lookup();
@@ -27,6 +28,7 @@ public final class ExtractNCase extends CombinatorCase {
                 SOME = lookup.findStatic(Option.class, "some", MethodType.methodType(Some.class, Object.class)).asType(MethodType.methodType(Option.class, Object.class));
                 NONE = lookup.findStatic(Option.class, "none", MethodType.methodType(None.class)).asType(MethodType.methodType(Option.class));
                 NEW_MATCH_EXCEPTION = lookup.findConstructor(MatchException.class, MethodType.methodType(void.class, Object.class));
+                NEW_MATCH_EXCEPTION_EMPTY = lookup.findConstructor(MatchException.class, MethodType.methodType(void.class));
             } catch (NoSuchMethodException | IllegalAccessException e) {
                 throw new Error(e);
             }
@@ -48,17 +50,29 @@ public final class ExtractNCase extends CombinatorCase {
     public MethodHandle get() {
         var extract = extract();
         var matchExceptionThrower = MethodHandles.throwException(func.type().returnType(), MatchException.class);
+        if (paths.length == 0) {
+            var newMatchExceptionThrower = MethodHandles.filterReturnValue(Handles.NEW_MATCH_EXCEPTION_EMPTY, matchExceptionThrower);
+            var paddedThrower = MethodHandles.dropArgumentsToMatch(newMatchExceptionThrower, 0, matcher.type().parameterList(), 0);
+            var paddedExtract = MethodHandles.dropArgumentsToMatch(extract, 0, matcher.type().parameterList(), 0);
+            return MethodHandles.guardWithTest(matcher, paddedExtract, paddedThrower);
+        }
         var exceptionMaker = Handles.NEW_MATCH_EXCEPTION.asType(Handles.NEW_MATCH_EXCEPTION.type().changeParameterType(0, extract.type().parameterType(0)));
-        var newMatchExceptionThrower = MethodHandles.filterReturnValue(exceptionMaker, matchExceptionThrower).asType(extract.type());
-        return MethodHandles.guardWithTest(matcher, extract, newMatchExceptionThrower);
+        var genericType = extract.type().changeParameterType(0, matcher.type().parameterType(0));
+        var newMatchExceptionThrower = MethodHandles.filterReturnValue(exceptionMaker, matchExceptionThrower);
+        return MethodHandles.guardWithTest(matcher, extract.asType(genericType), newMatchExceptionThrower.asType(genericType));
     }
 
     @Override
     public MethodHandle match() {
         var extract = extract();
-        var wrapExtract = MethodHandles.filterReturnValue(extract(), Handles.SOME.asType(Handles.SOME.type().changeParameterType(0, extract.type().returnType())));
-        var nonePadded = MethodHandles.dropArgumentsToMatch(Handles.NONE, 0, extract.type().parameterList(), 0);
-        return MethodHandles.guardWithTest(matcher, wrapExtract, nonePadded);
+        var wrapExtract = MethodHandles.filterReturnValue(extract, Handles.SOME.asType(Handles.SOME.type().changeParameterType(0, extract.type().returnType())));
+        var nonePadded = MethodHandles.dropArgumentsToMatch(Handles.NONE, 0, matcher.type().parameterList(), 0);
+        if (paths.length == 0) {
+            var wrapExtractPad = MethodHandles.dropArgumentsToMatch(wrapExtract, 0, matcher.type().parameterList(), 0);
+            return MethodHandles.guardWithTest(matcher, wrapExtractPad, nonePadded);
+        }
+        var genericType = wrapExtract.type().changeParameterType(0, matcher.type().parameterType(0));
+        return MethodHandles.guardWithTest(matcher, wrapExtract.asType(genericType), nonePadded);
     }
 
     @Override
@@ -68,9 +82,22 @@ public final class ExtractNCase extends CombinatorCase {
 
     @Override
     public MethodHandle extract() {
-        var handlesAsTypes = Stream.of(paths).map(mh -> mh.asType(mh.type().changeReturnType(func.type().parameterType(0)))).toArray(MethodHandle[]::new);
-        var pathsFolded = MethodHandles.filterArguments(func, 0, handlesAsTypes);
-        var newType = MethodType.methodType(func.type().returnType(), matcher.type().parameterType(0));
+        if (paths.length == 0) {
+            return func;
+        }
+        if (paths.length == 1) {
+            var pathAsType = paths[0].asType(paths[0].type().changeReturnType(func.type().lastParameterType()));
+            return MethodHandles.filterReturnValue(pathAsType, func);
+        }
+        var pathsAsTypes = IntStream.range(0, func.type().parameterCount())
+            .mapToObj(i ->
+                paths[i].asType(
+                    paths[i].type()
+                            .changeReturnType(func.type().parameterType(i)))
+            )
+            .toArray(MethodHandle[]::new);
+        var pathsFolded = MethodHandles.filterArguments(func, 0, pathsAsTypes);
+        var newType = paths[0].type().changeReturnType(func.type().returnType());
         var zeros = new int[func.type().parameterCount()];
         return MethodHandles.permuteArguments(pathsFolded, newType, zeros);
     }
