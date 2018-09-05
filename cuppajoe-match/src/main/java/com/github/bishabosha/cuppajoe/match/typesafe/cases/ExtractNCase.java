@@ -12,7 +12,6 @@ import com.github.bishabosha.cuppajoe.match.typesafe.patterns.Pattern;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
-import java.util.stream.IntStream;
 
 public final class ExtractNCase extends CombinatorCase {
 
@@ -40,7 +39,7 @@ public final class ExtractNCase extends CombinatorCase {
     private final MethodHandle[] paths;
 
     public ExtractNCase(Pattern pattern, MethodHandle func) {
-        var extractN = Extractors.compile(pattern, new ExtractN(func.type().parameterCount()));
+        var extractN = Extractors.compile(pattern, new ExtractN(func.type().parameterList()));
         matcher = extractN.matcher();
         paths = extractN.getPaths();
         this.func = func;
@@ -86,17 +85,9 @@ public final class ExtractNCase extends CombinatorCase {
             return func;
         }
         if (paths.length == 1) {
-            var pathAsType = paths[0].asType(paths[0].type().changeReturnType(func.type().lastParameterType()));
-            return MethodHandles.filterReturnValue(pathAsType, func);
+            return MethodHandles.filterReturnValue(paths[0], func);
         }
-        var pathsAsTypes = IntStream.range(0, func.type().parameterCount())
-            .mapToObj(i ->
-                paths[i].asType(
-                    paths[i].type()
-                            .changeReturnType(func.type().parameterType(i)))
-            )
-            .toArray(MethodHandle[]::new);
-        var pathsFolded = MethodHandles.filterArguments(func, 0, pathsAsTypes);
+        var pathsFolded = MethodHandles.filterArguments(func, 0, paths);
         var newType = paths[0].type().changeReturnType(func.type().returnType());
         var zeros = new int[func.type().parameterCount()];
         return MethodHandles.permuteArguments(pathsFolded, newType, zeros);

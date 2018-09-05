@@ -114,7 +114,7 @@ public class Tuple8Sum {
         return With(tuple(__(), __(), __(), __(), __(), __(), id(), id()), Tuple8Sum::sum2);
     }
 
-    @Benchmark
+//    @Benchmark
     public int sumScalarised(Tuple8State state) {
         int sum = 0;
         for (var tuple: state.arr) {
@@ -132,7 +132,7 @@ public class Tuple8Sum {
         return sum;
     }
 
-    @Benchmark
+//    @Benchmark
     public int sumCase(Tuple8State state) throws MatchException {
         int sum = 0;
         var tupleCase = sumComponents();

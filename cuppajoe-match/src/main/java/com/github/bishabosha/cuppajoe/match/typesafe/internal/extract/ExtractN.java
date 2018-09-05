@@ -1,38 +1,42 @@
 package com.github.bishabosha.cuppajoe.match.typesafe.internal.extract;
 
 import com.github.bishabosha.cuppajoe.match.ExtractionFailedException;
+import com.github.bishabosha.cuppajoe.match.typesafe.internal.patterns.Bootstraps;
+import com.github.bishabosha.cuppajoe.match.typesafe.patterns.Pattern;
 import com.github.bishabosha.cuppajoe.match.typesafe.patterns.Pattern.Branch;
 import com.github.bishabosha.cuppajoe.match.typesafe.patterns.Pattern.Empty;
 import com.github.bishabosha.cuppajoe.match.typesafe.patterns.Pattern.Value;
+import com.github.bishabosha.cuppajoe.util.ClassUtil;
 
 import java.lang.invoke.MethodHandle;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import java.util.List;
 
 import static com.github.bishabosha.cuppajoe.match.typesafe.internal.extract.Extractors.composePaths;
 
 public final class ExtractN extends Extractor {
 
+    private final Class<?>[] pathTypes;
     private final MethodHandle[] paths;
     private final int size;
     private int cursor;
 
-    public ExtractN(int size) {
-        if (size < 0) {
-            throw new IllegalArgumentException("size < 0");
-        }
+    public ExtractN(List<Class<?>> pathTypes) {
+        size = pathTypes.size();
+        this.pathTypes = pathTypes.toArray(new Class[size]);
         cursor = 0;
         paths = new MethodHandle[size];
-        this.size = size;
     }
 
     @Override
-    protected boolean notInstantiated() {
-        return super.notInstantiated() || cursor < size;
+    protected boolean uninitialized() {
+        return super.uninitialized() || cursor < size;
     }
 
     @Override
     public final void onEmpty(Empty empty) {
-        appendPredicates(popPath(), empty);
+        appendPredicates(popPath(), empty.matches());
     }
 
     @Override
@@ -41,14 +45,28 @@ public final class ExtractN extends Extractor {
         if (cursor >= size) {
             throw new ExtractionFailedException("To many values were found");
         }
-        appendPredicates(path, value);
-        paths[cursor++] = path;
+        if (value == Bootstraps.id() && !pathTypes[cursor].isAssignableFrom(path.type().returnType())) {
+            var current = path.type().returnType();
+            var end = pathTypes[cursor];
+            if (end.isPrimitive()) {
+                var endWrapper = ClassUtil.wrapperFor(end);
+                if (!endWrapper.isAssignableFrom(current)) {
+                    appendPredicates(path, Modifier.isFinal(endWrapper.getModifiers()) ? Pattern.classEq(endWrapper) : Pattern.classAssignable(endWrapper));
+                }
+            } else {
+                appendPredicates(path, Modifier.isFinal(end.getModifiers()) ? Pattern.classEq(end) : Pattern.classAssignable(end));
+            }
+        } else {
+            appendPredicates(path, value.matches());
+        }
+
+        paths[cursor] = path.asType(path.type().changeReturnType(pathTypes[cursor++]));
     }
 
     @Override
     public final void onBranch(Branch branch) {
         var path = popPath();
-        appendPredicates(path, branch);
+        appendPredicates(path, branch.matches());
         branch.pathsAscending().map(composePaths(path)).forEach(this::pushPath);
         branch.visitEachBranch(this);
     }

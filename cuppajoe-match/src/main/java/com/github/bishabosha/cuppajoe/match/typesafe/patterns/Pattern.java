@@ -7,10 +7,8 @@ import com.github.bishabosha.cuppajoe.collections.immutable.tuples.Tuple2;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
-import java.util.ArrayDeque;
-import java.util.Arrays;
-import java.util.Deque;
-import java.util.List;
+import java.lang.reflect.Modifier;
+import java.util.*;
 import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -80,12 +78,14 @@ public abstract class Pattern {
 
     private static final MethodHandle GET_CLASS;
     private static final MethodHandle CLASS_EQ;
+    private static final MethodHandle CLASS_ASSIGNABLE;
 
     static {
         var lookup = MethodHandles.lookup();
         try {
             GET_CLASS = lookup.findVirtual(Object.class, "getClass", MethodType.methodType(Class.class));
             CLASS_EQ = lookup.findStatic(Pattern.class, "classEq", MethodType.methodType(boolean.class, Class.class, Class.class));
+            CLASS_ASSIGNABLE = lookup.findVirtual(Class.class, "isAssignableFrom", MethodType.methodType(boolean.class, Class.class));
         } catch (NoSuchMethodException | IllegalAccessException e) {
             throw new Error(e);
         }
@@ -95,9 +95,26 @@ public abstract class Pattern {
         return a == b;
     }
 
-    public static <T> MethodHandle classEq(Class<T> tClass) {
-        var classEqBound = CLASS_EQ.bindTo(tClass);
-        return MethodHandles.filterReturnValue(GET_CLASS, classEqBound);
+    private static final Map<Class<?>, MethodHandle> CLASS_EQ_CACHE = new WeakHashMap<>();
+
+    public static <T> MethodHandle classEq(Class<T> testClass) {
+        return CLASS_EQ_CACHE.computeIfAbsent(testClass, type -> {
+            if (!Modifier.isFinal(testClass.getModifiers())) {
+                throw new IllegalArgumentException(testClass + " is not final");
+            }
+            var classEqBound = CLASS_EQ.bindTo(testClass);
+            return MethodHandles.filterReturnValue(GET_CLASS, classEqBound);
+        });
+    }
+
+
+    private static final Map<Class<?>, MethodHandle> CLASS_ASSIGNABLE_CACHE = new WeakHashMap<>();
+
+    public static <T> MethodHandle classAssignable(Class<T> testClass) {
+        return CLASS_ASSIGNABLE_CACHE.computeIfAbsent(testClass, type -> {
+            var classEqBound = CLASS_ASSIGNABLE.bindTo(testClass);
+            return MethodHandles.filterReturnValue(GET_CLASS, classEqBound);
+        });
     }
 
     private Pattern(MethodHandle matches) {

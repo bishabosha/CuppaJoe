@@ -1,14 +1,15 @@
 package com.github.bishabosha.cuppajoe.match.typesafe.patterns;
 
 
-import com.github.bishabosha.cuppajoe.match.typesafe.patterns.Pattern.*;
+import com.github.bishabosha.cuppajoe.match.typesafe.internal.patterns.Bootstraps;
+import com.github.bishabosha.cuppajoe.match.typesafe.patterns.Pattern.Empty;
+import com.github.bishabosha.cuppajoe.match.typesafe.patterns.Pattern.Value;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 
-import static com.github.bishabosha.cuppajoe.match.typesafe.internal.extract.Extractors.alwaysTrue;
-import static com.github.bishabosha.cuppajoe.match.typesafe.patterns.Pattern.*;
+import static com.github.bishabosha.cuppajoe.match.typesafe.patterns.Pattern.empty;
 
 public final class Standard {
 
@@ -33,16 +34,12 @@ public final class Standard {
         }
     }
 
-    public static Value id(Class<?> type) {
-        return value(classEq(type));
-    }
-
     public static Value id() {
-        return value(alwaysTrue());
+        return Bootstraps.id();
     }
 
     public static Empty __() {
-        return empty(alwaysTrue());
+        return Bootstraps.__();
     }
 
     public static <O> Empty is(O toMatch) {

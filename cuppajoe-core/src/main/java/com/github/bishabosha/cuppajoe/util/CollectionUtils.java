@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Objects;
 
 public final class CollectionUtils {
+
     private CollectionUtils() {
     }
 
