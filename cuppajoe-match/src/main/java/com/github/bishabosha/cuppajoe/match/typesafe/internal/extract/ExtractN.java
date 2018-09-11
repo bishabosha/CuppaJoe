@@ -17,14 +17,14 @@ import static com.github.bishabosha.cuppajoe.match.typesafe.internal.extract.Ext
 
 public final class ExtractN extends Extractor {
 
-    private final Class<?>[] pathTypes;
+    private final Class<?>[] pTypes;
     private final MethodHandle[] paths;
     private final int size;
     private int cursor;
 
-    public ExtractN(List<Class<?>> pathTypes) {
-        size = pathTypes.size();
-        this.pathTypes = pathTypes.toArray(new Class[size]);
+    public ExtractN(List<Class<?>> pTypes) {
+        size = pTypes.size();
+        this.pTypes = pTypes.toArray(new Class[size]);
         cursor = 0;
         paths = new MethodHandle[size];
     }
@@ -45,9 +45,9 @@ public final class ExtractN extends Extractor {
         if (cursor >= size) {
             throw new ExtractionFailedException("To many values were found");
         }
-        if (value == Bootstraps.id() && !pathTypes[cursor].isAssignableFrom(path.type().returnType())) {
+        if (value == Bootstraps.id() && !pTypes[cursor].isAssignableFrom(path.type().returnType())) {
             var current = path.type().returnType();
-            var end = pathTypes[cursor];
+            var end = pTypes[cursor];
             if (end.isPrimitive()) {
                 var endWrapper = ClassUtil.wrapperFor(end);
                 if (!endWrapper.isAssignableFrom(current)) {
@@ -60,7 +60,7 @@ public final class ExtractN extends Extractor {
             appendPredicates(path, value.matches());
         }
 
-        paths[cursor] = path.asType(path.type().changeReturnType(pathTypes[cursor++]));
+        paths[cursor] = path.asType(path.type().changeReturnType(pTypes[cursor++]));
     }
 
     @Override

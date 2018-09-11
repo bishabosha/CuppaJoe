@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
 import java.util.List;
 
 import static com.github.bishabosha.cuppajoe.API.None;
@@ -21,6 +20,7 @@ import static com.github.bishabosha.cuppajoe.match.typesafe.MatchTest.StringPair
 import static com.github.bishabosha.cuppajoe.match.typesafe.patterns.Collections.*;
 import static com.github.bishabosha.cuppajoe.match.typesafe.patterns.Standard.__;
 import static com.github.bishabosha.cuppajoe.match.typesafe.patterns.Standard.id;
+import static java.lang.invoke.MethodType.methodType;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings({"all"})
@@ -41,10 +41,10 @@ public class MatchTest {
             INT_ID = MethodHandles.identity(int.class);
             var lookup = MethodHandles.lookup();
             try {
-                INT_SUM = lookup.findStatic(Handles.class, "sum", MethodType.methodType(int.class, int.class, int.class));
-                CONCAT = lookup.findStatic(Handles.class, "concat", MethodType.methodType(String.class, String.class, String.class));
-                CONCAT_8 = lookup.findStatic(Handles.class, "concat", MethodType.methodType(String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class));
-                LIST_SIZE = lookup.findStatic(Handles.class, "listSize", MethodType.methodType(int.class, List.class));
+                INT_SUM = lookup.findStatic(Handles.class, "sum", methodType(int.class, int.class, int.class));
+                CONCAT = lookup.findStatic(Handles.class, "concat", methodType(String.class, String.class, String.class));
+                CONCAT_8 = lookup.findStatic(Handles.class, "concat", methodType(String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class));
+                LIST_SIZE = lookup.findStatic(Handles.class, "listSize", methodType(int.class, List.class));
             } catch (NoSuchMethodException | IllegalAccessException e) {
                 throw new Error(e);
             }
@@ -161,22 +161,27 @@ public class MatchTest {
     }
 
     /**
-     * - Another migration: defer generification of final MH as late as possible - i.e. for combined cases
+     * Next step: defer generification of final MH as late as possible - i.e. for combined cases
+     * Proposal: patterns have an domain class and a specific class.
+     * If do not match, use instanceof domain, else eq specific.
+     * Check specific is subclass of domain.
+     * {@code id()} infers specific from pType, domain from current path.
+     * If {@code id()} is the root pattern, both specific and domain come from first pType
+     * {@code matches} MH input type becomes domain of pattern
+     * When cases are combined, the common domain of all branches must be inferred and type tests of the specific added
      */
     @Test
     public void test_Func$int$int_Pattern$id_infers_classEq_Integer() throws Throwable {
-        assertSame(
-            Pattern.classEq(Integer.class),
-            With(id(), Handles.INT_ID).matches()
-        );
+        var integerEq = Pattern.classEq(Integer.class);
+        assertSame(integerEq, With(id(), Handles.INT_ID).matches());
+        assertEquals(methodType(boolean.class, Object.class), integerEq.type());
     }
 
     @Test
     public void test_Func$int$List_Pattern$id_infers_classAssignable_List() throws Throwable {
-        assertSame(
-            Pattern.classAssignable(List.class),
-            With(id(), Handles.LIST_SIZE).matches()
-        );
+        var listAssignable = Pattern.classAssignable(List.class);
+        assertSame(listAssignable, With(id(), Handles.LIST_SIZE).matches());
+        assertEquals(methodType(boolean.class, Object.class), listAssignable.type());
     }
 
     @Test
